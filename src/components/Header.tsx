@@ -1,57 +1,121 @@
+"use client";
 
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
-  return (
-    <header className="bg-gray-800 text-white p-4 shadow-md">
-      <nav className="container mx-auto flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-pink-400">
-          Sakura.PT
-        </Link>
-        <ul className="flex space-x-6">
-          <li>
-            <Link href="/" className="hover:text-pink-400 transition-colors duration-200">
-              首页
-            </Link>
-          </li>
-          <li>
-            <Link href="/torrents" className="hover:text-pink-400 transition-colors duration-200">
-              种子
-            </Link>
-          </li>
-          <li>
-            <Link href="/forums" className="hover:text-pink-400 transition-colors duration-200">
-              论坛
-            </Link>
-          </li>
-          <li>
-            <Link href="/requests" className="hover:text-pink-400 transition-colors duration-200">
-              请求
-            </Link>
-          </li>
-          <li>
-            <Link href="/user" className="hover:text-pink-400 transition-colors duration-200">
-              用户中心
-            </Link>
-          </li>
-          <li>
-            <Link href="/messages" className="hover:text-pink-400 transition-colors duration-200">
-              消息
-            </Link>
-          </li>
-          <li>
-            <Link href="/store" className="hover:text-pink-400 transition-colors duration-200">
-              商店
-            </Link>
-          </li>
-        </ul>
-        <div>
-          {/* 用户状态占位符 */}
-          <Link href="/login" className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
-            登录
-          </Link>
-        </div>
-      </nav>
-    </header>
-  );
+    const { isAuthenticated, logout } = useAuth();
+    const { theme, setTheme, currentMode } = useTheme();
+    const { t, i18n } = useTranslation();
+    const router = useRouter();
+
+    const handleLogout = () => {
+        logout();
+    };
+
+    const toggleTheme = () => {
+        if (theme === 'light') {
+            setTheme('dark');
+        } else if (theme === 'dark') {
+            setTheme('auto');
+        } else {
+            setTheme('light');
+        }
+    };
+
+    const changeLanguage = (lng: string) => {
+        i18n.changeLanguage(lng);
+        // Optional: Reload page to apply language changes if not using client-side routing for all links
+        // router.reload();
+    };
+
+    return (
+        <header className="bg-gray-800 text-white p-4 shadow-md">
+            <nav className="container mx-auto flex justify-between items-center">
+                <Link href="/" className="text-2xl font-bold text-pink-400">
+                    Sakura.PT
+                </Link>
+                <ul className="flex space-x-6">
+                    <li>
+                        <Link href="/" className="hover:text-pink-400 transition-colors duration-200">
+                            {t('home')}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/torrents" className="hover:text-pink-400 transition-colors duration-200">
+                            {t('torrents')}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/forums" className="hover:text-pink-400 transition-colors duration-200">
+                            {t('forums')}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/requests" className="hover:text-pink-400 transition-colors duration-200">
+                            {t('requests')}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/user" className="hover:text-pink-400 transition-colors duration-200">
+                            {t('user_center')}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/messages" className="hover:text-pink-400 transition-colors duration-200">
+                            {t('messages')}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/store" className="hover:text-pink-400 transition-colors duration-200">
+                            {t('store')}
+                        </Link>
+                    </li>
+                </ul>
+                <div className="flex items-center space-x-4">
+                    <select
+                        onChange={(e) => changeLanguage(e.target.value)}
+                        value={i18n.language}
+                        className="p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    >
+                        <option value="en">English</option>
+                        <option value="zh">中文</option>
+                        <option value="ja">日本語</option>
+                        <option value="fr">Français</option>
+                    </select>
+
+                    <button
+                        onClick={toggleTheme}
+                        className="p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-200"
+                        title={`${t('theme_toggle')} ${t(theme)} (${t(currentMode)})`}
+                    >
+                        {currentMode === 'light' ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325-4.243l.707-.707M3.929 3.929l.707.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9 9 0 008.354-5.646z" />
+                            </svg>
+                        )}
+                    </button>
+                    {isAuthenticated ? (
+                        <button
+                            onClick={handleLogout}
+                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+                        >
+                            {t('logout')}
+                        </button>
+                    ) : (
+                        <Link href="/login" className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
+                            {t('login')}
+                        </Link>
+                    )}
+                </div>
+            </nav>
+        </header>
+    );
 }
