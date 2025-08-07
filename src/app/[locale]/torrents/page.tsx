@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { fetchApi } from "@/lib/apiClient";
 import Link from "next/link";
-import { useTranslation } from 'react-i18next';
+import { useTranslations } from 'next-intl';
 
 interface Torrent {
     id: number;
@@ -35,7 +35,7 @@ export default function TorrentsPage() {
     const [sortBy, setSortBy] = useState<string>("createdAt");
     const [sortOrder, setSortOrder] = useState<string>("desc");
     const [totalCount, setTotalCount] = useState<number>(0);
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     const fetchTorrents = useCallback(async () => {
         setLoading(true);

@@ -55,5 +55,14 @@
   "all_rights_reserved": "保留所有权利。",
   "privacy_policy": "隐私政策",
   "terms_of_service": "服务条款",
-  "contact_us": "联系我们"
+  "contact_us": "联系我们",
+  "Movie": "电影",
+  "TV": "电视剧",
+  "Anime": "动漫",
+  "Music": "音乐",
+  "Game": "游戏",
+  "Software": "软件",
+  "Documentary": "纪录片",
+  "Other": "其他",
+  "name": "名称"
 }

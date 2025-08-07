@@ -4,7 +4,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { fetchApi } from "@/lib/apiClient";
 import { useParams } from "next/navigation";
-import { useTranslation } from 'react-i18next';
+import { useTranslations } from 'next-intl';
 
 interface Torrent {
     id: number;
@@ -34,7 +34,7 @@ export default function TorrentDetailPage() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [newComment, setNewComment] = useState<string>("");
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     const fetchTorrentDetails = useCallback(async () => {
         setLoading(true);

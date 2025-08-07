@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchApi } from "@/lib/apiClient";
 import Link from "next/link";
-import { useTranslation } from 'react-i18next';
+import { useTranslations } from 'next-intl';
 
 interface Announcement {
     id: number;
@@ -32,7 +32,7 @@ export default function Home() {
     const [loadingTorrents, setLoadingTorrents] = useState<boolean>(true);
     const [errorAnnouncements, setErrorAnnouncements] = useState<string | null>(null);
     const [errorTorrents, setErrorTorrents] = useState<string | null>(null);
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     useEffect(() => {
         async function fetchData() {

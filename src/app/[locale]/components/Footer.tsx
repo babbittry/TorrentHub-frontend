@@ -1,9 +1,9 @@
 "use client";
 
-import { useTranslation } from 'react-i18next';
+import { useTranslations } from 'next-intl';
 
 export default function Footer() {
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     return (
         <footer className="bg-gray-800 text-white p-4 mt-8">

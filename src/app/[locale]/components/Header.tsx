@@ -1,16 +1,17 @@
 "use client";
 
 import Link from 'next/link';
-import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
-import { useTranslation } from 'react-i18next';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
+import { useTranslations } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function Header() {
     const { isAuthenticated, logout } = useAuth();
     const { theme, setTheme, currentMode } = useTheme();
-    const { t, i18n } = useTranslation();
+    const t = useTranslations(); // Using 'Header' namespace
     const router = useRouter();
+    const pathname = usePathname();
 
     const handleLogout = () => {
         logout();
@@ -27,20 +28,21 @@ export default function Header() {
     };
 
     const changeLanguage = (lng: string) => {
-        i18n.changeLanguage(lng);
-        // Optional: Reload page to apply language changes if not using client-side routing for all links
-        // router.reload();
+        // Get the current path without the locale
+        const pathSegments = pathname.split('/');
+        const currentPathWithoutLocale = pathSegments.slice(2).join('/');
+        router.push(`/${lng}/${currentPathWithoutLocale}`);
     };
 
     return (
         <header className="bg-gray-800 text-white p-4 shadow-md">
             <nav className="container mx-auto flex justify-between items-center">
-                <Link href="/" className="text-2xl font-bold text-pink-400">
+                <Link href="/public" className="text-2xl font-bold text-pink-400">
                     Sakura.PT
                 </Link>
                 <ul className="flex space-x-6">
                     <li>
-                        <Link href="/" className="hover:text-pink-400 transition-colors duration-200">
+                        <Link href="/public" className="hover:text-pink-400 transition-colors duration-200">
                             {t('home')}
                         </Link>
                     </li>
@@ -78,7 +80,11 @@ export default function Header() {
                 <div className="flex items-center space-x-4">
                     <select
                         onChange={(e) => changeLanguage(e.target.value)}
-                        value={i18n.language}
+                        // The value of the select should reflect the current locale from the URL
+                        // This requires getting the current locale from the path, which is not directly available via usePathname in a simple way
+                        // For now, we'll leave it as a placeholder or assume the locale is passed as a prop if needed.
+                        // For next-intl, the locale is typically part of the URL, so we can extract it from `pathname`.
+                        value={pathname.split('/')[1]} // Assuming the locale is the second segment of the path
                         className="p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
                     >
                         <option value="en">English</option>
