@@ -5,6 +5,8 @@ import {ThemeProvider} from "@/context/ThemeContext";
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
+import Header from '@/app/[locale]/components/Header';
+import Footer from '@/app/[locale]/components/Footer';
 
 export const metadata: Metadata = {
     title: "Sakura.PT",
@@ -23,6 +25,13 @@ export default async function RootLayout({
         notFound();
     }
 
+    let messages;
+    try {
+        messages = (await import(`../../../messages/${locale}.json`)).default;
+    } catch (error) {
+        notFound();
+    }
+
     return (
         <html lang={locale}>
         <body
@@ -30,9 +39,13 @@ export default async function RootLayout({
         >
         <AuthProvider>
             <ThemeProvider>
-                <main className="flex-grow">
-                    <NextIntlClientProvider>{children}</NextIntlClientProvider>
-                </main>
+                <NextIntlClientProvider locale={locale} messages={messages}>
+                    <Header />
+                    <main className="flex-grow">
+                        {children}
+                    </main>
+                    <Footer />
+                </NextIntlClientProvider>
             </ThemeProvider>
         </AuthProvider>
         </body>

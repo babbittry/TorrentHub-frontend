@@ -55,5 +55,14 @@
   "all_rights_reserved": "All rights reserved.",
   "privacy_policy": "Privacy Policy",
   "terms_of_service": "Terms of Service",
-  "contact_us": "Contact Us"
+  "contact_us": "Contact Us",
+  "Movie": "Movie",
+  "TV": "TV",
+  "Anime": "Anime",
+  "Music": "Music",
+  "Game": "Game",
+  "Software": "Software",
+  "Documentary": "Documentary",
+  "Other": "Other",
+  "name": "Name"
 }

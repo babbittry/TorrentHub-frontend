@@ -55,5 +55,14 @@
   "all_rights_reserved": "Tous droits réservés.",
   "privacy_policy": "Politique de confidentialité",
   "terms_of_service": "Conditions d'utilisation",
-  "contact_us": "Nous contacter"
+  "contact_us": "Nous contacter",
+  "Movie": "Film",
+  "TV": "Télévision",
+  "Anime": "Anime",
+  "Music": "Musique",
+  "Game": "Jeu",
+  "Software": "Logiciel",
+  "Documentary": "Documentaire",
+  "Other": "Autre",
+  "name": "Nom"
 }

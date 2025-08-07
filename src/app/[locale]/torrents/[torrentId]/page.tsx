@@ -96,46 +96,46 @@ export default function TorrentDetailPage() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
     };
 
-    if (loading) return <p className="text-white text-center p-4">{t('loading')}</p>;
-    if (error) return <p className="text-red-500 text-center p-4">{t('error')}: {error}</p>;
-    if (!torrent) return <p className="text-white text-center p-4">{t('no_torrents_found')}</p>;
+    if (loading) return <p className="text-[var(--color-foreground)] text-center p-4">{t('loading')}</p>;
+    if (error) return <p className="text-[var(--color-error)] text-center p-4">{t('error')}: {error}</p>;
+    if (!torrent) return <p className="text-[var(--color-text-muted)] text-center p-4">{t('no_torrents_found')}</p>;
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-4xl font-extrabold text-white mb-6 text-center drop-shadow-lg">{torrent.name}</h1>
+            <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-6 text-center drop-shadow-lg">{torrent.name}</h1>
 
-            <div className="bg-gray-800 p-8 rounded-xl shadow-lg mb-8 border border-gray-700">
+            <div className="card mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <p className="text-gray-300 text-lg mb-2"><span className="font-semibold text-pink-400">{t('category')}:</span> {torrent.category}</p>
-                        <p className="text-gray-300 text-lg mb-2"><span className="font-semibold text-pink-400">{t('size')}:</span> {formatBytes(torrent.size)}</p>
-                        <p className="text-gray-300 text-lg mb-2"><span className="font-semibold text-pink-400">{t('uploader')}:</span> {torrent.uploadedByUser?.userName || "未知"}</p>
-                        <p className="text-gray-300 text-lg mb-2"><span className="font-semibold text-pink-400">{t('release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
-                        <p className="text-gray-300 text-lg mb-2"><span className="font-semibold text-pink-400">{t('seeders_leechers')}:</span> {torrent.seeders || 0} / {torrent.leechers || 0}</p>
+                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('category')}:</span> {torrent.category}</p>
+                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('size')}:</span> {formatBytes(torrent.size)}</p>
+                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('uploader')}:</span> {torrent.uploadedByUser?.userName || "未知"}</p>
+                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
+                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('seeders_leechers')}:</span> {torrent.seeders || 0} / {torrent.leechers || 0}</p>
                         {torrent.isFree && (
-                            <span className="inline-block bg-green-500 text-white text-sm px-4 py-2 rounded-full mt-4 shadow-md">{t('free')}</span>
+                            <span className="inline-block bg-[var(--color-success)] text-white text-sm px-4 py-2 rounded-full mt-4 shadow-md">{t('free')}</span>
                         )}
                     </div>
                     <div>
                         {torrent.imdbId && (
-                            <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
-                                <p className="text-gray-300 text-lg mb-2"><span className="font-semibold text-pink-400">IMDb ID:</span> <a href={`https://www.imdb.com/title/${torrent.imdbId}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline transition-colors duration-200">{torrent.imdbId}</a></p>
+                            <div className="bg-[var(--color-input-background)] p-4 rounded-lg shadow-inner border border-[var(--color-input-border)]">
+                                <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">IMDb ID:</span> <a href={`https://www.imdb.com/title/${torrent.imdbId}`} target="_blank" rel="noopener noreferrer" className="text-[var(--color-primary)] hover:underline transition-colors duration-200">{torrent.imdbId}</a></p>
                                 {/* Potentially add more IMDb details here if fetched */}
                             </div>
                         )}
                     </div>
                 </div>
 
-                <h2 className="text-3xl font-bold text-white mt-8 mb-4 border-b border-gray-700 pb-2">{t('description')}</h2>
-                <div className="text-gray-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: torrent.description || t('no_description') }} />
+                <h2 className="text-3xl font-bold text-[var(--color-primary)] mt-8 mb-4 border-b border-[var(--color-border)] pb-2">{t('description')}</h2>
+                <div className="text-[var(--color-foreground)] leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: torrent.description || t('no_description') }} />
             </div>
 
-            <section className="bg-gray-800 p-8 rounded-xl shadow-lg mb-8 border border-gray-700">
-                <h2 className="text-3xl font-bold text-white mb-6 border-b border-gray-700 pb-2">{t('comments')}</h2>
+            <section className="card mb-8">
+                <h2 className="text-3xl font-bold text-[var(--color-primary)] mb-6 border-b border-[var(--color-border)] pb-2">{t('comments')}</h2>
                 <div className="mb-8">
                     <form onSubmit={handleAddComment} className="flex flex-col space-y-4">
                         <textarea
-                            className="w-full p-4 rounded-lg border border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300"
+                            className="input-field"
                             rows={5}
                             placeholder={t('add_comment')}
                             value={newComment}
@@ -143,7 +143,7 @@ export default function TorrentDetailPage() {
                         ></textarea>
                         <button
                             type="submit"
-                            className="px-8 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors duration-300 font-semibold self-end shadow-md transform hover:scale-105"
+                            className="btn-primary px-8 py-3 font-semibold self-end shadow-md transform hover:scale-105"
                         >
                             {t('submit_comment')}
                         </button>
@@ -152,14 +152,14 @@ export default function TorrentDetailPage() {
                 <div>
                     {comments.length > 0 ? (
                         comments.map((comment) => (
-                            <div key={comment.id} className="bg-gray-700 p-6 rounded-lg mb-4 shadow-sm border border-gray-600">
-                                <p className="text-pink-400 font-bold text-lg mb-1">{comment.user?.userName || "未知用户"}</p>
-                                <p className="text-gray-400 text-sm mb-3">{new Date(comment.createdAt).toLocaleString()}</p>
-                                <p className="text-white text-base leading-relaxed">{comment.text}</p>
+                            <div key={comment.id} className="bg-[var(--color-card-background)] p-6 rounded-lg mb-4 shadow-sm border border-[var(--color-border)]">
+                                <p className="text-[var(--color-primary)] font-bold text-lg mb-1">{comment.user?.userName || "未知用户"}</p>
+                                <p className="text-[var(--color-text-muted)] text-sm mb-3">{new Date(comment.createdAt).toLocaleString()}</p>
+                                <p className="text-[var(--color-foreground)] text-base leading-relaxed">{comment.text}</p>
                             </div>
                         ))
                     ) : (
-                        <p className="text-gray-400 text-lg text-center">{t('no_comments')}</p>
+                        <p className="text-[var(--color-text-muted)] text-lg text-center">{t('no_comments')}</p>
                     )}
                 </div>
             </section>

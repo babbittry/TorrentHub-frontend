@@ -55,5 +55,14 @@
   "all_rights_reserved": "全著作権所有。",
   "privacy_policy": "プライバシーポリシー",
   "terms_of_service": "利用規約",
-  "contact_us": "お問い合わせ"
+  "contact_us": "お問い合わせ",
+  "Movie": "映画",
+  "TV": "テレビ",
+  "Anime": "アニメ",
+  "Music": "音楽",
+  "Game": "ゲーム",
+  "Software": "ソフトウェア",
+  "Documentary": "ドキュメンタリー",
+  "Other": "その他",
+  "name": "名前"
 }

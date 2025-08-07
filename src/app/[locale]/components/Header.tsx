@@ -1,17 +1,28 @@
 "use client";
 
-import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
+import {useState, useEffect, ReactNode} from 'react';
+import Link from "next/link";
+
+function Link(props: { href: string, className: string, children: ReactNode }) {
+    return null;
+}
 
 export default function Header() {
     const { isAuthenticated, logout } = useAuth();
     const { theme, setTheme, currentMode } = useTheme();
-    const t = useTranslations(); // Using 'Header' namespace
+    const t = useTranslations();
     const router = useRouter();
     const pathname = usePathname();
+
+    const [buttonTitle, setButtonTitle] = useState('');
+
+    useEffect(() => {
+        setButtonTitle(`${t('theme_toggle')} ${t(theme)} (${t(currentMode)})`);
+    }, [theme, currentMode, t]);
 
     const handleLogout = () => {
         logout();
@@ -28,51 +39,50 @@ export default function Header() {
     };
 
     const changeLanguage = (lng: string) => {
-        // Get the current path without the locale
         const pathSegments = pathname.split('/');
         const currentPathWithoutLocale = pathSegments.slice(2).join('/');
         router.push(`/${lng}/${currentPathWithoutLocale}`);
     };
 
     return (
-        <header className="bg-gray-800 text-white p-4 shadow-md">
+        <header className="bg-[var(--color-card-background)] text-[var(--color-foreground)] p-4 shadow-lg">
             <nav className="container mx-auto flex justify-between items-center">
-                <Link href="/public" className="text-2xl font-bold text-pink-400">
+                <Link href="/" className="text-2xl font-bold text-[var(--color-primary)]">
                     Sakura.PT
                 </Link>
                 <ul className="flex space-x-6">
                     <li>
-                        <Link href="/public" className="hover:text-pink-400 transition-colors duration-200">
+                        <Link href="/" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
                             {t('home')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/torrents" className="hover:text-pink-400 transition-colors duration-200">
+                        <Link href="/torrents" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
                             {t('torrents')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/forums" className="hover:text-pink-400 transition-colors duration-200">
+                        <Link href="/forums" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
                             {t('forums')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/requests" className="hover:text-pink-400 transition-colors duration-200">
+                        <Link href="/requests" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
                             {t('requests')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/user" className="hover:text-pink-400 transition-colors duration-200">
+                        <Link href="/user" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
                             {t('user_center')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/messages" className="hover:text-pink-400 transition-colors duration-200">
+                        <Link href="/messages" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
                             {t('messages')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/store" className="hover:text-pink-400 transition-colors duration-200">
+                        <Link href="/store" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
                             {t('store')}
                         </Link>
                     </li>
@@ -80,12 +90,8 @@ export default function Header() {
                 <div className="flex items-center space-x-4">
                     <select
                         onChange={(e) => changeLanguage(e.target.value)}
-                        // The value of the select should reflect the current locale from the URL
-                        // This requires getting the current locale from the path, which is not directly available via usePathname in a simple way
-                        // For now, we'll leave it as a placeholder or assume the locale is passed as a prop if needed.
-                        // For next-intl, the locale is typically part of the URL, so we can extract it from `pathname`.
-                        value={pathname.split('/')[1]} // Assuming the locale is the second segment of the path
-                        className="p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        value={pathname.split('/')[1]}
+                        className="input-field bg-[var(--color-input-background)] border-[var(--color-input-border)] text-[var(--color-foreground)]"
                     >
                         <option value="en">English</option>
                         <option value="zh">中文</option>
@@ -95,8 +101,8 @@ export default function Header() {
 
                     <button
                         onClick={toggleTheme}
-                        className="p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-200"
-                        title={`${t('theme_toggle')} ${t(theme)} (${t(currentMode)})`}
+                        className="p-2 rounded-full bg-[var(--color-border)] hover:bg-[var(--color-secondary)] transition-colors duration-200"
+                        title={buttonTitle}
                     >
                         {currentMode === 'light' ? (
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -111,12 +117,12 @@ export default function Header() {
                     {isAuthenticated ? (
                         <button
                             onClick={handleLogout}
-                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+                            className="btn-primary"
                         >
                             {t('logout')}
                         </button>
                     ) : (
-                        <Link href="/login" className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
+                        <Link href="/login" className="btn-primary">
                             {t('login')}
                         </Link>
                     )}
