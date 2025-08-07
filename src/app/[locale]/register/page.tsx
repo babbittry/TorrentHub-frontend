@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { fetchApi } from "@/lib/apiClient";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useRouter, useParams } from "next/navigation";
+import { Link } from 'next-intl/link';
 import { useTranslations } from 'next-intl';
 
 export default function RegisterPage() {
@@ -15,6 +15,7 @@ export default function RegisterPage() {
     const [success, setSuccess] = useState<string | null>(null);
     const router = useRouter();
     const t = useTranslations();
+    const { locale } = useParams();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { fetchApi } from "@/lib/apiClient";
-import Link from "next/link";
+import { Link } from 'next-intl/link';
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 
 interface Announcement {
     id: number;
@@ -33,6 +34,7 @@ export default function Home() {
     const [errorAnnouncements, setErrorAnnouncements] = useState<string | null>(null);
     const [errorTorrents, setErrorTorrents] = useState<string | null>(null);
     const t = useTranslations();
+    const { locale } = useParams();
 
     useEffect(() => {
         async function fetchData() {

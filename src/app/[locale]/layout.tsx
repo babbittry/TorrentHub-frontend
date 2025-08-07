@@ -1,3 +1,4 @@
+import LayoutContent from '@/app/[locale]/components/LayoutContent';
 import type {Metadata} from "next";
 import "./globals.css";
 import {AuthProvider} from "@/context/AuthContext";
@@ -5,8 +6,6 @@ import {ThemeProvider} from "@/context/ThemeContext";
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
-import Header from '@/app/[locale]/components/Header';
-import Footer from '@/app/[locale]/components/Footer';
 
 export const metadata: Metadata = {
     title: "Sakura.PT",
@@ -40,11 +39,7 @@ export default async function RootLayout({
         <AuthProvider>
             <ThemeProvider>
                 <NextIntlClientProvider locale={locale} messages={messages}>
-                    <Header />
-                    <main className="flex-grow">
-                        {children}
-                    </main>
-                    <Footer />
+                    <LayoutContent>{children}</LayoutContent>
                 </NextIntlClientProvider>
             </ThemeProvider>
         </AuthProvider>

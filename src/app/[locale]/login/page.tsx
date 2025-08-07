@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { fetchApi } from "@/lib/apiClient";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import Link from "next/link";
+import { Link } from 'next-intl/link';
 import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
@@ -14,6 +14,7 @@ export default function LoginPage() {
     const router = useRouter();
     const { login } = useAuth();
     const t = useTranslations();
+    const { locale } = useParams();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
