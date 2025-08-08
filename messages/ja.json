@@ -43,6 +43,7 @@
   "email": "メール",
   "invite_code": "招待コード",
   "login_failed": "ログインに失敗しました。ユーザー名とパスワードを確認してください。",
+  "login_failed_no_token": "ログインに失敗しました：サーバーから認証トークンが受信されませんでした。",
   "registration_successful": "登録が完了しました！これでログインできます。",
   "registration_failed": "登録に失敗しました。後でもう一度お試しください。",
   "already_have_account": "すでにアカウントをお持ちですか？",

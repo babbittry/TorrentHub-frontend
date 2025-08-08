@@ -5,7 +5,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import {useState, useEffect, ReactNode} from 'react';
-import { Link } from 'next-intl/link';
+import { Link } from '@/i18n/navigation';
 
 export default function Header() {
     const { isAuthenticated, logout } = useAuth();
@@ -36,6 +36,7 @@ export default function Header() {
 
     const changeLanguage = (lng: string) => {
         const pathSegments = pathname.split('/');
+        // Assuming the first segment after root is the locale
         const currentPathWithoutLocale = pathSegments.slice(2).join('/');
         router.push(`/${lng}/${currentPathWithoutLocale}`);
     };
@@ -44,66 +45,6 @@ export default function Header() {
         <header className="bg-[var(--color-card-background)] text-[var(--color-foreground)] p-4 shadow-lg">
             <nav className="container mx-auto flex justify-between items-center">
                 <Link href="/" className="text-2xl font-bold text-[var(--color-primary)]">
-                    Sakura.PT
-                </Link>
-                <ul className="flex space-x-6">
-                    <li>
-                        <Link href="/" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('home')}
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/torrents" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('torrents')}
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/forums" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('forums')}
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/requests" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('requests')}
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/user" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('user_center')}
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/messages" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('messages')}
-                        </Link>
-                    </li>
-                    <Link href={`/${pathname.split('/')[1]}/`} className="text-2xl font-bold text-[var(--color-primary)]">
-                    Sakura.PT
-                </Link>
-                <ul className="flex space-x-6">
-                    <li>
-
-                    </li>
-                    <li>
-                        <Link href="/torrents" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('torrents')}
-                        </Link>
-                    </li>
-
-                    <li>
-                        <Link href={`/${pathname.split('/')[1]}/requests`} className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('requests')}
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href={`/${pathname.split('/')[1]}/user`} className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('user_center')}
-                        </Link>
-                    </li>
-                    <Link href="/" className="text-2xl font-bold text-[var(--color-primary)]">
-                    Sakura.PT
-                </Link>
-                    <Link href="/" className="text-2xl font-bold text-[var(--color-primary)]">
                     Sakura.PT
                 </Link>
                 <ul className="flex space-x-6">

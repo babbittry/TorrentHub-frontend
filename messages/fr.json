@@ -43,6 +43,7 @@
   "email": "E-mail",
   "invite_code": "Code d'invitation",
   "login_failed": "Échec de la connexion, veuillez vérifier votre nom d'utilisateur et votre mot de passe.",
+  "login_failed_no_token": "Échec de la connexion : Aucun jeton d'authentification n'a été reçu du serveur.",
   "registration_successful": "Inscription réussie ! Vous pouvez maintenant vous connecter.",
   "registration_failed": "Échec de l'inscription, veuillez réessayer plus tard.",
   "already_have_account": "Vous avez déjà un compte ?",

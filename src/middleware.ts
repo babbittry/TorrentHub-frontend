@@ -6,45 +6,52 @@ import type { NextRequest } from 'next/server';
 const nextIntlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
+    // First, let next-intl handle the request. This is crucial for locale
+    // detection and for handling the root path (`/`) correctly.
+    const response = nextIntlMiddleware(request);
+
+    // If next-intl returned a redirect response (e.g., from `/` to `/en`),
+    // we return it directly and skip the authentication logic.
+    if (response.status === 307 || response.status === 308) {
+        return response;
+    }
+
+    // Now that we know a locale is present in the path, we can run auth checks.
     const authToken = request.cookies.get('authToken')?.value;
     const { pathname } = request.nextUrl;
 
-    // Define public paths that don't require authentication
-    // These paths are relative to the locale, e.g., /login, /register, /rules
-    const publicPaths = [
-        '/login',
-        '/register',
-        '/rules',
-    ];
+    const publicPaths = ['/login', '/register', '/rules'];
 
-    // Determine if the current path is a public path, considering the locale prefix
-    // Example: /en/login, /zh/register, /rules
-    const isPublicPath = publicPaths.some(path => pathname.endsWith(path) || pathname.endsWith(`${path}/`));
+    // Extract the path without the locale prefix (e.g., /en/torrents -> /torrents)
+    const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '') || '/';
+    const isPublicPath = publicPaths.some(p => pathWithoutLocale === p || pathWithoutLocale.startsWith(`${p}/`));
 
-    // If user is NOT authenticated
-    if (!authToken) {
-        // If trying to access a non-public path, redirect to login
-        if (!isPublicPath) {
-            // Get the current locale from the request URL to redirect to the correct localized login page
-            const langMatch = pathname.match(/^\/([a-z]{2})\//);
-            const langPrefix = langMatch ? `/${langMatch[1]}` : ''; // e.g., /en
-            return NextResponse.redirect(new URL(`${langPrefix}/login`, request.url));
-        }
-    } else {
-        // If user IS authenticated
-        // If trying to access login or register page, redirect to home
-        if (pathname.includes('/login') || pathname.includes('/register')) {
-            const langMatch = pathname.match(/^\/([a-z]{2})\//);
-            const langPrefix = langMatch ? `/${langMatch[1]}` : '';
-            return NextResponse.redirect(new URL(`${langPrefix}/`, request.url));
-        }
+    // If the user is not authenticated and is trying to access a protected page...
+    if (!authToken && !isPublicPath) {
+        // ...redirect them to the localized login page.
+        const locale = pathname.split('/')[1] || 'en'; // Extract locale from path
+        return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
     }
 
-    // If no authentication redirect is needed, proceed with next-intl middleware
-    return nextIntlMiddleware(request);
+    // If the user is authenticated and tries to visit login or register...
+    if (authToken && (pathWithoutLocale === '/login' || pathWithoutLocale === '/register')) {
+        // ...redirect them to the localized home page.
+        const locale = pathname.split('/')[1] || 'en';
+        return NextResponse.redirect(new URL(`/${locale}/`, request.url));
+    }
+
+    // If no auth-related redirect is needed, return the response from next-intl.
+    return response;
 }
 
 export const config = {
-    matcher: '/((?!api|trpc|_next|_vercel|.*\..*).*)'
+    // Matcher entries are linked with an OR operation
+    matcher: [
+        // Match all pathnames except for
+        // - … if they start with `/api`, `/_next` or `/_vercel`
+        // - … the ones containing a dot (e.g. `favicon.ico`)
+        '/((?!api|_next|_vercel|.*\\..*).*)',
+        // Match all pathnames starting with a locale (e.g. `/en`, `/fr`, `/ja`, `/zh`)
+        '/(en|fr|ja|zh)/:path*',
+    ]
 };
-

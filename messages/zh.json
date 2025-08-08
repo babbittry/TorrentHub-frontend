@@ -43,6 +43,7 @@
   "email": "邮箱",
   "invite_code": "邀请码",
   "login_failed": "登录失败，请检查您的用户名和密码。",
+  "login_failed_no_token": "登录失败：未从服务器收到身份验证令牌。",
   "registration_successful": "注册成功！您现在可以登录了。",
   "registration_failed": "注册失败，请稍后再试。",
   "already_have_account": "已有账号？",

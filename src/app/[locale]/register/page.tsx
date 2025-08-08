@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { fetchApi } from "@/lib/apiClient";
 import { useRouter, useParams } from "next/navigation";
-import { Link } from 'next-intl/link';
+import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 
 export default function RegisterPage() {

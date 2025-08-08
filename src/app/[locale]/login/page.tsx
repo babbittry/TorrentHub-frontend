@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { fetchApi } from "@/lib/apiClient";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { Link } from 'next-intl/link';
+import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
@@ -28,13 +29,26 @@ export default function LoginPage() {
                 },
                 body: JSON.stringify({ userName, password }),
             });
-            console.log("Login successful:", response);
-            // Assuming the API returns a token in the response, e.g., response.token
-            // You need to adjust this based on your actual API response structure
-            login("dummy-token"); // Replace "dummy-token" with the actual token from response
-            router.push("/"); // Redirect to home page on successful login
+
+            // With HttpOnly cookies, we don't get a token in the body.
+            // We just need to check if the request was successful (status 200-299).
+            // The browser will automatically handle the cookie.
+            if (response.ok) {
+                console.log("Login request successful. Backend should have set the HttpOnly cookie.");
+                // We call login() to update the app's auth state.
+                // The actual token is not handled by the client-side JS.
+                login();
+                // Redirect to the home page.
+                router.push("/");
+            } else {
+                // If the server returns an error (e.g., 401 for bad credentials),
+                // we can try to get an error message from the response body.
+                const errorData = await response.json();
+                setError(errorData.message || t('login_failed'));
+            }
         } catch (err: unknown) {
-            setError((err as Error).message || t('login_failed'));
+            // This will catch network errors or if the response isn't valid JSON.
+            setError(t('login_failed'));
         }
     };
 

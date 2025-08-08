@@ -2,9 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { fetchApi } from "@/lib/apiClient";
-import { Link } from 'next-intl/link';
+import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { useParams } from 'next/navigation';
 import { useParams } from 'next/navigation';
 
 interface Torrent {
