@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { fetchApi } from "@/lib/apiClient";
-import { useParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from '@/i18n/navigation';
@@ -15,14 +14,13 @@ export default function LoginPage() {
     const router = useRouter();
     const { login } = useAuth();
     const t = useTranslations();
-    const { locale } = useParams();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
 
         try {
-            const response = await fetchApi("/api/User/login", {
+            await fetchApi("/api/User/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -30,25 +28,10 @@ export default function LoginPage() {
                 body: JSON.stringify({ userName, password }),
             });
 
-            // With HttpOnly cookies, we don't get a token in the body.
-            // We just need to check if the request was successful (status 200-299).
-            // The browser will automatically handle the cookie.
-            if (response.ok) {
-                console.log("Login request successful. Backend should have set the HttpOnly cookie.");
-                // We call login() to update the app's auth state.
-                // The actual token is not handled by the client-side JS.
-                login();
-                // Redirect to the home page.
-                router.push("/");
-            } else {
-                // If the server returns an error (e.g., 401 for bad credentials),
-                // we can try to get an error message from the response body.
-                const errorData = await response.json();
-                setError(errorData.message || t('login_failed'));
-            }
+            login();
+
         } catch (err: unknown) {
-            // This will catch network errors or if the response isn't valid JSON.
-            setError(t('login_failed'));
+            setError((err as Error).message || t('login_failed'));
         }
     };
 

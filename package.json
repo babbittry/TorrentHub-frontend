@@ -9,6 +9,8 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@types/js-cookie": "^3.0.6",
+        "js-cookie": "^3.0.5",
         "next": "15.4.5",
         "next-i18next": "^15.4.2",
         "next-intl": "^4.3.4",

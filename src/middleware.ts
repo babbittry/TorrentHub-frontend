@@ -20,26 +20,33 @@ export async function middleware(request: NextRequest) {
     const authToken = request.cookies.get('authToken')?.value;
     const { pathname } = request.nextUrl;
 
+    console.log(`[Middleware] Request Path: ${pathname}, AuthToken: ${authToken ? 'Present' : 'Not Present'}`);
+
     const publicPaths = ['/login', '/register', '/rules'];
 
     // Extract the path without the locale prefix (e.g., /en/torrents -> /torrents)
     const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '') || '/';
     const isPublicPath = publicPaths.some(p => pathWithoutLocale === p || pathWithoutLocale.startsWith(`${p}/`));
 
+    console.log(`[Middleware] Path Without Locale: ${pathWithoutLocale}, Is Public Path: ${isPublicPath}`);
+
     // If the user is not authenticated and is trying to access a protected page...
     if (!authToken && !isPublicPath) {
+        console.log(`[Middleware] User not authenticated and path is protected. Redirecting to login.`);
         // ...redirect them to the localized login page.
-        const locale = pathname.split('/')[1] || 'en'; // Extract locale from path
-        return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+        const locale = pathname.split('/')[1] || 'en'; // Extract locale from path@
+        return NextResponse.redirect(new URL(`/${locale}/login}`, request.url), { status: 303, headers: { 'Cache-Control': 'no-store' } });
     }
 
     // If the user is authenticated and tries to visit login or register...
     if (authToken && (pathWithoutLocale === '/login' || pathWithoutLocale === '/register')) {
+        console.log(`[Middleware] User authenticated and trying to access login/register. Redirecting to home.`);
         // ...redirect them to the localized home page.
         const locale = pathname.split('/')[1] || 'en';
         return NextResponse.redirect(new URL(`/${locale}/`, request.url));
     }
 
+    console.log(`[Middleware] No redirect needed. Proceeding.`);
     // If no auth-related redirect is needed, return the response from next-intl.
     return response;
 }
