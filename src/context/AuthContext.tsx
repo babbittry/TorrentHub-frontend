@@ -1,20 +1,15 @@
 "use client";
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { fetchApi } from '@/lib/apiClient';
+import { users, auth, UserPrivateProfileDto } from '@/lib/api';
 import Cookies from 'js-cookie';
-import {useRouter} from "next/navigation";
+import {useRouter, useParams} from "next/navigation";
 
-interface User {
-    id: number;
-    userName: string;
-    avatar: string | null;
-    role: string;
-}
+
 
 interface AuthContextType {
     isAuthenticated: boolean;
-    user: User | null;
+    user: UserPrivateProfileDto | null;
     login: () => void;
     logout: () => void;
     isLoading: boolean;
@@ -23,13 +18,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserPrivateProfileDto | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
+    const { locale } = useParams();
 
     const fetchUserProfile = async () => {
         try {
-            const userData = await fetchApi<User>('/api/User/self');
+            const userData = await users.getMe();
             setUser(userData);
         } catch (error) {
             console.error("Failed to fetch user profile", error);
@@ -49,10 +45,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         fetchUserProfile();
     };
 
-    const logout = () => {
+    const logout = async () => {
+        try {
+            await auth.logout();
+        } catch (error) {
+            console.error("Failed to logout from server", error);
+            // Continue with client-side logout even if server logout fails
+        }
         Cookies.remove('authToken');
         setUser(null);
-        router.push('/login');
+                                router.push(`/${locale}/login`);
     };
 
     return (

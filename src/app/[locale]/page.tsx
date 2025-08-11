@@ -1,48 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchApi } from "@/lib/apiClient";
+import { announcements, torrentListing, AnnouncementDto, TorrentDto } from "@/lib/api";
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 
-interface Announcement {
-    id: number;
-    title: string;
-    content: string;
-    createdAt: string;
-}
 
-interface Torrent {
-    id: number;
-    name: string;
-    category: number; // Assuming category is a number, adjust if it's a string or enum
-    size: number;
-    uploadedByUser: { userName: string };
-    createdAt: string;
-    isFree: boolean;
-    seeders?: number; // Optional, as it might not always be present
-    leechers?: number; // Optional
-}
 
 export default function Home() {
-    const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-    const [torrents, setTorrents] = useState<Torrent[]>([]);
+    const [_announcements, setAnnouncements] = useState<AnnouncementDto[]>([]);
+    const [torrents, setTorrents] = useState<TorrentDto[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [loadingAnnouncements, setLoadingAnnouncements] = useState<boolean>(true);
     const [loadingTorrents, setLoadingTorrents] = useState<boolean>(true);
     const [errorAnnouncements, setErrorAnnouncements] = useState<string | null>(null);
     const [errorTorrents, setErrorTorrents] = useState<string | null>(null);
     const t = useTranslations();
-    const { locale } = useParams();
 
     useEffect(() => {
         async function fetchData() {
             setLoadingAnnouncements(true);
             setErrorAnnouncements(null);
             try {
-                const fetchedAnnouncements: Announcement[] = await fetchApi("/api/Announcement");
-                setAnnouncements(fetchedAnnouncements);
+                const response = await announcements.getAnnouncements();
+                setAnnouncements(response || []);
             } catch (err: unknown) {
                 setErrorAnnouncements((err as Error).message || t('error'));
             } finally {
@@ -52,8 +34,8 @@ export default function Home() {
             setLoadingTorrents(true);
             setErrorTorrents(null);
             try {
-                const fetchedTorrents = await fetchApi("/api/TorrentListing?PageNumber=1&PageSize=6");
-                setTorrents(fetchedTorrents.items || []); // Ensure it's an array
+                const fetchedTorrents = await torrentListing.getTorrentListing(1, 6);
+                setTorrents(fetchedTorrents || []); // Ensure it's an array
             } catch (err: unknown) {
                 setErrorTorrents((err as Error).message || t('error'));
             } finally {
@@ -68,8 +50,8 @@ export default function Home() {
         setLoadingTorrents(true);
         setErrorTorrents(null);
         try {
-            const fetchedTorrents = await fetchApi(`/api/TorrentListing?PageNumber=1&PageSize=6&SearchTerm=${searchTerm}`);
-            setTorrents(fetchedTorrents.items || []);
+            const fetchedTorrents = await torrentListing.getTorrentListing(1, 6, undefined, searchTerm);
+            setTorrents(fetchedTorrents || []);
         } catch (err: unknown) {
             setErrorTorrents((err as Error).message || t('error'));
         } finally {
@@ -94,11 +76,11 @@ export default function Home() {
                     <p className="text-center text-[var(--color-foreground)] text-lg">{t('loading')}</p>
                 ) : errorAnnouncements ? (
                     <p className="text-center text-[var(--color-error)] text-lg">{t('error')}: {errorAnnouncements}</p>
-                ) : announcements.length > 0 ? (
+                ) : _announcements.length > 0 ? (
                     <div className="text-center text-[var(--color-foreground)] text-xl leading-relaxed">
-                        <p className="font-semibold">{announcements[0].title}</p>
-                        <p className="text-lg text-[var(--color-text-muted)] opacity-90">{announcements[0].content}</p>
-                        <p className="text-sm text-[var(--color-text-muted)] opacity-70 mt-2">{t('release_time')}: {new Date(announcements[0].createdAt).toLocaleDateString()}</p>
+                        <p className="font-semibold">{_announcements[0].title}</p>
+                        <p className="text-lg text-[var(--color-text-muted)] opacity-90">{_announcements[0].content}</p>
+                        <p className="text-sm text-[var(--color-text-muted)] opacity-70 mt-2">{t('release_time')}: {new Date(_announcements[0].createdAt).toLocaleDateString()}</p>
                     </div>
                 ) : (
                     <p className="text-center text-[var(--color-text-muted)] text-lg opacity-80">{t('no_announcements')}</p>
@@ -136,12 +118,10 @@ export default function Home() {
                                 <div className="card p-6 hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
                                     <h3 className="text-2xl font-bold text-[var(--color-primary)] mb-3 leading-tight">{torrent.name}</h3>
                                     <div className="text-[var(--color-foreground)] text-sm space-y-1 flex-grow">
-                                        <p><span className="font-semibold">{t('category')}:</span> {torrent.category}</p>
                                         <p><span className="font-semibold">{t('size')}:</span> {formatBytes(torrent.size)}</p>
-                                        <p><span className="font-semibold">{t('uploader')}:</span> {torrent.uploadedByUser?.userName || "未知"}</p>
+                                        <p><span className="font-semibold">{t('uploader')}:</span> {torrent.uploaderUsername || "未知"}</p>
                                         <p><span className="font-semibold">{t('release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
-                                        <p><span className="font-semibold">{t('seeders_leechers')}:</span> {torrent.seeders || 0} / {torrent.leechers || 0}</p>
-                                    </div>
+                                        </div>
                                     {torrent.isFree && (
                                         <span className="inline-block bg-[var(--color-success)] text-white text-xs px-3 py-1 rounded-full mt-4 self-start shadow-md">{t('free')}</span>
                                     )}

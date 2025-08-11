@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
-import {useState, useEffect, ReactNode} from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
 
 export default function Header() {

@@ -2,35 +2,16 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { fetchApi } from "@/lib/apiClient";
+import { torrents, comments, TorrentDto, CommentDto } from "@/lib/api";
 import { useParams } from "next/navigation";
 import { useTranslations } from 'next-intl';
 
-interface Torrent {
-    id: number;
-    name: string;
-    description?: string;
-    category: number; // Assuming category is a number, adjust if it's a string or enum
-    size: number;
-    uploadedByUser: { userName: string };
-    createdAt: string;
-    isFree: boolean;
-    seeders?: number;
-    leechers?: number;
-    imdbId?: string;
-}
 
-interface Comment {
-    id: number;
-    text: string;
-    user: { userName: string };
-    createdAt: string;
-}
 
 export default function TorrentDetailPage() {
     const { torrentId } = useParams();
-    const [torrent, setTorrent] = useState<Torrent | null>(null);
-    const [comments, setComments] = useState<Comment[]>([]);
+    const [torrent, setTorrent] = useState<TorrentDto | null>(null);
+    const [_comments, setComments] = useState<CommentDto[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [newComment, setNewComment] = useState<string>("");
@@ -45,12 +26,10 @@ export default function TorrentDetailPage() {
             // I'm making an assumption here. If this endpoint doesn't exist or returns insufficient data,
             // we'll need to adjust. For now, I'll use a placeholder endpoint.
             // A more appropriate endpoint might be needed from the backend.
-            const data: Torrent = await fetchApi(`/api/Torrent/${torrentId}`); // Placeholder
+            const data: TorrentDto = await torrents.getTorrentById(Number(torrentId));
             setTorrent(data);
 
-            // Assuming comments are part of the torrent details or a separate endpoint like /api/torrents/{torrentId}/comments
-            // The OpenAPI spec only shows POST for comments, not GET. I'll assume a GET for comments exists.
-            const fetchedComments: Comment[] = await fetchApi(`/api/torrents/${torrentId}/comments`); // Placeholder
+            const fetchedComments: CommentDto[] = await comments.getComments(Number(torrentId));
             setComments(fetchedComments);
 
         } catch (err: unknown) {
@@ -74,13 +53,7 @@ export default function TorrentDetailPage() {
             // The OpenAPI spec for /api/torrents/{torrentId}/Comment expects a Comment object in the body.
             // I'm assuming userId and createdAt are handled by the backend or can be omitted.
             // The Comment schema has torrentId, userId, text, createdAt. I'll provide text.
-            await fetchApi(`/api/torrents/${torrentId}/Comment`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ text: newComment, torrentId: Number(torrentId) }),
-            });
+            await comments.createComment(Number(torrentId), { text: newComment });
             setNewComment("");
             fetchTorrentDetails(); // Refresh comments after adding
         } catch (err: unknown) {
@@ -107,11 +80,9 @@ export default function TorrentDetailPage() {
             <div className="card mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('category')}:</span> {torrent.category}</p>
                         <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('size')}:</span> {formatBytes(torrent.size)}</p>
-                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('uploader')}:</span> {torrent.uploadedByUser?.userName || "未知"}</p>
+                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('uploader')}:</span> {torrent.uploaderUsername || "未知"}</p>
                         <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
-                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('seeders_leechers')}:</span> {torrent.seeders || 0} / {torrent.leechers || 0}</p>
                         {torrent.isFree && (
                             <span className="inline-block bg-[var(--color-success)] text-white text-sm px-4 py-2 rounded-full mt-4 shadow-md">{t('free')}</span>
                         )}
@@ -150,8 +121,8 @@ export default function TorrentDetailPage() {
                     </form>
                 </div>
                 <div>
-                    {comments.length > 0 ? (
-                        comments.map((comment) => (
+                    {_comments.length > 0 ? (
+                        _comments.map((comment) => (
                             <div key={comment.id} className="bg-[var(--color-card-background)] p-6 rounded-lg mb-4 shadow-sm border border-[var(--color-border)]">
                                 <p className="text-[var(--color-primary)] font-bold text-lg mb-1">{comment.user?.userName || "未知用户"}</p>
                                 <p className="text-[var(--color-text-muted)] text-sm mb-3">{new Date(comment.createdAt).toLocaleString()}</p>

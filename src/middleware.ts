@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
         console.log(`[Middleware] User not authenticated and path is protected. Redirecting to login.`);
         // ...redirect them to the localized login page.
         const locale = pathname.split('/')[1] || 'en'; // Extract locale from path@
-        return NextResponse.redirect(new URL(`/${locale}/login}`, request.url), { status: 303, headers: { 'Cache-Control': 'no-store' } });
+        return NextResponse.redirect(new URL(`/${locale}/login`, request.url), { status: 303, headers: { 'Cache-Control': 'no-store' } });
     }
 
     // If the user is authenticated and tries to visit login or register...

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { fetchApi } from "@/lib/apiClient";
+import { auth } from "@/lib/api";
 import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from '@/i18n/navigation';
@@ -11,7 +11,7 @@ export default function LoginPage() {
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
+    
     const { login } = useAuth();
     const t = useTranslations();
 
@@ -20,13 +20,7 @@ export default function LoginPage() {
         setError(null);
 
         try {
-            await fetchApi("/api/User/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ userName, password }),
-            });
+            await auth.login({ userName, password });
 
             login();
 

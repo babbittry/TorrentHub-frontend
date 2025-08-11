@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { fetchApi } from "@/lib/apiClient";
-import { useRouter, useParams } from "next/navigation";
+import { auth } from "@/lib/api";
+import { useRouter } from "next/navigation";
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -15,7 +15,6 @@ export default function RegisterPage() {
     const [success, setSuccess] = useState<string | null>(null);
     const router = useRouter();
     const t = useTranslations();
-    const { locale } = useParams();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,13 +22,7 @@ export default function RegisterPage() {
         setSuccess(null);
 
         try {
-            await fetchApi("/api/User/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ userName, email, password, inviteCode }),
-            });
+            await auth.register({ userName, email, password, inviteCode });
             setSuccess(t('registration_successful'));
             router.push("/login"); // Redirect to login page on successful registration
         } catch (err: unknown) {
