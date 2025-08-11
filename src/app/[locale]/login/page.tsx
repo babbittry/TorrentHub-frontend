@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { auth } from "@/lib/api";
-import { useRouter } from "@/i18n/navigation";
+
 import { useAuth } from "@/context/AuthContext";
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';

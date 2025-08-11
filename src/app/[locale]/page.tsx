@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { announcements, torrentListing, AnnouncementDto, TorrentDto } from "@/lib/api";
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { useParams } from 'next/navigation';
+
 
 
 
