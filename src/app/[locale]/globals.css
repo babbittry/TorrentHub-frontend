@@ -4,8 +4,8 @@
 :root {
   --color-background: #f8fafc; /* 浅蓝灰色背景 */
   --color-foreground: #1e293b; /* 深蓝灰色文字 */
-  --color-primary: #ec4899; /* 粉色作为主色调 */
-  --color-primary-hover: #db2777; /* 主色调的悬停状态 */
+  --color-primary: #ff9903; /* 橙色作为主色调 */
+  --color-primary-hover: #e68a00; /* 主色调的悬停状态 */
   --color-secondary: #64748b; /* 次要文字/元素灰色 */
   --color-border: #e2e8f0; /* 浅边框 */
   --color-card-background: #ffffff; /* 卡片背景白色 */
@@ -20,8 +20,8 @@
 [data-theme='dark'] {
   --color-background: #0f172a; /* 深蓝灰色背景 */
   --color-foreground: #e2e8f0; /* 浅蓝灰色文字 */
-  --color-primary: #ec4899; /* 粉色作为主色调 (与亮色模式相同) */
-  --color-primary-hover: #db2777; /* 主色调的悬停状态 (与亮色模式相同) */
+  --color-primary: #ff9903; /* 橙色作为主色调 (与亮色模式相同) */
+  --color-primary-hover: #e68a00; /* 主色调的悬停状态 (与亮色模式相同) */
   --color-secondary: #94a3b8; /* 次要文字/元素浅灰 */
   --color-border: #334155; /* 深边框 */
   --color-card-background: #1e293b; /* 深蓝灰色卡片背景 */

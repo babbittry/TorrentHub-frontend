@@ -44,8 +44,12 @@ export default function Header() {
     return (
         <header className="bg-[var(--color-card-background)] text-[var(--color-foreground)] p-4 shadow-lg">
             <nav className="container mx-auto flex justify-between items-center">
-                <Link href="/" className="text-2xl font-bold text-[var(--color-primary)]">
-                    Sakura.PT
+                <Link href="/" className="flex items-center">
+                    {currentMode === 'light' ? (
+                        <img src="/logo-white.png" alt="Logo" className="h-8 w-auto" />
+                    ) : (
+                        <img src="/logo-black.png" alt="Logo" className="h-8 w-auto" />
+                    )}
                 </Link>
                 <ul className="flex space-x-6">
                     <li>

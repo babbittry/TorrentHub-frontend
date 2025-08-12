@@ -8,7 +8,7 @@ import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
 
 export const metadata: Metadata = {
-    title: "Sakura.PT",
+    title: "TorrentHub",
     description: "A private tracker for anime, manga, and more.",
 };
 

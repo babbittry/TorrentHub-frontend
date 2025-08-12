@@ -32,7 +32,7 @@ export interface UserPublicProfileDto {
     downloadedBytes: number;
     role: UserRole;
     createdAt: string; // date-time
-    sakuraCoins: number;
+    coins: number;
     isDoubleUploadActive: boolean;
     doubleUploadExpiresAt?: string | null; // date-time
     isNoHRActive: boolean;
@@ -53,7 +53,7 @@ export interface UserPrivateProfileDto {
     downloadedBytes: number;
     role: UserRole;
     createdAt: string; // date-time
-    sakuraCoins: number;
+    coins: number;
     isDoubleUploadActive: boolean;
     doubleUploadExpiresAt?: string | null; // date-time
     isNoHRActive: boolean;
@@ -259,13 +259,13 @@ export interface CompleteInfoRequestDto {
 export enum TopPlayerType {
     Uploaded = 0,
     Downloaded = 1,
-    SakuraCoins = 2,
+    Coins = 2,
     SeedingTime = 3,
     SeedingSize = 4,
 }
 
-// DTOs for SakuraCoins related operations
-export interface UpdateSakuraCoinsRequestDto {
+// DTOs for Coins related operations
+export interface UpdateCoinsRequestDto {
     amount: number;
 }
 
@@ -549,10 +549,10 @@ export const requests = {
     },
 };
 
-// SakuraCoins API Functions
-export const sakuraCoins = {
-    updateSakuraCoins: async (userId: number, data: UpdateSakuraCoinsRequestDto): Promise<void> => {
-        await fetchApi(`/api/sakuracoins/${userId}`, {
+// Coins API Functions
+export const coins = {
+    updateCoins: async (userId: number, data: UpdateCoinsRequestDto): Promise<void> => {
+        await fetchApi(`/api/coins/${userId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
