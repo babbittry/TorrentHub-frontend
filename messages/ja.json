@@ -65,5 +65,9 @@
   "Software": "ソフトウェア",
   "Documentary": "ドキュメンタリー",
   "Other": "その他",
-  "name": "名前"
+  "name": "名前",
+  "uploaded": "アップロード",
+  "downloaded": "ダウンロード",
+  "coins": "コイン",
+  "settings": "設定"
 }

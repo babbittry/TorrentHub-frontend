@@ -6,6 +6,8 @@ import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
+import Image from 'next/image';
+import UserMenu from './UserMenu';
 
 export default function Header() {
     const { isAuthenticated, logout } = useAuth();
@@ -46,9 +48,9 @@ export default function Header() {
             <nav className="container mx-auto flex justify-between items-center">
                 <Link href="/" className="flex items-center">
                     {currentMode === 'light' ? (
-                        <img src="/logo-white.png" alt="Logo" className="h-8 w-auto" />
+                        <Image src="/logo-white.png" alt="Logo" width={115} height={32} />
                     ) : (
-                        <img src="/logo-black.png" alt="Logo" className="h-8 w-auto" />
+                        <Image src="/logo-black.png" alt="Logo" width={128} height={32} />
                     )}
                 </Link>
                 <ul className="flex space-x-6">
@@ -105,23 +107,22 @@ export default function Header() {
                         className="p-2 rounded-full bg-[var(--color-border)] hover:bg-[var(--color-secondary)] transition-colors duration-200"
                         title={buttonTitle}
                     >
-                        {currentMode === 'light' ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325-4.243l.707-.707M3.929 3.929l.707.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        {theme === 'light' ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-6 w-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
                             </svg>
-                        ) : (
+                        ) : theme === 'dark' ? (
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9 9 0 008.354-5.646z" />
+                            </svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-6 w-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" />
                             </svg>
                         )}
                     </button>
                     {isAuthenticated ? (
-                        <button
-                            onClick={handleLogout}
-                            className="btn-primary"
-                        >
-                            {t('logout')}
-                        </button>
+                        <UserMenu />
                     ) : (
                         <Link href="/login" className="btn-primary">
                             {t('login')}

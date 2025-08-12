@@ -65,5 +65,9 @@
   "Software": "软件",
   "Documentary": "纪录片",
   "Other": "其他",
-  "name": "名称"
+  "name": "名称",
+  "uploaded": "上传量",
+  "downloaded": "下载量",
+  "coins": "金币",
+  "settings": "设置"
 }

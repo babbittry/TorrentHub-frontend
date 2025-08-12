@@ -65,5 +65,9 @@
   "Software": "Logiciel",
   "Documentary": "Documentaire",
   "Other": "Autre",
-  "name": "Nom"
+  "name": "Nom",
+  "uploaded": "Uploadé",
+  "downloaded": "Téléchargé",
+  "coins": "Pièces",
+  "settings": "Paramètres"
 }
