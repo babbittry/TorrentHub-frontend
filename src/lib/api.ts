@@ -234,6 +234,17 @@ export enum TorrentStickyStatus {
     GlobalSticky = 2,
 }
 
+export enum TorrentCategory {
+    Movie,
+    TV,
+    Anime,
+    Music,
+    Game,
+    Software,
+    Documentary,
+    Other,
+}
+
 export interface TorrentDto {
     id: number;
     name: string;
@@ -241,10 +252,22 @@ export interface TorrentDto {
     size: number;
     uploaderUsername: string;
     createdAt: string; // date-time
+    category: TorrentCategory;
     isFree: boolean;
     freeUntil?: string | null; // date-time
     stickyStatus: TorrentStickyStatus;
     imdbId?: string | null;
+    tmDbId?: number | null;
+    originalTitle?: string | null;
+    tagline?: string | null;
+    year?: number | null;
+    posterPath?: string | null;
+    backdropPath?: string | null;
+    runtime?: number | null;
+    genres?: string | null;
+    directors?: string | null;
+    cast?: string | null;
+    rating?: number | null;
 }
 
 export interface SetStickyRequestDto {

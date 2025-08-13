@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { announcements, torrentListing, AnnouncementDto, TorrentDto } from "@/lib/api";
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import TorrentCard from "./torrents/components/TorrentCard";
 
 
 
@@ -112,21 +113,9 @@ export default function Home() {
                 ) : errorTorrents ? (
                     <p className="text-center text-[var(--color-error)] text-lg">{t('error')}: {errorTorrents}</p>
                 ) : torrents.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
                         {torrents.map((torrent) => (
-                            <Link href={`/torrents/${torrent.id}`} key={torrent.id}>
-                                <div className="card p-6 hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                                    <h3 className="text-2xl font-bold text-[var(--color-primary)] mb-3 leading-tight">{torrent.name}</h3>
-                                    <div className="text-[var(--color-foreground)] text-sm space-y-1 flex-grow">
-                                        <p><span className="font-semibold">{t('size')}:</span> {formatBytes(torrent.size)}</p>
-                                        <p><span className="font-semibold">{t('uploader')}:</span> {torrent.uploaderUsername || "未知"}</p>
-                                        <p><span className="font-semibold">{t('release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
-                                        </div>
-                                    {torrent.isFree && (
-                                        <span className="inline-block bg-[var(--color-success)] text-white text-xs px-3 py-1 rounded-full mt-4 self-start shadow-md">{t('free')}</span>
-                                    )}
-                                </div>
-                            </Link>
+                            <TorrentCard key={torrent.id} torrent={torrent} />
                         ))}
                     </div>
                 ) : (

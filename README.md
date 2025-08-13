@@ -34,3 +34,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## TODO：
+
+这个报错是 Next.js 的一项安全机制导致的。为了防止滥用，它要求所有外部图片的域名必须在 next.config.ts 文件中明确配置后，才能被 <Image> 组件加载。
+目前：允许所有域名（最灵活，但安全性最低）
