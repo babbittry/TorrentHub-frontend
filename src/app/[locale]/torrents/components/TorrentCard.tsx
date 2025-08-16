@@ -1,6 +1,6 @@
 "use client";
 
-import Image from 'next/image';
+
 import { Link } from '@/i18n/navigation';
 import type { TorrentDto } from '@/lib/api';
 
@@ -19,12 +19,11 @@ export default function TorrentCard({ torrent }: TorrentCardProps) {
         <Link href={`/torrents/${torrent.id}`} className="block group">
             <div className="bg-[var(--color-card-background)] rounded-lg shadow-lg overflow-hidden transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:shadow-2xl">
                 <div className="relative aspect-[2/3]">
-                    <Image
+                    <img
                         src={posterUrl}
                         alt={torrent.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1200px) 25vw, 20vw"
+                        className="object-cover w-full h-full"
+                        style={{ objectFit: 'cover' }}
                     />
                     <div className="absolute bottom-0 left-0 right-0 p-2 bg-[rgba(0,0,0,0.5)] text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-around items-center">
                         <div className="flex items-center" title="Seeders">

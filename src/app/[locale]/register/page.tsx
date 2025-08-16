@@ -14,7 +14,10 @@ export default function RegisterPage() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const router = useRouter();
-    const t = useTranslations();
+    const t_register = useTranslations('registerPage');
+    const t_header = useTranslations('header');
+    const t_common = useTranslations('common');
+    const t_login = useTranslations('loginPage');
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,20 +26,20 @@ export default function RegisterPage() {
 
         try {
             await auth.register({ userName, email, password, inviteCode });
-            setSuccess(t('registration_successful'));
+            setSuccess(t_register('successful'));
             router.push("/login"); // Redirect to login page on successful registration
         } catch (err: unknown) {
-            setError((err as Error).message || t('registration_failed'));
+            setError((err as Error).message || t_register('failed'));
         }
     };
 
     return (
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
             <div className="card w-full max-w-md transform transition-all duration-300 hover:scale-105">
-                <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t('register')}</h1>
+                <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t_header('register')}</h1>
                 <form onSubmit={handleRegister}>
                     <div className="mb-6">
-                        <label htmlFor="userName" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('username')}</label>
+                        <label htmlFor="userName" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('username')}</label>
                         <input
                             type="text"
                             id="userName"
@@ -47,7 +50,7 @@ export default function RegisterPage() {
                         />
                     </div>
                     <div className="mb-6">
-                        <label htmlFor="email" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('email')}</label>
+                        <label htmlFor="email" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('email')}</label>
                         <input
                             type="email"
                             id="email"
@@ -58,7 +61,7 @@ export default function RegisterPage() {
                         />
                     </div>
                     <div className="mb-6">
-                        <label htmlFor="password" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('password')}</label>
+                        <label htmlFor="password" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('password')}</label>
                         <input
                             type="password"
                             id="password"
@@ -69,7 +72,7 @@ export default function RegisterPage() {
                         />
                     </div>
                     <div className="mb-8">
-                        <label htmlFor="inviteCode" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('invite_code')}</label>
+                        <label htmlFor="inviteCode" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('invite_code')}</label>
                         <input
                             type="text"
                             id="inviteCode"
@@ -85,11 +88,11 @@ export default function RegisterPage() {
                         type="submit"
                         className="btn-primary w-full px-6 py-4 font-bold text-xl shadow-lg transform hover:scale-105"
                     >
-                        {t('register')}
+                        {t_header('register')}
                     </button>
                 </form>
                 <p className="text-center text-[var(--color-text-muted)] mt-6 text-lg">
-                    {t('already_have_account')} <Link href="/login" className="text-[var(--color-primary)] hover:underline font-semibold">{t('login')}</Link>
+                    {t_login('already_have_account')} <Link href="/login" className="text-[var(--color-primary)] hover:underline font-semibold">{t_header('login')}</Link>
                 </p>
             </div>
         </div>

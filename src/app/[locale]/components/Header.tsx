@@ -10,7 +10,7 @@ import Image from 'next/image';
 import UserMenu from './UserMenu';
 
 export default function Header() {
-    const { isAuthenticated, logout } = useAuth();
+    const { isAuthenticated } = useAuth();
     const { theme, setTheme, currentMode } = useTheme();
     const t = useTranslations();
     const router = useRouter();
@@ -19,12 +19,8 @@ export default function Header() {
     const [buttonTitle, setButtonTitle] = useState('');
 
     useEffect(() => {
-        setButtonTitle(`${t('theme_toggle')} ${t(theme)} (${t(currentMode)})`);
+        setButtonTitle(`${t('theme.toggle')} ${t('theme.' + theme)} (${t('theme.' + currentMode)})`);
     }, [theme, currentMode, t]);
-
-    const handleLogout = () => {
-        logout();
-    };
 
     const toggleTheme = () => {
         if (theme === 'light') {
@@ -56,37 +52,37 @@ export default function Header() {
                 <ul className="flex space-x-6">
                     <li>
                         <Link href="/" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('home')}
+                            {t('header.home')}
                         </Link>
                     </li>
                     <li>
                         <Link href="/torrents" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('torrents')}
+                            {t('header.torrents')}
                         </Link>
                     </li>
                     <li>
                         <Link href="/forums" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('forums')}
+                            {t('header.forums')}
                         </Link>
                     </li>
                     <li>
                         <Link href="/requests" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('requests')}
+                            {t('header.requests')}
                         </Link>
                     </li>
                     <li>
                         <Link href="/user" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('user_center')}
+                            {t('header.user_center')}
                         </Link>
                     </li>
                     <li>
                         <Link href="/messages" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('messages')}
+                            {t('header.messages')}
                         </Link>
                     </li>
                     <li>
                         <Link href="/store" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
-                            {t('store')}
+                            {t('header.store')}
                         </Link>
                     </li>
                 </ul>
@@ -125,7 +121,7 @@ export default function Header() {
                         <UserMenu />
                     ) : (
                         <Link href="/login" className="btn-primary">
-                            {t('login')}
+                            {t('header.login')}
                         </Link>
                     )}
                 </div>

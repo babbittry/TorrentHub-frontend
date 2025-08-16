@@ -1,12 +1,9 @@
-
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { torrents, comments, TorrentDto, CommentDto } from "@/lib/api";
 import { useParams } from "next/navigation";
 import { useTranslations } from 'next-intl';
-
-
 
 export default function TorrentDetailPage() {
     const { torrentId } = useParams();
@@ -33,7 +30,7 @@ export default function TorrentDetailPage() {
             setComments(fetchedComments);
 
         } catch (err: unknown) {
-            setError((err as Error).message || t('error'));
+            setError((err as Error).message || t('common.error'));
         } finally {
             setLoading(false);
         }
@@ -57,7 +54,7 @@ export default function TorrentDetailPage() {
             setNewComment("");
             fetchTorrentDetails(); // Refresh comments after adding
         } catch (err: unknown) {
-            setError((err as Error).message || t('error'));
+            setError((err as Error).message || t('common.error'));
         }
     };
 
@@ -69,9 +66,9 @@ export default function TorrentDetailPage() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
     };
 
-    if (loading) return <p className="text-[var(--color-foreground)] text-center p-4">{t('loading')}</p>;
-    if (error) return <p className="text-[var(--color-error)] text-center p-4">{t('error')}: {error}</p>;
-    if (!torrent) return <p className="text-[var(--color-text-muted)] text-center p-4">{t('no_torrents_found')}</p>;
+    if (loading) return <p className="text-[var(--color-foreground)] text-center p-4">{t('common.loading')}</p>;
+    if (error) return <p className="text-[var(--color-error)] text-center p-4">{t('common.error')}: {error}</p>;
+    if (!torrent) return <p className="text-[var(--color-text-muted)] text-center p-4">{t('torrentsPage.no_torrents_found')}</p>;
 
     return (
         <div className="container mx-auto p-4">
@@ -80,11 +77,11 @@ export default function TorrentDetailPage() {
             <div className="card mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('size')}:</span> {formatBytes(torrent.size)}</p>
-                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('uploader')}:</span> {torrent.uploaderUsername || "未知"}</p>
-                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
+                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('common.size')}:</span> {formatBytes(torrent.size)}</p>
+                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('common.uploader')}:</span> {torrent.uploaderUsername || "未知"}</p>
+                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('common.release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
                         {torrent.isFree && (
-                            <span className="inline-block bg-[var(--color-success)] text-white text-sm px-4 py-2 rounded-full mt-4 shadow-md">{t('free')}</span>
+                            <span className="inline-block bg-[var(--color-success)] text-white text-sm px-4 py-2 rounded-full mt-4 shadow-md">{t('common.free')}</span>
                         )}
                     </div>
                     <div>
@@ -97,18 +94,18 @@ export default function TorrentDetailPage() {
                     </div>
                 </div>
 
-                <h2 className="text-3xl font-bold text-[var(--color-primary)] mt-8 mb-4 border-b border-[var(--color-border)] pb-2">{t('description')}</h2>
-                <div className="text-[var(--color-foreground)] leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: torrent.description || t('no_description') }} />
+                <h2 className="text-3xl font-bold text-[var(--color-primary)] mt-8 mb-4 border-b border-[var(--color-border)] pb-2">{t('common.description')}</h2>
+                <div className="text-[var(--color-foreground)] leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: torrent.description || t('common.no_description') }} />
             </div>
 
             <section className="card mb-8">
-                <h2 className="text-3xl font-bold text-[var(--color-primary)] mb-6 border-b border-[var(--color-border)] pb-2">{t('comments')}</h2>
+                <h2 className="text-3xl font-bold text-[var(--color-primary)] mb-6 border-b border-[var(--color-border)] pb-2">{t('common.comments')}</h2>
                 <div className="mb-8">
                     <form onSubmit={handleAddComment} className="flex flex-col space-y-4">
                         <textarea
                             className="input-field"
                             rows={5}
-                            placeholder={t('add_comment')}
+                            placeholder={t('torrentDetailsPage.add_comment')}
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                         ></textarea>
@@ -116,7 +113,7 @@ export default function TorrentDetailPage() {
                             type="submit"
                             className="btn-primary px-8 py-3 font-semibold self-end shadow-md transform hover:scale-105"
                         >
-                            {t('submit_comment')}
+                            {t('torrentDetailsPage.submit_comment')}
                         </button>
                     </form>
                 </div>
@@ -130,7 +127,7 @@ export default function TorrentDetailPage() {
                             </div>
                         ))
                     ) : (
-                        <p className="text-[var(--color-text-muted)] text-lg text-center">{t('no_comments')}</p>
+                        <p className="text-[var(--color-text-muted)] text-lg text-center">{t('torrentDetailsPage.no_comments')}</p>
                     )}
                 </div>
             </section>

@@ -11,7 +11,7 @@ export default function LoginPage() {
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
-    
+
     const { login } = useAuth();
     const t = useTranslations();
 
@@ -25,17 +25,17 @@ export default function LoginPage() {
             login();
 
         } catch (err: unknown) {
-            setError((err as Error).message || t('login_failed'));
+            setError((err as Error).message || t('loginPage.failed'));
         }
     };
 
     return (
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
             <div className="card w-full max-w-md transform transition-all duration-300 hover:scale-105">
-                <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t('login')}</h1>
+                <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t('header.login')}</h1>
                 <form onSubmit={handleLogin}>
                     <div className="mb-6">
-                        <label htmlFor="userName" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('username')}</label>
+                        <label htmlFor="userName" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('common.username')}</label>
                         <input
                             type="text"
                             id="userName"
@@ -46,7 +46,7 @@ export default function LoginPage() {
                         />
                     </div>
                     <div className="mb-8">
-                        <label htmlFor="password" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('password')}</label>
+                        <label htmlFor="password" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('common.password')}</label>
                         <input
                             type="password"
                             id="password"
@@ -61,11 +61,11 @@ export default function LoginPage() {
                         type="submit"
                         className="btn-primary w-full px-6 py-4 font-bold text-xl shadow-lg transform hover:scale-105"
                     >
-                        {t('login')}
+                        {t('header.login')}
                     </button>
                 </form>
                 <p className="text-center text-[var(--color-text-muted)] mt-6 text-lg">
-                    {t('no_account_yet')} <Link href="/register" className="text-[var(--color-primary)] hover:underline font-semibold">{t('register')}</Link>
+                    {t('loginPage.no_account_yet')} <Link href="/register" className="text-[var(--color-primary)] hover:underline font-semibold">{t('header.register')}</Link>
                 </p>
             </div>
         </div>

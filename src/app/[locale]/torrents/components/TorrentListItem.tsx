@@ -1,6 +1,6 @@
 "use client";
 
-import Image from 'next/image';
+
 import { Link } from '@/i18n/navigation';
 import type { TorrentDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
@@ -12,7 +12,7 @@ interface TorrentListItemProps {
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w200'; // Smaller image for list view
 
 export default function TorrentListItem({ torrent }: TorrentListItemProps) {
-    const t = useTranslations();
+    const t_common = useTranslations('common');
     const posterUrl = torrent.posterPath
         ? `${TMDB_IMAGE_BASE_URL}${torrent.posterPath}`
         : '/logo-black.png'; // A fallback image
@@ -26,25 +26,24 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
     };
 
     return (
-        <div className="flex items-center bg-[var(--color-card-background)] p-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 border border-transparent hover:border-[var(--color-primary)]">
+        <Link href={`/torrents/${torrent.id}`} className="group flex items-center bg-[var(--color-card-background)] p-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 border border-transparent hover:border-[var(--color-primary)]">
             <div className="flex-shrink-0 w-16 h-24 relative mr-4">
-                <Image
+                <img
                     src={posterUrl}
                     alt={torrent.name}
-                    fill
-                    className="object-cover rounded"
-                    sizes="10vw"
+                    className="object-cover rounded w-full h-full"
+                    style={{ objectFit: 'cover' }}
                 />
             </div>
             <div className="flex-grow grid grid-cols-12 gap-4 items-center">
                 <div className="col-span-6">
-                    <Link href={`/torrents/${torrent.id}`} className="font-bold text-md text-[var(--color-foreground)] hover:text-[var(--color-primary)] transition-colors">
+                    <div className="font-bold text-md text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors">
                         {torrent.name}
-                    </Link>
+                    </div>
                     {/* TODO: Add tags here when available */}
                     <div className="flex flex-wrap gap-2 mt-1">
                         <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-2 py-0.5 rounded-full">{torrent.year}</span>
-                        {torrent.isFree && <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">{t('free')}</span>}
+                        {torrent.isFree && <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">{t_common('free')}</span>}
                     </div>
                 </div>
                 <div className="col-span-2 text-center text-sm text-[var(--color-foreground-muted)]">
@@ -65,6 +64,6 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
                     {torrent.uploaderUsername}
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }
