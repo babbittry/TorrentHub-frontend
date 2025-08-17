@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { requests, RequestDto, RequestStatus } from '@/lib/api';
+import { requests, RequestDto } from '@/lib/api';
 import RequestListItem from './components/RequestListItem';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
@@ -11,6 +11,9 @@ const RequestsPage = () => {
     const [requestsList, setRequestsList] = useState<RequestDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [statusFilter, setStatusFilter] = useState<string>('All'); // Default to All
+    const [sortBy, setSortBy] = useState('createdAt');
+    const [sortOrder, setSortOrder] = useState('desc');
     const t = useTranslations();
     const params = useParams();
     const locale = params.locale as string;
@@ -19,7 +22,8 @@ const RequestsPage = () => {
         const fetchRequests = async () => {
             try {
                 setIsLoading(true);
-                const data = await requests.getRequests();
+                const status = statusFilter === 'All' ? undefined : statusFilter;
+                const data = await requests.getRequests(status, sortBy, sortOrder);
                 setRequestsList(data);
                 setError(null);
             } catch (err) {
@@ -31,18 +35,48 @@ const RequestsPage = () => {
         };
 
         fetchRequests();
-    }, [t]);
+    }, [t, statusFilter, sortBy, sortOrder]);
+
+    const handleSort = (newSortBy: string) => {
+        if (newSortBy === sortBy) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(newSortBy);
+            setSortOrder('desc');
+        }
+    };
+
+    const renderFilterButton = (status: string, label: string) => {
+        const isActive = statusFilter === status;
+        return (
+            <button
+                onClick={() => setStatusFilter(status)}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                    isActive
+                        ? 'bg-[var(--color-primary)] text-white shadow-md'
+                        : 'bg-[var(--color-input-background)] text-[var(--color-foreground)] hover:bg-[var(--color-border)]'
+                }`}>
+                {label}
+            </button>
+        );
+    };
 
     return (
         <div className="container mx-auto p-4 sm:p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">{t('requestsPage.title')}</h1>
-                <Link href={`/${locale}/requests/new`} className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
-                    {t('requestsPage.createNew')}
-                </Link>
-            </div>
+            <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t('requestsPage.title')}</h1>
 
-            {/* TODO: Add filters for status */}
+            <div className="card mb-8 p-4">
+                <div className="flex justify-between items-center gap-4">
+                    <div className="flex items-center gap-2">
+                        {renderFilterButton('All', t('requestsPage.filter_all'))}
+                        {renderFilterButton('Pending', t('requestsPage.filter_pending'))}
+                        {renderFilterButton('Filled', t('requestsPage.filter_filled'))}
+                    </div>
+                    <Link href={`/${locale}/requests/new`} className="btn-primary">
+                        {t('requestsPage.createNew')}
+                    </Link>
+                </div>
+            </div>
 
             {isLoading ? (
                 <div className="text-center py-10">
@@ -53,7 +87,17 @@ const RequestsPage = () => {
                     <p>{error}</p>
                 </div>
             ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
+                    {/* Sortable Header */}
+                    <div className="flex items-center bg-[var(--color-card-background)] p-3 rounded-lg shadow-sm font-bold text-[var(--color-foreground)] border-b-2 border-[var(--color-primary)]">
+                        <div className="flex-grow grid grid-cols-12 gap-4 items-center">
+                            <div className="col-span-6 cursor-pointer" onClick={() => handleSort('title')}>{t('common.title')} {sortBy === 'title' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                            <div className="col-span-2 text-center cursor-pointer" onClick={() => handleSort('bountyAmount')}>{t('requestsPage.bounty')} {sortBy === 'bountyAmount' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                            <div className="col-span-1 text-center cursor-pointer" onClick={() => handleSort('status')}>{t('requestsPage.status')} {sortBy === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                            <div className="col-span-1 text-center">{t('requestsPage.requested_by')}</div>
+                            <div className="col-span-2 text-center cursor-pointer" onClick={() => handleSort('createdAt')}>{t('common.date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                        </div>
+                    </div>
                     {requestsList.length > 0 ? (
                         requestsList.map(request => (
                             <RequestListItem key={request.id} request={request} locale={locale} />

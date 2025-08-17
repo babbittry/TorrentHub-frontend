@@ -541,10 +541,16 @@ export const requests = {
         });
     },
 
-    getRequests: async (status?: string): Promise<RequestDto[]> => {
+    getRequests: async (status?: string, sortBy?: string, sortOrder?: string): Promise<RequestDto[]> => {
         const params = new URLSearchParams();
         if (status) {
             params.append('status', status);
+        }
+        if (sortBy) {
+            params.append('sortBy', sortBy);
+        }
+        if (sortOrder) {
+            params.append('sortOrder', sortOrder);
         }
         return fetchApi(`/api/requests?${params.toString()}`);
     },

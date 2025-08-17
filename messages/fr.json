@@ -53,12 +53,15 @@
   },
   "categories": {
     "Movie": "Film",
-    "TV": "Télévision",
-    "Anime": "Anime",
-    "Music": "Musique",
-    "Game": "Jeu",
-    "Software": "Logiciel",
     "Documentary": "Documentaire",
+    "Series": "Séries",
+    "Animation": "Animation",
+    "Game": "Jeu",
+    "Music": "Musique",
+    "Variety": "Variété",
+    "Sports": "Sport",
+    "Concert": "Concert",
+    "Software": "Logiciel",
     "Other": "Autre"
   },
   "user": {
@@ -125,6 +128,9 @@
     "error_title_desc_required": "Le titre et la description sont requis.",
     "error_creating_request": "Erreur lors de la création de la requête.",
     "meta_requested_by": "Demandé par <userLink>{username}</userLink> le {date}",
-    "meta_anonymous_request": "Requête anonyme le {date}"
+    "meta_anonymous_request": "Requête anonyme le {date}",
+    "filter_pending": "En attente",
+    "filter_filled": "Satisfaite",
+    "filter_all": "Toutes"
   }
 }

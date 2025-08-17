@@ -53,12 +53,15 @@
   },
   "categories": {
     "Movie": "映画",
-    "TV": "テレビ",
-    "Anime": "アニメ",
-    "Music": "音楽",
-    "Game": "ゲーム",
-    "Software": "ソフトウェア",
     "Documentary": "ドキュメンタリー",
+    "Series": "シリーズ",
+    "Animation": "アニメ",
+    "Game": "ゲーム",
+    "Music": "音楽",
+    "Variety": "バラエティ",
+    "Sports": "スポーツ",
+    "Concert": "コンサート",
+    "Software": "ソフトウェア",
     "Other": "その他"
   },
   "user": {
@@ -125,6 +128,9 @@
     "error_title_desc_required": "タイトルと説明は必須です。",
     "error_creating_request": "リクエストの作成中にエラーが発生しました。",
     "meta_requested_by": "<userLink>{username}</userLink> が {date} にリクエストしました",
-    "meta_anonymous_request": "{date} に匿名でリクエストされました"
+    "meta_anonymous_request": "{date} に匿名でリクエストされました",
+    "filter_pending": "保留中",
+    "filter_filled": "完了",
+    "filter_all": "すべて"
   }
 }
