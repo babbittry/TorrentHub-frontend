@@ -91,11 +91,11 @@ const RequestsPage = () => {
                     {/* Sortable Header */}
                     <div className="flex items-center bg-[var(--color-card-background)] p-3 rounded-lg shadow-sm font-bold text-[var(--color-foreground)] border-b-2 border-[var(--color-primary)]">
                         <div className="flex-grow grid grid-cols-12 gap-4 items-center">
-                            <div className="col-span-6 cursor-pointer" onClick={() => handleSort('title')}>{t('common.title')} {sortBy === 'title' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                            <div className="col-span-5 cursor-pointer" onClick={() => handleSort('title')}>{t('common.title')} {sortBy === 'title' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                             <div className="col-span-2 text-center cursor-pointer" onClick={() => handleSort('bountyAmount')}>{t('requestsPage.bounty')} {sortBy === 'bountyAmount' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                             <div className="col-span-1 text-center cursor-pointer" onClick={() => handleSort('status')}>{t('requestsPage.status')} {sortBy === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                            <div className="col-span-1 text-center">{t('requestsPage.requested_by')}</div>
-                            <div className="col-span-2 text-center cursor-pointer" onClick={() => handleSort('createdAt')}>{t('common.date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                            <div className="col-span-3 text-center">{t('requestsPage.requested_by')}</div>
+                            <div className="col-span-1 text-center cursor-pointer" onClick={() => handleSort('createdAt')}>{t('common.date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                         </div>
                     </div>
                     {requestsList.length > 0 ? (

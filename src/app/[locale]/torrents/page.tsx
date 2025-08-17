@@ -147,11 +147,11 @@ export default function TorrentsPage() {
                         <div className="flex items-center bg-[var(--color-card-background)] p-3 rounded-lg shadow-sm font-bold text-[var(--color-foreground)] border-b-2 border-[var(--color-primary)]">
                             <div className="flex-shrink-0 w-16 mr-4"></div> {/* Corresponds to image space */}
                             <div className="flex-grow grid grid-cols-12 gap-4 items-center">
-                                <div className="col-span-6">{t_common('name')}</div>
+                                <div className="col-span-5">{t_common('name')}</div>
                                 <div className="col-span-2 text-center cursor-pointer" onClick={() => handleSort('createdAt')}>
                                     {t_common('date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}
                                 </div>
-                                <div className="col-span-2 text-center cursor-pointer" onClick={() => handleSort('size')}>
+                                <div className="col-span-1 text-center cursor-pointer" onClick={() => handleSort('size')}>
                                     {t_common('size')} {sortBy === 'size' && (sortOrder === 'asc' ? '↑' : '↓')}
                                 </div>
                                 <div className="col-span-1 text-center">
@@ -164,7 +164,7 @@ export default function TorrentsPage() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="col-span-1 text-center">{t_common('uploader')}</div>
+                                <div className="col-span-3 text-center">{t_common('uploader')}</div>
                             </div>
                         </div>
                         {torrents.map((torrent) => (

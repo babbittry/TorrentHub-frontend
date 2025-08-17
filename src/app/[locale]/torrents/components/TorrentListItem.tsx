@@ -36,8 +36,8 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
                 />
             </div>
             <div className="flex-grow grid grid-cols-12 gap-4 items-center">
-                <div className="col-span-6">
-                    <div className="font-bold text-md text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors">
+                <div className="col-span-5">
+                    <div className="font-bold text-md text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors truncate">
                         {torrent.name}
                     </div>
                     {/* TODO: Add tags here when available */}
@@ -49,7 +49,7 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
                 <div className="col-span-2 text-center text-sm text-[var(--color-foreground-muted)]">
                     <span>{new Date(torrent.createdAt).toLocaleDateString()}</span>
                 </div>
-                <div className="col-span-2 text-center text-sm text-[var(--color-foreground-muted)]">
+                <div className="col-span-1 text-center text-sm text-[var(--color-foreground-muted)]">
                     <span>{formatBytes(torrent.size)}</span>
                 </div>
                 <div className="col-span-1 text-center text-sm text-[var(--color-foreground-muted)]">
@@ -60,7 +60,7 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
                         <span>C: -</span>
                     </div>
                 </div>
-                <div className="col-span-1 text-center text-sm text-[var(--color-foreground-muted)]">
+                <div className="col-span-3 text-center text-sm text-[var(--color-foreground-muted)]">
                     {torrent.uploaderUsername}
                 </div>
             </div>
