@@ -132,5 +132,30 @@
     "filter_pending": "En attente",
     "filter_filled": "Satisfaite",
     "filter_all": "Toutes"
+  },
+  "messagesPage": {
+    "title": "Messages",
+    "compose": "Nouveau message",
+    "inbox": "Boîte de réception",
+    "sent": "Messages envoyés",
+    "from": "De",
+    "to": "À",
+    "date": "Date",
+    "subject": "Sujet",
+    "content": "Contenu",
+    "recipient_id": "ID de l'utilisateur destinataire",
+    "send_message": "Envoyer le message",
+    "sending": "Envoi en cours...",
+    "select_a_message": "Sélectionnez un message à lire.",
+    "error_loading_messages": "Erreur lors du chargement des messages.",
+    "error_all_fields_required": "Tous les champs sont requis.",
+    "error_sending_message": "Erreur lors de l'envoi du message.",
+    "loading": "Chargement des messages...",
+    "no_messages_found": "Aucun message trouvé.",
+    "recipient": "Destinataire",
+    "search_recipient_placeholder": "Entrez le nom d'utilisateur ou l'ID de l'utilisateur du destinataire",
+    "error_recipient_not_selected": "Veuillez sélectionner un destinataire dans les résultats de la recherche.",
+    "searching": "Recherche en cours...",
+    "no_users_found": "Aucun utilisateur trouvé."
   }
 }

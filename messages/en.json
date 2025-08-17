@@ -132,5 +132,30 @@
     "filter_pending": "Pending",
     "filter_filled": "Filled",
     "filter_all": "All"
+  },
+  "messagesPage": {
+    "title": "Messages",
+    "compose": "Compose",
+    "inbox": "Inbox",
+    "sent": "Sent",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "subject": "Subject",
+    "content": "Content",
+    "recipient_id": "Recipient User ID",
+    "send_message": "Send Message",
+    "sending": "Sending...",
+    "select_a_message": "Select a message to read.",
+    "error_loading_messages": "Error loading messages.",
+    "error_all_fields_required": "All fields are required.",
+    "error_sending_message": "Error sending message.",
+    "loading": "Loading messages...",
+    "no_messages_found": "No messages found.",
+    "recipient": "Recipient",
+    "search_recipient_placeholder": "Enter recipient's username or user ID",
+    "error_recipient_not_selected": "Please select a recipient from the search results.",
+    "searching": "Searching...",
+    "no_users_found": "No users found."
   }
 }

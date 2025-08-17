@@ -132,5 +132,30 @@
     "filter_pending": "进行中",
     "filter_filled": "已完成",
     "filter_all": "全部"
+  },
+  "messagesPage": {
+    "title": "站内信",
+    "compose": "写新信",
+    "inbox": "收件箱",
+    "sent": "发件箱",
+    "from": "发件人",
+    "to": "收件人",
+    "date": "日期",
+    "subject": "主题",
+    "content": "内容",
+    "recipient_id": "收件人用户ID",
+    "send_message": "发送消息",
+    "sending": "发送中...",
+    "select_a_message": "请选择一条消息阅读。",
+    "error_loading_messages": "加载消息失败。",
+    "error_all_fields_required": "所有字段均为必填项。",
+    "error_sending_message": "发送消息失败。",
+    "loading": "加载消息中...",
+    "no_messages_found": "没有消息。",
+    "recipient": "收件人",
+    "search_recipient_placeholder": "请输入收件人的用户名或者用户ID",
+    "error_recipient_not_selected": "请从搜索结果中选择一个收件人。",
+    "searching": "搜索中...",
+    "no_users_found": "未找到用户。"
   }
 }
