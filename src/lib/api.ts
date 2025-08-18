@@ -206,6 +206,74 @@ export interface FillRequestDto {
     torrentId?: number;
 }
 
+// DTOs for Forum related operations
+export enum ForumCategoryCode {
+    Announcement,
+    General,
+    Feedback,
+    Invite,
+    Watering
+}
+
+export interface ForumCategoryDto {
+    id: number;
+    code: ForumCategoryCode;
+    title: string;
+    description: string;
+    topicCount: number;
+    postCount: number;
+}
+
+export interface ForumTopicDto {
+    id: number;
+    title: string;
+    category: { id: number; title: string; };
+    author: UserPublicProfileDto;
+    postCount: number;
+    isSticky: boolean;
+    isLocked: boolean;
+    createdAt: string; // date-time
+    lastReplyAt: string; // date-time
+    lastReplyAuthor: UserPublicProfileDto;
+}
+
+export interface ForumPostDto {
+    id: number;
+    content: string;
+    author: UserPublicProfileDto;
+    createdAt: string; // date-time
+}
+
+export interface ForumTopicDetailDto {
+    id: number;
+    title: string;
+    category: { id: number; title: string; };
+    author: UserPublicProfileDto;
+    isSticky: boolean;
+    isLocked: boolean;
+    createdAt: string; // date-time
+    posts: ForumPostDto[];
+}
+
+export interface CreateForumTopicDto {
+    categoryId: number;
+    title: string;
+    content: string;
+}
+
+export interface CreateForumPostDto {
+    content: string;
+}
+
+export interface UpdateForumTopicDto {
+    title: string;
+}
+
+export interface UpdateForumPostDto {
+    content: string;
+}
+
+
 // DTOs for Store related operations
 export enum StoreItemCode {
     UploadCredit10GB,
@@ -577,6 +645,93 @@ export const requests = {
             },
             body: JSON.stringify(fillData),
         });
+    },
+};
+
+// Forum API Functions
+export const forum = {
+    getCategories: async (): Promise<ForumCategoryDto[]> => {
+        return fetchApi('/api/forum/categories');
+    },
+
+    getTopics: async (categoryId?: number): Promise<ForumTopicDto[]> => {
+        const params = new URLSearchParams();
+        if (categoryId) {
+            params.append('categoryId', categoryId.toString());
+        }
+        return fetchApi(`/api/forum/topics?${params.toString()}`);
+    },
+
+    getTopicById: async (topicId: number): Promise<ForumTopicDetailDto> => {
+        return fetchApi(`/api/forum/topics/${topicId}`);
+    },
+
+    createTopic: async (topicData: CreateForumTopicDto): Promise<ForumTopicDetailDto> => {
+        return fetchApi('/api/forum/topics', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(topicData),
+        });
+    },
+
+    createPost: async (topicId: number, postData: CreateForumPostDto): Promise<ForumPostDto> => {
+        return fetchApi(`/api/forum/topics/${topicId}/posts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData),
+        });
+    },
+
+    updateTopic: async (topicId: number, topicData: UpdateForumTopicDto): Promise<void> => {
+        await fetchApi(`/api/forum/topics/${topicId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(topicData),
+        });
+    },
+
+    deleteTopic: async (topicId: number): Promise<void> => {
+        await fetchApi(`/api/forum/topics/${topicId}`, {
+            method: 'DELETE',
+        });
+    },
+
+    updatePost: async (postId: number, postData: UpdateForumPostDto): Promise<void> => {
+        await fetchApi(`/api/forum/posts/${postId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData),
+        });
+    },
+
+    deletePost: async (postId: number): Promise<void> => {
+        await fetchApi(`/api/forum/posts/${postId}`, {
+            method: 'DELETE',
+        });
+    },
+
+    lockTopic: async (topicId: number): Promise<void> => {
+        await fetchApi(`/api/forum/topics/${topicId}/lock`, { method: 'PATCH' });
+    },
+
+    unlockTopic: async (topicId: number): Promise<void> => {
+        await fetchApi(`/api/forum/topics/${topicId}/unlock`, { method: 'PATCH' });
+    },
+
+    stickyTopic: async (topicId: number): Promise<void> => {
+        await fetchApi(`/api/forum/topics/${topicId}/sticky`, { method: 'PATCH' });
+    },
+
+    unstickyTopic: async (topicId: number): Promise<void> => {
+        await fetchApi(`/api/forum/topics/${topicId}/unsticky`, { method: 'PATCH' });
     },
 };
 
