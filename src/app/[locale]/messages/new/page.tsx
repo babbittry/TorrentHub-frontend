@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { messages, users, SendMessageRequestDto, UserPublicProfileDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';

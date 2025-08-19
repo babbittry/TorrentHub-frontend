@@ -217,7 +217,7 @@ export enum ForumCategoryCode {
 
 export interface ForumCategoryDto {
     id: number;
-    code: ForumCategoryCode;
+    code: string;
     title: string;
     description: string;
     topicCount: number;
@@ -227,28 +227,34 @@ export interface ForumCategoryDto {
 export interface ForumTopicDto {
     id: number;
     title: string;
-    category: { id: number; title: string; };
-    author: UserPublicProfileDto;
+    categoryId: number;
+    authorId: number;
+    authorName: string | null;
     postCount: number;
     isSticky: boolean;
     isLocked: boolean;
     createdAt: string; // date-time
-    lastReplyAt: string; // date-time
-    lastReplyAuthor: UserPublicProfileDto;
+    lastPostTime: string | null; // date-time
 }
 
 export interface ForumPostDto {
     id: number;
+    topicId: number;
     content: string;
-    author: UserPublicProfileDto;
+    authorId: number;
+    authorName: string | null;
+    authorAvatar: string | null;
     createdAt: string; // date-time
+    editedAt: string | null; // date-time
 }
 
 export interface ForumTopicDetailDto {
     id: number;
     title: string;
-    category: { id: number; title: string; };
-    author: UserPublicProfileDto;
+    categoryId: number;
+    categoryName: string | null;
+    authorId: number;
+    authorName: string | null;
     isSticky: boolean;
     isLocked: boolean;
     createdAt: string; // date-time

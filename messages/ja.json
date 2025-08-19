@@ -35,7 +35,6 @@
     "messages": "メッセージ",
     "store": "ストア",
     "login": "ログイン",
-    "logout": "ログアウト",
     "register": "登録",
     "search_torrents": "トレントを検索..."
   },
@@ -64,11 +63,12 @@
     "Software": "ソフトウェア",
     "Other": "その他"
   },
-  "user": {
+  "userMenu": {
     "uploaded": "アップロード",
     "downloaded": "ダウンロード",
     "coins": "コイン",
-    "settings": "設定"
+    "settings": "設定",
+    "logout": "ログアウト"
   },
   "announcements": {
     "latest": "最新のお知らせ",
@@ -188,5 +188,17 @@
     "submitting": "送信中...",
     "error_all_fields_required": "すべてのフィールドは必須です。",
     "error_creating_topic": "トピックの作成中にエラーが発生しました。"
+  },
+  "forum_categories": {
+    "Announcement": "お知らせ",
+    "Announcement_description": "サイトのお知らせとニュース。",
+    "General": "一般",
+    "General_description": "何でもありの一般雑談。",
+    "Feedback": "フィードバック",
+    "Feedback_description": "サイトへのご意見・ご要望をお寄せください。",
+    "Invite": "招待",
+    "Invite_description": "招待の依頼と交換。",
+    "Watering": "井戸端",
+    "Watering_description": "気軽なチャットや雑談。"
   }
 }

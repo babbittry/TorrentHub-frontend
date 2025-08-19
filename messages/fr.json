@@ -35,7 +35,6 @@
     "messages": "Messages",
     "store": "Boutique",
     "login": "Connexion",
-    "logout": "Déconnexion",
     "register": "Inscription",
     "search_torrents": "Rechercher des torrents..."
   },
@@ -64,11 +63,12 @@
     "Software": "Logiciel",
     "Other": "Autre"
   },
-  "user": {
+  "userMenu": {
     "uploaded": "Uploadé",
     "downloaded": "Téléchargé",
     "coins": "Pièces",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
   },
   "announcements": {
     "latest": "Dernières annonces",
@@ -188,5 +188,17 @@
     "submitting": "Envoi en cours...",
     "error_all_fields_required": "Tous les champs sont requis.",
     "error_creating_topic": "Erreur lors de la création du sujet."
+  },
+  "forum_categories": {
+    "Announcement": "Annonces",
+    "Announcement_description": "Annonces et actualités du site.",
+    "General": "Général",
+    "General_description": "Discussion générale sur n'importe quel sujet.",
+    "Feedback": "Commentaires",
+    "Feedback_description": "Fournissez des commentaires et des suggestions pour le site.",
+    "Invite": "Invitations",
+    "Invite_description": "Demandez et échangez des invitations.",
+    "Watering": "Le Bistrot",
+    "Watering_description": "Discussion décontractée et hors-sujet."
   }
 }

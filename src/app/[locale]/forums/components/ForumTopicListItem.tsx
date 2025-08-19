@@ -11,7 +11,7 @@ const ForumTopicListItem: React.FC<ForumTopicListItemProps> = ({ topic }) => {
     const t = useTranslations('forumPage');
 
     return (
-        <Link href={`/forum/topics/${topic.id}`}>
+        <Link href={`/forums/topics/${topic.id}`}>
             <div className="group grid grid-cols-12 gap-4 items-center p-3 rounded-lg hover:bg-[var(--color-card-background-hover)] transition-colors duration-200 border-b border-gray-200 dark:border-gray-800">
                 {/* Title and Author */}
                 <div className="col-span-7">
@@ -19,7 +19,7 @@ const ForumTopicListItem: React.FC<ForumTopicListItemProps> = ({ topic }) => {
                         {topic.title}
                     </p>
                     <p className="text-sm text-[var(--color-text-muted)]">
-                        {t('by')} {topic.author.userName}
+                        {t('by')} {topic.authorName}
                     </p>
                 </div>
 
@@ -30,8 +30,9 @@ const ForumTopicListItem: React.FC<ForumTopicListItemProps> = ({ topic }) => {
 
                 {/* Last Reply */}
                 <div className="col-span-3 text-right text-sm text-[var(--color-text-muted)]">
-                    <p className="truncate">{topic.lastReplyAuthor.userName}</p>
-                    <p>{new Date(topic.lastReplyAt).toLocaleString()}</p>
+                    {topic.lastPostTime && (
+                        <p>{new Date(topic.lastPostTime).toLocaleString()}</p>
+                    )}
                 </div>
             </div>
         </Link>

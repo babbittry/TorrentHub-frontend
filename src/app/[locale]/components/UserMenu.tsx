@@ -10,7 +10,7 @@ import type { UserPrivateProfileDto } from '@/lib/api';
 
 export default function UserMenu() {
     const { logout } = useAuth();
-    const t = useTranslations();
+    const t = useTranslations('userMenu');
     const [user, setUser] = useState<UserPrivateProfileDto | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);

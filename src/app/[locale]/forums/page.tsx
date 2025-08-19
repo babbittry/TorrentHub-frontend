@@ -10,6 +10,7 @@ const ForumHomePage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const t = useTranslations('forumPage');
+    const t_cat = useTranslations('forum_categories');
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -27,6 +28,14 @@ const ForumHomePage = () => {
         fetchCategories();
     }, [t]);
 
+    const getCategoryName = (code: string) => {
+        return t_cat(code);
+    };
+
+    const getCategoryDescription = (code: string) => {
+        return t_cat(`${code}_description`);
+    };
+
     return (
         <div className="container mx-auto p-4 sm:p-6">
             <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t('title')}</h1>
@@ -38,11 +47,11 @@ const ForumHomePage = () => {
             ) : (
                 <div className="space-y-4">
                     {categories.map(category => (
-                        <Link key={category.id} href={`/forum/category/${category.id}`}>
+                        <Link key={category.id} href={`/forums/category/${category.id}`}>
                             <div className="card flex justify-between items-center hover:border-[var(--color-primary)] transition-colors duration-200">
                                 <div>
-                                    <h2 className="text-xl font-bold text-[var(--color-primary)]">{category.title}</h2>
-                                    <p className="text-sm text-[var(--color-text-muted)] mt-1">{category.description}</p>
+                                    <h2 className="text-xl font-bold text-[var(--color-primary)]">{getCategoryName(category.code)}</h2>
+                                    <p className="text-sm text-[var(--color-text-muted)] mt-1">{getCategoryDescription(category.code)}</p>
                                 </div>
                                 <div className="text-right text-sm text-[var(--color-text-muted)]">
                                     <p>{t('topics')}: {category.topicCount}</p>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { forum, ForumTopicDto } from '@/lib/api';
+import { forum, ForumTopicDto, ForumCategoryDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
@@ -10,17 +10,32 @@ import ForumTopicListItem from '../../components/ForumTopicListItem';
 const CategoryPage = () => {
     const params = useParams();
     const categoryId = Number(params.categoryId);
+    const [category, setCategory] = useState<ForumCategoryDto | null>(null);
     const [topics, setTopics] = useState<ForumTopicDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const t = useTranslations('forumPage');
+    const t_cat = useTranslations('forum_categories');
+
+    const getCategoryName = (code: string) => {
+        return t_cat(code);
+    };
+
+    const getCategoryDescription = (code: string) => {
+        return t_cat(`${code}_description`);
+    };
 
     const fetchTopics = useCallback(async () => {
         if (!categoryId) return;
         try {
             setIsLoading(true);
-            const data = await forum.getTopics(categoryId);
-            setTopics(data);
+            const [categoriesData, topicsData] = await Promise.all([
+                forum.getCategories(),
+                forum.getTopics(categoryId)
+            ]);
+            const currentCategory = categoriesData.find(c => c.id === categoryId);
+            setCategory(currentCategory || null);
+            setTopics(topicsData);
         } catch (err) {
             setError(t('error_loading_topics'));
             console.error(err);
@@ -33,14 +48,16 @@ const CategoryPage = () => {
         fetchTopics();
     }, [fetchTopics]);
 
-    // TODO: Fetch category details to display category title on the page
-
     return (
         <div className="container mx-auto p-4 sm:p-6">
             <div className="flex justify-between items-center mb-8">
-                {/* TODO: Replace with actual category title */}
-                <h1 className="text-4xl font-extrabold text-[var(--color-primary)] drop-shadow-lg">{t('topics')}</h1>
-                <Link href={`/forum/new-topic?categoryId=${categoryId}`} className="btn-primary">
+                <div>
+                    <h1 className="text-4xl font-extrabold text-[var(--color-primary)] drop-shadow-lg">
+                        {category ? getCategoryName(category.code) : t('topics')}
+                    </h1>
+                    {category && <p className="text-lg text-[var(--color-text-muted)] mt-1">{getCategoryDescription(category.code)}</p>}
+                </div>
+                <Link href={`/forums/new-topic?categoryId=${categoryId}`} className="btn-primary">
                     {t('new_topic')}
                 </Link>
             </div>

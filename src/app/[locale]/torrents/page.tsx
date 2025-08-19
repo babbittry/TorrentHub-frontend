@@ -34,7 +34,7 @@ export default function TorrentsPage() {
     const t_header = useTranslations('header');
     const t_cats = useTranslations('categories');
 
-    const fetchTorrents = async () => {
+    const fetchTorrents = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
@@ -45,7 +45,7 @@ export default function TorrentsPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [pageNumber, pageSize, category, searchTerm, sortBy, sortOrder, t_common]);
 
     useEffect(() => {
         localStorage.setItem('torrentViewMode', viewMode);
@@ -53,7 +53,7 @@ export default function TorrentsPage() {
 
     useEffect(() => {
         fetchTorrents();
-    }, [sortBy, sortOrder, category]);
+    }, [fetchTorrents]);
 
     const handleSort = (newSortBy: string) => {
         if (newSortBy === sortBy) {

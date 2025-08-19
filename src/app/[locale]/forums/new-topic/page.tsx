@@ -9,6 +9,7 @@ const NewTopicPage = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const t = useTranslations('forumPage');
+    const t_cat = useTranslations('forum_categories');
 
     const [categories, setCategories] = useState<ForumCategoryDto[]>([]);
     const [categoryId, setCategoryId] = useState(searchParams.get('categoryId') || '');
@@ -20,6 +21,10 @@ const NewTopicPage = () => {
     useEffect(() => {
         forum.getCategories().then(setCategories).catch(console.error);
     }, []);
+
+    const getCategoryName = (code: string) => {
+        return t_cat(code);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,7 +45,7 @@ const NewTopicPage = () => {
 
         try {
             const newTopic = await forum.createTopic(topicData);
-            router.push(`/forum/topics/${newTopic.id}`);
+            router.push(`/forums/topics/${newTopic.id}`);
         } catch (err) {
             setError(t('error_creating_topic'));
             console.error(err);
@@ -65,7 +70,7 @@ const NewTopicPage = () => {
                             >
                                 <option value="" disabled>{t('select_category')}</option>
                                 {categories.map(cat => (
-                                    <option key={cat.id} value={cat.id}>{cat.title}</option>
+                                    <option key={cat.id} value={cat.id}>{getCategoryName(cat.code)}</option>
                                 ))}
                             </select>
                         </div>

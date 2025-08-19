@@ -11,11 +11,10 @@ const ForumPost: React.FC<ForumPostProps> = ({ post }) => {
         <div className="flex p-4 border-b border-[var(--color-border)]">
             {/* User Info Sidebar */}
             <div className="flex-shrink-0 w-32 text-center mr-4">
-                <Link href={`/user/${post.author.id}`} className="font-bold text-[var(--color-primary)] hover:underline">
-                    {post.author.userName}
+                <Link href={`/user/${post.authorId}`} className="font-bold text-[var(--color-primary)] hover:underline">
+                    {post.authorName}
                 </Link>
                 {/* TODO: Add user avatar, role, etc. here */}
-                <p className="text-sm text-[var(--color-text-muted)] mt-2">{post.author.role}</p>
             </div>
 
             {/* Post Content */}

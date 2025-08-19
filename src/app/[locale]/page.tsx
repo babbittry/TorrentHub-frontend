@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { announcements, torrentListing, AnnouncementDto, TorrentDto } from "@/lib/api";
-import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import TorrentCard from "./torrents/components/TorrentCard";
 
@@ -58,14 +57,6 @@ export default function Home() {
         } finally {
             setLoadingTorrents(false);
         }
-    };
-
-    const formatBytes = (bytes: number): string => {
-        if (bytes === 0) return "0 Bytes";
-        const k = 1024;
-        const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
     };
 
     return (

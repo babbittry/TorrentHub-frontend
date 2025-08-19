@@ -35,7 +35,6 @@
     "messages": "Messages",
     "store": "Store",
     "login": "Login",
-    "logout": "Logout",
     "register": "Register",
     "search_torrents": "Search Torrents..."
   },
@@ -64,11 +63,12 @@
     "Software": "Software",
     "Other": "Other"
   },
-  "user": {
+  "userMenu": {
     "uploaded": "Uploaded",
     "downloaded": "Downloaded",
     "coins": "Coins",
-    "settings": "Settings"
+    "settings": "Settings",
+    "logout": "Logout"
   },
   "announcements": {
     "latest": "Latest Announcements",
@@ -188,5 +188,17 @@
     "submitting": "Submitting...",
     "error_all_fields_required": "All fields are required.",
     "error_creating_topic": "Error creating topic."
+  },
+  "forum_categories": {
+    "Announcement": "Announcements",
+    "Announcement_description": "Site announcements and news.",
+    "General": "General",
+    "General_description": "General discussion about anything.",
+    "Feedback": "Feedback",
+    "Feedback_description": "Provide feedback and suggestions for the site.",
+    "Invite": "Invites",
+    "Invite_description": "Request and trade invites.",
+    "Watering": "Watering Hole",
+    "Watering_description": "Casual chat and off-topic discussions."
   }
 }
