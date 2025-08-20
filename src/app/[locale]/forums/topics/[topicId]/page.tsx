@@ -30,7 +30,7 @@ const TopicDetailPage = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [topicId, t, topic]);
+    }, [topicId, t]);
 
     useEffect(() => {
         fetchTopicDetails();
@@ -71,7 +71,7 @@ const TopicDetailPage = () => {
         <div className="container mx-auto p-4 sm:p-6">
             <h1 className="text-3xl font-bold text-[var(--color-foreground)] mb-2">{topic.title}</h1>
             <p className="text-sm text-[var(--color-text-muted)] mb-6">
-                <Link href={`/forums/category/${topic.categoryId}`}>{t('back_to_category', { category: topic.categoryName })}</Link>
+                <Link href={`/forums/category/${topic.categoryId}`}>{t('back_to_category', { category: topic.categoryName || '' })}</Link>
             </p>
 
             <div className="card p-0">
