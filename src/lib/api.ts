@@ -1,8 +1,17 @@
 // DTOs for User related operations
 export enum UserRole {
-    User = 0,
-    Admin = 1,
-    // Add other roles as defined in your backend
+    // Standard User Tiers (increasing privileges)
+    Mosquito = 0,   // 低分享率用户
+    User,           // 普通用户 (新注册用户的默认角色)
+    PowerUser,      // 高级用户
+    EliteUser,      // 精英用户
+    CrazyUser,      // 狂热用户
+    VeteranUser,    // 资深用户
+    VIP,            // VIP用户（例如，捐赠者或特殊贡献者）
+
+    // Functional Roles
+    Uploader,       // 认证上传者
+    Seeder,         // 保种用户
 }
 
 export enum NullableOfUserBanReason {
@@ -754,10 +763,32 @@ export const coins = {
     },
 };
 
+// DTOs for Stats related operations
+export interface SiteStatsDto {
+    totalUsers: number;
+    userRoleCounts: Record<string, number>;
+    totalTorrents: number;
+    deadTorrents: number;
+    totalTorrentsSize: number;
+    totalPeers: number;
+    totalUploaded: number;
+    totalDownloaded: number;
+    nominalUploaded: number;
+    nominalDownloaded: number;
+    usersRegisteredToday: number;
+    torrentsAddedToday: number;
+    totalSeeders: number;
+    totalLeechers: number;
+    totalRequests: number;
+    filledRequests: number;
+    totalForumTopics: number;
+    totalForumPosts: number;
+}
+
 // Stats API Functions
 export const stats = {
-    getStats: async (): Promise<unknown> => {
-        return fetchApi('/api/stats');
+    getStats: async (): Promise<SiteStatsDto> => {
+        return fetchApi('/api/Stats');
     },
 };
 

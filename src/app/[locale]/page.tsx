@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { announcements, torrentListing, AnnouncementDto, TorrentDto } from "@/lib/api";
 import { useTranslations } from 'next-intl';
 import TorrentCard from "./torrents/components/TorrentCard";
+import SiteStats from "./components/SiteStats";
 
 export default function Home() {
     const [_announcements, setAnnouncements] = useState<AnnouncementDto[]>([]);
@@ -112,6 +113,11 @@ export default function Home() {
                 ) : (
                     <p className="text-[var(--color-text-muted)] text-center text-lg opacity-80">{t_torrents('no_torrents_found')}</p>
                 )}
+            </section>
+
+            {/* 站点统计 */}
+            <section className="mt-12">
+                <SiteStats mode="full" />
             </section>
         </div>
     );
