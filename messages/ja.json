@@ -36,7 +36,8 @@
         "store": "ストア",
         "login": "ログイン",
         "register": "登録",
-        "search_torrents": "トレントを検索..."
+        "search_torrents": "トレントを検索...",
+        "about": "关于"
     },
     "footer": {
         "all_rights_reserved": "全著作権所有。",
@@ -226,6 +227,7 @@
         "userStats": "ユーザー統計",
         "torrentStats": "トレント統計",
         "communityStats": "コミュニティ統計",
+        "totalBannedUsers": "追放されたユーザー",
         "userRoles": {
             "Mosquito": "蚊",
             "User": "ユーザー",
@@ -238,5 +240,36 @@
             "Seeder": "シーダー",
             "Admin": "管理者"
         }
+    },
+    "userProfile": {
+        "error": "Failed to load user profile.",
+        "userInfo": "User Information",
+        "avatar": "Avatar",
+        "id": "ID",
+        "username": "Username",
+        "invitedBy": "Invited By",
+        "role": "Role",
+        "coins": "Coins",
+        "seedingSize": "Seeding Size",
+        "email": "Email",
+        "registrationTime": "Registration Time",
+        "personalStats": "Personal Stats",
+        "nominalUpload": "Nominal Upload",
+        "nominalDownload": "Nominal Download",
+        "realUpload": "Real Upload",
+        "realDownload": "Real Download",
+        "uploadingCount": "Uploading",
+        "downloadingCount": "Downloading",
+        "downloadTime": "Download Time",
+        "uploadTime": "Upload Time",
+        "minutes": "minutes",
+        "torrentInfo": "Torrent Info",
+        "myUploads": "My Uploads",
+        "clientInfo": "Client Info",
+        "client": "Client",
+        "ip": "IP",
+        "port": "Port",
+        "lastReport": "Last Report",
+        "selfRegistered": "Self-registered"
     }
 }

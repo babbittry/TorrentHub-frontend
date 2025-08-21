@@ -36,7 +36,8 @@
         "store": "Store",
         "login": "Login",
         "register": "Register",
-        "search_torrents": "Search Torrents..."
+        "search_torrents": "Search Torrents...",
+        "about": "About"
     },
     "footer": {
         "all_rights_reserved": "All rights reserved.",
@@ -226,6 +227,7 @@
         "userStats": "User Stats",
         "torrentStats": "Torrent Stats",
         "communityStats": "Community Stats",
+        "totalBannedUsers": "Banned Users",
         "userRoles": {
             "Mosquito": "Mosquito",
             "User": "User",
@@ -238,5 +240,36 @@
             "Seeder": "Seeder",
             "Admin": "Admin"
         }
+    },
+    "userProfile": {
+        "error": "Failed to load user profile.",
+        "userInfo": "User Information",
+        "avatar": "Avatar",
+        "id": "ID",
+        "username": "Username",
+        "invitedBy": "Invited By",
+        "role": "Role",
+        "coins": "Coins",
+        "seedingSize": "Seeding Size",
+        "email": "Email",
+        "registrationTime": "Registration Time",
+        "personalStats": "Personal Stats",
+        "nominalUpload": "Nominal Upload",
+        "nominalDownload": "Nominal Download",
+        "realUpload": "Real Upload",
+        "realDownload": "Real Download",
+        "uploadingCount": "Uploading",
+        "downloadingCount": "Downloading",
+        "downloadTime": "Download Time",
+        "uploadTime": "Upload Time",
+        "minutes": "minutes",
+        "torrentInfo": "Torrent Info",
+        "myUploads": "My Uploads",
+        "clientInfo": "Client Info",
+        "client": "Client",
+        "ip": "IP",
+        "port": "Port",
+        "lastReport": "Last Report",
+        "selfRegistered": "Self-registered"
     }
 }

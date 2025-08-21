@@ -475,6 +475,18 @@ export const users = {
     getMyBadges: async (): Promise<unknown> => {
         return fetchApi('/api/users/me/badges');
     },
+
+    getUserProfile: async (id: number): Promise<UserProfileDetailDto> => {
+        return fetchApi(`/api/users/${id}/profile`);
+    },
+
+    getUserUploads: async (id: number): Promise<TorrentDto[]> => {
+        return fetchApi(`/api/users/${id}/uploads`);
+    },
+
+    getUserPeers: async (id: number): Promise<PeerDto[]> => {
+        return fetchApi(`/api/users/${id}/peers`);
+    },
 };
 
 // Announcements API Functions
@@ -783,6 +795,7 @@ export interface SiteStatsDto {
     filledRequests: number;
     totalForumTopics: number;
     totalForumPosts: number;
+    totalBannedUsers: number;
 }
 
 // Stats API Functions

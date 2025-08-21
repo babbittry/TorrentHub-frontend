@@ -36,7 +36,8 @@
         "store": "商店",
         "login": "登录",
         "register": "注册",
-        "search_torrents": "搜索种子..."
+        "search_torrents": "搜索种子...",
+        "about": "关于"
     },
     "footer": {
         "all_rights_reserved": "保留所有权利。",
@@ -226,6 +227,7 @@
         "userStats": "用户统计",
         "torrentStats": "种子统计",
         "communityStats": "社区统计",
+        "totalBannedUsers": "封禁用户",
         "userRoles": {
             "Mosquito": "水蚊",
             "User": "普通用户",
@@ -238,6 +240,37 @@
             "Seeder": "保种员",
             "Admin": "管理员"
         }
+    },
+    "userProfile": {
+        "error": "加载用户资料失败。",
+        "userInfo": "用户信息",
+        "avatar": "头像",
+        "id": "ID",
+        "username": "用户名",
+        "invitedBy": "邀请人",
+        "role": "等级",
+        "coins": "金币",
+        "seedingSize": "做种体积",
+        "email": "邮箱",
+        "registrationTime": "注册时间",
+        "personalStats": "个人数据",
+        "nominalUpload": "名义上传",
+        "nominalDownload": "名义下载",
+        "realUpload": "实际上传",
+        "realDownload": "实际下载",
+        "uploadingCount": "上传数量",
+        "downloadingCount": "下载数量",
+        "downloadTime": "下载时间",
+        "uploadTime": "上传时间",
+        "minutes": "分钟",
+        "torrentInfo": "种子信息",
+        "myUploads": "我发布的种子",
+        "clientInfo": "当前客户端",
+        "client": "客户端",
+        "ip": "IP",
+        "port": "端口",
+        "lastReport": "最后汇报时间",
+        "selfRegistered": "自行注册"
     }
 }
 

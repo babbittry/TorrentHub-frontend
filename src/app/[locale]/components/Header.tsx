@@ -85,6 +85,11 @@ export default function Header() {
                             {t('header.store')}
                         </Link>
                     </li>
+                    <li>
+                        <Link href="/about" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                            {t('header.about')}
+                        </Link>
+                    </li>
                 </ul>
                 <div className="flex items-center space-x-4">
                     <select

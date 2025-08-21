@@ -74,33 +74,37 @@ export default function UserMenu() {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <div className="w-10 h-10 rounded-full overflow-hidden cursor-pointer bg-gray-200">
-                <Image 
-                    src={user.avatar || '/logo-black.png'} // Fallback to a default avatar
-                    alt="User Avatar" 
-                    width={40} 
-                    height={40} 
-                    className="object-cover"
-                />
-            </div>
+            <Link href={`/users/${user.id}`}>
+                <div className="w-10 h-10 rounded-full overflow-hidden cursor-pointer bg-gray-200">
+                    <Image 
+                        src={user.avatar || '/logo-black.png'} // Fallback to a default avatar
+                        alt="User Avatar" 
+                        width={40} 
+                        height={40} 
+                        className="object-cover"
+                    />
+                </div>
+            </Link>
 
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-72 bg-[var(--color-card-background)] rounded-lg shadow-lg p-4 z-10 border border-[var(--color-border)]">
-                    <div className="flex items-center mb-4">
-                        <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0 bg-gray-300">
-                            <Image 
-                                src={user.avatar || '/logo-black.png'} // Fallback to a default avatar
-                                alt="User Avatar" 
-                                width={64} 
-                                height={64} 
-                                className="object-cover"
-                            />
+                    <Link href={`/users/${user.id}`}>
+                        <div className="flex items-center mb-4">
+                            <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0 bg-gray-300">
+                                <Image 
+                                    src={user.avatar || '/logo-black.png'} // Fallback to a default avatar
+                                    alt="User Avatar" 
+                                    width={64} 
+                                    height={64} 
+                                    className="object-cover"
+                                />
+                            </div>
+                            <div className="overflow-hidden">
+                                <p className="font-bold text-lg truncate">{user.userName}</p>
+                                {/* Badges would go here */}
+                            </div>
                         </div>
-                        <div className="overflow-hidden">
-                            <p className="font-bold text-lg truncate">{user.userName}</p>
-                            {/* Badges would go here */}
-                        </div>
-                    </div>
+                    </Link>
                     
                     {user.signature && (
                         <p className="text-sm text-[var(--color-foreground-muted)] italic mb-4 border-t border-[var(--color-border)] pt-2 break-words">{user.signature}</p>

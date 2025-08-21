@@ -49,33 +49,33 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
         const vipUsers = stats.userRoleCounts?.VIP ?? 0;
 
         return (
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-sm text-[var(--color-text-muted)]">
                 <div className="grid grid-cols-1">
-                    <div className="col-span-1 border-b border-gray-300 dark:border-gray-600 py-2">
+                    <div className="col-span-1 border-b border-[var(--color-border)] py-2">
                         <div className="grid grid-cols-2 gap-x-8 px-4">
                             <span>{t('stats.totalUsers')}: {stats.totalUsers}</span>
                             <span>{t('stats.userRoles.VIP')}: {vipUsers}</span>
                         </div>
                     </div>
-                    <div className="col-span-1 border-b border-gray-300 dark:border-gray-600 py-2">
+                    <div className="col-span-1 border-b border-[var(--color-border)] py-2">
                         <div className="grid grid-cols-2 gap-x-8 px-4">
                             <span>{t('stats.totalTorrents')}: {stats.totalTorrents}</span>
                             <span>{t('stats.totalTorrentsSize')}: {formatBytes(stats.totalTorrentsSize ?? 0)}</span>
                         </div>
                     </div>
-                    <div className="col-span-1 border-b border-gray-300 dark:border-gray-600 py-2">
+                    <div className="col-span-1 border-b border-[var(--color-border)] py-2">
                         <div className="grid grid-cols-2 gap-x-8 px-4">
                             <span>{t('stats.totalSeeders')}: {stats.totalSeeders}</span>
                             <span>{t('stats.totalLeechers')}: {stats.totalLeechers}</span>
                         </div>
                     </div>
-                    <div className="col-span-1 border-b border-gray-300 dark:border-gray-600 py-2">
+                    <div className="col-span-1 border-b border-[var(--color-border)] py-2">
                         <div className="grid grid-cols-2 gap-x-8 px-4">
                             <span>{t('stats.totalUploaded')}: {formatBytes(stats.totalUploaded ?? 0)}</span>
                             <span>{t('stats.totalDownloaded')}: {formatBytes(stats.totalDownloaded ?? 0)}</span>
                         </div>
                     </div>
-                    <div className="col-span-1 border-b border-gray-300 dark:border-gray-600 py-2">
+                    <div className="col-span-1 border-b border-[var(--color-border)] py-2">
                         <div className="grid grid-cols-2 gap-x-8 px-4">
                             <span>{t('stats.nominalUploaded')}: {formatBytes(stats.nominalUploaded ?? 0)}</span>
                             <span>{t('stats.nominalDownloaded')}: {formatBytes(stats.nominalDownloaded ?? 0)}</span>
@@ -93,95 +93,98 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
     }
 
     return (
-        <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{t('stats.title')}</h2>
+        <div className="p-6 bg-[var(--color-card-background)] rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-4 text-[var(--color-foreground)]">{t('stats.title')}</h2>
 
             {/* User Stats */}
-            <h3 className="text-xl font-semibold mt-6 mb-2 text-gray-800 dark:text-gray-200">{t('stats.userStats')}</h3>
+            <h3 className="text-xl font-semibold mt-6 mb-2 text-[var(--color-foreground)]">{t('stats.userStats')}</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalUsers')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalUsers}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalUsers')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.totalUsers}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.usersRegisteredToday')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.usersRegisteredToday}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.usersRegisteredToday')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.usersRegisteredToday}</p>
+                </div>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalBannedUsers')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.totalBannedUsers}</p>
                 </div>
                 {stats.userRoleCounts && Object.entries(stats.userRoleCounts).map(([role, count]) => (
-                    <div key={role} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{t(`stats.userRoles.${role}`)}</p>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">{count}</p>
+                    <div key={role} className="p-4 bg-[var(--color-background)] rounded-lg">
+                        <p className="text-sm text-[var(--color-text-muted)]">{t(`stats.userRoles.${role}`)}</p>
+                        <p className="text-2xl font-bold text-[var(--color-foreground)]">{count}</p>
                     </div>
                 ))}
             </div>
-
             {/* Torrent Stats */}
-            <h3 className="text-xl font-semibold mt-6 mb-2 text-gray-800 dark:text-gray-200">{t('stats.torrentStats')}</h3>
+            <h3 className="text-xl font-semibold mt-6 mb-2 text-[var(--color-foreground)]">{t('stats.torrentStats')}</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalTorrents')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalTorrents}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalTorrents')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.totalTorrents}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.torrentsAddedToday')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.torrentsAddedToday}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.torrentsAddedToday')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.torrentsAddedToday}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalTorrentsSize')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatBytes(stats.totalTorrentsSize ?? 0)}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalTorrentsSize')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{formatBytes(stats.totalTorrentsSize ?? 0)}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalSeeders')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalSeeders}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalSeeders')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.totalSeeders}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalLeechers')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalLeechers}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalLeechers')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.totalLeechers}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalPeers')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalPeers}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalPeers')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.totalPeers}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.deadTorrents')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.deadTorrents}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.deadTorrents')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.deadTorrents}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalUploaded')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatBytes(stats.totalUploaded ?? 0)}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalUploaded')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{formatBytes(stats.totalUploaded ?? 0)}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.nominalUploaded')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatBytes(stats.nominalUploaded ?? 0)}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.nominalUploaded')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{formatBytes(stats.nominalUploaded ?? 0)}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalDownloaded')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatBytes(stats.totalDownloaded ?? 0)}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalDownloaded')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{formatBytes(stats.totalDownloaded ?? 0)}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.nominalDownloaded')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatBytes(stats.nominalDownloaded ?? 0)}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.nominalDownloaded')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{formatBytes(stats.nominalDownloaded ?? 0)}</p>
                 </div>
             </div>
 
             {/* Community Stats */}
-            <h3 className="text-xl font-semibold mt-6 mb-2 text-gray-800 dark:text-gray-200">{t('stats.communityStats')}</h3>
+            <h3 className="text-xl font-semibold mt-6 mb-2 text-[var(--color-foreground)]">{t('stats.communityStats')}</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalRequests')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalRequests}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalRequests')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.totalRequests}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.filledRequests')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.filledRequests}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.filledRequests')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.filledRequests}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalForumTopics')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalForumTopics}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalForumTopics')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.totalForumTopics}</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalForumPosts')}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalForumPosts}</p>
+                <div className="p-4 bg-[var(--color-background)] rounded-lg">
+                    <p className="text-sm text-[var(--color-text-muted)]">{t('stats.totalForumPosts')}</p>
+                    <p className="text-2xl font-bold text-[var(--color-foreground)]">{stats.totalForumPosts}</p>
                 </div>
             </div>
         </div>
