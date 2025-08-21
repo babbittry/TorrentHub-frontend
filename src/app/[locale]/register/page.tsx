@@ -16,7 +16,7 @@ export default function RegisterPage() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const router = useRouter();
-    const t_register = useTranslations('registerPage');
+    const t_register = useTranslations('register');
     const t_header = useTranslations('header');
     const t_common = useTranslations('common');
     const t_login = useTranslations('loginPage');

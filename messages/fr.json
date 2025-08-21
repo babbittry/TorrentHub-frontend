@@ -26,7 +26,7 @@
         "optional": "(Optionnel)",
         "submitting": "Envoi en cours..."
     },
-    "registerPage": {
+    "register": {
         "refresh_avatar": "Rafraîchir l'avatar",
         "successful": "Inscription réussie ! Vous pouvez maintenant vous connecter.",
         "failed": "Échec de l'inscription, veuillez réessayer plus tard."
@@ -100,10 +100,6 @@
         "failed_no_token": "Échec de la connexion : Aucun jeton d'authentification n'a été reçu du serveur.",
         "already_have_account": "Vous avez déjà un compte ?",
         "no_account_yet": "Pas encore de compte ?"
-    },
-    "registerPage": {
-        "successful": "Inscription réussie ! Vous pouvez maintenant vous connecter.",
-        "failed": "Échec de l'inscription, veuillez réessayer plus tard."
     },
     "requestsPage": {
         "title": "Requêtes de torrents",

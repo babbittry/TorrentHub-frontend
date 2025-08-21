@@ -26,7 +26,7 @@
         "optional": "(任意)",
         "submitting": "送信中..."
     },
-    "registerPage": {
+    "register": {
         "refresh_avatar": "アバターを更新",
         "successful": "登録が完了しました！これでログインできます。",
         "failed": "登録に失敗しました。後でもう一度お試しください。"
@@ -100,10 +100,6 @@
         "failed_no_token": "ログインに失敗しました：サーバーから認証トークンが受信されませんでした。",
         "already_have_account": "すでにアカウントをお持ちですか？",
         "no_account_yet": "まだアカウントをお持ちではありませんか？"
-    },
-    "registerPage": {
-        "successful": "登録が完了しました！これでログインできます。",
-        "failed": "登録に失敗しました。後でもう一度お試しください。"
     },
     "requestsPage": {
         "title": "トレントリクエスト",

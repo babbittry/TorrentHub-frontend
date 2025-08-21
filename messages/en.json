@@ -26,7 +26,7 @@
         "optional": "Optional",
         "submitting": "Submitting..."
     },
-    "registerPage": {
+    "register": {
         "refresh_avatar": "Refresh Avatar",
         "successful": "Registration successful! You can now log in.",
         "failed": "Registration failed, please try again later."
@@ -100,10 +100,6 @@
         "failed_no_token": "Login failed: No authentication token was received from the server.",
         "already_have_account": "Already have an account?",
         "no_account_yet": "No account yet?"
-    },
-    "registerPage": {
-        "successful": "Registration successful! You can now log in.",
-        "failed": "Registration failed, please try again later."
     },
     "requestsPage": {
         "title": "Torrent Requests",
