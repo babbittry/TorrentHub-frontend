@@ -26,6 +26,11 @@
         "optional": "(可选)",
         "submitting": "提交中..."
     },
+    "registerPage": {
+        "refresh_avatar": "刷新头像",
+        "successful": "注册成功！您现在可以登录了。",
+        "failed": "注册失败，请稍后再试。"
+    },
     "header": {
         "home": "首页",
         "torrents": "种子",

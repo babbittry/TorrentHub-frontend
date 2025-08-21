@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import multiavatar from '@multiavatar/multiavatar';
 import { auth } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { Link } from '@/i18n/navigation';
@@ -10,7 +11,8 @@ export default function RegisterPage() {
     const [userName, setUserName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [inviteCode, setInviteCode] = useState<string>("");
+        const [inviteCode, setInviteCode] = useState<string>("");
+    const [avatar, setAvatar] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const router = useRouter();
@@ -19,13 +21,22 @@ export default function RegisterPage() {
     const t_common = useTranslations('common');
     const t_login = useTranslations('loginPage');
 
+    const generateAvatar = () => {
+        const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        setAvatar(multiavatar(randomString));
+    };
+
+    useEffect(() => {
+        generateAvatar();
+    }, []);
+
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
 
         try {
-            await auth.register({ userName, email, password, inviteCode });
+            await auth.register({ userName, email, password, inviteCode, avatar });
             setSuccess(t_register('successful'));
             router.push("/login"); // Redirect to login page on successful registration
         } catch (err: unknown) {
@@ -71,6 +82,23 @@ export default function RegisterPage() {
                             required
                         />
                     </div>
+                    <div className="mb-6">
+                        <label htmlFor="avatar" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('avatar')}</label>
+                        <div className="flex items-center space-x-4">
+                            <div
+                                id="avatar"
+                                className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex-shrink-0"
+                                dangerouslySetInnerHTML={{ __html: avatar }}
+                            />
+                            <button
+                                type="button"
+                                onClick={generateAvatar}
+                                className="btn-primary px-4 py-2 rounded-md"
+                            >
+                                {t_register('refresh_avatar')}
+                            </button>
+                        </div>
+                    </div>
                     <div className="mb-8">
                         <label htmlFor="inviteCode" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('invite_code')}</label>
                         <input
@@ -79,7 +107,6 @@ export default function RegisterPage() {
                             className="input-field"
                             value={inviteCode}
                             onChange={(e) => setInviteCode(e.target.value)}
-                            required
                         />
                     </div>
                     {error && <p className="text-[var(--color-error)] text-center mb-6 text-lg font-medium">{error}</p>}

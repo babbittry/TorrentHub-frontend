@@ -26,6 +26,11 @@
         "optional": "(任意)",
         "submitting": "送信中..."
     },
+    "registerPage": {
+        "refresh_avatar": "アバターを更新",
+        "successful": "登録が完了しました！これでログインできます。",
+        "failed": "登録に失敗しました。後でもう一度お試しください。"
+    },
     "header": {
         "home": "ホーム",
         "torrents": "トレント",

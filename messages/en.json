@@ -26,6 +26,11 @@
         "optional": "Optional",
         "submitting": "Submitting..."
     },
+    "registerPage": {
+        "refresh_avatar": "Refresh Avatar",
+        "successful": "Registration successful! You can now log in.",
+        "failed": "Registration failed, please try again later."
+    },
     "header": {
         "home": "Home",
         "torrents": "Torrents",

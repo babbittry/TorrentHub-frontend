@@ -26,6 +26,11 @@
         "optional": "(Optionnel)",
         "submitting": "Envoi en cours..."
     },
+    "registerPage": {
+        "refresh_avatar": "Rafraîchir l'avatar",
+        "successful": "Inscription réussie ! Vous pouvez maintenant vous connecter.",
+        "failed": "Échec de l'inscription, veuillez réessayer plus tard."
+    },
     "header": {
         "home": "Accueil",
         "torrents": "Torrents",
