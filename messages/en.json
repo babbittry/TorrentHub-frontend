@@ -272,5 +272,9 @@
         "port": "Port",
         "lastReport": "Last Report",
         "selfRegistered": "Self-registered"
+    },
+    "about": {
+        "title": "About",
+        "description": "About this site"
     }
 }

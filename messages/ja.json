@@ -272,5 +272,9 @@
         "port": "Port",
         "lastReport": "Last Report",
         "selfRegistered": "Self-registered"
+    },
+    "about": {
+        "title": "关于",
+        "description": "关于本站"
     }
 }

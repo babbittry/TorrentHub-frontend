@@ -4,7 +4,13 @@ import { useEffect, useState } from 'react';
 import { users as apiUsers, UserProfileDetailDto, TorrentDto, PeerDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 
-const UserProfilePage = ({ params }: { params: { id: string } }) => {
+interface UserProfilePageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+const UserProfilePage = ({ params }: UserProfilePageProps) => {
     const [profile, setProfile] = useState<UserProfileDetailDto | null>(null);
     const [uploads, setUploads] = useState<TorrentDto[]>([]);
     const [peers, setPeers] = useState<PeerDto[]>([]);
@@ -14,10 +20,11 @@ const UserProfilePage = ({ params }: { params: { id: string } }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
+                const resolvedParams = await params;
                 const [profileData, uploadsData, peersData] = await Promise.all([
-                    apiUsers.getUserProfile(parseInt(params.id)),
-                    apiUsers.getUserUploads(parseInt(params.id)),
-                    apiUsers.getUserPeers(parseInt(params.id)),
+                    apiUsers.getUserProfile(parseInt(resolvedParams.id)),
+                    apiUsers.getUserUploads(parseInt(resolvedParams.id)),
+                    apiUsers.getUserPeers(parseInt(resolvedParams.id)),
                 ]);
                 setProfile(profileData);
                 setUploads(uploadsData);
@@ -30,7 +37,7 @@ const UserProfilePage = ({ params }: { params: { id: string } }) => {
         };
 
         fetchProfile();
-    }, [params.id]);
+    }, [params]);
 
     if (loading) {
         return <div>{t('common.loading')}...</div>;

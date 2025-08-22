@@ -272,6 +272,10 @@
         "port": "端口",
         "lastReport": "最后汇报时间",
         "selfRegistered": "自行注册"
+    },
+    "about": {
+        "title": "关于",
+        "description": "关于本站"
     }
 }
 

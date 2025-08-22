@@ -12,7 +12,7 @@ export default function RegisterPage() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
         const [inviteCode, setInviteCode] = useState<string>("");
-    const [avatar, setAvatar] = useState<string>("");
+    const [avatarSvg, setAvatar] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const router = useRouter();
@@ -36,7 +36,7 @@ export default function RegisterPage() {
         setSuccess(null);
 
         try {
-            await auth.register({ userName, email, password, inviteCode, avatar });
+            await auth.register({ userName, email, password, inviteCode, avatarSvg });
             setSuccess(t_register('successful'));
             router.push("/login"); // Redirect to login page on successful registration
         } catch (err: unknown) {
@@ -88,7 +88,7 @@ export default function RegisterPage() {
                             <div
                                 id="avatar"
                                 className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex-shrink-0"
-                                dangerouslySetInnerHTML={{ __html: avatar }}
+                                dangerouslySetInnerHTML={{ __html: avatarSvg }}
                             />
                             <button
                                 type="button"

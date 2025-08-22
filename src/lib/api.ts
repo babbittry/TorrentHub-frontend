@@ -25,6 +25,7 @@ export interface UserForRegistrationDto {
     password: string;
     email: string;
     inviteCode: string;
+    avatarSvg: string;
 }
 
 export interface UserForLoginDto {
@@ -88,6 +89,30 @@ export interface UpdateUserAdminDto {
     banUntil?: string | null; // date-time
 }
 
+export interface UpdateRegistrationSettingsDto {
+    isOpen: boolean;
+}
+
+export interface UserProfileDetailDto {
+    id: number;
+    userName: string;
+    avatar?: string | null;
+    invitedBy?: string | null;
+    role: UserRole; // Changed from string to UserRole
+    coins: number;
+    seedingSize: number;
+    email: string;
+    createdAt: string; // date-time
+    nominalUploadedBytes: number;
+    nominalDownloadedBytes: number;
+    uploadedBytes: number;
+    downloadedBytes: number;
+    currentSeedingCount: number;
+    currentLeechingCount: number;
+    totalLeechingTimeMinutes: number;
+    totalSeedingTimeMinutes: number;
+}
+
 // DTOs for Announcement related operations
 export interface AnnouncementDto {
     id: number;
@@ -119,6 +144,18 @@ export interface CreateCommentRequestDto {
 
 export interface UpdateCommentRequestDto {
     content: string;
+}
+
+export interface PeerDto {
+    torrentId?: number;
+    torrentName: string;
+    userAgent: string;
+    ipAddress: string;
+    port: number;
+    uploaded: number;
+    downloaded: number;
+    isSeeder: boolean;
+    lastAnnounceAt: string; // date-time
 }
 
 // DTOs for Invite related operations
@@ -380,12 +417,12 @@ export interface UpdateCoinsRequestDto {
 // For file uploads
 export type IFormFile = File;
 
-import { fetchApi, downloadApi } from './apiClient';
+import {fetchApi, downloadApi} from './apiClient';
 
 // Auth API Functions
 export const auth = {
     login: async (user: UserForLoginDto): Promise<unknown> => {
-        return fetchApi('/api/users/login', {
+        return fetchApi('/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -395,7 +432,7 @@ export const auth = {
     },
 
     register: async (user: UserForRegistrationDto): Promise<unknown> => {
-        return fetchApi('/api/users/register', {
+        return fetchApi('/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -746,19 +783,19 @@ export const forum = {
     },
 
     lockTopic: async (topicId: number): Promise<void> => {
-        await fetchApi(`/api/forum/topics/${topicId}/lock`, { method: 'PATCH' });
+        await fetchApi(`/api/forum/topics/${topicId}/lock`, {method: 'PATCH'});
     },
 
     unlockTopic: async (topicId: number): Promise<void> => {
-        await fetchApi(`/api/forum/topics/${topicId}/unlock`, { method: 'PATCH' });
+        await fetchApi(`/api/forum/topics/${topicId}/unlock`, {method: 'PATCH'});
     },
 
     stickyTopic: async (topicId: number): Promise<void> => {
-        await fetchApi(`/api/forum/topics/${topicId}/sticky`, { method: 'PATCH' });
+        await fetchApi(`/api/forum/topics/${topicId}/sticky`, {method: 'PATCH'});
     },
 
     unstickyTopic: async (topicId: number): Promise<void> => {
-        await fetchApi(`/api/forum/topics/${topicId}/unsticky`, { method: 'PATCH' });
+        await fetchApi(`/api/forum/topics/${topicId}/unsticky`, {method: 'PATCH'});
     },
 };
 
@@ -919,5 +956,18 @@ export const torrentListing = {
             params.append('SortOrder', sortOrder);
         }
         return fetchApi(`/api/torrents/listing?${params.toString()}`);
+    },
+};
+
+// Admin API Functions
+export const admin = {
+    updateRegistrationSettings: async (settings: UpdateRegistrationSettingsDto): Promise<void> => {
+        await fetchApi('/api/admin/settings/registration', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(settings),
+        });
     },
 };
