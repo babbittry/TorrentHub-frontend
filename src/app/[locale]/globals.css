@@ -1,5 +1,6 @@
 @import "tailwindcss";
-
+@config "../../../tailwind.config.ts"; /* 路径相对于当前 CSS 文件 */
+@plugin './hero.ts';
 /* Base colors for light mode */
 :root {
   --color-background: #f8fafc; /* 浅蓝灰色背景 */
@@ -63,3 +64,7 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+/* Note: You may need to change the path to fit your project structure */
+@source '../../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));

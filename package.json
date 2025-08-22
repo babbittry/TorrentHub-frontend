@@ -9,9 +9,11 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@heroui/react": "^2.8.2",
         "@multiavatar/multiavatar": "^1.0.7",
         "@types/js-cookie": "^3.0.6",
         "@uidotdev/usehooks": "^2.4.1",
+        "framer-motion": "^12.23.12",
         "js-cookie": "^3.0.5",
         "next": "15.5.0",
         "next-i18next": "^15.4.2",

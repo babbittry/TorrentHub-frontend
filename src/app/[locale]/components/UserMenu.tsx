@@ -70,18 +70,18 @@ export default function UserMenu() {
     }
 
     return (
-        <div 
+        <div
             className="relative"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
             <Link href={`/users/${user.id}`}>
                 <div className="w-10 h-10 rounded-full overflow-hidden cursor-pointer bg-gray-200">
-                    <Image 
+                    <Image
                         src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/logo-black.png'} // Fallback to a default avatar
-                        alt="User Avatar" 
-                        width={40} 
-                        height={40} 
+                        alt="User Avatar"
+                        width={40}
+                        height={40}
                         className="object-cover"
                     />
                 </div>
@@ -92,11 +92,11 @@ export default function UserMenu() {
                     <Link href={`/users/${user.id}`}>
                         <div className="flex items-center mb-4">
                             <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0 bg-gray-300">
-                                <Image 
+                                <Image
                                     src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/logo-black.png'} // Fallback to a default avatar
-                                    alt="User Avatar" 
-                                    width={64} 
-                                    height={64} 
+                                    alt="User Avatar"
+                                    width={64}
+                                    height={64}
                                     className="object-cover"
                                 />
                             </div>
@@ -106,7 +106,7 @@ export default function UserMenu() {
                             </div>
                         </div>
                     </Link>
-                    
+
                     {user.signature && (
                         <p className="text-sm text-[var(--color-foreground-muted)] italic mb-4 border-t border-[var(--color-border)] pt-2 break-words">{user.signature}</p>
                     )}
@@ -127,7 +127,7 @@ export default function UserMenu() {
                     <Link href="/settings" className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200">
                         {t('settings')}
                     </Link>
-                    <button 
+                    <button
                         onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200"
                     >

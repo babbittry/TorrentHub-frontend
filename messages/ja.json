@@ -27,6 +27,7 @@
         "submitting": "送信中..."
     },
     "register": {
+        "avatar": "Avatar",
         "refresh_avatar": "アバターを更新",
         "successful": "登録が完了しました！これでログインできます。",
         "failed": "登録に失敗しました。後でもう一度お試しください。"
@@ -101,7 +102,9 @@
         "failed": "ログインに失敗しました。ユーザー名とパスワードを確認してください。",
         "failed_no_token": "ログインに失敗しました：サーバーから認証トークンが受信されませんでした。",
         "already_have_account": "すでにアカウントをお持ちですか？",
-        "no_account_yet": "まだアカウントをお持ちではありませんか？"
+        "no_account_yet": "まだアカウントをお持ちではありませんか？",
+        "enter_your_username": "ユーザー名を入力してください",
+        "enter_your_password": "パスワードを入力してください"
     },
     "requestsPage": {
         "title": "トレントリクエスト",

@@ -27,7 +27,8 @@
         "submitting": "Submitting..."
     },
     "register": {
-        "refresh_avatar": "Refresh Avatar",
+        "avatar": "Avatar",
+        "refresh_avatar": "Don't like? Give me a new one!",
         "successful": "Registration successful! You can now log in.",
         "failed": "Registration failed, please try again later."
     },
@@ -101,7 +102,9 @@
         "failed": "Login failed. Please check your credentials.",
         "failed_no_token": "Login failed: No authentication token was received from the server.",
         "already_have_account": "Already have an account?",
-        "no_account_yet": "No account yet?"
+        "no_account_yet": "No account yet?",
+        "enter_your_username": "Enter your username",
+        "enter_your_password": "Enter your password"
     },
     "requestsPage": {
         "title": "Torrent Requests",

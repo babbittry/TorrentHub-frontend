@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { auth } from "@/lib/api";
-
-import { useAuth } from "@/context/AuthContext";
-import { Link } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
+import {useState} from "react";
+import {auth} from "@/lib/api";
+import {useAuth} from "@/context/AuthContext";
+import {Link} from '@/i18n/navigation';
+import {useTranslations} from 'next-intl';
+import {Button} from "@heroui/button";
+import {Card, CardBody, CardFooter, CardHeader} from "@heroui/card";
+import {Input} from "@heroui/input";
 
 export default function LoginPage() {
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
 
-    const { login } = useAuth();
+    const {login} = useAuth();
     const t = useTranslations();
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -20,10 +22,8 @@ export default function LoginPage() {
         setError(null);
 
         try {
-            await auth.login({ userName, password });
-
+            await auth.login({userName, password});
             login();
-
         } catch (err: unknown) {
             setError((err as Error).message || t('loginPage.failed'));
         }
@@ -31,43 +31,46 @@ export default function LoginPage() {
 
     return (
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
-            <div className="card w-full max-w-md transform transition-all duration-300 hover:scale-105">
-                <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t('header.login')}</h1>
+            <Card className="w-full max-w-md p-4">
                 <form onSubmit={handleLogin}>
-                    <div className="mb-6">
-                        <label htmlFor="userName" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('common.username')}</label>
-                        <input
-                            type="text"
-                            id="userName"
-                            className="input-field"
+                    <CardHeader className="flex flex-col items-center pb-4">
+                        <h1 className="text-3xl font-bold">{t('header.login')}</h1>
+                    </CardHeader>
+                    <CardBody className="gap-6">
+                        <Input
+                            isRequired
+                            label={t('common.username')}
+                            placeholder={t('loginPage.enter_your_username')}
                             value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                            required
+                            onValueChange={setUserName}
+                            size="lg"
+                            labelPlacement="outside"
                         />
-                    </div>
-                    <div className="mb-8">
-                        <label htmlFor="password" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t('common.password')}</label>
-                        <input
+                        <Input
+                            isRequired
+                            label={t('common.password')}
+                            placeholder={t('loginPage.enter_your_password')}
                             type="password"
-                            id="password"
-                            className="input-field"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
+                            onValueChange={setPassword}
+                            size="lg"
+                            labelPlacement="outside"
                         />
-                    </div>
-                    {error && <p className="text-[var(--color-error)] text-center mb-6 text-lg font-medium">{error}</p>}
-                    <button
-                        type="submit"
-                        className="btn-primary w-full px-6 py-4 font-bold text-xl shadow-lg transform hover:scale-105"
-                    >
-                        {t('header.login')}
-                    </button>
+                        {error && <p className="text-danger text-center text-sm font-medium">{error}</p>}
+                        <Button type="submit" color="primary" className="w-full font-bold text-lg" size="lg">
+                            {t('header.login')}
+                        </Button>
+                    </CardBody>
                 </form>
-                <p className="text-center text-[var(--color-text-muted)] mt-6 text-lg">
-                    {t('loginPage.no_account_yet')} <Link href="/register" className="text-[var(--color-primary)] hover:underline font-semibold">{t('header.register')}</Link>
-                </p>
-            </div>
+                <CardFooter className="pt-4">
+                    <p className="text-center text-default-500 text-sm w-full">
+                        {t('loginPage.no_account_yet')}{' '}
+                        <Link href="/register" className="text-primary hover:underline font-semibold">
+                            {t('header.register')}
+                        </Link>
+                    </p>
+                </CardFooter>
+            </Card>
         </div>
     );
 }

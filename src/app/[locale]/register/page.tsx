@@ -83,7 +83,7 @@ export default function RegisterPage() {
                         />
                     </div>
                     <div className="mb-6">
-                        <label htmlFor="avatar" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('avatar')}</label>
+                        <label htmlFor="avatar" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_register('avatar')}</label>
                         <div className="flex items-center space-x-4">
                             <div
                                 id="avatar"

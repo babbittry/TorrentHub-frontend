@@ -27,7 +27,8 @@
         "submitting": "提交中..."
     },
     "register": {
-        "refresh_avatar": "刷新头像",
+        "avatar": "头像",
+        "refresh_avatar": "不喜欢？换个新的！",
         "successful": "注册成功！您现在可以登录了。",
         "failed": "注册失败，请稍后再试。"
     },
@@ -101,7 +102,9 @@
         "failed": "登录失败，请检查您的用户名和密码。",
         "failed_no_token": "登录失败：未从服务器收到身份验证令牌。",
         "already_have_account": "已有账号？",
-        "no_account_yet": "还没有账号？"
+        "no_account_yet": "还没有账号？",
+        "enter_your_username": "请输入您的用户名",
+        "enter_your_password": "请输入您的密码"
     },
     "requestsPage": {
         "title": "种子求取",
@@ -305,4 +308,3 @@
         "password_updated_error": "Failed to update password."
     }
 }
-
