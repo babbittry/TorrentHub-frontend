@@ -70,6 +70,8 @@
         "Other": "其他"
     },
     "userMenu": {
+        "personal_info": "个人信息",
+        "invites_system": "师徒系统/邀请系统",
         "uploaded": "上传量",
         "downloaded": "下载量",
         "coins": "金币",
@@ -276,6 +278,31 @@
     "about": {
         "title": "关于",
         "description": "关于本站"
+    },
+    "settingsPage": {
+        "title": "设置",
+        "personal_settings": "个人设置",
+        "security_settings": "安全设置",
+        "change_avatar_title": "修改头像",
+        "change_avatar_description": "上传新的头像图片。",
+        "select_avatar_file": "选择头像文件",
+        "preview": "预览",
+        "upload_avatar": "上传头像",
+        "uploading": "上传中...",
+        "no_file_selected": "未选择文件。",
+        "avatar_upload_api_missing": "头像文件上传API缺失。请提供文件上传的后端接口。",
+        "avatar_updated_success": "头像更新成功！",
+        "avatar_updated_error": "更新头像失败。",
+        "change_password_title": "修改密码",
+        "change_password_description": "更新您的账户密码。",
+        "current_password": "Current Password",
+        "new_password": "New Password",
+        "confirm_new_password": "Confirm New Password",
+        "passwords_do_not_match": "New passwords do not match.",
+        "changing_password": "Changing Password...",
+        "change_password_button": "Change Password",
+        "password_updated_success": "Password updated successfully!",
+        "password_updated_error": "Failed to update password."
     }
 }
 

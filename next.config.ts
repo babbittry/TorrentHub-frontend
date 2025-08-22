@@ -14,6 +14,12 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: '**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '5014',
+        pathname: '/avatars/**',
+      },
     ],
   },
 };

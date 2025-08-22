@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { users as apiUsers, UserProfileDetailDto, TorrentDto, PeerDto } from '@/lib/api';
+import { API_BASE_URL } from '@/lib/apiClient';
 import { useTranslations } from 'next-intl';
 
 interface UserProfilePageProps {
@@ -61,7 +62,7 @@ const UserProfilePage = ({ params }: UserProfilePageProps) => {
             <div className="card mb-4">
                 <h2 className="text-2xl font-bold mb-4">{t('userProfile.userInfo')}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><strong>{t('userProfile.avatar')}:</strong> <img src={profile.avatar || ''} alt="avatar" className="w-20 h-20 rounded-full" /></div>
+                    <div><strong>{t('userProfile.avatar')}:</strong> <img src={profile.avatar ? `${API_BASE_URL}${profile.avatar}` : ''} alt="avatar" className="w-20 h-20 rounded-full" /></div>
                     <div><strong>{t('userProfile.id')}:</strong> {profile.id}</div>
                     <div><strong>{t('userProfile.username')}:</strong> {profile.userName}</div>
                     <div><strong>{t('userProfile.invitedBy')}:</strong> {profile.invitedBy || t('userProfile.selfRegistered')}</div>

@@ -70,6 +70,8 @@
         "Other": "Other"
     },
     "userMenu": {
+        "personal_info": "Personal Info",
+        "invites_system": "Invites System",
         "uploaded": "Uploaded",
         "downloaded": "Downloaded",
         "coins": "Coins",
@@ -276,5 +278,30 @@
     "about": {
         "title": "About",
         "description": "About this site"
+    },
+    "settingsPage": {
+        "title": "Settings",
+        "personal_settings": "Personal Settings",
+        "security_settings": "Security Settings",
+        "change_avatar_title": "Change Avatar",
+        "change_avatar_description": "Upload a new avatar image.",
+        "select_avatar_file": "Select Avatar File",
+        "preview": "Preview",
+        "upload_avatar": "Upload Avatar",
+        "uploading": "Uploading...",
+        "no_file_selected": "No file selected.",
+        "avatar_upload_api_missing": "Avatar file upload API is missing. Please provide a backend endpoint for file uploads.",
+        "avatar_updated_success": "Avatar updated successfully!",
+        "avatar_updated_error": "Failed to update avatar.",
+        "change_password_title": "Change Password",
+        "change_password_description": "Update your account password.",
+        "current_password": "Current Password",
+        "new_password": "New Password",
+        "confirm_new_password": "Confirm New Password",
+        "passwords_do_not_match": "New passwords do not match.",
+        "changing_password": "Changing Password...",
+        "change_password_button": "Change Password",
+        "password_updated_success": "Password updated successfully!",
+        "password_updated_error": "Failed to update password."
     }
 }

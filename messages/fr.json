@@ -70,7 +70,9 @@
         "Other": "Autre"
     },
     "userMenu": {
-        "uploaded": "Uploadé",
+        "personal_info": "Informations personnelles",
+        "invites_system": "Système d'invitation",
+        "uploaded": "Téléchargé",
         "downloaded": "Téléchargé",
         "coins": "Pièces",
         "settings": "Paramètres",
@@ -276,5 +278,30 @@
     "about": {
         "title": "关于",
         "description": "关于本站"
+    },
+    "settingsPage": {
+        "title": "Paramètres",
+        "personal_settings": "Paramètres personnels",
+        "security_settings": "Paramètres de sécurité",
+        "change_avatar_title": "Changer d'avatar",
+        "change_avatar_description": "Télécharger une nouvelle image d'avatar.",
+        "change_password_title": "Changer de mot de passe",
+        "change_password_description": "Mettre à jour le mot de passe de votre compte.",
+        "select_avatar_file": "Sélectionner le fichier d'avatar",
+        "preview": "Aperçu",
+        "upload_avatar": "Télécharger l'avatar",
+        "uploading": "Téléchargement...",
+        "no_file_selected": "Aucun fichier sélectionné.",
+        "avatar_upload_api_missing": "L'API de téléchargement de fichier d'avatar est manquante. Veuillez fournir un point d'accès backend pour le téléchargement de fichiers.",
+        "avatar_updated_success": "Avatar mis à jour avec succès !",
+        "avatar_updated_error": "Échec de la mise à jour de l'avatar.",
+        "current_password": "Mot de passe actuel",
+        "new_password": "Nouveau mot de passe",
+        "confirm_new_password": "Confirmer le nouveau mot de passe",
+        "passwords_do_not_match": "Les nouveaux mots de passe ne correspondent pas.",
+        "changing_password": "Changement de mot de passe...",
+        "change_password_button": "Changer le mot de passe",
+        "password_updated_success": "Mot de passe mis à jour avec succès !",
+        "password_updated_error": "Échec de la mise à jour du mot de passe."
     }
 }

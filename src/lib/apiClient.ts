@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5014";
+export const API_BASE_URL = "http://localhost:5014";
 
 export async function fetchApi<T = unknown>(
     endpoint: string,

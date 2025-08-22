@@ -70,6 +70,8 @@
         "Other": "その他"
     },
     "userMenu": {
+        "personal_info": "個人情報",
+        "invites_system": "招待システム",
         "uploaded": "アップロード",
         "downloaded": "ダウンロード",
         "coins": "コイン",
@@ -276,5 +278,30 @@
     "about": {
         "title": "关于",
         "description": "关于本站"
+    },
+    "settingsPage": {
+        "title": "設定",
+        "personal_settings": "個人設定",
+        "security_settings": "セキュリティ設定",
+        "change_avatar_title": "アバターを変更",
+        "change_avatar_description": "新しいアバター画像をアップロードします。",
+        "select_avatar_file": "Select Avatar File",
+        "preview": "Preview",
+        "upload_avatar": "Upload Avatar",
+        "uploading": "Uploading...",
+        "no_file_selected": "No file selected.",
+        "avatar_upload_api_missing": "Avatar file upload API is missing. Please provide a backend endpoint for file uploads.",
+        "avatar_updated_success": "Avatar updated successfully!",
+        "avatar_updated_error": "Failed to update avatar.",
+        "change_password_title": "Change Password",
+        "change_password_description": "Update your account password.",
+        "current_password": "Current Password",
+        "new_password": "New Password",
+        "confirm_new_password": "Confirm New Password",
+        "passwords_do_not_match": "New passwords do not match.",
+        "changing_password": "Changing Password...",
+        "change_password_button": "Change Password",
+        "password_updated_success": "Password updated successfully!",
+        "password_updated_error": "Failed to update password."
     }
 }
