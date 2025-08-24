@@ -126,6 +126,8 @@ const NewMessagePage = () => {
                                 label={t('subject')}
                                 value={subject}
                                 onValueChange={setSubject}
+                                maxLength={200}
+                                description={`${subject.length}/200`}
                             />
 
                             <Textarea
@@ -134,6 +136,8 @@ const NewMessagePage = () => {
                                 value={content}
                                 onValueChange={setContent}
                                 minRows={10}
+                                maxLength={500}
+                                description={`${content.length}/500`}
                             />
 
                             {error && <p className="text-danger text-sm">{error}</p>}

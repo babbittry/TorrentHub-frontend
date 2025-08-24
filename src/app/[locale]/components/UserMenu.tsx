@@ -8,6 +8,8 @@ import { Link } from '@/i18n/navigation';
 import { users } from '@/lib/api';
 import type { UserPrivateProfileDto } from '@/lib/api';
 import { API_BASE_URL } from '@/lib/apiClient';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faInfo, faGear, faTicket, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 export default function UserMenu() {
     const { logout } = useAuth();
@@ -53,7 +55,7 @@ export default function UserMenu() {
     const handleMouseLeave = () => {
         const newTimerId = setTimeout(() => {
             setIsOpen(false);
-        }, 1000); // 1 second delay
+        }, 500); // 500 ms delay
         setTimerId(newTimerId);
     };
 
@@ -88,7 +90,7 @@ export default function UserMenu() {
             </Link>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-[var(--color-card-background)] rounded-lg shadow-lg p-4 z-10 border border-[var(--color-border)]">
+                <div className="absolute right-0 mt-2 w-72 bg-[var(--color-card-background)] rounded-lg shadow-lg p-4 z-50 border border-[var(--color-border)]">
                     <Link href={`/users/${user.id}`}>
                         <div className="flex items-center mb-4">
                             <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0 bg-gray-300">
@@ -117,20 +119,23 @@ export default function UserMenu() {
                         <p><strong>{t('coins')}:</strong> {user.coins}</p>
                     </div>
 
-                    {/* TODO: Add icons */}
                     <Link href={`/users/${user.id}`} className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200">
+                        <FontAwesomeIcon icon={faInfo} />
                         {t('personal_info')}
                     </Link>
                     <Link href="/invites" className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200">
+                        <FontAwesomeIcon icon={faTicket} />
                         {t('invites_system')}
                     </Link>
                     <Link href="/settings" className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200">
+                        <FontAwesomeIcon icon={faGear} />
                         {t('settings')}
                     </Link>
                     <button
                         onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200"
                     >
+                        <FontAwesomeIcon icon={faArrowRightFromBracket} />
                         {t('logout')}
                     </button>
                 </div>

@@ -28,7 +28,7 @@ const RequestDetailPage = () => {
     const fetchRequestDetails = useCallback(async () => {
         if (!requestId) return;
         try {
-            if (!request) setIsLoading(true);
+            setIsLoading(true);
             const data = await requests.getRequestById(requestId);
             setRequest(data);
             setError(null);
@@ -38,7 +38,7 @@ const RequestDetailPage = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [requestId, t, request]);
+    }, [requestId, t]);
 
     useEffect(() => {
         fetchRequestDetails();

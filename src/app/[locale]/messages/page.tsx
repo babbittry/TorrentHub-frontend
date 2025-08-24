@@ -36,6 +36,14 @@ const MessagesPage = () => {
         }
     }, [mailbox, t]);
 
+    const handleMessageRead = useCallback((messageId: number) => {
+        setMessagesList(prevMessages =>
+            prevMessages.map(msg =>
+                msg.id === messageId ? { ...msg, isRead: true } : msg
+            )
+        );
+    }, []);
+
     useEffect(() => {
         fetchMessages();
     }, [fetchMessages]);
@@ -117,7 +125,11 @@ const MessagesPage = () => {
                 </div>
 
                 <div className="md:col-span-2 bg-content1 rounded-lg p-4 overflow-y-auto">
-                    <MessageDetail message={selectedMessage} />
+                    <MessageDetail
+                        message={selectedMessage}
+                        activeMailbox={mailbox}
+                        onMessageRead={handleMessageRead}
+                    />
                 </div>
             </div>
         </div>

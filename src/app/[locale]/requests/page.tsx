@@ -9,6 +9,7 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDe
 import { Button, ButtonGroup } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { User } from "@heroui/user";
+import { API_BASE_URL } from '@/lib/apiClient';
 
 const RequestsPage = () => {
     const [requestsList, setRequestsList] = useState<RequestDto[]>([]);
@@ -60,10 +61,10 @@ const RequestsPage = () => {
                 );
             case 'requestedByUser':
                 return request.requestedByUser ? (
-                    <User   
+                    <User
                         name={request.requestedByUser.userName}
                         avatarProps={{
-                            // src: request.requestedByUser.avatar
+                            src: request.requestedByUser.avatar ? `${API_BASE_URL}${request.requestedByUser.avatar}` : undefined
                         }}
                     />
                 ) : 'N/A';
@@ -91,13 +92,13 @@ const RequestsPage = () => {
 
             {error && <div className="text-center p-4 text-danger bg-danger-50 rounded-md mb-4">{error}</div>}
 
-            <Table 
+            <Table
                 aria-label="Requests list"
                 sortDescriptor={sortDescriptor}
                 onSortChange={handleSortChange}
             >
                 <TableHeader>
-                    <TableColumn key="title" allowsSorting>{t('common.title')}</TableColumn>
+                    <TableColumn key="title">{t('common.title')}</TableColumn>
                     <TableColumn key="bountyAmount" allowsSorting>{t('requestsPage.bounty')}</TableColumn>
                     <TableColumn key="status" allowsSorting>{t('requestsPage.status')}</TableColumn>
                     <TableColumn key="requestedByUser">{t('requestsPage.requested_by')}</TableColumn>

@@ -1,17 +1,34 @@
-import React from 'react';
-import { MessageDto } from '@/lib/api';
+import React, { useEffect } from 'react';
+import { MessageDto, UserPublicProfileDto, messages } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import {Divider} from "@heroui/divider";
 import { User } from "@heroui/user";
 import { API_BASE_URL } from '@/lib/apiClient';
+import type { MailboxType } from '../page';
 
 interface MessageDetailProps {
     message: MessageDto | null;
+    activeMailbox: MailboxType;
+    onMessageRead: (messageId: number) => void;
 }
 
-const MessageDetail: React.FC<MessageDetailProps> = ({ message }) => {
+const MessageDetail: React.FC<MessageDetailProps> = ({ message, activeMailbox, onMessageRead }) => {
     const t = useTranslations('messagesPage');
+
+    useEffect(() => {
+        if (message && activeMailbox === 'inbox' && !message.isRead) {
+            // Mark message as read
+            messages.markMessageAsRead(message.id)
+                .then(() => {
+                    onMessageRead(message.id); // Update parent state
+                })
+                .catch(error => {
+                    console.error("Failed to mark message as read:", error);
+                    // Optionally, show an error to the user
+                });
+        }
+    }, [message, activeMailbox, onMessageRead]);
 
     if (!message) {
         return (
@@ -21,15 +38,23 @@ const MessageDetail: React.FC<MessageDetailProps> = ({ message }) => {
         );
     }
 
+    const displayUser: UserPublicProfileDto | undefined = activeMailbox === 'inbox'
+        ? message.sender
+        : message.receiver;
+
+    const descriptionText = activeMailbox === 'inbox'
+        ? `${t('to')}: ${message.receiver?.userName || 'N/A'}`
+        : `${t('from')}: ${message.sender?.userName || 'N/A'}`;
+
+
     return (
         <Card className="h-full">
             <CardHeader className="flex flex-col items-start gap-4">
                 <h2 className="text-2xl font-bold text-foreground">{message.subject}</h2>
                 <User
-                    name={message.sender?.userName || 'N/A'}
-                    description={`${t('to')}: ${message.receiver?.userName || 'N/A'}`}
+                    name={displayUser?.userName || 'N/A'}
                     avatarProps={{
-                        src: message.sender?.avatar ? `${API_BASE_URL}${message.sender.avatar}` : undefined
+                        src: displayUser?.avatar ? `${API_BASE_URL}${displayUser.avatar}` : undefined
                     }}
                 />
                  <p className="text-xs text-default-500">{new Date(message.sentAt).toLocaleString()}</p>

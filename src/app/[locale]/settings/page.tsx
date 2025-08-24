@@ -1,15 +1,16 @@
 // src/app/[locale]/settings/page.tsx
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { users } from '@/lib/api';
-import type { ChangePasswordDto } from '@/lib/api';
+import type { ChangePasswordDto, UserPrivateProfileDto } from '@/lib/api';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Tabs, Tab } from "@heroui/tabs";
 import { Avatar } from "@heroui/avatar";
+import { API_BASE_URL } from '@/lib/apiClient';
 
 export default function SettingsPage() {
     const t = useTranslations('settingsPage');
@@ -17,6 +18,7 @@ export default function SettingsPage() {
 
     const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null);
     const [avatarMessage, setAvatarMessage] = useState<string | null>(null);
     const [avatarMessageType, setAvatarMessageType] = useState<'success' | 'error' | null>(null);
     const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
@@ -27,6 +29,20 @@ export default function SettingsPage() {
     const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
     const [passwordMessageType, setPasswordMessageType] = useState<'success' | 'error' | null>(null);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+    useEffect(() => {
+        const fetchUserAvatar = async () => {
+            try {
+                const userData: UserPrivateProfileDto = await users.getMe();
+                if (userData.avatar) {
+                    setCurrentUserAvatar(`${API_BASE_URL}${userData.avatar}`);
+                }
+            } catch (error) {
+                console.error("Failed to fetch user avatar:", error);
+            }
+        };
+        fetchUserAvatar();
+    }, []);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
@@ -101,7 +117,7 @@ export default function SettingsPage() {
                         </CardHeader>
                         <CardBody>
                             <form onSubmit={handleChangeAvatar} className="space-y-4">
-                                <Avatar src={avatarPreview || undefined} className="w-24 h-24 text-large" />
+                                <Avatar src={avatarPreview || currentUserAvatar || undefined} className="w-24 h-24 text-large" />
                                 <input
                                     type="file"
                                     ref={fileInputRef}

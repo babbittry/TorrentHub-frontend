@@ -28,7 +28,7 @@ export default function TorrentCard({ torrent }: TorrentCardProps) {
                         radius="none"
                         className="w-full object-cover aspect-[2/3]"
                     />
-                    <div className="absolute top-0 left-0 right-0 p-2 bg-black/60 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-around items-center">
+                    <div className="absolute top-0 left-0 right-0 p-2 bg-black/60 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-around items-center z-10">
                         <div className="flex items-center gap-1" title="Seeders">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd" /></svg>
                             <span>{torrent.seeders}</span>
@@ -38,7 +38,7 @@ export default function TorrentCard({ torrent }: TorrentCardProps) {
                             <span>{torrent.leechers}</span>
                         </div>
                         <div className="flex items-center gap-1" title="Snatched">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                             <span>{torrent.snatched}</span>
                         </div>
                     </div>
