@@ -1,14 +1,29 @@
-"use client";
+'use client';
 
 import { useEffect, useState, useCallback } from "react";
 import { torrents, comments, TorrentDto, CommentDto } from "@/lib/api";
 import { useParams } from "next/navigation";
 import { useTranslations } from 'next-intl';
+import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
+import { Image } from "@heroui/image";
+import { Button } from "@heroui/button";
+import { Chip } from "@heroui/chip";
+import { Textarea } from "@heroui/input";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
+import { Link as UILink } from "@heroui/link";
+import { User } from "@heroui/user";
+
+const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+
+interface FileItem {
+    name: string;
+    size: number;
+}
 
 export default function TorrentDetailPage() {
     const { torrentId } = useParams();
     const [torrent, setTorrent] = useState<TorrentDto | null>(null);
-    const [_comments, setComments] = useState<CommentDto[]>([]);
+    const [torrentComments, setComments] = useState<CommentDto[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [newComment, setNewComment] = useState<string>("");
@@ -18,11 +33,6 @@ export default function TorrentDetailPage() {
         setLoading(true);
         setError(null);
         try {
-            // Assuming /api/Torrent/{torrentId} returns full torrent details
-            // The OpenAPI spec doesn't explicitly define a GET for full torrent details by ID.
-            // I'm making an assumption here. If this endpoint doesn't exist or returns insufficient data,
-            // we'll need to adjust. For now, I'll use a placeholder endpoint.
-            // A more appropriate endpoint might be needed from the backend.
             const data: TorrentDto = await torrents.getTorrentById(Number(torrentId));
             setTorrent(data);
 
@@ -47,12 +57,9 @@ export default function TorrentDetailPage() {
         if (!newComment.trim()) return;
 
         try {
-            // The OpenAPI spec for /api/torrents/{torrentId}/Comment expects a Comment object in the body.
-            // I'm assuming userId and createdAt are handled by the backend or can be omitted.
-            // The Comment schema has torrentId, userId, text, createdAt. I'll provide text.
             await comments.createComment(Number(torrentId), { text: newComment });
             setNewComment("");
-            fetchTorrentDetails(); // Refresh comments after adding
+            fetchTorrentDetails(); // Refresh comments
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
         }
@@ -66,71 +73,112 @@ export default function TorrentDetailPage() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
     };
 
-    if (loading) return <p className="text-[var(--color-foreground)] text-center p-4">{t('common.loading')}</p>;
-    if (error) return <p className="text-[var(--color-error)] text-center p-4">{t('common.error')}: {error}</p>;
-    if (!torrent) return <p className="text-[var(--color-text-muted)] text-center p-4">{t('torrentsPage.no_torrents_found')}</p>;
+    if (loading) return <p className="text-foreground text-center p-4">{t('common.loading')}</p>;
+    if (error) return <p className="text-danger text-center p-4">{t('common.error')}: {error}</p>;
+    if (!torrent) return <p className="text-default-500 text-center p-4">{t('torrentsPage.no_torrents_found')}</p>;
+
+    const posterUrl = torrent.posterPath ? `${TMDB_IMAGE_BASE_URL}${torrent.posterPath}` : '/logo-black.png';
+
+    // Placeholder for file list - assuming torrent.files exists and is an array
+    const files: FileItem[] = (torrent as { files?: FileItem[] }).files || [{ name: 'File 1.mkv', size: 1234567890 }, { name: 'File 2.nfo', size: 12345 }];
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-6 text-center drop-shadow-lg">{torrent.name}</h1>
-
-            <div className="card mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('common.size')}:</span> {formatBytes(torrent.size)}</p>
-                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('common.uploader')}:</span> {torrent.uploaderUsername || "未知"}</p>
-                        <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">{t('common.release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
-                        {torrent.isFree && (
-                            <span className="inline-block bg-[var(--color-success)] text-white text-sm px-4 py-2 rounded-full mt-4 shadow-md">{t('common.free')}</span>
-                        )}
-                    </div>
-                    <div>
-                        {torrent.imdbId && (
-                            <div className="bg-[var(--color-input-background)] p-4 rounded-lg shadow-inner border border-[var(--color-input-border)]">
-                                <p className="text-[var(--color-foreground)] text-lg mb-2"><span className="font-semibold text-[var(--color-primary)]">IMDb ID:</span> <a href={`https://www.imdb.com/title/${torrent.imdbId}`} target="_blank" rel="noopener noreferrer" className="text-[var(--color-primary)] hover:underline transition-colors duration-200">{torrent.imdbId}</a></p>
-                                {/* Potentially add more IMDb details here if fetched */}
+        <div className="container mx-auto p-4 space-y-8">
+            <Card>
+                <CardBody>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <div className="md:col-span-1">
+                            <Image src={posterUrl} alt={torrent.name} width="100%" className="w-full object-cover rounded-lg" />
+                        </div>
+                        <div className="md:col-span-3 flex flex-col">
+                            <h1 className="text-4xl font-bold text-foreground mb-2">{torrent.name}</h1>
+                            <div className="flex items-center gap-4 mb-4">
+                                <Chip color="primary" variant="flat">{torrent.year}</Chip>
+                                {torrent.isFree && <Chip color="success">{t('common.free')}</Chip>}
                             </div>
-                        )}
+                            <div className="space-y-2 text-lg text-foreground">
+                                <p><span className="font-semibold text-default-600">{t('common.size')}:</span> {formatBytes(torrent.size)}</p>
+                                <p><span className="font-semibold text-default-600">{t('common.uploader')}:</span> {torrent.uploaderUsername || "Unknown"}</p>
+                                <p><span className="font-semibold text-default-600">{t('common.release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
+                                {torrent.imdbId && (
+                                    <p><span className="font-semibold text-default-600">IMDb:</span> <UILink href={`https://www.imdb.com/title/${torrent.imdbId}`} isExternal showAnchorIcon>{torrent.imdbId}</UILink></p>
+                                )}
+                            </div>
+                            <div className="mt-auto pt-4">
+                                <Button color="primary" size="lg">{t('torrentDetailsPage.download_torrent')}</Button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </CardBody>
+            </Card>
 
-                <h2 className="text-3xl font-bold text-[var(--color-primary)] mt-8 mb-4 border-b border-[var(--color-border)] pb-2">{t('common.description')}</h2>
-                <div className="text-[var(--color-foreground)] leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: torrent.description || t('common.no_description') }} />
-            </div>
+            <Card>
+                <CardHeader><h2 className="text-2xl font-bold text-foreground">{t('common.description')}</h2></CardHeader>
+                <CardBody>
+                    <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: torrent.description || t('common.no_description') }} />
+                </CardBody>
+            </Card>
 
-            <section className="card mb-8">
-                <h2 className="text-3xl font-bold text-[var(--color-primary)] mb-6 border-b border-[var(--color-border)] pb-2">{t('common.comments')}</h2>
-                <div className="mb-8">
-                    <form onSubmit={handleAddComment} className="flex flex-col space-y-4">
-                        <textarea
-                            className="input-field"
-                            rows={5}
-                            placeholder={t('torrentDetailsPage.add_comment')}
+            <Card>
+                <CardHeader><h2 className="text-2xl font-bold text-foreground">{t('torrentDetailsPage.file_list')}</h2></CardHeader>
+                <CardBody>
+                    <Table aria-label="File list">
+                        <TableHeader>
+                            <TableColumn>{t('common.name')}</TableColumn>
+                            <TableColumn>{t('common.size')}</TableColumn>
+                        </TableHeader>
+                        <TableBody items={files}>
+                            {(item: FileItem) => (
+                                <TableRow key={item.name}>
+                                    <TableCell>{item.name}</TableCell>
+                                    <TableCell>{formatBytes(item.size)}</TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardBody>
+            </Card>
+
+            <Card>
+                <CardHeader><h2 className="text-2xl font-bold text-foreground">{t('common.comments')}</h2></CardHeader>
+                <CardBody>
+                    <form onSubmit={handleAddComment} className="flex flex-col gap-4 mb-8">
+                        <Textarea
+                            label={t('torrentDetailsPage.add_comment')}
+                            labelPlacement="outside"
+                            placeholder={t('torrentDetailsPage.enter_your_comment')}
                             value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                        ></textarea>
-                        <button
-                            type="submit"
-                            className="btn-primary px-8 py-3 font-semibold self-end shadow-md transform hover:scale-105"
-                        >
+                            onValueChange={setNewComment}
+                        />
+                        <Button type="submit" color="primary" className="self-end">
                             {t('torrentDetailsPage.submit_comment')}
-                        </button>
+                        </Button>
                     </form>
-                </div>
-                <div>
-                    {_comments.length > 0 ? (
-                        _comments.map((comment) => (
-                            <div key={comment.id} className="bg-[var(--color-card-background)] p-6 rounded-lg mb-4 shadow-sm border border-[var(--color-border)]">
-                                <p className="text-[var(--color-primary)] font-bold text-lg mb-1">{comment.user?.userName || "未知用户"}</p>
-                                <p className="text-[var(--color-text-muted)] text-sm mb-3">{new Date(comment.createdAt).toLocaleString()}</p>
-                                <p className="text-[var(--color-foreground)] text-base leading-relaxed">{comment.text}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-[var(--color-text-muted)] text-lg text-center">{t('torrentDetailsPage.no_comments')}</p>
-                    )}
-                </div>
-            </section>
+                    <div className="space-y-6">
+                        {torrentComments.length > 0 ? (
+                            torrentComments.map((comment) => (
+                                <Card key={comment.id} shadow="sm">
+                                    <CardHeader className="flex justify-between items-center">
+                                        <User
+                                            name={comment.user?.userName || "Unknown User"}
+                                            description={new Date(comment.createdAt).toLocaleString()}
+                                            avatarProps={{
+                                                // Assuming avatar is part of user object
+                                                // src: comment.user?.avatarUrl
+                                            }}
+                                        />
+                                    </CardHeader>
+                                    <CardBody>
+                                        <p>{comment.text}</p>
+                                    </CardBody>
+                                </Card>
+                            ))
+                        ) : (
+                            <p className="text-default-500 text-center">{t('torrentDetailsPage.no_comments')}</p>
+                        )}
+                    </div>
+                </CardBody>
+            </Card>
         </div>
     );
 }

@@ -30,13 +30,17 @@
         "avatar": "头像",
         "refresh_avatar": "不喜欢？换个新的！",
         "successful": "注册成功！您现在可以登录了。",
-        "failed": "注册失败，请稍后再试。"
+        "failed": "注册失败，请稍后再试。",
+        "enter_your_username": "请输入您的用户名",
+        "enter_your_email": "请输入您的邮箱地址",
+        "enter_your_password": "请输入您的密码",
+        "enter_your_invite_code": "请输入您的邀请码"
     },
     "header": {
         "home": "首页",
         "torrents": "种子",
         "forums": "论坛",
-        "requests": "请求",
+        "requests": "求种",
         "user_center": "用户中心",
         "messages": "消息",
         "store": "商店",
@@ -96,7 +100,10 @@
         "title": "种子详情",
         "add_comment": "添加评论...",
         "submit_comment": "提交评论",
-        "no_comments": "暂无评论。"
+        "no_comments": "暂无评论。",
+        "download_torrent": "下载种子",
+        "file_list": "文件列表",
+        "enter_your_comment": "请输入您的评论..."
     },
     "loginPage": {
         "failed": "登录失败，请检查您的用户名和密码。",
@@ -138,7 +145,9 @@
         "meta_anonymous_request": "匿名发布于 {date}",
         "filter_pending": "进行中",
         "filter_filled": "已完成",
-        "filter_all": "全部"
+        "filter_all": "全部",
+        "enter_request_title": "请输入求种标题",
+        "enter_request_description": "请详细描述您要求种的内容"
     },
     "messagesPage": {
         "title": "站内信",
@@ -194,7 +203,8 @@
         "submit_topic": "发布主题",
         "submitting": "发布中...",
         "error_all_fields_required": "所有字段均为必填项。",
-        "error_creating_topic": "创建主题失败。"
+        "error_creating_topic": "创建主题失败。",
+        "your_reply": "你的回复"
     },
     "forum_categories": {
         "Announcement": "公告区",
@@ -298,13 +308,13 @@
         "avatar_updated_error": "更新头像失败。",
         "change_password_title": "修改密码",
         "change_password_description": "更新您的账户密码。",
-        "current_password": "Current Password",
-        "new_password": "New Password",
-        "confirm_new_password": "Confirm New Password",
-        "passwords_do_not_match": "New passwords do not match.",
-        "changing_password": "Changing Password...",
-        "change_password_button": "Change Password",
-        "password_updated_success": "Password updated successfully!",
-        "password_updated_error": "Failed to update password."
+        "current_password": "当前密码",
+        "new_password": "新密码",
+        "confirm_new_password": "确认新密码",
+        "passwords_do_not_match": "两次输入的新密码不一致。",
+        "changing_password": "正在修改密码...",
+        "change_password_button": "修改密码",
+        "password_updated_success": "密码更新成功！",
+        "password_updated_error": "密码更新失败。"
     }
 }

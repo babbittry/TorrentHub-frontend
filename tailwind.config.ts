@@ -18,7 +18,15 @@ const config: Config = {
         colors: {
           primary: {
             DEFAULT: "#ff9903",
-            foreground: "#FFFFFF", // White text on the primary button
+            foreground: "#FFFFFF",
+          },
+          success: {
+            DEFAULT: "#18a34a",
+            foreground: "#FFFFFF",
+          },
+          warning: {
+            DEFAULT: "#f59e0b",
+            foreground: "#FFFFFF",
           },
         },
       },
@@ -26,7 +34,15 @@ const config: Config = {
         colors: {
           primary: {
             DEFAULT: "#ff9903",
-            foreground: "#FFFFFF", // White text on the primary button
+            foreground: "#FFFFFF",
+          },
+          success: {
+            DEFAULT: "#18a34a",
+            foreground: "#FFFFFF",
+          },
+          warning: {
+            DEFAULT: "#f59e0b",
+            foreground: "#FFFFFF",
           },
         },
       },

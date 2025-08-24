@@ -27,10 +27,14 @@
         "submitting": "送信中..."
     },
     "register": {
-        "avatar": "Avatar",
+        "avatar": "アバター",
         "refresh_avatar": "アバターを更新",
         "successful": "登録が完了しました！これでログインできます。",
-        "failed": "登録に失敗しました。後でもう一度お試しください。"
+        "failed": "登録に失敗しました。後でもう一度お試しください。",
+        "enter_your_username": "ユーザー名を入力してください",
+        "enter_your_email": "メールアドレスを入力してください",
+        "enter_your_password": "パスワードを入力してください",
+        "enter_your_invite_code": "招待コードを入力してください"
     },
     "header": {
         "home": "ホーム",
@@ -43,7 +47,7 @@
         "login": "ログイン",
         "register": "登録",
         "search_torrents": "トレントを検索...",
-        "about": "关于"
+        "about": "概要"
     },
     "footer": {
         "all_rights_reserved": "全著作権所有。",
@@ -96,7 +100,10 @@
         "title": "トレントの詳細",
         "add_comment": "コメントを追加...",
         "submit_comment": "コメントを送信",
-        "no_comments": "まだコメントはありません。"
+        "no_comments": "まだコメントはありません。",
+        "download_torrent": "トレントをダウンロード",
+        "file_list": "ファイルリスト",
+        "enter_your_comment": "コメントを入力してください..."
     },
     "loginPage": {
         "failed": "ログインに失敗しました。ユーザー名とパスワードを確認してください。",
@@ -138,7 +145,9 @@
         "meta_anonymous_request": "{date} に匿名でリクエストされました",
         "filter_pending": "保留中",
         "filter_filled": "完了",
-        "filter_all": "すべて"
+        "filter_all": "すべて",
+        "enter_request_title": "リクエストのタイトルを入力してください",
+        "enter_request_description": "リクエストする内容を詳しく説明してください"
     },
     "messagesPage": {
         "title": "メッセージ",
@@ -194,7 +203,8 @@
         "submit_topic": "トピックを送信",
         "submitting": "送信中...",
         "error_all_fields_required": "すべてのフィールドは必須です。",
-        "error_creating_topic": "トピックの作成中にエラーが発生しました。"
+        "error_creating_topic": "トピックの作成中にエラーが発生しました。",
+        "your_reply": "あなたの返信"
     },
     "forum_categories": {
         "Announcement": "お知らせ",
@@ -248,39 +258,39 @@
         }
     },
     "userProfile": {
-        "error": "Failed to load user profile.",
-        "userInfo": "User Information",
-        "avatar": "Avatar",
+        "error": "ユーザープロファイルの読み込みに失敗しました。",
+        "userInfo": "ユーザー情報",
+        "avatar": "アバター",
         "id": "ID",
-        "username": "Username",
-        "invitedBy": "Invited By",
-        "role": "Role",
-        "coins": "Coins",
-        "seedingSize": "Seeding Size",
-        "email": "Email",
-        "registrationTime": "Registration Time",
-        "personalStats": "Personal Stats",
-        "nominalUpload": "Nominal Upload",
-        "nominalDownload": "Nominal Download",
-        "realUpload": "Real Upload",
-        "realDownload": "Real Download",
-        "uploadingCount": "Uploading",
-        "downloadingCount": "Downloading",
-        "downloadTime": "Download Time",
-        "uploadTime": "Upload Time",
-        "minutes": "minutes",
-        "torrentInfo": "Torrent Info",
-        "myUploads": "My Uploads",
-        "clientInfo": "Client Info",
-        "client": "Client",
+        "username": "ユーザー名",
+        "invitedBy": "招待者",
+        "role": "役割",
+        "coins": "コイン",
+        "seedingSize": "シーディングサイズ",
+        "email": "メール",
+        "registrationTime": "登録日時",
+        "personalStats": "個人統計",
+        "nominalUpload": "名目アップロード",
+        "nominalDownload": "名目ダウンロード",
+        "realUpload": "実質アップロード",
+        "realDownload": "実質ダウンロード",
+        "uploadingCount": "アップロード中",
+        "downloadingCount": "ダウンロード中",
+        "downloadTime": "ダウンロード時間",
+        "uploadTime": "アップロード時間",
+        "minutes": "分",
+        "torrentInfo": "トレント情報",
+        "myUploads": "私のアップロード",
+        "clientInfo": "クライアント情報",
+        "client": "クライアント",
         "ip": "IP",
-        "port": "Port",
-        "lastReport": "Last Report",
-        "selfRegistered": "Self-registered"
+        "port": "ポート",
+        "lastReport": "最終報告",
+        "selfRegistered": "自己登録"
     },
     "about": {
-        "title": "关于",
-        "description": "关于本站"
+        "title": "概要",
+        "description": "このサイトについて"
     },
     "settingsPage": {
         "title": "設定",
@@ -288,23 +298,23 @@
         "security_settings": "セキュリティ設定",
         "change_avatar_title": "アバターを変更",
         "change_avatar_description": "新しいアバター画像をアップロードします。",
-        "select_avatar_file": "Select Avatar File",
-        "preview": "Preview",
-        "upload_avatar": "Upload Avatar",
-        "uploading": "Uploading...",
-        "no_file_selected": "No file selected.",
-        "avatar_upload_api_missing": "Avatar file upload API is missing. Please provide a backend endpoint for file uploads.",
-        "avatar_updated_success": "Avatar updated successfully!",
-        "avatar_updated_error": "Failed to update avatar.",
-        "change_password_title": "Change Password",
-        "change_password_description": "Update your account password.",
-        "current_password": "Current Password",
-        "new_password": "New Password",
-        "confirm_new_password": "Confirm New Password",
-        "passwords_do_not_match": "New passwords do not match.",
-        "changing_password": "Changing Password...",
-        "change_password_button": "Change Password",
-        "password_updated_success": "Password updated successfully!",
-        "password_updated_error": "Failed to update password."
+        "select_avatar_file": "アバターファイルを選択",
+        "preview": "プレビュー",
+        "upload_avatar": "アバターをアップロード",
+        "uploading": "アップロード中...",
+        "no_file_selected": "ファイルが選択されていません。",
+        "avatar_upload_api_missing": "アバターファイルのアップロードAPIがありません。ファイルのアップロード用のバックエンドエンドポイントを提供してください。",
+        "avatar_updated_success": "アバターが正常に更新されました！",
+        "avatar_updated_error": "アバターの更新に失敗しました。",
+        "change_password_title": "パスワードを変更",
+        "change_password_description": "アカウントのパスワードを更新します。",
+        "current_password": "現在のパスワード",
+        "new_password": "新しいパスワード",
+        "confirm_new_password": "新しいパスワードの確認",
+        "passwords_do_not_match": "新しいパスワードが一致しません。",
+        "changing_password": "パスワードを変更中...",
+        "change_password_button": "パスワードを変更",
+        "password_updated_success": "パスワードが正常に更新されました！",
+        "password_updated_error": "パスワードの更新に失敗しました。"
     }
 }

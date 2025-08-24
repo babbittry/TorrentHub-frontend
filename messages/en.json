@@ -23,14 +23,18 @@
         "comments": "Comments",
         "title": "Title",
         "date": "Date",
-        "optional": "Optional",
+        "optional": "(Optional)",
         "submitting": "Submitting..."
     },
     "register": {
         "avatar": "Avatar",
         "refresh_avatar": "Don't like? Give me a new one!",
         "successful": "Registration successful! You can now log in.",
-        "failed": "Registration failed, please try again later."
+        "failed": "Registration failed, please try again later.",
+        "enter_your_username": "Enter your username",
+        "enter_your_email": "Enter your email address",
+        "enter_your_password": "Enter your password",
+        "enter_your_invite_code": "Enter your invite code"
     },
     "header": {
         "home": "Home",
@@ -96,7 +100,10 @@
         "title": "Torrent Details",
         "add_comment": "Add Comment...",
         "submit_comment": "Submit Comment",
-        "no_comments": "No comments yet."
+        "no_comments": "No comments yet.",
+        "download_torrent": "Download Torrent",
+        "file_list": "File List",
+        "enter_your_comment": "Enter your comment..."
     },
     "loginPage": {
         "failed": "Login failed. Please check your credentials.",
@@ -138,7 +145,9 @@
         "meta_anonymous_request": "Anonymous request on {date}",
         "filter_pending": "Pending",
         "filter_filled": "Filled",
-        "filter_all": "All"
+        "filter_all": "All",
+        "enter_request_title": "Enter the request title",
+        "enter_request_description": "Describe what you are requesting in detail"
     },
     "messagesPage": {
         "title": "Messages",
@@ -194,7 +203,8 @@
         "submit_topic": "Submit Topic",
         "submitting": "Submitting...",
         "error_all_fields_required": "All fields are required.",
-        "error_creating_topic": "Error creating topic."
+        "error_creating_topic": "Error creating topic.",
+        "your_reply": "Your Reply"
     },
     "forum_categories": {
         "Announcement": "Announcements",

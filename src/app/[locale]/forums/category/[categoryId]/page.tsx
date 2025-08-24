@@ -5,7 +5,9 @@ import { forum, ForumTopicDto, ForumCategoryDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
-import ForumTopicListItem from '../../components/ForumTopicListItem';
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
+import { Button } from "@heroui/button";
+import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 
 const CategoryPage = () => {
     const params = useParams();
@@ -16,6 +18,7 @@ const CategoryPage = () => {
     const [error, setError] = useState<string | null>(null);
     const t = useTranslations('forumPage');
     const t_cat = useTranslations('forum_categories');
+    const t_header = useTranslations('header');
 
     const getCategoryName = (code: string) => {
         return t_cat(code);
@@ -48,42 +51,71 @@ const CategoryPage = () => {
         fetchTopics();
     }, [fetchTopics]);
 
-    return (
-        <div className="container mx-auto p-4 sm:p-6">
-            <div className="flex justify-between items-center mb-8">
-                <div>
-                    <h1 className="text-4xl font-extrabold text-[var(--color-primary)] drop-shadow-lg">
-                        {category ? getCategoryName(category.code) : t('topics')}
-                    </h1>
-                    {category && <p className="text-lg text-[var(--color-text-muted)] mt-1">{getCategoryDescription(category.code)}</p>}
-                </div>
-                <Link href={`/forums/new-topic?categoryId=${categoryId}`} className="btn-primary">
-                    {t('new_topic')}
-                </Link>
-            </div>
-
-            {isLoading ? (
-                <p className="text-center">{t('loading_topics')}</p>
-            ) : error ? (
-                <p className="text-center text-red-500">{error}</p>
-            ) : (
-                <div className="card p-4">
-                    {/* Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 items-center p-3 font-semibold text-[var(--color-text-muted)] border-b-2 border-[var(--color-border)]">
-                        <div className="col-span-7">{t('topic_title')}</div>
-                        <div className="col-span-2 text-center">{t('stats')}</div>
-                        <div className="col-span-3 text-right">{t('last_reply')}</div>
+    const renderCell = useCallback((topic: ForumTopicDto, columnKey: React.Key) => {
+        switch (columnKey) {
+            case "title":
+                return (
+                    <Link href={`/forums/topics/${topic.id}`}>
+                        <p className="font-semibold text-md text-foreground hover:text-primary transition-colors">
+                            {topic.title}
+                        </p>
+                        <p className="text-sm text-default-500">
+                            {t('by')} {topic.authorName}
+                        </p>
+                    </Link>
+                );
+            case "stats":
+                return (
+                    <div className="text-center">
+                        <p>{t('posts')}: {topic.postCount}</p>
                     </div>
-                    {/* Topic List */}
-                    <div>
-                        {topics.length > 0 ? (
-                            topics.map(topic => <ForumTopicListItem key={topic.id} topic={topic} />)
-                        ) : (
-                            <p className="text-center p-8 text-[var(--color-text-muted)]">{t('no_topics_found')}</p>
+                );
+            case "last_reply":
+                return (
+                    <div className="text-right">
+                        {topic.lastPostTime && (
+                            <p>{new Date(topic.lastPostTime).toLocaleString()}</p>
                         )}
                     </div>
+                );
+            default:
+                return null;
+        }
+    }, [t]);
+
+    return (
+        <div className="container mx-auto p-4 sm:p-6">
+            <Breadcrumbs className="mb-4">
+                <BreadcrumbItem href="/forums">{t_header('forums')}</BreadcrumbItem>
+                <BreadcrumbItem>{category ? getCategoryName(category.code) : '...'}</BreadcrumbItem>
+            </Breadcrumbs>
+            
+            <div className="flex justify-between items-center mb-8">
+                <div>
+                    <h1 className="text-4xl font-extrabold text-primary drop-shadow-lg">
+                        {category ? getCategoryName(category.code) : t('topics')}
+                    </h1>
+                    {category && <p className="text-lg text-default-500 mt-1">{getCategoryDescription(category.code)}</p>}
                 </div>
-            )}
+                <Button as={Link} href={`/forums/new-topic?categoryId=${categoryId}`} color="primary">
+                    {t('new_topic')}
+                </Button>
+            </div>
+
+            <Table aria-label="Topics list">
+                <TableHeader>
+                    <TableColumn key="title">{t('topic_title')}</TableColumn>
+                    <TableColumn key="stats" align="center">{t('stats')}</TableColumn>
+                    <TableColumn key="last_reply" align="end">{t('last_reply')}</TableColumn>
+                </TableHeader>
+                <TableBody items={topics} isLoading={isLoading} emptyContent={t('no_topics_found')}>
+                    {(item) => (
+                        <TableRow key={item.id}>
+                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
         </div>
     );
 };

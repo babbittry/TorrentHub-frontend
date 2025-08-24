@@ -378,6 +378,9 @@ export interface TorrentDto {
     isFree: boolean;
     freeUntil?: string | null; // date-time
     stickyStatus: TorrentStickyStatus;
+    seeders: number;
+    leechers: number;
+    snatched: number;
     imdbId?: string | null;
     tmDbId?: number | null;
     originalTitle?: string | null;

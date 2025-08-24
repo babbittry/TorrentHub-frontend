@@ -5,6 +5,12 @@ import { useRouter } from 'next/navigation';
 import { messages, users, SendMessageRequestDto, UserPublicProfileDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useDebounce } from '@uidotdev/usehooks';
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
+import { Input } from "@heroui/input";
+import { Textarea } from "@heroui/input";
+import { Button } from "@heroui/button";
+import { Avatar } from "@heroui/avatar";
 
 const NewMessagePage = () => {
     const router = useRouter();
@@ -24,7 +30,7 @@ const NewMessagePage = () => {
 
     useEffect(() => {
         const searchUsers = async () => {
-            if (debouncedSearchTerm) {
+            if (debouncedSearchTerm && !selectedUser) {
                 setIsSearching(true);
                 try {
                     const results = await users.getUsers(1, 10, debouncedSearchTerm);
@@ -39,12 +45,15 @@ const NewMessagePage = () => {
             }
         };
         searchUsers();
-    }, [debouncedSearchTerm]);
+    }, [debouncedSearchTerm, selectedUser]);
 
-    const handleSelectUser = (user: UserPublicProfileDto) => {
-        setSelectedUser(user);
-        setSearchTerm(user.userName);
-        setSearchResults([]);
+    const handleSelectionChange = (key: React.Key | null) => {
+        const userId = Number(key);
+        const user = searchResults.find(u => u.id === userId);
+        if (user) {
+            setSelectedUser(user);
+            setSearchTerm(user.userName);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -82,87 +91,65 @@ const NewMessagePage = () => {
     return (
         <div className="container mx-auto p-4 sm:p-6">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t('compose')}</h1>
-                <div className="card">
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Recipient Search */}
-                        <div className="relative">
-                            <label htmlFor="recipient" className="block text-sm font-medium text-[var(--color-foreground)]">{t('recipient')}</label>
-                            <input
-                                type="text"
-                                id="recipient"
-                                value={searchTerm}
-                                onChange={(e) => {
-                                    setSearchTerm(e.target.value);
+                <Card>
+                    <CardHeader>
+                        <h1 className="text-2xl font-bold">{t('compose')}</h1>
+                    </CardHeader>
+                    <CardBody>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <Autocomplete
+                                isRequired
+                                label={t('recipient')}
+                                placeholder={t('search_recipient_placeholder')}
+                                items={searchResults}
+                                inputValue={searchTerm}
+                                onInputChange={(value) => {
+                                    setSearchTerm(value);
                                     if (selectedUser) setSelectedUser(null); // Clear selection on new typing
                                 }}
-                                className="input-field mt-1"
-                                placeholder={t('search_recipient_placeholder')}
-                                autoComplete="off"
-                            />
-                            {(isSearching || searchResults.length > 0 || debouncedSearchTerm) && !selectedUser && (
-                                <ul className="absolute z-10 w-full bg-[var(--color-card-background)] border border-[var(--color-border)] rounded-md mt-1 shadow-lg max-h-60 overflow-auto">
-                                    {isSearching ? (
-                                        <li className="px-4 py-2 text-gray-500">{t('searching')}</li>
-                                    ) : searchResults.length > 0 ? (
-                                        searchResults.map(user => (
-                                            <li
-                                                key={user.id}
-                                                className="px-4 py-2 cursor-pointer hover:bg-[var(--color-border)]"
-                                                onClick={() => handleSelectUser(user)}
-                                            >
-                                                {user.userName}
-                                            </li>
-                                        ))
-                                    ) : (
-                                        <li className="px-4 py-2 text-gray-500">{t('no_users_found')}</li>
-                                    )}
-                                </ul>
-                            )}
-                        </div>
-
-                        {selectedUser && (
-                            <div className="p-3 bg-[var(--color-border)] rounded-lg">
-                                <p><span className="font-semibold">{t('recipient')}:</span> {selectedUser.userName} (ID: {selectedUser.id})</p>
-                            </div>
-                        )}
-
-                        <div>
-                            <label htmlFor="subject" className="block text-sm font-medium text-[var(--color-foreground)]">{t('subject')}</label>
-                            <input
-                                type="text"
-                                id="subject"
-                                value={subject}
-                                onChange={(e) => setSubject(e.target.value)}
-                                className="input-field mt-1"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="content" className="block text-sm font-medium text-[var(--color-foreground)]">{t('content')}</label>
-                            <textarea
-                                id="content"
-                                rows={10}
-                                value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                                className="input-field mt-1"
-                                required
-                            />
-                        </div>
-
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-                        <div className="flex justify-end">
-                            <button
-                                type="submit"
-                                disabled={isSubmitting || !selectedUser}
-                                className="btn-primary disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                onSelectionChange={handleSelectionChange}
+                                isLoading={isSearching}
+                                allowsCustomValue={true} // Allow user to type freely
                             >
-                                {isSubmitting ? t('sending') : t('send_message')}
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                                {(item) => (
+                                    <AutocompleteItem key={item.id} textValue={item.userName}>
+                                        <div className="flex gap-2 items-center">
+                                            <Avatar alt={item.userName} className="flex-shrink-0" size="sm" />
+                                            <span>{item.userName}</span>
+                                        </div>
+                                    </AutocompleteItem>
+                                )}
+                            </Autocomplete>
+
+                            <Input
+                                isRequired
+                                label={t('subject')}
+                                value={subject}
+                                onValueChange={setSubject}
+                            />
+
+                            <Textarea
+                                isRequired
+                                label={t('content')}
+                                value={content}
+                                onValueChange={setContent}
+                                minRows={10}
+                            />
+
+                            {error && <p className="text-danger text-sm">{error}</p>}
+
+                            <div className="flex justify-end">
+                                <Button
+                                    type="submit"
+                                    color="primary"
+                                    isDisabled={isSubmitting || !selectedUser}
+                                >
+                                    {isSubmitting ? t('sending') : t('send_message')}
+                                </Button>
+                            </div>
+                        </form>
+                    </CardBody>
+                </Card>
             </div>
         </div>
     );

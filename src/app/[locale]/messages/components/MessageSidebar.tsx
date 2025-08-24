@@ -2,6 +2,8 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import type { MailboxType } from '../page';
+import { Button } from "@heroui/button";
+import { Listbox, ListboxItem } from "@heroui/listbox";
 
 interface MessageSidebarProps {
     activeMailbox: MailboxType;
@@ -11,27 +13,29 @@ interface MessageSidebarProps {
 const MessageSidebar: React.FC<MessageSidebarProps> = ({ activeMailbox, onSelectMailbox }) => {
     const t = useTranslations('messagesPage');
 
-    const getButtonClass = (mailbox: MailboxType) => {
-        return `w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 font-semibold ${ 
-            activeMailbox === mailbox
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'hover:bg-[var(--color-border)]'
-        }`;
-    };
-
     return (
         <div className="flex flex-col space-y-4">
-            <Link href="/messages/new" className="btn-primary text-center font-bold py-3">
+            <Button as={Link} href="/messages/new" color="primary" className="w-full">
                 {t('compose')}
-            </Link>
-            <div className="flex flex-col space-y-2">
-                <button onClick={() => onSelectMailbox('inbox')} className={getButtonClass('inbox')}>
-                    {t('inbox')}
-                </button>
-                <button onClick={() => onSelectMailbox('sent')} className={getButtonClass('sent')}>
-                    {t('sent')}
-                </button>
-            </div>
+            </Button>
+            <Listbox
+                aria-label="Mailbox navigation"
+                variant="flat"
+                disallowEmptySelection
+                selectionMode="single"
+                selectedKeys={new Set([activeMailbox])}
+                onSelectionChange={(keys) => onSelectMailbox(Array.from(keys)[0] as MailboxType)}
+                itemClasses={{
+                    base: [
+                        "px-3 py-2 rounded-md transition-colors font-semibold",
+                        "data-[hover=true]:bg-default-100",
+                        "data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground",
+                    ],
+                }}
+            >
+                <ListboxItem key="inbox">{t('inbox')}</ListboxItem>
+                <ListboxItem key="sent">{t('sent')}</ListboxItem>
+            </Listbox>
         </div>
     );
 };

@@ -1,6 +1,10 @@
 import React from 'react';
 import { MessageDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import {Divider} from "@heroui/divider";
+import { User } from "@heroui/user";
+import { API_BASE_URL } from '@/lib/apiClient';
 
 interface MessageDetailProps {
     message: MessageDto | null;
@@ -11,28 +15,32 @@ const MessageDetail: React.FC<MessageDetailProps> = ({ message }) => {
 
     if (!message) {
         return (
-            <div className="flex items-center justify-center h-full text-[var(--color-text-muted)]">
+            <div className="flex items-center justify-center h-full text-default-500">
                 <p>{t('select_a_message')}</p>
             </div>
         );
     }
 
     return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4 pb-4 border-b border-[var(--color-border)]">{message.subject}</h2>
-            <div className="flex justify-between items-center mb-6 text-sm text-[var(--color-text-muted)]">
-                <div>
-                    <p><strong>{t('from')}:</strong> {message.sender?.userName || 'N/A'}</p>
-                    <p><strong>{t('to')}:</strong> {message.receiver?.userName || 'N/A'}</p>
+        <Card className="h-full">
+            <CardHeader className="flex flex-col items-start gap-4">
+                <h2 className="text-2xl font-bold text-foreground">{message.subject}</h2>
+                <User
+                    name={message.sender?.userName || 'N/A'}
+                    description={`${t('to')}: ${message.receiver?.userName || 'N/A'}`}
+                    avatarProps={{
+                        src: message.sender?.avatar ? `${API_BASE_URL}${message.sender.avatar}` : undefined
+                    }}
+                />
+                 <p className="text-xs text-default-500">{new Date(message.sentAt).toLocaleString()}</p>
+            </CardHeader>
+            <Divider />
+            <CardBody>
+                <div className="prose dark:prose-invert max-w-none text-foreground whitespace-pre-wrap">
+                    {message.content}
                 </div>
-                <div>
-                    <strong>{t('date')}:</strong> {new Date(message.sentAt).toLocaleString()}
-                </div>
-            </div>
-            <div className="prose dark:prose-invert max-w-none text-[var(--color-foreground)] whitespace-pre-wrap">
-                {message.content}
-            </div>
-        </div>
+            </CardBody>
+        </Card>
     );
 };
 

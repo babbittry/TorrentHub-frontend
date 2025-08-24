@@ -1,21 +1,22 @@
 "use client";
 
-
 import { Link } from '@/i18n/navigation';
 import type { TorrentDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
+import { Chip } from "@heroui/chip";
+import { Image } from "@heroui/image";
 
 interface TorrentListItemProps {
     torrent: TorrentDto;
 }
 
-const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w200'; // Smaller image for list view
+const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w200';
 
 export default function TorrentListItem({ torrent }: TorrentListItemProps) {
     const t_common = useTranslations('common');
     const posterUrl = torrent.posterPath
         ? `${TMDB_IMAGE_BASE_URL}${torrent.posterPath}`
-        : '/logo-black.png'; // A fallback image
+        : '/logo-black.png';
 
     const formatBytes = (bytes: number): string => {
         if (bytes === 0) return "0 Bytes";
@@ -26,42 +27,42 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
     };
 
     return (
-        <Link href={`/torrents/${torrent.id}`} className="group flex items-center bg-[var(--color-card-background)] p-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 border border-transparent hover:border-[var(--color-primary)]">
-            <div className="flex-shrink-0 w-16 h-24 relative mr-4">
-                <img
-                    src={posterUrl}
-                    alt={torrent.name}
-                    className="object-cover rounded w-full h-full"
-                    style={{ objectFit: 'cover' }}
-                />
-            </div>
-            <div className="flex-grow grid grid-cols-12 gap-4 items-center">
-                <div className="col-span-5">
-                    <div className="font-bold text-md text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors truncate">
-                        {torrent.name}
+        <Link href={`/torrents/${torrent.id}`} className="block group">
+            <div className="flex items-center bg-content1 p-3 rounded-lg shadow-sm hover:bg-content2 transition-all duration-200 border-2 border-transparent hover:border-primary">
+                <div className="flex-shrink-0 w-16 h-24 relative mr-4">
+                    <Image
+                        src={posterUrl}
+                        alt={torrent.name}
+                        radius="sm"
+                        className="w-full h-full object-cover"
+                    />
+                </div>
+                <div className="flex-grow grid grid-cols-12 gap-4 items-center">
+                    <div className="col-span-5">
+                        <div className="font-bold text-md text-foreground group-hover:text-primary transition-colors truncate">
+                            {torrent.name}
+                        </div>
+                        <div className="flex flex-wrap gap-2 mt-1.5">
+                            <Chip size="sm" variant="flat">{torrent.year}</Chip>
+                            {torrent.isFree && <Chip size="sm" color="success" variant="flat">{t_common('free')}</Chip>}
+                        </div>
                     </div>
-                    {/* TODO: Add tags here when available */}
-                    <div className="flex flex-wrap gap-2 mt-1">
-                        <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-2 py-0.5 rounded-full">{torrent.year}</span>
-                        {torrent.isFree && <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">{t_common('free')}</span>}
+                    <div className="col-span-2 text-center text-sm text-default-500">
+                        <span>{new Date(torrent.createdAt).toLocaleDateString()}</span>
                     </div>
-                </div>
-                <div className="col-span-2 text-center text-sm text-[var(--color-foreground-muted)]">
-                    <span>{new Date(torrent.createdAt).toLocaleDateString()}</span>
-                </div>
-                <div className="col-span-1 text-center text-sm text-[var(--color-foreground-muted)]">
-                    <span>{formatBytes(torrent.size)}</span>
-                </div>
-                <div className="col-span-1 text-center text-sm text-[var(--color-foreground-muted)]">
-                    {/* S/L/F Placeholders */}
-                    <div className="flex flex-col items-center">
-                        <span className="text-green-500">S: -</span>
-                        <span className="text-red-500">L: -</span>
-                        <span>C: -</span>
+                    <div className="col-span-1 text-center text-sm text-default-500">
+                        <span>{formatBytes(torrent.size)}</span>
                     </div>
-                </div>
-                <div className="col-span-3 text-center text-sm text-[var(--color-foreground-muted)]">
-                    {torrent.uploaderUsername}
+                    <div className="col-span-1 text-center text-sm text-default-500">
+                        <div className="flex flex-col items-center font-medium">
+                            <span className="text-success">S: -</span>
+                            <span className="text-danger">L: -</span>
+                            <span>C: -</span>
+                        </div>
+                    </div>
+                    <div className="col-span-3 text-center text-sm text-default-500">
+                        {torrent.uploaderUsername}
+                    </div>
                 </div>
             </div>
         </Link>

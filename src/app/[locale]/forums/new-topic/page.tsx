@@ -1,15 +1,22 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { forum, CreateForumTopicDto, ForumCategoryDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Select, SelectItem } from "@heroui/select";
+import { Input } from "@heroui/input";
+import { Textarea } from "@heroui/input";
+import { Button } from "@heroui/button";
+import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 
 const NewTopicPage = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const t = useTranslations('forumPage');
     const t_cat = useTranslations('forum_categories');
+    const t_header = useTranslations('header');
 
     const [categories, setCategories] = useState<ForumCategoryDto[]>([]);
     const [categoryId, setCategoryId] = useState(searchParams.get('categoryId') || '');
@@ -25,6 +32,10 @@ const NewTopicPage = () => {
     const getCategoryName = (code: string) => {
         return t_cat(code);
     };
+
+    const currentCategory = useMemo(() => {
+        return categories.find(cat => cat.id.toString() === categoryId);
+    }, [categories, categoryId]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -56,62 +67,61 @@ const NewTopicPage = () => {
     return (
         <div className="container mx-auto p-4 sm:p-6">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t('new_topic')}</h1>
-                <div className="card">
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div>
-                            <label htmlFor="category" className="block text-sm font-medium text-[var(--color-foreground)]">{t('category')}</label>
-                            <select
-                                id="category"
-                                value={categoryId}
+                <Breadcrumbs className="mb-4">
+                    <BreadcrumbItem href="/forums">{t_header('forums')}</BreadcrumbItem>
+                    {currentCategory && (
+                        <BreadcrumbItem href={`/forums/category/${currentCategory.id}`}>
+                            {getCategoryName(currentCategory.code)}
+                        </BreadcrumbItem>
+                    )}
+                    <BreadcrumbItem>{t('new_topic')}</BreadcrumbItem>
+                </Breadcrumbs>
+
+                <Card>
+                    <CardHeader>
+                        <h1 className="text-2xl font-bold">{t('new_topic')}</h1>
+                    </CardHeader>
+                    <CardBody>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <Select
+                                isRequired
+                                label={t('category')}
+                                placeholder={t('select_category')}
+                                selectedKeys={categoryId ? [categoryId] : []}
                                 onChange={(e) => setCategoryId(e.target.value)}
-                                className="input-field mt-1"
-                                required
                             >
-                                <option value="" disabled>{t('select_category')}</option>
                                 {categories.map(cat => (
-                                    <option key={cat.id} value={cat.id}>{getCategoryName(cat.code)}</option>
+                                    <SelectItem key={cat.id}>
+                                        {getCategoryName(cat.code)}
+                                    </SelectItem>
                                 ))}
-                            </select>
-                        </div>
+                            </Select>
 
-                        <div>
-                            <label htmlFor="title" className="block text-sm font-medium text-[var(--color-foreground)]">{t('topic_title')}</label>
-                            <input
-                                type="text"
-                                id="title"
+                            <Input
+                                isRequired
+                                label={t('topic_title')}
                                 value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                className="input-field mt-1"
-                                required
+                                onValueChange={setTitle}
                             />
-                        </div>
 
-                        <div>
-                            <label htmlFor="content" className="block text-sm font-medium text-[var(--color-foreground)]">{t('content')}</label>
-                            <textarea
-                                id="content"
-                                rows={12}
+                            <Textarea
+                                isRequired
+                                label={t('content')}
                                 value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                                className="input-field mt-1"
-                                required
+                                onValueChange={setContent}
+                                minRows={10}
                             />
-                        </div>
 
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
+                            {error && <p className="text-danger text-sm">{error}</p>}
 
-                        <div className="flex justify-end">
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="btn-primary disabled:bg-gray-400 disabled:cursor-not-allowed"
-                            >
-                                {isSubmitting ? t('submitting') : t('submit_topic')}
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                            <div className="flex justify-end">
+                                <Button type="submit" color="primary" isLoading={isSubmitting}>
+                                    {t('submit_topic')}
+                                </Button>
+                            </div>
+                        </form>
+                    </CardBody>
+                </Card>
             </div>
         </div>
     );

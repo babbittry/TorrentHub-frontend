@@ -6,20 +6,20 @@ import { auth } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import { Button } from "@heroui/button";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Input } from "@heroui/input";
 
 export default function RegisterPage() {
     const [userName, setUserName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-        const [inviteCode, setInviteCode] = useState<string>("");
+    const [inviteCode, setInviteCode] = useState<string>("");
     const [avatarSvg, setAvatar] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const router = useRouter();
-    const t_register = useTranslations('register');
-    const t_header = useTranslations('header');
-    const t_common = useTranslations('common');
-    const t_login = useTranslations('loginPage');
+    const t = useTranslations();
 
     const generateAvatar = () => {
         const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -37,91 +37,91 @@ export default function RegisterPage() {
 
         try {
             await auth.register({ userName, email, password, inviteCode, avatarSvg });
-            setSuccess(t_register('successful'));
+            setSuccess(t('register.successful'));
             router.push("/login"); // Redirect to login page on successful registration
         } catch (err: unknown) {
-            setError((err as Error).message || t_register('failed'));
+            setError((err as Error).message || t('register.failed'));
         }
     };
 
     return (
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
-            <div className="card w-full max-w-md transform transition-all duration-300 hover:scale-105">
-                <h1 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t_header('register')}</h1>
+            <Card className="w-full max-w-md p-4">
                 <form onSubmit={handleRegister}>
-                    <div className="mb-6">
-                        <label htmlFor="userName" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('username')}</label>
-                        <input
-                            type="text"
-                            id="userName"
-                            className="input-field"
+                    <CardHeader className="flex flex-col items-center pb-4">
+                        <h1 className="text-3xl font-bold">{t('header.register')}</h1>
+                    </CardHeader>
+                    <CardBody className="gap-6">
+                        <Input
+                            isRequired
+                            label={t('common.username')}
+                            placeholder={t('register.enter_your_username')}
                             value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                            required
+                            onValueChange={setUserName}
+                            size="lg"
+                            labelPlacement="outside"
                         />
-                    </div>
-                    <div className="mb-6">
-                        <label htmlFor="email" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('email')}</label>
-                        <input
+                        <Input
+                            isRequired
+                            label={t('common.email')}
+                            placeholder={t('register.enter_your_email')}
                             type="email"
-                            id="email"
-                            className="input-field"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
+                            onValueChange={setEmail}
+                            size="lg"
+                            labelPlacement="outside"
                         />
-                    </div>
-                    <div className="mb-6">
-                        <label htmlFor="password" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('password')}</label>
-                        <input
+                        <Input
+                            isRequired
+                            label={t('common.password')}
+                            placeholder={t('register.enter_your_password')}
                             type="password"
-                            id="password"
-                            className="input-field"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
+                            onValueChange={setPassword}
+                            size="lg"
+                            labelPlacement="outside"
                         />
-                    </div>
-                    <div className="mb-6">
-                        <label htmlFor="avatar" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_register('avatar')}</label>
-                        <div className="flex items-center space-x-4">
-                            <div
-                                id="avatar"
-                                className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex-shrink-0"
-                                dangerouslySetInnerHTML={{ __html: avatarSvg }}
-                            />
-                            <button
-                                type="button"
-                                onClick={generateAvatar}
-                                className="btn-primary px-4 py-2 rounded-md"
-                            >
-                                {t_register('refresh_avatar')}
-                            </button>
+                        <div>
+                            <label className="block text-sm font-medium text-foreground pb-1.5">{t('register.avatar')}</label>
+                            <div className="flex items-center space-x-4">
+                                <div
+                                    className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0"
+                                    dangerouslySetInnerHTML={{ __html: avatarSvg }}
+                                />
+                                <Button
+                                    type="button"
+                                    onPress={generateAvatar}
+                                    color="primary"
+                                    variant="ghost"
+                                >
+                                    {t('register.refresh_avatar')}
+                                </Button>
+                            </div>
                         </div>
-                    </div>
-                    <div className="mb-8">
-                        <label htmlFor="inviteCode" className="block text-[var(--color-foreground)] text-lg font-semibold mb-3">{t_common('invite_code')}</label>
-                        <input
-                            type="text"
-                            id="inviteCode"
-                            className="input-field"
+                        <Input
+                            label={t('common.invite_code')}
+                            placeholder={t('register.enter_your_invite_code')}
                             value={inviteCode}
-                            onChange={(e) => setInviteCode(e.target.value)}
+                            onValueChange={setInviteCode}
+                            size="lg"
+                            labelPlacement="outside"
                         />
-                    </div>
-                    {error && <p className="text-[var(--color-error)] text-center mb-6 text-lg font-medium">{error}</p>}
-                    {success && <p className="text-[var(--color-success)] text-center mb-6 text-lg font-medium">{success}</p>}
-                    <button
-                        type="submit"
-                        className="btn-primary w-full px-6 py-4 font-bold text-xl shadow-lg transform hover:scale-105"
-                    >
-                        {t_header('register')}
-                    </button>
+                        {error && <p className="text-danger text-center text-sm font-medium">{error}</p>}
+                        {success && <p className="text-success text-center text-sm font-medium">{success}</p>}
+                        <Button type="submit" color="primary" className="w-full font-bold text-lg" size="lg">
+                            {t('header.register')}
+                        </Button>
+                    </CardBody>
                 </form>
-                <p className="text-center text-[var(--color-text-muted)] mt-6 text-lg">
-                    {t_login('already_have_account')} <Link href="/login" className="text-[var(--color-primary)] hover:underline font-semibold">{t_header('login')}</Link>
-                </p>
-            </div>
+                <CardFooter className="pt-4">
+                    <p className="text-center text-default-500 text-sm w-full">
+                        {t('loginPage.already_have_account')}{' '}
+                        <Link href="/login" className="text-primary hover:underline font-semibold">
+                            {t('header.login')}
+                        </Link>
+                    </p>
+                </CardFooter>
+            </Card>
         </div>
     );
 }
