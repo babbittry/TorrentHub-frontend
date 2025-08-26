@@ -2,15 +2,17 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { requests, RequestDto, RequestStatus } from '@/lib/api';
+import { requests, RequestDto, RequestStatus, RejectFulfillmentDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import {Divider} from "@heroui/divider";
 import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
+import { Input, Textarea } from "@heroui/input";
 import { User } from "@heroui/user";
 import { Chip } from "@heroui/chip";
+import { useAuth } from '@/context/AuthContext';
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@heroui/modal";
 
 const RequestDetailPage = () => {
     const params = useParams();
@@ -21,6 +23,9 @@ const RequestDetailPage = () => {
     const [request, setRequest] = useState<RequestDto | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { user } = useAuth();
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const [rejectionReason, setRejectionReason] = useState('');
 
     const [bountyAmount, setBountyAmount] = useState('');
     const [torrentId, setTorrentId] = useState('');
@@ -74,6 +79,32 @@ const RequestDetailPage = () => {
         }
     };
 
+    const handleConfirm = async () => {
+        try {
+            await requests.confirm(requestId);
+            await fetchRequestDetails();
+        } catch (err) {
+            alert(t('requestsPage.error_confirming'));
+            console.error(err);
+        }
+    };
+
+    const handleReject = async () => {
+        if (!rejectionReason.trim()) {
+            alert(t('requestsPage.rejection_reason_required'));
+            return;
+        }
+        try {
+            await requests.reject(requestId, { reason: rejectionReason });
+            setRejectionReason('');
+            onOpenChange(); // Close modal
+            await fetchRequestDetails();
+        } catch (err) {
+            alert(t('requestsPage.error_rejecting'));
+            console.error(err);
+        }
+    };
+
     const inputClassNames = {
         inputWrapper: "bg-transparent border shadow-sm border-default-300/50 hover:border-default-400",
     };
@@ -100,7 +131,7 @@ const RequestDetailPage = () => {
                             t.rich('requestsPage.meta_requested_by', {
                                 username: request.requestedByUser.userName || 'Anonymous',
                                 date: new Date(request.createdAt).toLocaleString(),
-                                userLink: (chunks) => <Link href={`/${locale}/users/${request.requestedByUser?.id}`} className="text-primary hover:underline">{chunks}</Link>
+                                userLink: (chunks) => <Link href={`/users/${request.requestedByUser?.id}`} className="text-primary hover:underline">{chunks}</Link>
                             })
                         ) : (
                             t('requestsPage.meta_anonymous_request', {
@@ -114,30 +145,56 @@ const RequestDetailPage = () => {
                     <p className="text-default-700 whitespace-pre-wrap">{request.description}</p>
                 </CardBody>
                 <Divider />
-                <CardFooter className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <CardFooter className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                     <div>
                         <h3 className="font-semibold text-default-500">{t('requestsPage.status')}</h3>
-                        <Chip color={request.status === RequestStatus.Filled ? "success" : "warning"} size="md" variant="flat">
-                            {t(`requestsPage.status_${request.status.toLowerCase()}`)}
+                        <Chip 
+                            color={request.status === RequestStatus.Filled ? "success" : request.status === RequestStatus.PendingConfirmation ? "primary" : request.status === RequestStatus.Rejected ? "danger" : "warning"} 
+                            size="md" 
+                            variant="flat"
+                        >
+                            {t(`requestsPage.status_${request.status.toLowerCase().replace(/\s/g, '')}`)}
                         </Chip>
                     </div>
                     <div>
                         <h3 className="font-semibold text-default-500">{t('requestsPage.current_bounty')}</h3>
                         <p className="font-bold text-lg text-warning">{request.bountyAmount} Coins</p>
                     </div>
-                    {request.status === RequestStatus.Filled && (
+                    {request.status === RequestStatus.Filled || request.status === RequestStatus.Rejected && (
                         <div>
                             <h3 className="font-semibold text-default-500">{t('requestsPage.filled_by')}</h3>
                             <p>
-                                <Link href={`/${locale}/users/${request.filledByUser?.id}`} className="text-primary hover:underline">{request.filledByUser?.userName}</Link>
-                                {t('requestsPage.with_torrent')} <Link href={`/${locale}/torrents/${request.filledWithTorrentId}`} className="text-primary hover:underline">#{request.filledWithTorrentId}</Link>
+                                <Link href={`/users/${request.filledByUser?.id}`} className="text-primary hover:underline">{request.filledByUser?.userName}</Link>
+                                {t('requestsPage.with_torrent')} <Link href={`/torrents/${request.filledWithTorrentId}`} className="text-primary hover:underline">#{request.filledWithTorrentId}</Link>
                             </p>
                         </div>
                     )}
                 </CardFooter>
             </Card>
 
-            {request.status !== RequestStatus.Filled && (
+            {request.status === RequestStatus.Rejected && request.rejectionReason && (
+                <Card>
+                    <CardHeader><h3 className="text-xl font-semibold">{t('requestsPage.rejection_reason')}</h3></CardHeader>
+                    <CardBody>
+                        <p>{request.rejectionReason}</p>
+                    </CardBody>
+                </Card>
+            )}
+
+            {user?.id === request.requestedByUser?.id && request.status === RequestStatus.PendingConfirmation && (
+                <Card>
+                    <CardHeader><h3 className="text-xl font-semibold">{t('requestsPage.confirmation_actions')}</h3></CardHeader>
+                    <CardBody className="flex flex-row gap-4">
+                        <Button color="success" onClick={handleConfirm}>{t('requestsPage.confirm_fulfillment')}</Button>
+                        <Button color="danger" onClick={onOpen}>{t('requestsPage.reject_fulfillment')}</Button>
+                    </CardBody>
+                    <CardFooter>
+                        <p className="text-sm text-default-500">{t('requestsPage.confirmation_deadline_notice')}</p>
+                    </CardFooter>
+                </Card>
+            )}
+
+            {request.status !== RequestStatus.Filled && request.status !== RequestStatus.PendingConfirmation && (
                 <Card>
                     <CardBody className="space-y-8">
                         <form onSubmit={handleAddBounty} className="space-y-4">
@@ -172,6 +229,32 @@ const RequestDetailPage = () => {
                     </CardBody>
                 </Card>
             )}
+
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">{t('requestsPage.reject_fulfillment_reason')}</ModalHeader>
+                            <ModalBody>
+                                <Textarea
+                                    label={t('requestsPage.reason')}
+                                    placeholder={t('requestsPage.rejection_reason_placeholder')}
+                                    value={rejectionReason}
+                                    onValueChange={setRejectionReason}
+                                />
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" variant="light" onClick={onClose}>
+                                    {t('common.cancel')}
+                                </Button>
+                                <Button color="primary" onClick={handleReject}>
+                                    {t('requestsPage.submit_rejection')}
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
         </div>
     );
 };

@@ -110,6 +110,8 @@ const NewTopicPage = () => {
                                 value={content}
                                 onValueChange={setContent}
                                 minRows={10}
+                                maxLength={1000}
+                                description={`${content.length} / 1000`}
                             />
 
                             {error && <p className="text-danger text-sm">{error}</p>}

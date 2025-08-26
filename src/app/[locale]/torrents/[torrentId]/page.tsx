@@ -149,6 +149,8 @@ export default function TorrentDetailPage() {
                             placeholder={t('torrentDetailsPage.enter_your_comment')}
                             value={newComment}
                             onValueChange={setNewComment}
+                            maxLength={500}
+                            description={`${newComment.length} / 500`}
                         />
                         <Button type="submit" color="primary" className="self-end">
                             {t('torrentDetailsPage.submit_comment')}

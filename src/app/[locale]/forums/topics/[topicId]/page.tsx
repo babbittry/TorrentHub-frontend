@@ -152,6 +152,8 @@ const TopicDetailPage = () => {
                             value={replyContent}
                             onValueChange={setReplyContent}
                             isRequired
+                            maxLength={500}
+                            description={`${replyContent.length} / 500`}
                         />
                         <div className="flex justify-end">
                             <Button type="submit" color="primary" isLoading={isSubmitting}>

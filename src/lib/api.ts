@@ -59,6 +59,7 @@ export interface UserPrivateProfileDto {
     userName: string;
     avatar?: string | null;
     signature?: string | null;
+    language?: string | null;
     uploadedBytes: number;
     downloadedBytes: number;
     role: UserRole;
@@ -75,6 +76,7 @@ export interface UserPrivateProfileDto {
 export interface UpdateUserProfileDto {
     avatarUrl?: string | null;
     signature?: string | null;
+    language?: string | null;
 }
 
 export interface ChangePasswordDto {
@@ -223,6 +225,12 @@ export interface ProcessReportRequestDto {
 export enum RequestStatus {
     Pending = "Pending",
     Filled = "Filled",
+    PendingConfirmation = "PendingConfirmation",
+    Rejected = "Rejected",
+}
+
+export interface RejectFulfillmentDto {
+    reason: string;
 }
 
 export interface RequestDto {
@@ -233,6 +241,7 @@ export interface RequestDto {
     filledByUser?: UserPublicProfileDto;
     filledWithTorrentId?: number | null;
     status: RequestStatus;
+    rejectionReason?: string | null;
     createdAt: string; // date-time
     filledAt?: string | null; // date-time
     bountyAmount: number;
@@ -711,6 +720,22 @@ export const requests = {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(fillData),
+        });
+    },
+
+    confirm: async (requestId: number): Promise<void> => {
+        await fetchApi(`/api/requests/${requestId}/confirm`, {
+            method: 'POST',
+        });
+    },
+
+    reject: async (requestId: number, rejectData: RejectFulfillmentDto): Promise<void> => {
+        await fetchApi(`/api/requests/${requestId}/reject`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(rejectData),
         });
     },
 };

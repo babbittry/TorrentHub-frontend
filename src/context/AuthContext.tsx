@@ -27,6 +27,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
             const userData = await users.getMe();
             setUser(userData);
+            if (userData.language && userData.language !== locale) {
+                const currentPath = window.location.pathname.replace(`/${locale}`, '');
+                router.replace(`/${userData.language}${currentPath}`);
+            }
         } catch (error) {
             console.error("Failed to fetch user profile", error);
             setUser(null);

@@ -14,7 +14,13 @@ const RequestListItem: React.FC<RequestListItemProps> = ({ request, locale }) =>
 
     const statusColor = request.status === RequestStatus.Filled
         ? 'text-green-500'
+        : request.status === RequestStatus.PendingConfirmation
+        ? 'text-blue-500'
+        : request.status === RequestStatus.Rejected
+        ? 'text-red-500'
         : 'text-yellow-500';
+
+    const statusKey = `requestsPage.status_${request.status.toLowerCase()}`;
 
     return (
         <Link href={`/requests/${request.id}`}
@@ -34,7 +40,7 @@ const RequestListItem: React.FC<RequestListItemProps> = ({ request, locale }) =>
 
                 {/* Status */}
                 <div className={`col-span-6 sm:col-span-4 md:col-span-1 text-left md:text-center text-sm font-semibold ${statusColor}`}>
-                    {t(`requestsPage.status_${request.status.toLowerCase()}`)}
+                    {t(`requestsPage.status_${request.status.toLowerCase().replace(/\s/g, '')}`)}
                 </div>
 
                 {/* Requester */}

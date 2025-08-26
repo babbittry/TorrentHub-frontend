@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import UserMenu from './UserMenu';
+import { users } from '@/lib/api';
 
 export default function Header() {
     const { isAuthenticated } = useAuth();
@@ -32,11 +33,19 @@ export default function Header() {
         }
     };
 
-    const changeLanguage = (lng: string) => {
+    const changeLanguage = async (lng: string) => {
         const pathSegments = pathname.split('/');
         // Assuming the first segment after root is the locale
         const currentPathWithoutLocale = pathSegments.slice(2).join('/');
         router.push(`/${lng}/${currentPathWithoutLocale}`);
+
+        if (isAuthenticated) {
+            try {
+                await users.updateMe({ language: lng });
+            } catch (error) {
+                console.error("Failed to update language preference", error);
+            }
+        }
     };
 
     return (
