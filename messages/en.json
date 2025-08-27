@@ -47,7 +47,8 @@
         "login": "Login",
         "register": "Register",
         "search_torrents": "Search Torrents...",
-        "about": "About"
+        "about": "About",
+        "admin_dashboard": "Admin Dashboard"
     },
     "footer": {
         "all_rights_reserved": "All rights reserved.",
@@ -330,5 +331,26 @@
         "change_password_button": "Change Password",
         "password_updated_success": "Password updated successfully!",
         "password_updated_error": "Failed to update password."
+    },
+    "AdminDashboard": {
+        "dashboard": "Dashboard",
+        "adminPanel": "Admin Panel",
+        "title": "Admin Dashboard",
+        "addPoll": "Add Poll",
+        "addPollDescription": "Create new polls and set their deadlines.",
+        "bannedClients": "Banned Clients",
+        "bannedClientsDescription": "Manage the list of banned torrent clients.",
+        "duplicateIPs": "Duplicate IPs",
+        "duplicateIPsDescription": "View users sharing IPs, especially seeding IPs.",
+        "bandwidthSettings": "Bandwidth Settings",
+        "bandwidthSettingsDescription": "Limit users' upload bandwidth.",
+        "userManagement": "User Management",
+        "userManagementDescription": "View and disable user accounts, manage seeding and downloading records.",
+        "siteSettings": "Site Settings",
+        "siteSettingsDescription": "Modify basic site information like name, logo, and contact email.",
+        "announcementManagement": "Announcement Management",
+        "announcementManagementDescription": "Publish and manage site announcements.",
+        "logViewer": "Log Viewer",
+        "logViewerDescription": "View system logs and user operation logs."
     }
 }

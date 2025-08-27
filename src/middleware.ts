@@ -59,6 +59,6 @@ export const config = {
         // - … the ones containing a dot (e.g. `favicon.ico`)
         '/((?!api|_next|_vercel|.*\\..*).*)',
         // Match all pathnames starting with a locale (e.g. `/en`, `/fr`, `/ja`, `/zh`)
-        '/(en|fr|ja|zh)/:path*',
+        '/(en|fr|ja|zh-CN)/:path*',
     ]
 };

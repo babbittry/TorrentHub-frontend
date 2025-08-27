@@ -8,10 +8,10 @@ import { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import UserMenu from './UserMenu';
-import { users } from '@/lib/api';
+import { users, UserRole } from '@/lib/api';
 
 export default function Header() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user } = useAuth();
     const { theme, setTheme, currentMode } = useTheme();
     const t = useTranslations();
     const router = useRouter();
@@ -99,6 +99,13 @@ export default function Header() {
                             {t('header.about')}
                         </Link>
                     </li>
+                    {user?.role === UserRole.Administrator && (
+                        <li>
+                            <Link href="/admin/dashboard" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                                {t('header.admin_dashboard')}
+                            </Link>
+                        </li>
+                    )}
                 </ul>
                 <div className="flex items-center space-x-4">
                     <select
@@ -107,7 +114,7 @@ export default function Header() {
                         className="input-field bg-[var(--color-input-background)] border-[var(--color-input-border)] text-[var(--color-foreground)]"
                     >
                         <option value="en">English</option>
-                        <option value="zh">中文</option>
+                        <option value="zh-CN">中文</option>
                         <option value="ja">日本語</option>
                         <option value="fr">Français</option>
                     </select>

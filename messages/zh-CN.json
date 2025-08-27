@@ -47,7 +47,8 @@
         "login": "登录",
         "register": "注册",
         "search_torrents": "搜索种子...",
-        "about": "关于"
+        "about": "关于",
+        "admin_dashboard": "站点管理"
     },
     "footer": {
         "all_rights_reserved": "保留所有权利。",
@@ -330,5 +331,26 @@
         "change_password_button": "修改密码",
         "password_updated_success": "密码更新成功！",
         "password_updated_error": "密码更新失败。"
+    },
+    "AdminDashboard": {
+        "dashboard": "仪表盘",
+        "adminPanel": "管理面板",
+        "title": "管理员仪表盘",
+        "addPoll": "增加投票",
+        "addPollDescription": "创建新的投票，并设置截止日期。",
+        "bannedClients": "客户端禁用",
+        "bannedClientsDescription": "管理被禁用的做种客户端列表。",
+        "duplicateIPs": "重复IP检测",
+        "duplicateIPsDescription": "查看共享IP的用户，尤其是做种IP。",
+        "bandwidthSettings": "带宽设置",
+        "bandwidthSettingsDescription": "限制用户的上传带宽。",
+        "userManagement": "用户管理",
+        "userManagementDescription": "查看、禁用用户账号，管理做种和下载记录。",
+        "siteSettings": "站点设置",
+        "siteSettingsDescription": "修改站点名称、Logo、联系邮箱等基本信息。",
+        "announcementManagement": "公告管理",
+        "announcementManagementDescription": "发布和管理站点公告。",
+        "logViewer": "日志查看",
+        "logViewerDescription": "查看系统日志和用户操作日志。"
     }
 }

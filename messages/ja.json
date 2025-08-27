@@ -47,7 +47,8 @@
         "login": "ログイン",
         "register": "登録",
         "search_torrents": "トレントを検索...",
-        "about": "概要"
+        "about": "概要",
+        "admin_dashboard": "管理"
     },
     "footer": {
         "all_rights_reserved": "全著作権所有。",
@@ -330,5 +331,26 @@
         "change_password_button": "パスワードを変更",
         "password_updated_success": "パスワードが正常に更新されました！",
         "password_updated_error": "パスワードの更新に失敗しました。"
+    },
+    "AdminDashboard": {
+        "dashboard": "ダッシュボード",
+        "adminPanel": "管理パネル",
+        "title": "管理者ダッシュボード",
+        "addPoll": "投票を追加",
+        "addPollDescription": "新しい投票を作成し、締め切りを設定します。",
+        "bannedClients": "禁止クライアント",
+        "bannedClientsDescription": "禁止されたトレントクライアントのリストを管理します。",
+        "duplicateIPs": "重複IP検出",
+        "duplicateIPsDescription": "IPを共有しているユーザー、特にシーディングIPを確認します。",
+        "bandwidthSettings": "帯域幅設定",
+        "bandwidthSettingsDescription": "ユーザーのアップロード帯域幅を制限します。",
+        "userManagement": "ユーザー管理",
+        "userManagementDescription": "ユーザーアカウントの表示と無効化、シーディングとダウンロードの記録を管理します。",
+        "siteSettings": "サイト設定",
+        "siteSettingsDescription": "サイト名、ロゴ、連絡先メールアドレスなどの基本情報を変更します。",
+        "announcementManagement": "お知らせ管理",
+        "announcementManagementDescription": "サイトのお知らせを公開および管理します。",
+        "logViewer": "ログビューア",
+        "logViewerDescription": "システムログとユーザー操作ログを表示します。"
     }
 }

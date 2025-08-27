@@ -47,7 +47,8 @@
         "login": "Connexion",
         "register": "Inscription",
         "search_torrents": "Rechercher des torrents...",
-        "about": "À propos"
+        "about": "À propos",
+        "admin_dashboard": "Administrateur"
     },
     "footer": {
         "all_rights_reserved": "Tous droits réservés.",
@@ -330,5 +331,26 @@
         "change_password_button": "Changer le mot de passe",
         "password_updated_success": "Mot de passe mis à jour avec succès !",
         "password_updated_error": "Échec de la mise à jour du mot de passe."
+    },
+    "AdminDashboard": {
+        "dashboard": "Dashboard",
+        "adminPanel": "Admin Panel",
+        "title": "Tableau de bord administrateur",
+        "addPoll": "Ajouter un sondage",
+        "addPollDescription": "Créer de nouveaux sondages et définir leurs délais.",
+        "bannedClients": "Clients bannis",
+        "bannedClientsDescription": "Gérer la liste des clients torrent bannis.",
+        "duplicateIPs": "IP en double",
+        "duplicateIPsDescription": "Afficher les utilisateurs partageant des IP, en particulier les IP de seeding.",
+        "bandwidthSettings": "Paramètres de bande passante",
+        "bandwidthSettingsDescription": "Limiter la bande passante d'upload des utilisateurs.",
+        "userManagement": "Gestion des utilisateurs",
+        "userManagementDescription": "Afficher et désactiver les comptes utilisateurs, gérer les enregistrements de seeding et de téléchargement.",
+        "siteSettings": "Paramètres du site",
+        "siteSettingsDescription": "Modifier les informations de base du site comme le nom, le logo et l'e-mail de contact.",
+        "announcementManagement": "Gestion des annonces",
+        "announcementManagementDescription": "Publier et gérer les annonces du site.",
+        "logViewer": "Visionneuse de journaux",
+        "logViewerDescription": "Afficher les journaux système et les journaux d'opérations utilisateur."
     }
 }
