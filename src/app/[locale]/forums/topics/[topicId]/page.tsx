@@ -25,9 +25,9 @@ const TopicDetailPage = () => {
     const t_header = useTranslations('header');
     const t_cat = useTranslations('forum_categories');
 
-    const getCategoryName = (code: string) => {
+    const getCategoryName = useCallback((code: string) => {
         return t_cat(code);
-    };
+    }, [t_cat]);
 
     const fetchDetails = useCallback(async () => {
         if (!topicId) return;
@@ -37,6 +37,8 @@ const TopicDetailPage = () => {
                 forum.getTopicById(topicId),
                 forum.getCategories()
             ]);
+            console.log("Topic Data:", topicData);
+            console.log("Categories Data:", categoriesData);
             setTopic(topicData);
             setCategories(categoriesData);
         } catch (err) {
@@ -152,8 +154,8 @@ const TopicDetailPage = () => {
                             value={replyContent}
                             onValueChange={setReplyContent}
                             isRequired
-                            maxLength={500}
-                            description={`${replyContent.length} / 500`}
+                            maxLength={1000}
+                            description={`${replyContent.length} / 1000`}
                         />
                         <div className="flex justify-end">
                             <Button type="submit" color="primary" isLoading={isSubmitting}>

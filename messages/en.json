@@ -219,7 +219,10 @@
         "submitting": "Submitting...",
         "error_all_fields_required": "All fields are required.",
         "error_creating_topic": "Error creating topic.",
-        "your_reply": "Your Reply"
+        "your_reply": "Your Reply",
+        "error_permission_denied": "You do not have permission to post in this category.",
+        "title_placeholder": "Please enter a title",
+        "content_placeholder": "Please enter the content"
     },
     "forum_categories": {
         "Announcement": "Announcements",
@@ -332,25 +335,177 @@
         "password_updated_success": "Password updated successfully!",
         "password_updated_error": "Failed to update password."
     },
-    "AdminDashboard": {
-        "dashboard": "Dashboard",
-        "adminPanel": "Admin Panel",
-        "title": "Admin Dashboard",
-        "addPoll": "Add Poll",
-        "addPollDescription": "Create new polls and set their deadlines.",
-        "bannedClients": "Banned Clients",
-        "bannedClientsDescription": "Manage the list of banned torrent clients.",
-        "duplicateIPs": "Duplicate IPs",
-        "duplicateIPsDescription": "View users sharing IPs, especially seeding IPs.",
-        "bandwidthSettings": "Bandwidth Settings",
-        "bandwidthSettingsDescription": "Limit users' upload bandwidth.",
-        "userManagement": "User Management",
-        "userManagementDescription": "View and disable user accounts, manage seeding and downloading records.",
-        "siteSettings": "Site Settings",
-        "siteSettingsDescription": "Modify basic site information like name, logo, and contact email.",
-        "announcementManagement": "Announcement Management",
-        "announcementManagementDescription": "Publish and manage site announcements.",
-        "logViewer": "Log Viewer",
-        "logViewerDescription": "View system logs and user operation logs."
+    "Admin": {
+        "dashboard": {
+            "title": "Admin Dashboard",
+            "loading": "Loading...",
+            "stats": {
+                "totalUsers": "Total Users",
+                "totalTorrents": "Total Torrents",
+                "totalSeeders": "Total Seeders",
+                "totalLeechers": "Total Leechers",
+                "pendingReports": "Pending Reports",
+                "cheatLogs": "Cheat Logs",
+                "siteSettings": "Site Settings",
+                "configure": "Configure"
+            },
+            "reports": {
+                "title": "Recent Pending Reports",
+                "torrent": "TORRENT",
+                "reason": "REASON",
+                "reportedAt": "REPORTED AT"
+            },
+            "cheatLogs": {
+                "title": "Recent Cheat Logs",
+                "user": "USER",
+                "reason": "REASON",
+                "client": "CLIENT",
+                "date": "DATE"
+            }
+        },
+        "addPoll": {
+            "title": "Poll Management",
+            "createNewPoll": "Create New Poll",
+            "questionLabel": "Question",
+            "questionPlaceholder": "What is your favorite color?",
+            "optionsLabel": "Options",
+            "optionPlaceholder": "Option {index}",
+            "addOptionButton": "Add Option",
+            "createPollButton": "Create Poll",
+            "existingPolls": "Existing Polls",
+            "loading": "Loading polls...",
+            "table": {
+                "question": "QUESTION",
+                "totalVotes": "TOTAL VOTES",
+                "createdAt": "CREATED AT",
+                "actions": "ACTIONS"
+            },
+            "alert": {
+                "fillOut": "Please fill out the question and all options.",
+                "createFailed": "Failed to create poll.",
+                "deleteConfirm": "Are you sure you want to delete this poll?",
+                "deleteFailed": "Failed to delete poll."
+            }
+        },
+        "announcementManagement": {
+            "title": "Announcement Management",
+            "createNew": "Create New Announcement",
+            "edit": "Edit Announcement",
+            "form": {
+                "titleLabel": "Title",
+                "contentLabel": "Content",
+                "sendToInbox": "Send to user inboxes",
+                "cancelButton": "Cancel",
+                "createButton": "Create",
+                "updateButton": "Update"
+            },
+            "existingAnnouncements": "Existing Announcements",
+            "loading": "Loading...",
+            "table": {
+                "title": "TITLE",
+                "createdAt": "CREATED AT",
+                "actions": "ACTIONS"
+            },
+            "alert": {
+                "empty": "Title and content cannot be empty.",
+                "saveFailed": "Failed to save announcement.",
+                "deleteConfirm": "Are you sure you want to delete this announcement?",
+                "deleteFailed": "Failed to delete announcement."
+            }
+        },
+        "siteSettings": {
+            "title": "Site Settings",
+            "loading": "Loading...",
+            "loadFailed": "Failed to load settings.",
+            "configuration": "Configuration",
+            "siteNameLabel": "Site Name",
+            "siteDescriptionLabel": "Site Description",
+            "registrationOpenLabel": "Registration Open",
+            "inviteOnlyLabel": "Invite Only",
+            "maintenanceModeLabel": "Maintenance Mode",
+            "saveButton": "Save Settings",
+            "alert": {
+                "updateSuccess": "Settings updated successfully!",
+                "updateFailed": "Failed to update settings."
+            }
+        },
+        "bannedClients": {
+            "title": "Banned Client Management",
+            "addNew": "Add New Banned Client",
+            "peerIdPrefixLabel": "Peer ID Prefix",
+            "userAgentPatternLabel": "User-Agent Pattern",
+            "reasonLabel": "Reason",
+            "addButton": "Add Banned Client",
+            "existing": "Banned Clients",
+            "loading": "Loading...",
+            "table": {
+                "peerIdPrefix": "PEER ID PREFIX",
+                "userAgentPattern": "USER-AGENT PATTERN",
+                "reason": "REASON",
+                "actions": "ACTIONS"
+            },
+            "alert": {
+                "addFailed": "Failed to add banned client.",
+                "deleteConfirm": "Are you sure you want to unban this client?",
+                "deleteFailed": "Failed to delete banned client.",
+                "prefixOrPattern": "Please provide a Peer ID Prefix or a User-Agent Pattern."
+            }
+        },
+        "duplicateIps": {
+            "title": "Duplicate IP Management",
+            "cardTitle": "Users with Duplicate IPs",
+            "loading": "Loading...",
+            "table": {
+                "ipAddress": "IP ADDRESS",
+                "users": "USERS"
+            }
+        },
+        "logViewer": {
+            "title": "Log Viewer",
+            "systemLogsTab": "System Logs",
+            "cheatLogsTab": "Cheat Logs",
+            "searchLabel": "Search",
+            "levelLabel": "Level",
+            "loading": "Loading...",
+            "systemLogs": {
+                "table": {
+                    "level": "LEVEL",
+                    "timestamp": "TIMESTAMP",
+                    "message": "MESSAGE"
+                }
+            },
+            "cheatLogs": {
+                "table": {
+                    "user": "USER",
+                    "torrent": "TORRENT",
+                    "client": "CLIENT",
+                    "reason": "REASON",
+                    "date": "DATE"
+                }
+            }
+        },
+        "userManagement": {
+            "title": "User Management",
+            "searchLabel": "Search Users",
+            "loading": "Loading...",
+            "table": {
+                "username": "USERNAME",
+                "role": "ROLE",
+                "createdAt": "CREATED AT",
+                "actions": "ACTIONS"
+            },
+            "editButton": "Edit",
+            "modal": {
+                "title": "Edit User: {username}",
+                "roleLabel": "Role",
+                "bannedLabel": "Banned",
+                "banReasonLabel": "Ban Reason",
+                "cancelButton": "Cancel",
+                "saveButton": "Save Changes"
+            },
+            "alert": {
+                "updateFailed": "Failed to update user."
+            }
+        }
     }
 }

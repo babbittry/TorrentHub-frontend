@@ -132,6 +132,11 @@ export interface CreateAnnouncementRequestDto {
     sendToInbox: boolean;
 }
 
+export interface UpdateAnnouncementDto {
+    title: string;
+    content: string;
+}
+
 // DTOs for Comment related operations
 export interface CommentDto {
     id: number;
@@ -555,6 +560,22 @@ export const announcements = {
     getAnnouncements: async (): Promise<AnnouncementDto[]> => {
         return fetchApi('/api/announcements');
     },
+
+    updateAnnouncement: async (id: number, announcement: UpdateAnnouncementDto): Promise<AnnouncementDto> => {
+        return fetchApi(`/api/announcements/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(announcement),
+        });
+    },
+
+    deleteAnnouncement: async (id: number): Promise<void> => {
+        await fetchApi(`/api/announcements/${id}`, {
+            method: 'DELETE',
+        });
+    },
 };
 
 // Comments API Functions
@@ -842,6 +863,64 @@ export const coins = {
     },
 };
 
+// DTOs for Polls related operations
+export interface PollOptionDto {
+    id: number;
+    text: string;
+    voteCount: number;
+}
+
+export interface PollDto {
+    id: number;
+    question: string;
+    options: PollOptionDto[];
+    totalVotes: number;
+    createdAt: string; // date-time
+    createdBy: number;
+}
+
+export interface CreatePollDto {
+    question: string;
+    options: string[];
+}
+
+export interface VoteDto {
+    optionId: number;
+}
+
+// Polls API Functions
+export const polls = {
+    getPolls: async (): Promise<PollDto[]> => {
+        return fetchApi('/api/polls');
+    },
+
+    createPoll: async (poll: CreatePollDto): Promise<PollDto> => {
+        return fetchApi('/api/polls', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(poll),
+        });
+    },
+
+    deletePoll: async (id: number): Promise<void> => {
+        await fetchApi(`/api/polls/${id}`, {
+            method: 'DELETE',
+        });
+    },
+
+    vote: async (id: number, vote: VoteDto): Promise<void> => {
+        await fetchApi(`/api/polls/${id}/vote`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(vote),
+        });
+    }
+};
+
 // DTOs for Stats related operations
 export interface SiteStatsDto {
     totalUsers: number;
@@ -989,6 +1068,51 @@ export const torrentListing = {
     },
 };
 
+export interface CheatLogDto {
+    id: number;
+    userId: number;
+    userName?: string | null;
+    torrentId: number;
+    torrentName?: string | null;
+    client?: string | null;
+    reason?: string | null;
+    details?: string | null;
+    createdAt: string; // date-time
+}
+
+export interface SystemLogDto {
+    id: number;
+    level: string;
+    message: string;
+    timestamp: string; // date-time
+    exception?: string;
+}
+
+export interface UserSummaryDto {
+    id: number;
+    userName?: string | null;
+}
+
+export interface DuplicateIpUserDto {
+    ip?: string | null;
+    users?: UserSummaryDto[] | null;
+}
+
+export interface BannedClientDto {
+    id: number;
+    peer_id_prefix?: string | null;
+    user_agent_pattern?: string | null;
+    reason?: string | null;
+}
+
+export interface SiteSettingsDto {
+    siteName?: string | null;
+    siteDescription?: string | null;
+    isRegistrationOpen: boolean;
+    isInviteOnly: boolean;
+    maintenanceMode: boolean;
+}
+
 // Admin API Functions
 export const admin = {
     updateRegistrationSettings: async (settings: UpdateRegistrationSettingsDto): Promise<void> => {
@@ -999,5 +1123,56 @@ export const admin = {
             },
             body: JSON.stringify(settings),
         });
+    },
+
+    getCheatLogs: async (): Promise<CheatLogDto[]> => {
+        return fetchApi('/api/admin/logs/cheat');
+    },
+
+    getSiteSettings: async (): Promise<SiteSettingsDto> => {
+        return fetchApi('/api/admin/settings/site');
+    },
+
+    updateSiteSettings: async (settings: SiteSettingsDto): Promise<void> => {
+        await fetchApi('/api/admin/settings/site', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(settings),
+        });
+    },
+
+    getBannedClients: async (): Promise<BannedClientDto[]> => {
+        return fetchApi('/api/admin/banned-clients');
+    },
+
+    addBannedClient: async (client: BannedClientDto): Promise<BannedClientDto> => {
+        return fetchApi('/api/admin/banned-clients', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(client),
+        });
+    },
+
+    deleteBannedClient: async (id: number): Promise<void> => {
+        await fetchApi(`/api/admin/banned-clients/${id}`, {
+            method: 'DELETE',
+        });
+    },
+
+    getDuplicateIps: async (): Promise<DuplicateIpUserDto[]> => {
+        return fetchApi('/api/admin/duplicate-ips');
+    },
+
+    getSystemLogs: async (q?: string, level?: string, offset?: number, limit?: number): Promise<SystemLogDto[]> => {
+        const params = new URLSearchParams();
+        if (q) params.append('q', q);
+        if (level) params.append('level', level);
+        if (offset) params.append('offset', offset.toString());
+        if (limit) params.append('limit', limit.toString());
+        return fetchApi(`/api/admin/logs/system?${params.toString()}`);
     },
 };

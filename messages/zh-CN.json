@@ -219,7 +219,10 @@
         "submitting": "发布中...",
         "error_all_fields_required": "所有字段均为必填项。",
         "error_creating_topic": "创建主题失败。",
-        "your_reply": "你的回复"
+        "your_reply": "你的回复",
+        "error_permission_denied": "你没有权限在此分区发帖。",
+        "title_placeholder": "请输入标题",
+        "content_placeholder": "请输入内容"
     },
     "forum_categories": {
         "Announcement": "公告区",
@@ -332,25 +335,177 @@
         "password_updated_success": "密码更新成功！",
         "password_updated_error": "密码更新失败。"
     },
-    "AdminDashboard": {
-        "dashboard": "仪表盘",
-        "adminPanel": "管理面板",
-        "title": "管理员仪表盘",
-        "addPoll": "增加投票",
-        "addPollDescription": "创建新的投票，并设置截止日期。",
-        "bannedClients": "客户端禁用",
-        "bannedClientsDescription": "管理被禁用的做种客户端列表。",
-        "duplicateIPs": "重复IP检测",
-        "duplicateIPsDescription": "查看共享IP的用户，尤其是做种IP。",
-        "bandwidthSettings": "带宽设置",
-        "bandwidthSettingsDescription": "限制用户的上传带宽。",
-        "userManagement": "用户管理",
-        "userManagementDescription": "查看、禁用用户账号，管理做种和下载记录。",
-        "siteSettings": "站点设置",
-        "siteSettingsDescription": "修改站点名称、Logo、联系邮箱等基本信息。",
-        "announcementManagement": "公告管理",
-        "announcementManagementDescription": "发布和管理站点公告。",
-        "logViewer": "日志查看",
-        "logViewerDescription": "查看系统日志和用户操作日志。"
+    "Admin": {
+        "dashboard": {
+            "title": "管理员仪表盘",
+            "loading": "加载中...",
+            "stats": {
+                "totalUsers": "总用户数",
+                "totalTorrents": "总种子数",
+                "totalSeeders": "总做种数",
+                "totalLeechers": "总下载数",
+                "pendingReports": "待处理举报",
+                "cheatLogs": "作弊日志",
+                "siteSettings": "站点设置",
+                "configure": "配置"
+            },
+            "reports": {
+                "title": "最近的待处理举报",
+                "torrent": "种子",
+                "reason": "原因",
+                "reportedAt": "举报于"
+            },
+            "cheatLogs": {
+                "title": "最近的作弊日志",
+                "user": "用户",
+                "reason": "原因",
+                "client": "客户端",
+                "date": "日期"
+            }
+        },
+        "addPoll": {
+            "title": "投票管理",
+            "createNewPoll": "创建新投票",
+            "questionLabel": "问题",
+            "questionPlaceholder": "你最喜欢的颜色是什么？",
+            "optionsLabel": "选项",
+            "optionPlaceholder": "选项 {index}",
+            "addOptionButton": "添加选项",
+            "createPollButton": "创建投票",
+            "existingPolls": "现有投票",
+            "loading": "加载投票中...",
+            "table": {
+                "question": "问题",
+                "totalVotes": "总票数",
+                "createdAt": "创建于",
+                "actions": "操作"
+            },
+            "alert": {
+                "fillOut": "请填写问题和所有选项。",
+                "createFailed": "创建投票失败。",
+                "deleteConfirm": "你确定要删除这个投票吗？",
+                "deleteFailed": "删除投票失败。"
+            }
+        },
+        "announcementManagement": {
+            "title": "公告管理",
+            "createNew": "创建新公告",
+            "edit": "编辑公告",
+            "form": {
+                "titleLabel": "标题",
+                "contentLabel": "内容",
+                "sendToInbox": "发送到用户收件箱",
+                "cancelButton": "取消",
+                "createButton": "创建",
+                "updateButton": "更新"
+            },
+            "existingAnnouncements": "现有公告",
+            "loading": "加载中...",
+            "table": {
+                "title": "标题",
+                "createdAt": "创建于",
+                "actions": "操作"
+            },
+            "alert": {
+                "empty": "标题和内容不能为空。",
+                "saveFailed": "保存公告失败。",
+                "deleteConfirm": "你确定要删除这篇公告吗？",
+                "deleteFailed": "删除公告失败。"
+            }
+        },
+        "siteSettings": {
+            "title": "站点设置",
+            "loading": "加载中...",
+            "loadFailed": "加载设置失败。",
+            "configuration": "配置",
+            "siteNameLabel": "站点名称",
+            "siteDescriptionLabel": "站点描述",
+            "registrationOpenLabel": "开放注册",
+            "inviteOnlyLabel": "仅限邀请",
+            "maintenanceModeLabel": "维护模式",
+            "saveButton": "保存设置",
+            "alert": {
+                "updateSuccess": "设置更新成功！",
+                "updateFailed": "更新设置失败。"
+            }
+        },
+        "bannedClients": {
+            "title": "禁用客户端管理",
+            "addNew": "添加新的禁用客户端",
+            "peerIdPrefixLabel": "Peer ID 前缀",
+            "userAgentPatternLabel": "User-Agent 模式",
+            "reasonLabel": "原因",
+            "addButton": "添加禁用客户端",
+            "existing": "已禁用的客户端",
+            "loading": "加载中...",
+            "table": {
+                "peerIdPrefix": "PEER ID 前缀",
+                "userAgentPattern": "USER-AGENT 模式",
+                "reason": "原因",
+                "actions": "操作"
+            },
+            "alert": {
+                "addFailed": "添加禁用客户端失败。",
+                "deleteConfirm": "你确定要解禁这个客户端吗？",
+                "deleteFailed": "删除禁用客户端失败。",
+                "prefixOrPattern": "请提供 Peer ID 前缀或 User-Agent 模式。"
+            }
+        },
+        "duplicateIps": {
+            "title": "重复IP管理",
+            "cardTitle": "使用重复IP的用户",
+            "loading": "加载中...",
+            "table": {
+                "ipAddress": "IP地址",
+                "users": "用户"
+            }
+        },
+        "logViewer": {
+            "title": "日志查看器",
+            "systemLogsTab": "系统日志",
+            "cheatLogsTab": "作弊日志",
+            "searchLabel": "搜索",
+            "levelLabel": "级别",
+            "loading": "加载中...",
+            "systemLogs": {
+                "table": {
+                    "level": "级别",
+                    "timestamp": "时间戳",
+                    "message": "消息"
+                }
+            },
+            "cheatLogs": {
+                "table": {
+                    "user": "用户",
+                    "torrent": "种子",
+                    "client": "客户端",
+                    "reason": "原因",
+                    "date": "日期"
+                }
+            }
+        },
+        "userManagement": {
+            "title": "用户管理",
+            "searchLabel": "搜索用户",
+            "loading": "加载中...",
+            "table": {
+                "username": "用户名",
+                "role": "角色",
+                "createdAt": "创建于",
+                "actions": "操作"
+            },
+            "editButton": "编辑",
+            "modal": {
+                "title": "编辑用户: {username}",
+                "roleLabel": "角色",
+                "bannedLabel": "已封禁",
+                "banReasonLabel": "封禁原因",
+                "cancelButton": "取消",
+                "saveButton": "保存更改"
+            },
+            "alert": {
+                "updateFailed": "更新用户失败。"
+            }
+        }
     }
 }

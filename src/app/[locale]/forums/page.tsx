@@ -5,6 +5,20 @@ import { forum, ForumCategoryDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Card, CardBody } from '@heroui/card';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBullhorn, faComments, faVial, faPills, faFaucet, faQuestionCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+
+const categoryIcons: { [key: string]: IconDefinition } = {
+    'Announcement': faBullhorn,
+    'General': faComments,
+    'Feedback': faVial,
+    'Invite': faPills,
+    'Watering': faFaucet,
+};
+
+const getCategoryIcon = (categoryCode: string) => {
+    return categoryIcons[categoryCode] || faQuestionCircle;
+};
 
 const ForumHomePage = () => {
     const [categories, setCategories] = useState<ForumCategoryDto[]>([]);
@@ -52,9 +66,12 @@ const ForumHomePage = () => {
                             <Card isPressable isHoverable className="w-full">
                                 <CardBody>
                                     <div className="flex justify-between items-center">
-                                        <div>
-                                            <h2 className="text-xl font-bold text-primary">{getCategoryName(category.code)}</h2>
-                                            <p className="text-sm text-default-500 mt-1">{getCategoryDescription(category.code)}</p>
+                                        <div className="flex items-center gap-4">
+                                            <FontAwesomeIcon icon={getCategoryIcon(category.code)} className="text-2xl text-primary" />
+                                            <div>
+                                                <h2 className="text-xl font-bold text-primary">{getCategoryName(category.code)}</h2>
+                                                <p className="text-sm text-default-500 mt-1">{getCategoryDescription(category.code)}</p>
+                                            </div>
                                         </div>
                                         <div className="text-right text-sm text-default-500 space-y-1">
                                             <div className="flex items-center justify-end gap-2">

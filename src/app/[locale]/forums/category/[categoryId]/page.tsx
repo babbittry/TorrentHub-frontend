@@ -5,7 +5,7 @@ import { forum, ForumTopicDto, ForumCategoryDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
+import { Card, CardBody } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 
@@ -51,38 +51,6 @@ const CategoryPage = () => {
         fetchTopics();
     }, [fetchTopics]);
 
-    const renderCell = useCallback((topic: ForumTopicDto, columnKey: React.Key) => {
-        switch (columnKey) {
-            case "title":
-                return (
-                    <Link href={`/forums/topics/${topic.id}`}>
-                        <p className="font-semibold text-md text-foreground hover:text-primary transition-colors">
-                            {topic.title}
-                        </p>
-                        <p className="text-sm text-default-500">
-                            {t('by')} {topic.authorName}
-                        </p>
-                    </Link>
-                );
-            case "stats":
-                return (
-                    <div className="text-center">
-                        <p>{t('posts')}: {topic.postCount}</p>
-                    </div>
-                );
-            case "last_reply":
-                return (
-                    <div className="text-right">
-                        {topic.lastPostTime && (
-                            <p>{new Date(topic.lastPostTime).toLocaleString()}</p>
-                        )}
-                    </div>
-                );
-            default:
-                return null;
-        }
-    }, [t]);
-
     return (
         <div className="container mx-auto p-4 sm:p-6">
             <Breadcrumbs className="mb-4">
@@ -102,20 +70,42 @@ const CategoryPage = () => {
                 </Button>
             </div>
 
-            <Table aria-label="Topics list">
-                <TableHeader>
-                    <TableColumn key="title">{t('topic_title')}</TableColumn>
-                    <TableColumn key="stats" align="center">{t('stats')}</TableColumn>
-                    <TableColumn key="last_reply" align="end">{t('last_reply')}</TableColumn>
-                </TableHeader>
-                <TableBody items={topics} isLoading={isLoading} emptyContent={t('no_topics_found')}>
-                    {(item) => (
-                        <TableRow key={item.id}>
-                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+            {isLoading ? (
+                <p className="text-center">{t('loading_topics')}</p>
+            ) : error ? (
+                <p className="text-center text-danger">{error}</p>
+            ) : topics.length === 0 ? (
+                <p className="text-center">{t('no_topics_found')}</p>
+            ) : (
+                <div className="space-y-4">
+                    {topics.map(topic => (
+                        <Card key={topic.id} isHoverable isPressable className="w-full">
+                            <Link href={`/forums/topics/${topic.id}`} className="block w-full h-full">
+                                <CardBody>
+                                    <div className="grid grid-cols-12 gap-4 items-center">
+                                        <div className="col-span-8">
+                                            <h3 className="text-lg font-semibold text-foreground">{topic.title}</h3>
+                                            <p className="text-sm text-default-500">{t('by')} {topic.authorName}</p>
+                                        </div>
+                                        <div className="col-span-2 text-center text-sm text-default-500">
+                                            <p>{t('posts')}</p>
+                                            <p className="font-bold text-foreground">{topic.postCount}</p>
+                                        </div>
+                                        <div className="col-span-2 text-right text-sm text-default-500">
+                                            {topic.lastPostTime && (
+                                                <>
+                                                    <p>{t('last_reply')}</p>
+                                                    <p className="font-semibold text-foreground">{new Date(topic.lastPostTime).toLocaleString()}</p>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </CardBody>
+                            </Link>
+                        </Card>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
