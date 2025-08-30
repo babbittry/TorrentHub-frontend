@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useCallback } from 'react';
-import { users, UserPublicProfileDto, UpdateUserAdminDto, UserRole } from '../../../../lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
+import { admin, users, UserProfileDetailDto, UpdateUserAdminDto, UserRole } from '../../../../lib/api';
+import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
 import { CustomInput } from '../../components/CustomInputs';
 import { Button } from "@heroui/button";
@@ -9,28 +9,32 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure
 import { Select, SelectItem } from "@heroui/react";
 import { Switch } from '@heroui/react';
 import { useTranslations } from 'next-intl';
+import { Pagination } from "@heroui/pagination";
 
 const UserManagementPage = () => {
     const t = useTranslations('Admin');
-    const [userList, setUserList] = useState<UserPublicProfileDto[]>([]);
+    const [userList, setUserList] = useState<UserProfileDetailDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [page] = useState(1);
-    const [selectedUser, setSelectedUser] = useState<UserPublicProfileDto | null>(null);
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(10);
+    const [totalCount, setTotalCount] = useState(0);
+    const [selectedUser, setSelectedUser] = useState<UserProfileDetailDto | null>(null);
     const [editFormData, setEditFormData] = useState<UpdateUserAdminDto>({});
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const fetchUsers = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await users.getUsers(page, 10, searchTerm);
-            setUserList(data);
+            const data = await admin.getUsers(page, pageSize, searchTerm);
+            setUserList(data.items);
+            setTotalCount(data.totalCount);
         } catch (error) {
             console.error("Failed to fetch users:", error);
         } finally {
             setLoading(false);
         }
-    }, [page, searchTerm]);
+    }, [page, pageSize, searchTerm]);
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -40,13 +44,13 @@ const UserManagementPage = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [searchTerm, page, fetchUsers]);
 
-    const handleEdit = (user: UserPublicProfileDto) => {
+    const handleEdit = (user: UserProfileDetailDto) => {
         setSelectedUser(user);
-        setEditFormData({ role: user.role });
+        setEditFormData({ role: user.role, isBanned: user.isBanned, banReason: user.banReason });
         onOpen();
     };
 
-    const handleFormChange = (name: string, value: string | boolean | UserRole) => {
+    const handleFormChange = (name: string, value: string | boolean | UserRole | null) => {
         setEditFormData(prev => ({ ...prev, [name]: value }));
     };
 
@@ -83,6 +87,7 @@ const UserManagementPage = () => {
                             <TableHeader>
                                 <TableColumn>{t('userManagement.table.username')}</TableColumn>
                                 <TableColumn>{t('userManagement.table.role')}</TableColumn>
+                                <TableColumn>{t('userManagement.table.email')}</TableColumn>
                                 <TableColumn>{t('userManagement.table.createdAt')}</TableColumn>
                                 <TableColumn>{t('userManagement.table.actions')}</TableColumn>
                             </TableHeader>
@@ -91,6 +96,7 @@ const UserManagementPage = () => {
                                     <TableRow key={item.id}>
                                         <TableCell>{item.userName}</TableCell>
                                         <TableCell>{item.role}</TableCell>
+                                        <TableCell>{item.email}</TableCell>
                                         <TableCell>{new Date(item.createdAt).toLocaleString()}</TableCell>
                                         <TableCell>
                                             <Button onClick={() => handleEdit(item)} size="sm">{t('userManagement.editButton')}</Button>
@@ -101,6 +107,13 @@ const UserManagementPage = () => {
                         </Table>
                     )}
                 </CardBody>
+                <CardFooter>
+                    <Pagination
+                        total={Math.ceil(totalCount / pageSize)}
+                        page={page}
+                        onChange={setPage}
+                    />
+                </CardFooter>
             </Card>
 
             <Modal isOpen={isOpen} onClose={onClose}>

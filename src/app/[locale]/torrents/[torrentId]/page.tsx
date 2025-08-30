@@ -12,6 +12,7 @@ import { Textarea } from "@heroui/input";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { Link as UILink } from "@heroui/link";
 import { User } from "@heroui/user";
+import { Pagination } from "@heroui/pagination";
 
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -27,6 +28,9 @@ export default function TorrentDetailPage() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [newComment, setNewComment] = useState<string>("");
+    const [commentsPage, setCommentsPage] = useState<number>(1);
+    const [commentsPageSize] = useState<number>(10);
+    const [commentsTotalCount, setCommentsTotalCount] = useState<number>(0);
     const t = useTranslations();
 
     const fetchTorrentDetails = useCallback(async () => {
@@ -36,15 +40,16 @@ export default function TorrentDetailPage() {
             const data: TorrentDto = await torrents.getTorrentById(Number(torrentId));
             setTorrent(data);
 
-            const fetchedComments: CommentDto[] = await comments.getComments(Number(torrentId));
-            setComments(fetchedComments);
+            const fetchedComments = await comments.getComments(Number(torrentId), commentsPage, commentsPageSize);
+            setComments(fetchedComments.items);
+            setCommentsTotalCount(fetchedComments.totalCount);
 
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
         } finally {
             setLoading(false);
         }
-    }, [torrentId, t]);
+    }, [torrentId, t, commentsPage, commentsPageSize]);
 
     useEffect(() => {
         if (torrentId) {
@@ -180,6 +185,13 @@ export default function TorrentDetailPage() {
                         )}
                     </div>
                 </CardBody>
+                <CardFooter>
+                    <Pagination
+                        total={Math.ceil(commentsTotalCount / commentsPageSize)}
+                        page={commentsPage}
+                        onChange={setCommentsPage}
+                    />
+                </CardFooter>
             </Card>
         </div>
     );

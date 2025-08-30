@@ -1,16 +1,17 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { forum, ForumTopicDetailDto, CreateForumPostDto, ForumCategoryDto } from '@/lib/api';
+import { forum, ForumTopicDetailDto, CreateForumPostDto, ForumCategoryDto, ForumPostDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
-import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Textarea } from "@heroui/input";
 import { User } from "@heroui/user";
 import { API_BASE_URL } from "@/lib/apiClient";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
+import { Pagination } from "@heroui/pagination";
 
 const TopicDetailPage = () => {
     const params = useParams();
@@ -21,6 +22,8 @@ const TopicDetailPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [replyContent, setReplyContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(20);
     const t = useTranslations('forumPage');
     const t_header = useTranslations('header');
     const t_cat = useTranslations('forum_categories');
@@ -34,11 +37,9 @@ const TopicDetailPage = () => {
         try {
             setIsLoading(true);
             const [topicData, categoriesData] = await Promise.all([
-                forum.getTopicById(topicId),
+                forum.getTopicById(topicId, page, pageSize),
                 forum.getCategories()
             ]);
-            console.log("Topic Data:", topicData);
-            console.log("Categories Data:", categoriesData);
             setTopic(topicData);
             setCategories(categoriesData);
         } catch (err) {
@@ -47,7 +48,7 @@ const TopicDetailPage = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [topicId, t]);
+    }, [topicId, page, pageSize, t]);
 
     useEffect(() => {
         fetchDetails();
@@ -83,8 +84,11 @@ const TopicDetailPage = () => {
             const postData: CreateForumPostDto = { content: replyContent };
             await forum.createPost(topicId, postData);
             setReplyContent('');
-            const topicData = await forum.getTopicById(topicId);
-            setTopic(topicData);
+            // Refetch to see the new post, ideally go to the last page
+            const totalPosts = topic?.posts.totalCount || 0;
+            const lastPage = Math.ceil((totalPosts + 1) / pageSize);
+            setPage(lastPage);
+            fetchDetails();
         } catch (err) {
             alert(t('error_posting_reply'));
             console.error(err);
@@ -120,7 +124,7 @@ const TopicDetailPage = () => {
             <h1 className="text-3xl font-bold text-foreground mb-6">{topic.title}</h1>
 
             <div className="space-y-6">
-                {topic.posts.map(post => (
+                {topic.posts.items.map((post: ForumPostDto) => (
                     <Card key={post.id}>
                         <CardHeader>
                             <User
@@ -139,6 +143,16 @@ const TopicDetailPage = () => {
                     </Card>
                 ))}
             </div>
+            
+            <Card className="mt-6">
+                <CardFooter>
+                    <Pagination
+                        total={Math.ceil(topic.posts.totalCount / pageSize)}
+                        page={page}
+                        onChange={setPage}
+                    />
+                </CardFooter>
+            </Card>
 
             {/* Reply Form */}
             <Card className="mt-8">

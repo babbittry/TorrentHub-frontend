@@ -5,9 +5,10 @@ import { forum, ForumTopicDto, ForumCategoryDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
-import { Card, CardBody } from "@heroui/card";
+import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
+import { Pagination } from "@heroui/pagination";
 
 const CategoryPage = () => {
     const params = useParams();
@@ -16,6 +17,9 @@ const CategoryPage = () => {
     const [topics, setTopics] = useState<ForumTopicDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(20);
+    const [totalCount, setTotalCount] = useState(0);
     const t = useTranslations('forumPage');
     const t_cat = useTranslations('forum_categories');
     const t_header = useTranslations('header');
@@ -34,18 +38,19 @@ const CategoryPage = () => {
             setIsLoading(true);
             const [categoriesData, topicsData] = await Promise.all([
                 forum.getCategories(),
-                forum.getTopics(categoryId)
+                forum.getTopics(categoryId, page, pageSize)
             ]);
-            const currentCategory = categoriesData.find(c => c.id === categoryId);
+            const currentCategory = categoriesData.find((c: ForumCategoryDto) => c.id === categoryId);
             setCategory(currentCategory || null);
-            setTopics(topicsData);
+            setTopics(topicsData.items);
+            setTotalCount(topicsData.totalCount);
         } catch (err) {
             setError(t('error_loading_topics'));
             console.error(err);
         } finally {
             setIsLoading(false);
         }
-    }, [categoryId, t]);
+    }, [categoryId, page, pageSize, t]);
 
     useEffect(() => {
         fetchTopics();
@@ -77,34 +82,45 @@ const CategoryPage = () => {
             ) : topics.length === 0 ? (
                 <p className="text-center">{t('no_topics_found')}</p>
             ) : (
-                <div className="space-y-4">
-                    {topics.map(topic => (
-                        <Card key={topic.id} isHoverable isPressable className="w-full">
-                            <Link href={`/forums/topics/${topic.id}`} className="block w-full h-full">
-                                <CardBody>
-                                    <div className="grid grid-cols-12 gap-4 items-center">
-                                        <div className="col-span-8">
-                                            <h3 className="text-lg font-semibold text-foreground">{topic.title}</h3>
-                                            <p className="text-sm text-default-500">{t('by')} {topic.authorName}</p>
+                <>
+                    <div className="space-y-4">
+                        {topics.map(topic => (
+                            <Card key={topic.id} isHoverable isPressable className="w-full">
+                                <Link href={`/forums/topics/${topic.id}`} className="block w-full h-full">
+                                    <CardBody>
+                                        <div className="grid grid-cols-12 gap-4 items-center">
+                                            <div className="col-span-8">
+                                                <h3 className="text-lg font-semibold text-foreground">{topic.title}</h3>
+                                                <p className="text-sm text-default-500">{t('by')} {topic.authorName}</p>
+                                            </div>
+                                            <div className="col-span-2 text-center text-sm text-default-500">
+                                                <p>{t('posts')}</p>
+                                                <p className="font-bold text-foreground">{topic.postCount}</p>
+                                            </div>
+                                            <div className="col-span-2 text-right text-sm text-default-500">
+                                                {topic.lastPostTime && (
+                                                    <>
+                                                        <p>{t('last_reply')}</p>
+                                                        <p className="font-semibold text-foreground">{new Date(topic.lastPostTime).toLocaleString()}</p>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="col-span-2 text-center text-sm text-default-500">
-                                            <p>{t('posts')}</p>
-                                            <p className="font-bold text-foreground">{topic.postCount}</p>
-                                        </div>
-                                        <div className="col-span-2 text-right text-sm text-default-500">
-                                            {topic.lastPostTime && (
-                                                <>
-                                                    <p>{t('last_reply')}</p>
-                                                    <p className="font-semibold text-foreground">{new Date(topic.lastPostTime).toLocaleString()}</p>
-                                                </>
-                                            )}
-                                        </div>
-                                    </div>
-                                </CardBody>
-                            </Link>
-                        </Card>
-                    ))}
-                </div>
+                                    </CardBody>
+                                </Link>
+                            </Card>
+                        ))}
+                    </div>
+                    <Card>
+                        <CardFooter>
+                            <Pagination
+                                total={Math.ceil(totalCount / pageSize)}
+                                page={page}
+                                onChange={setPage}
+                            />
+                        </CardFooter>
+                    </Card>
+                </>
             )}
         </div>
     );

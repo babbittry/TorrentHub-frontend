@@ -36,7 +36,7 @@ export default function Home() {
             setErrorTorrents(null);
             try {
                 const fetchedTorrents = await torrentListing.getTorrentListing(1, 6);
-                setTorrents(fetchedTorrents || []); // Ensure it's an array
+                setTorrents(fetchedTorrents.items || []); // Ensure it's an array
             } catch (err: unknown) {
                 setErrorTorrents((err as Error).message || t_common('error'));
             } finally {
@@ -52,7 +52,7 @@ export default function Home() {
         setErrorTorrents(null);
         try {
             const fetchedTorrents = await torrentListing.getTorrentListing(1, 6, undefined, searchTerm);
-            setTorrents(fetchedTorrents || []);
+            setTorrents(fetchedTorrents.items || []);
         } catch (err: unknown) {
             setErrorTorrents((err as Error).message || t_common('error'));
         } finally {

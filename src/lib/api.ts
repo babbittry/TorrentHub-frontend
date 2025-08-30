@@ -1,3 +1,17 @@
+export interface PaginatedResult<T> {
+    items: T[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+}
+
+export interface PaginatedResult<T> {
+    items: T[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+}
+
 // DTOs for User related operations
 export enum UserRole {
     // Standard User Tiers (increasing privileges)
@@ -115,6 +129,9 @@ export interface UserProfileDetailDto {
     currentLeechingCount: number;
     totalLeechingTimeMinutes: number;
     totalSeedingTimeMinutes: number;
+    isBanned: boolean;
+    banReason?: NullableOfUserBanReason | null;
+    banUntil?: string | null;
 }
 
 // DTOs for Announcement related operations
@@ -320,7 +337,7 @@ export interface ForumTopicDetailDto {
     isSticky: boolean;
     isLocked: boolean;
     createdAt: string; // date-time
-    posts: ForumPostDto[];
+    posts: PaginatedResult<ForumPostDto>;
 }
 
 export interface CreateForumTopicDto {
@@ -590,7 +607,7 @@ export const comments = {
         });
     },
 
-    getComments: async (torrentId: number, page: number = 1, pageSize: number = 10): Promise<CommentDto[]> => {
+    getComments: async (torrentId: number, page: number = 1, pageSize: number = 10): Promise<PaginatedResult<CommentDto>> => {
         const params = new URLSearchParams({
             page: page.toString(),
             pageSize: pageSize.toString(),
@@ -708,8 +725,11 @@ export const requests = {
         });
     },
 
-    getRequests: async (status?: string, sortBy?: string, sortOrder?: string): Promise<RequestDto[]> => {
-        const params = new URLSearchParams();
+    getRequests: async (page: number = 1, pageSize: number = 20, status?: string, sortBy?: string, sortOrder?: string): Promise<PaginatedResult<RequestDto>> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            pageSize: pageSize.toString(),
+        });
         if (status) {
             params.append('status', status);
         }
@@ -769,16 +789,21 @@ export const forum = {
         return fetchApi('/api/forum/categories');
     },
 
-    getTopics: async (categoryId?: number): Promise<ForumTopicDto[]> => {
-        const params = new URLSearchParams();
-        if (categoryId) {
-            params.append('categoryId', categoryId.toString());
-        }
+    getTopics: async (categoryId: number, page: number = 1, pageSize: number = 20): Promise<PaginatedResult<ForumTopicDto>> => {
+        const params = new URLSearchParams({
+            categoryId: categoryId.toString(),
+            page: page.toString(),
+            pageSize: pageSize.toString(),
+        });
         return fetchApi(`/api/forum/topics?${params.toString()}`);
     },
 
-    getTopicById: async (topicId: number): Promise<ForumTopicDetailDto> => {
-        return fetchApi(`/api/forum/topics/${topicId}`);
+    getTopicById: async (topicId: number, page: number = 1, pageSize: number = 20): Promise<ForumTopicDetailDto> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            pageSize: pageSize.toString(),
+        });
+        return fetchApi(`/api/forum/topics/${topicId}?${params.toString()}`);
     },
 
     createTopic: async (topicData: CreateForumTopicDto): Promise<ForumTopicDetailDto> => {
@@ -1047,9 +1072,9 @@ export const torrents = {
 
 // TorrentListing API Functions
 export const torrentListing = {
-    getTorrentListing: async (pageNumber: number = 1, pageSize: number = 10, category?: string, searchTerm?: string, sortBy?: string, sortOrder?: string): Promise<TorrentDto[]> => {
+    getTorrentListing: async (page: number = 1, pageSize: number = 50, category?: string, searchTerm?: string, sortBy?: string, sortOrder?: string): Promise<PaginatedResult<TorrentDto>> => {
         const params = new URLSearchParams({
-            PageNumber: pageNumber.toString(),
+            PageNumber: page.toString(),
             PageSize: pageSize.toString(),
         });
         if (category) {
@@ -1115,6 +1140,16 @@ export interface SiteSettingsDto {
 
 // Admin API Functions
 export const admin = {
+    getUsers: async (page: number = 1, pageSize: number = 50, searchTerm?: string): Promise<PaginatedResult<UserProfileDetailDto>> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            pageSize: pageSize.toString(),
+        });
+        if (searchTerm) {
+            params.append('q', searchTerm);
+        }
+        return fetchApi(`/api/admin/users?${params.toString()}`);
+    },
     updateRegistrationSettings: async (settings: UpdateRegistrationSettingsDto): Promise<void> => {
         await fetchApi('/api/admin/settings/registration', {
             method: 'PUT',

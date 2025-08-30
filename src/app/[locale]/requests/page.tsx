@@ -10,6 +10,8 @@ import { Button, ButtonGroup } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { User } from "@heroui/user";
 import { API_BASE_URL } from '@/lib/apiClient';
+import { Card, CardFooter } from "@heroui/card";
+import { Pagination } from "@heroui/pagination";
 
 const RequestsPage = () => {
     const [requestsList, setRequestsList] = useState<RequestDto[]>([]);
@@ -17,6 +19,9 @@ const RequestsPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<string>('All'); // Default to All
     const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({ column: 'createdAt', direction: 'descending' });
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(20);
+    const [totalCount, setTotalCount] = useState(0);
     const t = useTranslations();
     const params = useParams();
     const locale = params.locale as string;
@@ -27,8 +32,9 @@ const RequestsPage = () => {
                 setIsLoading(true);
                 const status = statusFilter === 'All' ? undefined : statusFilter;
                 const sortOrder = sortDescriptor.direction === 'descending' ? 'desc' : 'asc';
-                const data = await requests.getRequests(status, sortDescriptor.column as string, sortOrder);
-                setRequestsList(data);
+                const data = await requests.getRequests(page, pageSize, status, sortDescriptor.column as string, sortOrder);
+                setRequestsList(data.items);
+                setTotalCount(data.totalCount);
                 setError(null);
             } catch (err) {
                 setError(t('requestsPage.error_fetching'));
@@ -39,7 +45,7 @@ const RequestsPage = () => {
         };
 
         fetchRequests();
-    }, [t, statusFilter, sortDescriptor]);
+    }, [t, statusFilter, sortDescriptor, page, pageSize]);
 
     const handleSortChange = (descriptor: SortDescriptor) => {
         setSortDescriptor(descriptor);
@@ -96,6 +102,17 @@ const RequestsPage = () => {
                 aria-label="Requests list"
                 sortDescriptor={sortDescriptor}
                 onSortChange={handleSortChange}
+                bottomContent={
+                    <Card>
+                        <CardFooter>
+                            <Pagination
+                                total={Math.ceil(totalCount / pageSize)}
+                                page={page}
+                                onChange={setPage}
+                            />
+                        </CardFooter>
+                    </Card>
+                }
             >
                 <TableHeader>
                     <TableColumn key="title">{t('common.title')}</TableColumn>

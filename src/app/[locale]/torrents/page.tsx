@@ -9,7 +9,8 @@ import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { Selection } from "@react-types/shared";
 import { Button, ButtonGroup } from "@heroui/button";
-import { Card, CardBody } from "@heroui/card";
+import { Card, CardBody, CardFooter } from "@heroui/card";
+import { Pagination } from "@heroui/pagination";
 
 type ViewMode = 'grid' | 'list';
 
@@ -27,8 +28,9 @@ export default function TorrentsPage() {
     const [torrents, setTorrents] = useState<TorrentDto[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [pageNumber] = useState<number>(1);
+    const [page, setPage] = useState<number>(1);
     const [pageSize] = useState<number>(50);
+    const [totalCount, setTotalCount] = useState<number>(0);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [category, setCategory] = useState<string>("");
     const [sortBy, setSortBy] = useState<string>("createdAt");
@@ -43,14 +45,15 @@ export default function TorrentsPage() {
         setLoading(true);
         setError(null);
         try {
-            const response = await torrentListing.getTorrentListing(pageNumber, pageSize, category, searchTerm, sortBy, sortOrder);
-            setTorrents(response || []);
+            const response = await torrentListing.getTorrentListing(page, pageSize, category, searchTerm, sortBy, sortOrder);
+            setTorrents(response.items || []);
+            setTotalCount(response.totalCount || 0);
         } catch (err: unknown) {
             setError((err as Error).message || t_common('error'));
         } finally {
             setLoading(false);
         }
-    }, [pageNumber, pageSize, category, searchTerm, sortBy, sortOrder, t_common]);
+    }, [page, pageSize, category, searchTerm, sortBy, sortOrder, t_common]);
 
     useEffect(() => {
         localStorage.setItem('torrentViewMode', viewMode);
@@ -70,10 +73,11 @@ export default function TorrentsPage() {
     };
 
     const handleSearch = () => {
+        setPage(1);
         fetchTorrents();
     };
 
-    const categoryOptions = Object.values(TorrentCategory).filter(v => isNaN(Number(v))).map(cat => ({ key: cat, value: cat, cat, label: t_cats(cat as string) }));
+    const categoryOptions = Object.values(TorrentCategory).filter(v => isNaN(Number(v))).map(cat => ({ key: cat.toString(), value: cat.toString(), label: t_cats(cat as string) }));
 
     return (
         <div className="container mx-auto p-4">
@@ -97,7 +101,7 @@ export default function TorrentsPage() {
                         <Select
                             label={t_common('category')}
                             placeholder={t('all_torrents')}
-                            selectedKeys={[category]}
+                            selectedKeys={category ? [category] : []}
                             onSelectionChange={(keys: Selection) => {
                                 if (keys instanceof Set && keys.size > 0) {
                                     const selectedKey = Array.from(keys)[0];
@@ -146,36 +150,47 @@ export default function TorrentsPage() {
             )}
 
             {!loading && !error && torrents.length > 0 && (
-                viewMode === 'grid' ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-                        {torrents.map((torrent) => (
-                            <TorrentCard key={torrent.id} torrent={torrent} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="space-y-3">
-                        <Card className="p-3 shadow-sm">
-                            <div className="flex items-center">
-                                <div className="flex-shrink-0 w-16 mr-4"></div>
-                                <div className="flex-grow grid grid-cols-12 gap-4 items-center font-bold text-foreground">
-                                    <div className="col-span-5 cursor-pointer hover:text-primary" onClick={() => handleSort('name')}>{t_common('name')} {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                    <div className="col-span-2 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('createdAt')}>{t_common('date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                    <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('size')}>{t_common('size')} {sortBy === 'size' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                    <div className="col-span-1 text-center">
-                                        <div className="flex flex-col items-center">
-                                            <span className="cursor-pointer hover:text-primary" onClick={() => handleSort('seeders')}>S {sortBy === 'seeders' && (sortOrder === 'asc' ? '↑' : '↓')}</span>
-                                            <span className="cursor-pointer hover:text-primary" onClick={() => handleSort('leechers')}>L {sortBy === 'leechers' && (sortOrder === 'asc' ? '↑' : '↓')}</span>
+                <>
+                    {viewMode === 'grid' ? (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+                            {torrents.map((torrent) => (
+                                <TorrentCard key={torrent.id} torrent={torrent} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            <Card className="p-3 shadow-sm">
+                                <div className="flex items-center">
+                                    <div className="flex-shrink-0 w-16 mr-4"></div>
+                                    <div className="flex-grow grid grid-cols-12 gap-4 items-center font-bold text-foreground">
+                                        <div className="col-span-5 cursor-pointer hover:text-primary" onClick={() => handleSort('name')}>{t_common('name')} {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-2 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('createdAt')}>{t_common('date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('size')}>{t_common('size')} {sortBy === 'size' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-1 text-center">
+                                            <div className="flex flex-col items-center">
+                                                <span className="cursor-pointer hover:text-primary" onClick={() => handleSort('seeders')}>S {sortBy === 'seeders' && (sortOrder === 'asc' ? '↑' : '↓')}</span>
+                                                <span className="cursor-pointer hover:text-primary" onClick={() => handleSort('leechers')}>L {sortBy === 'leechers' && (sortOrder === 'asc' ? '↑' : '↓')}</span>
+                                            </div>
                                         </div>
+                                        <div className="col-span-3 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('uploaderUsername')}>{t_common('uploader')} {sortBy === 'uploaderUsername' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                                     </div>
-                                    <div className="col-span-3 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('uploaderUsername')}>{t_common('uploader')} {sortBy === 'uploaderUsername' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                                 </div>
-                            </div>
-                        </Card>
-                        {torrents.map((torrent) => (
-                            <TorrentListItem key={torrent.id} torrent={torrent} />
-                        ))}
-                    </div>
-                )
+                            </Card>
+                            {torrents.map((torrent) => (
+                                <TorrentListItem key={torrent.id} torrent={torrent} />
+                            ))}
+                        </div>
+                    )}
+                    <Card>
+                        <CardFooter>
+                            <Pagination
+                                total={Math.ceil(totalCount / pageSize)}
+                                page={page}
+                                onChange={setPage}
+                            />
+                        </CardFooter>
+                    </Card>
+                </>
             )}
         </div>
     );
