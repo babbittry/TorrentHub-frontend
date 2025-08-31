@@ -125,7 +125,8 @@ const TopicDetailPage = () => {
 
             <div className="space-y-6">
                 {topic.posts.items.map((post: ForumPostDto) => (
-                    <Card key={post.id}>
+                    <Card key={post.id} className="relative">
+                        <div className="absolute top-2 right-2 text-sm text-default-500">#{post.floor}</div>
                         <CardHeader>
                             <User
                                 name={post.authorName}

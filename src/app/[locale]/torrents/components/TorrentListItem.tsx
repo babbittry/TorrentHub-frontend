@@ -38,7 +38,7 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
                     />
                 </div>
                 <div className="flex-grow grid grid-cols-12 gap-4 items-center">
-                    <div className="col-span-5">
+                    <div className="col-span-4">
                         <div className="font-bold text-md text-foreground group-hover:text-primary transition-colors truncate">
                             {torrent.name}
                         </div>
@@ -53,14 +53,16 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
                     <div className="col-span-1 text-center text-sm text-default-500">
                         <span>{formatBytes(torrent.size)}</span>
                     </div>
-                    <div className="col-span-1 text-center text-sm text-default-500">
-                        <div className="flex flex-col items-center font-medium">
-                            <span className="text-success">S: -</span>
-                            <span className="text-danger">L: -</span>
-                            <span>C: -</span>
-                        </div>
+                    <div className="col-span-1 text-center text-sm text-success font-medium">
+                        {torrent.seeders}
                     </div>
-                    <div className="col-span-3 text-center text-sm text-default-500">
+                    <div className="col-span-1 text-center text-sm text-danger font-medium">
+                        {torrent.leechers}
+                    </div>
+                    <div className="col-span-1 text-center text-sm text-default-500 font-medium">
+                        {torrent.snatched}
+                    </div>
+                    <div className="col-span-2 text-center text-sm text-default-500">
                         {torrent.uploaderUsername}
                     </div>
                 </div>

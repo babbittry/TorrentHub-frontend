@@ -24,7 +24,10 @@
         "title": "Title",
         "date": "Date",
         "optional": "(Optional)",
-        "submitting": "Submitting..."
+        "submitting": "Submitting...",
+        "seeders": "Seeders",
+        "leechers": "Leechers",
+        "snatched": "Snatched"
     },
     "register": {
         "avatar": "Avatar",
@@ -335,7 +338,29 @@
         "password_updated_success": "Password updated successfully!",
         "password_updated_error": "Failed to update password."
     },
+    "invitesPage": {
+        "title": "My Invites",
+        "createNew": "Create New Invite",
+        "tableId": "ID",
+        "tableCode": "Invite Code",
+        "tableCreatedAt": "Creation Time",
+        "tableExpiresAt": "Expiration Time",
+        "tableUsedBy": "Invited User",
+        "noInvites": "No invites found."
+    },
     "Admin": {
+        "sidebar": {
+            "adminPanel": "Admin Panel",
+            "dashboard": "Dashboard",
+            "addPoll": "Add Poll",
+            "bannedClients": "Banned Clients",
+            "duplicateIPs": "Duplicate IPs",
+            "bandwidthSettings": "Bandwidth Settings",
+            "userManagement": "User Management",
+            "siteSettings": "Site Settings",
+            "announcementManagement": "Announcement Management",
+            "logViewer": "Log Viewer"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -506,6 +531,46 @@
             "alert": {
                 "updateFailed": "Failed to update user."
             }
+        }
+    },
+    "Store": {
+        "title": "Store",
+        "name": "Name",
+        "description": "Description",
+        "price": "Price",
+        "actions": "Actions",
+        "purchase": "Purchase",
+        "confirmPurchase": "Confirm Purchase",
+        "quantity": "Quantity",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "UploadCredit": {
+            "name": "Upload Credit",
+            "description": "Increase your upload amount"
+        },
+        "Invite": {
+            "name": "Invite Code",
+            "description": "Purchase an invite code"
+        },
+        "Badge": {
+            "name": "Badge",
+            "description": "Purchase a badge"
+        },
+        "DoubleUpload": {
+            "name": "Double Upload",
+            "description": "Double your upload amount for a period of time"
+        },
+        "FreeLeech": {
+            "name": "Free Leech",
+            "description": "Download for free for a period of time"
+        },
+        "CustomTitle": {
+            "name": "Custom Title",
+            "description": "Customize your title"
+        },
+        "unknown": {
+            "name": "Unknown Item",
+            "description": "This is a mysterious item"
         }
     }
 }

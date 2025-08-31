@@ -325,6 +325,7 @@ export interface ForumPostDto {
     authorAvatar: string | null;
     createdAt: string; // date-time
     editedAt: string | null; // date-time
+    floor: number;
 }
 
 export interface ForumTopicDetailDto {

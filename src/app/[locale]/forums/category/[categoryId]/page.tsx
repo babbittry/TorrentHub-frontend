@@ -116,7 +116,7 @@ const CategoryPage = () => {
                             <Pagination
                                 total={Math.ceil(totalCount / pageSize)}
                                 page={page}
-                                onChange={setPage}
+                                onChange={(p) => setPage(p)}
                             />
                         </CardFooter>
                     </Card>

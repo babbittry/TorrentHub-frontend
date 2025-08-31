@@ -14,7 +14,7 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-    const t = useTranslations('AdminDashboard');
+    const t = useTranslations('Admin.sidebar');
     const pathname = usePathname();
 
     const navItems = [

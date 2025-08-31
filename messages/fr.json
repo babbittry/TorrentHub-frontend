@@ -24,7 +24,10 @@
         "title": "Titre",
         "date": "Date",
         "optional": "(Optionnel)",
-        "submitting": "Envoi en cours..."
+        "submitting": "Envoi en cours...",
+        "seeders": "Seeders",
+        "leechers": "Leecheurs",
+        "snatched": "Complétés"
     },
     "register": {
         "avatar": "Avatar",
@@ -335,7 +338,29 @@
         "password_updated_success": "Mot de passe mis à jour avec succès !",
         "password_updated_error": "Échec de la mise à jour du mot de passe."
     },
+    "invitesPage": {
+        "title": "Mes invitations",
+        "createNew": "Créer une nouvelle invitation",
+        "tableId": "ID",
+        "tableCode": "Code d'invitation",
+        "tableCreatedAt": "Date de création",
+        "tableExpiresAt": "Date d'expiration",
+        "tableUsedBy": "Utilisé par",
+        "noInvites": "Aucune invitation trouvée."
+    },
     "Admin": {
+        "sidebar": {
+            "adminPanel": "Panneau d'administration",
+            "dashboard": "Tableau de bord",
+            "addPoll": "Ajouter un sondage",
+            "bannedClients": "Clients bannis",
+            "duplicateIPs": "IPs en double",
+            "bandwidthSettings": "Paramètres de bande passante",
+            "userManagement": "Gestion des utilisateurs",
+            "siteSettings": "Paramètres du site",
+            "announcementManagement": "Gestion des annonces",
+            "logViewer": "Visionneuse de journaux"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -506,6 +531,46 @@
             "alert": {
                 "updateFailed": "Failed to update user."
             }
+        }
+    },
+    "Store": {
+        "title": "Boutique",
+        "name": "Nom",
+        "description": "Description",
+        "price": "Prix",
+        "actions": "Actions",
+        "purchase": "Acheter",
+        "confirmPurchase": "Confirmer l'achat",
+        "quantity": "Quantité",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "UploadCredit": {
+            "name": "Crédit d'upload",
+            "description": "Augmentez votre quantité d'upload"
+        },
+        "Invite": {
+            "name": "Code d'invitation",
+            "description": "Achetez un code d'invitation"
+        },
+        "Badge": {
+            "name": "Badge",
+            "description": "Achetez un badge"
+        },
+        "DoubleUpload": {
+            "name": "Upload Double",
+            "description": "Doublez votre quantité d'upload pendant une certaine période"
+        },
+        "FreeLeech": {
+            "name": "Téléchargement Gratuit",
+            "description": "Téléchargez gratuitement pendant une certaine période"
+        },
+        "CustomTitle": {
+            "name": "Titre Personnalisé",
+            "description": "Personnalisez votre titre"
+        },
+        "unknown": {
+            "name": "Article Inconnu",
+            "description": "Ceci est un article mystérieux"
         }
     }
 }

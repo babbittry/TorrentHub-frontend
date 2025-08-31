@@ -24,7 +24,10 @@
         "title": "标题",
         "date": "日期",
         "optional": "(可选)",
-        "submitting": "提交中..."
+        "submitting": "提交中...",
+        "seeders": "做种",
+        "leechers": "下载",
+        "snatched": "完成"
     },
     "register": {
         "avatar": "头像",
@@ -335,7 +338,29 @@
         "password_updated_success": "密码更新成功！",
         "password_updated_error": "密码更新失败。"
     },
+    "invitesPage": {
+        "title": "我的邀请",
+        "createNew": "创建新邀请",
+        "tableId": "ID",
+        "tableCode": "邀请码",
+        "tableCreatedAt": "创建时间",
+        "tableExpiresAt": "过期时间",
+        "tableUsedBy": "受邀用户",
+        "noInvites": "没有找到邀请码。"
+    },
     "Admin": {
+        "sidebar": {
+            "adminPanel": "管理面板",
+            "dashboard": "仪表盘",
+            "addPoll": "添加投票",
+            "bannedClients": "禁止客户端",
+            "duplicateIPs": "重复IP",
+            "bandwidthSettings": "带宽设置",
+            "userManagement": "用户管理",
+            "siteSettings": "站点设置",
+            "announcementManagement": "公告管理",
+            "logViewer": "日志查看器"
+        },
         "dashboard": {
             "title": "管理员仪表盘",
             "loading": "加载中...",
@@ -506,6 +531,46 @@
             "alert": {
                 "updateFailed": "更新用户失败。"
             }
+        }
+    },
+    "Store": {
+        "title": "商店",
+        "name": "名称",
+        "description": "描述",
+        "price": "价格",
+        "actions": "操作",
+        "purchase": "购买",
+        "confirmPurchase": "确认购买",
+        "quantity": "数量",
+        "cancel": "取消",
+        "confirm": "确认",
+        "UploadCredit": {
+            "name": "上传量",
+            "description": "增加您的上传量"
+        },
+        "Invite": {
+            "name": "邀请码",
+            "description": "购买一个邀请码"
+        },
+        "Badge": {
+            "name": "徽章",
+            "description": "购买一个徽章"
+        },
+        "DoubleUpload": {
+            "name": "双倍上传",
+            "description": "在一定时间内上传量翻倍"
+        },
+        "FreeLeech": {
+            "name": "免费下载",
+            "description": "在一定时间内下载免费"
+        },
+        "CustomTitle": {
+            "name": "自定义头衔",
+            "description": "自定义您的头衔"
+        },
+        "unknown": {
+            "name": "未知商品",
+            "description": "这是一个神秘的商品"
         }
     }
 }

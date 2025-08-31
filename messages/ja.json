@@ -24,7 +24,10 @@
         "title": "タイトル",
         "date": "日付",
         "optional": "(任意)",
-        "submitting": "送信中..."
+        "submitting": "送信中...",
+        "seeders": "シーダー",
+        "leechers": "リーチャー",
+        "snatched": "完了"
     },
     "register": {
         "avatar": "アバター",
@@ -335,7 +338,29 @@
         "password_updated_success": "パスワードが正常に更新されました！",
         "password_updated_error": "パスワードの更新に失敗しました。"
     },
+    "invitesPage": {
+        "title": "私の招待",
+        "createNew": "新しい招待を作成",
+        "tableId": "ID",
+        "tableCode": "招待コード",
+        "tableCreatedAt": "作成日時",
+        "tableExpiresAt": "有効期限",
+        "tableUsedBy": "使用したユーザー",
+        "noInvites": "招待は見つかりませんでした。"
+    },
     "Admin": {
+        "sidebar": {
+            "adminPanel": "管理パネル",
+            "dashboard": "ダッシュボード",
+            "addPoll": "投票を追加",
+            "bannedClients": "禁止されたクライアント",
+            "duplicateIPs": "重複IP",
+            "bandwidthSettings": "帯域幅設定",
+            "userManagement": "ユーザー管理",
+            "siteSettings": "サイト設定",
+            "announcementManagement": "お知らせ管理",
+            "logViewer": "ログビューア"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -506,6 +531,46 @@
             "alert": {
                 "updateFailed": "Failed to update user."
             }
+        }
+    },
+    "Store": {
+        "title": "ストア",
+        "name": "名前",
+        "description": "説明",
+        "price": "価格",
+        "actions": "アクション",
+        "purchase": "購入",
+        "confirmPurchase": "購入の確認",
+        "quantity": "数量",
+        "cancel": "キャンセル",
+        "confirm": "確認",
+        "UploadCredit": {
+            "name": "アップロードクレジット",
+            "description": "アップロード量を増やします"
+        },
+        "Invite": {
+            "name": "招待コード",
+            "description": "招待コードを購入します"
+        },
+        "Badge": {
+            "name": "バッジ",
+            "description": "バッジを購入します"
+        },
+        "DoubleUpload": {
+            "name": "ダブルアップロード",
+            "description": "一定期間、アップロード量が2倍になります"
+        },
+        "FreeLeech": {
+            "name": "フリーリーチ",
+            "description": "一定期間、ダウンロードが無料になります"
+        },
+        "CustomTitle": {
+            "name": "カスタムタイトル",
+            "description": "あなたのタイトルをカスタマイズします"
+        },
+        "unknown": {
+            "name": "不明なアイテム",
+            "description": "これは神秘的なアイテムです"
         }
     }
 }

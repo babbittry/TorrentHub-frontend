@@ -163,16 +163,13 @@ export default function TorrentsPage() {
                                 <div className="flex items-center">
                                     <div className="flex-shrink-0 w-16 mr-4"></div>
                                     <div className="flex-grow grid grid-cols-12 gap-4 items-center font-bold text-foreground">
-                                        <div className="col-span-5 cursor-pointer hover:text-primary" onClick={() => handleSort('name')}>{t_common('name')} {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-4 cursor-pointer hover:text-primary" onClick={() => handleSort('name')}>{t_common('name')} {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                                         <div className="col-span-2 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('createdAt')}>{t_common('date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                                         <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('size')}>{t_common('size')} {sortBy === 'size' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                        <div className="col-span-1 text-center">
-                                            <div className="flex flex-col items-center">
-                                                <span className="cursor-pointer hover:text-primary" onClick={() => handleSort('seeders')}>S {sortBy === 'seeders' && (sortOrder === 'asc' ? '↑' : '↓')}</span>
-                                                <span className="cursor-pointer hover:text-primary" onClick={() => handleSort('leechers')}>L {sortBy === 'leechers' && (sortOrder === 'asc' ? '↑' : '↓')}</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-span-3 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('uploaderUsername')}>{t_common('uploader')} {sortBy === 'uploaderUsername' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('seeders')}>{t_common('seeders')} {sortBy === 'seeders' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('leechers')}>{t_common('leechers')} {sortBy === 'leechers' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('snatched')}>{t_common('snatched')} {sortBy === 'snatched' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-2 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('uploaderUsername')}>{t_common('uploader')} {sortBy === 'uploaderUsername' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                                     </div>
                                 </div>
                             </Card>
