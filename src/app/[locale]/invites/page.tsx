@@ -10,7 +10,7 @@ import { Card, CardBody, CardHeader } from '@heroui/card';
 const InvitesPage = () => {
     const [invitesList, setInvitesList] = useState<InviteDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
     const t = useTranslations('invitesPage');
     const t_common = useTranslations('common');
 

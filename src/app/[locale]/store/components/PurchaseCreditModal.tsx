@@ -11,22 +11,14 @@ import {
 } from "@heroui/react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { fetchApi } from "@/lib/apiClient";
+import { store } from "@/lib/api";
 
-interface StoreItem {
-    id: number;
-    itemCode: number;
-    name: string;
-    description: string;
-    price: number;
-    isAvailable: boolean;
-    badgeId: number | null;
-}
+import { StoreItemDto } from "@/lib/api";
 
 interface PurchaseCreditModalProps {
     isOpen: boolean;
     onOpenChange: () => void;
-    item: StoreItem | null;
+    item: StoreItemDto | null;
 }
 
 export const PurchaseCreditModal = ({ isOpen, onOpenChange, item }: PurchaseCreditModalProps) => {
@@ -38,14 +30,7 @@ export const PurchaseCreditModal = ({ isOpen, onOpenChange, item }: PurchaseCred
         if (!item) return;
 
         setIsLoading(true);
-        fetchApi("/api/store/purchase", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                storeItemId: item.id,
-                quantity: quantity,
-            }),
-        })
+        store.purchaseItem(item.id, { quantity: quantity })
         .then(() => {
             // TODO: Show success notification
             onOpenChange();

@@ -5,7 +5,7 @@ import { MessageDto, messages } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import MessageSidebar from './components/MessageSidebar';
 import MessageDetail from './components/MessageDetail';
-import { Listbox, ListboxItem, ListboxSection } from "@heroui/listbox";
+import { Listbox, ListboxItem } from "@heroui/listbox";
 import { Selection } from '@react-types/shared';
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { Spinner } from "@heroui/spinner";

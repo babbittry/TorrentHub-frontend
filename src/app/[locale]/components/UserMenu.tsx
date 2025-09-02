@@ -1,61 +1,33 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { Link } from '@/i18n/navigation';
-import { users } from '@/lib/api';
-import type { UserPrivateProfileDto } from '@/lib/api';
-import { API_BASE_URL } from '@/lib/apiClient';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { Link, useRouter } from '@/i18n/navigation';
+import { API_BASE_URL } from '@/lib/api';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo, faGear, faTicket, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 export default function UserMenu() {
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
     const t = useTranslations('userMenu');
-    const [user, setUser] = useState<UserPrivateProfileDto | null>(null);
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const userData = await users.getMe();
-                setUser(userData);
-            } catch (error) {
-                console.error("Failed to fetch user profile", error);
-                // Handle error, maybe logout user if token is invalid
-            }
-        };
-        fetchUser();
-    }, []);
-
-    useEffect(() => {
-        // Cleanup timeout on component unmount
-        return () => {
-            if (timerId) {
-                clearTimeout(timerId);
-            }
-        };
-    }, [timerId]);
-
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        await logout();
+        router.push('/login');
     };
 
     const handleMouseEnter = () => {
-        if (timerId) {
-            clearTimeout(timerId);
-            setTimerId(null);
-        }
+        if (timerId) clearTimeout(timerId);
         setIsOpen(true);
     };
 
     const handleMouseLeave = () => {
-        const newTimerId = setTimeout(() => {
-            setIsOpen(false);
-        }, 500); // 500 ms delay
+        const newTimerId = setTimeout(() => setIsOpen(false), 300);
         setTimerId(newTimerId);
     };
 
@@ -68,7 +40,7 @@ export default function UserMenu() {
     };
 
     if (!user) {
-        return null; // Or a loading spinner
+        return null;
     }
 
     return (
@@ -80,7 +52,7 @@ export default function UserMenu() {
             <Link href={`/users/${user.id}`}>
                 <div className="w-10 h-10 rounded-full overflow-hidden cursor-pointer bg-gray-200">
                     <Image
-                        src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/logo-black.png'} // Fallback to a default avatar
+                        src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/logo-black.png'}
                         alt="User Avatar"
                         width={40}
                         height={40}
@@ -95,7 +67,7 @@ export default function UserMenu() {
                         <div className="flex items-center mb-4">
                             <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0 bg-gray-300">
                                 <Image
-                                    src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/logo-black.png'} // Fallback to a default avatar
+                                    src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/logo-black.png'}
                                     alt="User Avatar"
                                     width={64}
                                     height={64}
@@ -104,7 +76,6 @@ export default function UserMenu() {
                             </div>
                             <div className="overflow-hidden">
                                 <p className="font-bold text-lg truncate">{user.userName}</p>
-                                {/* Badges would go here */}
                             </div>
                         </div>
                     </Link>

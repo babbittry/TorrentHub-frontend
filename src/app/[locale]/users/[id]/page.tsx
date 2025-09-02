@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { users as apiUsers, UserProfileDetailDto, TorrentDto, PeerDto } from '@/lib/api';
-import { API_BASE_URL } from '@/lib/apiClient';
+import { users as apiUsers, UserPublicProfileDto, TorrentDto, PeerDto, API_BASE_URL } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Card, CardBody } from "@heroui/card";
@@ -14,10 +13,11 @@ import { Link } from '@/i18n/navigation';
 
 
 const UserProfilePage = () => {
-    const [profile, setProfile] = useState<UserProfileDetailDto | null>(null);
+    const [profile, setProfile] = useState<UserPublicProfileDto | null>(null);
     const [uploads, setUploads] = useState<TorrentDto[]>([]);
     const [peers, setPeers] = useState<PeerDto[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isClient, setIsClient] = useState(false);
     const t = useTranslations();
     const { id } = useParams();
     const userId = parseInt(id as string);
@@ -28,7 +28,7 @@ const UserProfilePage = () => {
             try {
                 setLoading(true);
                 const [profileData, uploadsData, peersData] = await Promise.all([
-                    apiUsers.getUserProfile(userId),
+                    apiUsers.getUserById(userId),
                     apiUsers.getUserUploads(userId),
                     apiUsers.getUserPeers(userId),
                 ]);
@@ -45,6 +45,10 @@ const UserProfilePage = () => {
         fetchProfile();
     }, [userId]);
 
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     const formatBytes = (bytes: number, decimals = 2) => {
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
@@ -57,14 +61,9 @@ const UserProfilePage = () => {
     const statsItems = useMemo(() => {
         if (!profile) return [];
         return [
-            { label: t('userProfile.nominalUpload'), value: formatBytes(profile.nominalUploadedBytes) },
-            { label: t('userProfile.nominalDownload'), value: formatBytes(profile.nominalDownloadedBytes) },
             { label: t('userProfile.realUpload'), value: formatBytes(profile.uploadedBytes) },
             { label: t('userProfile.realDownload'), value: formatBytes(profile.downloadedBytes) },
-            { label: t('userProfile.uploadingCount'), value: profile.currentSeedingCount },
-            { label: t('userProfile.downloadingCount'), value: profile.currentLeechingCount },
             { label: t('userProfile.uploadTime'), value: `${profile.totalSeedingTimeMinutes} ${t('userProfile.minutes')}` },
-            { label: t('userProfile.downloadTime'), value: `${profile.totalLeechingTimeMinutes} ${t('userProfile.minutes')}` },
         ];
     }, [profile, t]);
 
@@ -90,11 +89,9 @@ const UserProfilePage = () => {
                                 className: "w-24 h-24 text-large"
                             }}
                         />
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-1">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 flex-1">
                             <div className="text-center"><p className="text-sm text-default-500">{t('userProfile.coins')}</p><p className="text-xl font-bold">{profile.coins}</p></div>
-                            <div className="text-center"><p className="text-sm text-default-500">{t('userProfile.seedingSize')}</p><p className="text-xl font-bold">{formatBytes(profile.seedingSize)}</p></div>
-                            <div className="text-center"><p className="text-sm text-default-500">{t('userProfile.invitedBy')}</p><p className="text-xl font-bold">{profile.invitedBy || t('userProfile.selfRegistered')}</p></div>
-                            <div className="text-center"><p className="text-sm text-default-500">{t('userProfile.registrationTime')}</p><p className="text-xl font-bold">{new Date(profile.createdAt).toLocaleDateString()}</p></div>
+                            <div className="text-center"><p className="text-sm text-default-500">{t('userProfile.registrationTime')}</p><p className="text-xl font-bold">{isClient ? new Date(profile.createdAt).toLocaleDateString() : '...'}</p></div>
                         </div>
                     </div>
                 </CardBody>
@@ -149,7 +146,7 @@ const UserProfilePage = () => {
                                         <TableRow key={item.torrentId}>
                                             <TableCell>{item.torrentName}</TableCell>
                                             <TableCell>{item.userAgent}</TableCell>
-                                            <TableCell>{new Date(item.lastAnnounceAt).toLocaleString()}</TableCell>
+                                            <TableCell>{isClient ? new Date(item.lastAnnounceAt).toLocaleString() : '...'}</TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>

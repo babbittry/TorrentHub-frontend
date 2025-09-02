@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback } from 'react';
-import { admin, users, UserProfileDetailDto, UpdateUserAdminDto, UserRole } from '../../../../lib/api';
+import { admin, users, UserProfileDetailDto, UpdateUserAdminDto, UserRole } from '@/lib/api';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
 import { CustomInput } from '../../components/CustomInputs';
@@ -124,12 +124,12 @@ const UserManagementPage = () => {
                             <Select
                                 label={t('userManagement.modal.roleLabel')}
                                 selectedKeys={editFormData.role ? [editFormData.role] : []}
-                                onChange={(e) => handleFormChange('role', e.target.value as UserRole)}
-                            >
-                                {Object.values(UserRole).map(role => (
-                                    <SelectItem key={role}>{role}</SelectItem>
-                                ))}
-                            </Select>
+                                onChange={(e) => handleFormChange('role', Number(e.target.value) as UserRole)}
+                           >
+                               {Object.values(UserRole).filter(v => typeof v === 'string').map(role => (
+                                   <SelectItem key={UserRole[role as keyof typeof UserRole]}>{role}</SelectItem>
+                               ))}
+                           </Select>
                             <Switch
                                 isSelected={editFormData.isBanned ?? false}
                                 onValueChange={(val) => handleFormChange('isBanned', val)}

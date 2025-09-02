@@ -2,14 +2,13 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { requests, RequestDto, RequestStatus, RejectFulfillmentDto } from '@/lib/api';
+import { requests, RequestDto, RequestStatus } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import {Divider} from "@heroui/divider";
 import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
-import { User } from "@heroui/user";
 import { Chip } from "@heroui/chip";
 import { useAuth } from '@/context/AuthContext';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@heroui/modal";
@@ -17,7 +16,6 @@ import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure}
 const RequestDetailPage = () => {
     const params = useParams();
     const requestId = Number(params.requestId);
-    const locale = params.locale as string;
 
     const t = useTranslations();
     const [request, setRequest] = useState<RequestDto | null>(null);

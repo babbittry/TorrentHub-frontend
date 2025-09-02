@@ -6,10 +6,9 @@ import { useTranslations } from 'next-intl';
 
 interface RequestListItemProps {
     request: RequestDto;
-    locale: string;
 }
 
-const RequestListItem: React.FC<RequestListItemProps> = ({ request, locale }) => {
+const RequestListItem: React.FC<RequestListItemProps> = ({ request }) => {
     const t = useTranslations();
 
     const statusColor = request.status === RequestStatus.Filled
@@ -19,8 +18,6 @@ const RequestListItem: React.FC<RequestListItemProps> = ({ request, locale }) =>
         : request.status === RequestStatus.Rejected
         ? 'text-red-500'
         : 'text-yellow-500';
-
-    const statusKey = `requestsPage.status_${request.status.toLowerCase()}`;
 
     return (
         <Link href={`/requests/${request.id}`}

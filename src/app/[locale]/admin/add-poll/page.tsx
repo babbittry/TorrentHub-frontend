@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { polls, PollDto, CreatePollDto } from '../../../../lib/api';
+import { polls, PollDto, CreatePollDto } from '@/lib/api';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
 import { CustomInput } from '../../components/CustomInputs';

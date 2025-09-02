@@ -27,7 +27,8 @@
         "submitting": "送信中...",
         "seeders": "シーダー",
         "leechers": "リーチャー",
-        "snatched": "完了"
+        "snatched": "完了",
+        "no_data": "データがありません"
     },
     "register": {
         "avatar": "アバター",
@@ -275,7 +276,8 @@
             "VIP": "VIP",
             "Uploader": "アップローダー",
             "Seeder": "シーダー",
-            "Admin": "管理者"
+            "Admin": "管理者",
+            "Administrator": "管理者"
         }
     },
     "userProfile": {
@@ -571,6 +573,9 @@
         "unknown": {
             "name": "不明なアイテム",
             "description": "これは神秘的なアイテムです"
-        }
+        },
+        "noticeTitle": "通知",
+        "unimplementedFlow": "アイテム：{itemName} には、まだ実装されていない異なる購入フローがあります。",
+        "close": "閉じる"
     }
 }

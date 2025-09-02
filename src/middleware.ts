@@ -17,21 +17,21 @@ export async function middleware(request: NextRequest) {
     }
 
     // Now that we know a locale is present in the path, we can run auth checks.
-    const authToken = request.cookies.get('authToken')?.value;
+    const refreshToken = request.cookies.get('refreshToken')?.value;
     const { pathname } = request.nextUrl;
 
-    console.log(`[Middleware] Request Path: ${pathname}, AuthToken: ${authToken ? 'Present' : 'Not Present'}`);
+    console.log(`[Middleware] Request Path: ${pathname}, RefreshToken: ${refreshToken ? 'Present' : 'Not Present'}`);
 
     const publicPaths = ['/login', '/register', '/rules'];
 
     // Extract the path without the locale prefix (e.g., /en/torrents -> /torrents)
-    const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '') || '/';
+    const pathWithoutLocale = pathname.replace(/^\/[a-zA-Z]{2,5}(-[a-zA-Z]{2,5})?/, '') || '/';
     const isPublicPath = publicPaths.some(p => pathWithoutLocale === p || pathWithoutLocale.startsWith(`${p}/`));
 
     console.log(`[Middleware] Path Without Locale: ${pathWithoutLocale}, Is Public Path: ${isPublicPath}`);
 
     // If the user is not authenticated and is trying to access a protected page...
-    if (!authToken && !isPublicPath) {
+    if (!refreshToken && !isPublicPath) {
         console.log(`[Middleware] User not authenticated and path is protected. Redirecting to login.`);
         // ...redirect them to the localized login page.
         const locale = pathname.split('/')[1] || 'en'; // Extract locale from path@
@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // If the user is authenticated and tries to visit login or register...
-    if (authToken && (pathWithoutLocale === '/login' || pathWithoutLocale === '/register')) {
+    if (refreshToken && (pathWithoutLocale === '/login' || pathWithoutLocale === '/register')) {
         console.log(`[Middleware] User authenticated and trying to access login/register. Redirecting to home.`);
         // ...redirect them to the localized home page.
         const locale = pathname.split('/')[1] || 'en';

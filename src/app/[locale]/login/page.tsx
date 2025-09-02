@@ -1,20 +1,21 @@
 "use client";
 
-import {useState} from "react";
-import {auth} from "@/lib/api";
-import {useAuth} from "@/context/AuthContext";
-import {Link} from '@/i18n/navigation';
-import {useTranslations} from 'next-intl';
-import {Button} from "@heroui/button";
-import {Card, CardBody, CardFooter, CardHeader} from "@heroui/card";
-import {Input} from "@heroui/input";
+import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { Link, useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
+import { Button } from "@heroui/button";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Input } from "@heroui/input";
+import { auth, LoginResponseDto } from "@/lib/api";
+import { AxiosError } from "axios";
 
 export default function LoginPage() {
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
-
-    const {login} = useAuth();
+    const { login } = useAuth();
+    const router = useRouter();
     const t = useTranslations();
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -22,10 +23,17 @@ export default function LoginPage() {
         setError(null);
 
         try {
-            await auth.login({userName, password});
-            login();
-        } catch (err: unknown) {
-            setError((err as Error).message || t('loginPage.failed'));
+            const { accessToken, user } = await auth.login({ userName, password });
+            login(user, accessToken);
+            router.push('/');
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                setError(err.response?.data?.message || err.message || t('loginPage.failed'));
+            } else if (err instanceof Error) {
+                setError(err.message || t('loginPage.failed'));
+            } else {
+                setError(t('loginPage.failed'));
+            }
         }
     };
 

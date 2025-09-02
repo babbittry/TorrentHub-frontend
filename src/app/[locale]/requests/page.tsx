@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { requests, RequestDto, RequestStatus } from '@/lib/api';
+import { requests, RequestDto, RequestStatus, API_BASE_URL } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
@@ -9,7 +9,6 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDe
 import { Button, ButtonGroup } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { User } from "@heroui/user";
-import { API_BASE_URL } from '@/lib/apiClient';
 import { Card, CardFooter } from "@heroui/card";
 import { Pagination } from "@heroui/pagination";
 
@@ -32,9 +31,17 @@ const RequestsPage = () => {
                 setIsLoading(true);
                 const status = statusFilter === 'All' ? undefined : statusFilter;
                 const sortOrder = sortDescriptor.direction === 'descending' ? 'desc' : 'asc';
-                const data = await requests.getRequests(page, pageSize, status, sortDescriptor.column as string, sortOrder);
-                setRequestsList(data.items);
-                setTotalCount(data.totalCount);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const data: any = await requests.getRequests(page, pageSize, status, sortDescriptor.column as string, sortOrder);
+                if (Array.isArray(data)) {
+                    setRequestsList(data);
+                    // This is a workaround as the API is not returning a PaginatedResult.
+                    // Pagination might not work correctly if the array represents a single page.
+                    setTotalCount(data.length);
+                } else {
+                    setRequestsList(data?.items || []);
+                    setTotalCount(data?.totalCount || 0);
+                }
                 setError(null);
             } catch (err) {
                 setError(t('requestsPage.error_fetching'));

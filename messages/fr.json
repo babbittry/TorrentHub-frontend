@@ -27,7 +27,8 @@
         "submitting": "Envoi en cours...",
         "seeders": "Seeders",
         "leechers": "Leecheurs",
-        "snatched": "Complétés"
+        "snatched": "Complétés",
+        "no_data": "Aucune donnée disponible"
     },
     "register": {
         "avatar": "Avatar",
@@ -275,7 +276,8 @@
             "VIP": "VIP",
             "Uploader": "Uploadeur",
             "Seeder": "Seeder",
-            "Admin": "Admin"
+            "Admin": "Admin",
+            "Administrator": "Administrateur"
         }
     },
     "userProfile": {
@@ -571,6 +573,9 @@
         "unknown": {
             "name": "Article Inconnu",
             "description": "Ceci est un article mystérieux"
-        }
+        },
+        "noticeTitle": "Avis",
+        "unimplementedFlow": "Article : {itemName} a un processus d'achat différent qui n'a pas encore été mis en œuvre.",
+        "close": "Fermer"
     }
 }

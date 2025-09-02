@@ -4,7 +4,6 @@ import { admin, SystemLogDto, CheatLogDto } from '../../../../lib/api';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
 import { CustomInput } from '../../components/CustomInputs';
-import { Button } from "@heroui/button";
 import { Tabs, Tab } from '@heroui/react';
 import { useTranslations } from 'next-intl';
 
@@ -16,23 +15,23 @@ const LogViewerPage = () => {
     const [q, setQ] = useState('');
     const [level, setLevel] = useState('');
 
-    const fetchLogs = async () => {
-        try {
-            setLoading(true);
-            const [systemLogsData, cheatLogsData] = await Promise.all([
-                admin.getSystemLogs(q, level),
-                admin.getCheatLogs()
-            ]);
-            setSystemLogs(systemLogsData);
-            setCheatLogs(cheatLogsData);
-        } catch (error) {
-            console.error("Failed to fetch logs:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchLogs = async () => {
+            try {
+                setLoading(true);
+                const [systemLogsData, cheatLogsData] = await Promise.all([
+                    admin.getSystemLogs(q, level),
+                    admin.getCheatLogs()
+                ]);
+                setSystemLogs(systemLogsData);
+                setCheatLogs(cheatLogsData);
+            } catch (error) {
+                console.error("Failed to fetch logs:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         const delayDebounceFn = setTimeout(() => {
             fetchLogs();
         }, 300);

@@ -27,7 +27,8 @@
         "submitting": "提交中...",
         "seeders": "做种",
         "leechers": "下载",
-        "snatched": "完成"
+        "snatched": "完成",
+        "no_data": "暂无数据"
     },
     "register": {
         "avatar": "头像",
@@ -275,7 +276,8 @@
             "VIP": "VIP",
             "Uploader": "上传者",
             "Seeder": "保种员",
-            "Admin": "管理员"
+            "Admin": "管理员",
+            "Administrator": "管理员"
         }
     },
     "userProfile": {
@@ -571,6 +573,9 @@
         "unknown": {
             "name": "未知商品",
             "description": "这是一个神秘的商品"
-        }
+        },
+        "noticeTitle": "提示",
+        "unimplementedFlow": "商品：{itemName} 有一个尚未实现的特殊购买流程。",
+        "close": "关闭"
     }
 }

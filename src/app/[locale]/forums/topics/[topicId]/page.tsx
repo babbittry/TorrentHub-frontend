@@ -4,12 +4,11 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { forum, ForumTopicDetailDto, CreateForumPostDto, ForumCategoryDto, ForumPostDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
-import { Link } from '@/i18n/navigation';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Textarea } from "@heroui/input";
 import { User } from "@heroui/user";
-import { API_BASE_URL } from "@/lib/apiClient";
+import { API_BASE_URL } from "@/lib/api";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 import { Pagination } from "@heroui/pagination";
 
@@ -148,7 +147,7 @@ const TopicDetailPage = () => {
             <Card className="mt-6">
                 <CardFooter>
                     <Pagination
-                        total={Math.ceil(topic.posts.totalCount / pageSize)}
+                        total={Math.ceil((topic.posts.totalCount || 0) / pageSize)}
                         page={page}
                         onChange={setPage}
                     />

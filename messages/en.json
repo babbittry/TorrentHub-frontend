@@ -27,7 +27,8 @@
         "submitting": "Submitting...",
         "seeders": "Seeders",
         "leechers": "Leechers",
-        "snatched": "Snatched"
+        "snatched": "Snatched",
+        "no_data": "No data available"
     },
     "register": {
         "avatar": "Avatar",
@@ -275,7 +276,8 @@
             "VIP": "VIP",
             "Uploader": "Uploader",
             "Seeder": "Seeder",
-            "Admin": "Admin"
+            "Admin": "Admin",
+            "Administrator": "Administrator"
         }
     },
     "userProfile": {
@@ -571,6 +573,9 @@
         "unknown": {
             "name": "Unknown Item",
             "description": "This is a mysterious item"
-        }
+        },
+        "noticeTitle": "Notice",
+        "unimplementedFlow": "Item: {itemName} has a different purchase flow that has not yet been implemented.",
+        "close": "Close"
     }
 }

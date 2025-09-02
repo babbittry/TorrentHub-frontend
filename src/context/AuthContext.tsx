@@ -1,68 +1,69 @@
 "use client";
 
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { users, auth, UserPrivateProfileDto } from '@/lib/api';
-import Cookies from 'js-cookie';
-import {useRouter, useParams} from "next/navigation";
-
-
+import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo, useCallback } from 'react';
+import api, { UserPrivateProfileDto, auth } from '@/lib/api'; // Import auth API and api instance
 
 interface AuthContextType {
-    isAuthenticated: boolean;
     user: UserPrivateProfileDto | null;
-    login: () => void;
-    logout: () => void;
+    accessToken: string | null;
+    isAuthenticated: boolean;
     isLoading: boolean;
+    login: (user: UserPrivateProfileDto, token: string) => void;
+    logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<UserPrivateProfileDto | null>(null);
+    const [accessToken, setAccessToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const router = useRouter();
-    const { locale } = useParams();
 
-    const fetchUserProfile = async () => {
-        try {
-            const userData = await users.getMe();
-            setUser(userData);
-            if (userData.language && userData.language !== locale) {
-                const currentPath = window.location.pathname.replace(`/${locale}`, '');
-                router.replace(`/${userData.language}${currentPath}`);
-            }
-        } catch (error) {
-            console.error("Failed to fetch user profile", error);
-            setUser(null);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        console.log("AuthContext useEffect triggered, calling fetchUserProfile");
-        fetchUserProfile();
+    const login = useCallback((userData: UserPrivateProfileDto, token: string) => {
+        setUser(userData);
+        setAccessToken(token);
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }, []);
 
-    const login = () => {
-        setIsLoading(true);
-        fetchUserProfile();
-    };
-
-    const logout = async () => {
+    const logout = useCallback(async () => {
+        setUser(null);
+        setAccessToken(null);
+        delete api.defaults.headers.common['Authorization'];
         try {
             await auth.logout();
         } catch (error) {
-            console.error("Failed to logout from server", error);
-            // Continue with client-side logout even if server logout fails
+            console.error("Logout failed on server:", error);
         }
-        Cookies.remove('authToken');
-        setUser(null);
-                                router.push(`/${locale}/login`);
-    };
+    }, []);
+
+    useEffect(() => {
+        const restoreSession = async () => {
+            try {
+                const { accessToken, user } = await auth.refresh();
+                login(user, accessToken);
+            } catch (error) {
+                console.log("No active session or session expired.");
+                // Call logout to ensure all state is cleared consistently
+                logout();
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        restoreSession();
+    }, [login, logout]);
+
+    const value = useMemo(() => ({
+        user,
+        accessToken,
+        isAuthenticated: !!accessToken,
+        isLoading,
+        login,
+        logout
+    }), [user, accessToken, isLoading, login, logout]);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated: !!user, user, login, logout, isLoading }}>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     );

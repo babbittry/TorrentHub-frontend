@@ -1,6 +1,14 @@
 "use client";
 
-import { useDisclosure, Button } from "@heroui/react";
+import {
+    useDisclosure,
+    Button,
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter
+} from "@heroui/react";
 import {
     Table,
     TableHeader,
@@ -10,45 +18,42 @@ import {
     TableCell
 } from "@heroui/table";
 import { useEffect, useState } from "react";
-import { fetchApi } from "@/lib/apiClient";
+import { store, StoreItemDto } from "@/lib/api";
 import { useTranslations } from "next-intl";
 import { PurchaseCreditModal } from "./components/PurchaseCreditModal";
 import { ChangeUsernameModal } from "./components/ChangeUsernameModal";
 
-interface StoreItem {
-    id: number;
-    itemCode: number;
-    name: string;
-    description: string;
-    price: number;
-    isAvailable: boolean;
-    badgeId: number | null;
-}
-
 const StorePage = () => {
     const t = useTranslations("Store");
-    const [items, setItems] = useState<StoreItem[]>([]);
-    const [selectedItem, setSelectedItem] = useState<StoreItem | null>(null);
+    const [items, setItems] = useState<StoreItemDto[]>([]);
+    const [selectedItem, setSelectedItem] = useState<StoreItemDto | null>(null);
 
     const {
         isOpen: isCreditModalOpen,
         onOpen: onCreditModalOpen,
         onOpenChange: onCreditModalOpenChange
     } = useDisclosure();
-    
+
     const {
         isOpen: isUsernameModalOpen,
         onOpen: onUsernameModalOpen,
         onOpenChange: onUsernameModalOpenChange
     } = useDisclosure();
 
+    const {
+        isOpen: isInfoModalOpen,
+        onOpen: onInfoModalOpen,
+        onOpenChange: onInfoModalOpenChange
+    } = useDisclosure();
+    const [infoModalContent, setInfoModalContent] = useState({ title: "", body: "" });
+
     useEffect(() => {
-        fetchApi<StoreItem[]>("/api/store/items").then((data) => {
+        store.getItems().then((data) => {
             setItems(data);
         });
     }, []);
 
-    const handlePurchaseClick = (item: StoreItem) => {
+    const handlePurchaseClick = (item: StoreItemDto) => {
         setSelectedItem(item);
         // Assuming itemCode 0 is for UploadCredit and 5 is for CustomTitle/Username change
         if (item.itemCode === 0) {
@@ -56,15 +61,16 @@ const StorePage = () => {
         } else if (item.itemCode === 5) {
             onUsernameModalOpen();
         } else {
-            // Fallback for other items, maybe a simple confirm?
-            // For now, we can just log it.
-            console.log("Purchase clicked for item:", item);
-            alert(`Item: ${item.name}\nThis item has a different purchase flow not yet implemented.`);
+            setInfoModalContent({
+                title: t("noticeTitle"),
+                body: t("unimplementedFlow", { itemName: item.name })
+            });
+            onInfoModalOpen();
         }
     };
 
     return (
-        <div>
+        <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
             <Table aria-label="Store items table">
                 <TableHeader>
@@ -102,6 +108,24 @@ const StorePage = () => {
                 onOpenChange={onUsernameModalOpenChange}
                 item={selectedItem}
             />
+
+            <Modal isOpen={isInfoModalOpen} onOpenChange={onInfoModalOpenChange}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader>{infoModalContent.title}</ModalHeader>
+                            <ModalBody>
+                                <p className="whitespace-pre-wrap">{infoModalContent.body}</p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onClick={onClose}>
+                                    {t("close")}
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
         </div>
     );
 };

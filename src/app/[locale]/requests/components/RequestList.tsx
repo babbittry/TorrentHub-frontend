@@ -4,13 +4,12 @@ import RequestListItem from './RequestListItem';
 
 interface RequestListProps {
     requests: RequestDto[];
-    locale: string;
     isLoading: boolean;
     error: string | null;
     noRequestsMessage: string;
 }
 
-const RequestList: React.FC<RequestListProps> = ({ requests, locale, isLoading, error, noRequestsMessage }) => {
+const RequestList: React.FC<RequestListProps> = ({ requests, isLoading, error, noRequestsMessage }) => {
     if (isLoading) {
         return (
             <div className="text-center py-10">
@@ -38,7 +37,7 @@ const RequestList: React.FC<RequestListProps> = ({ requests, locale, isLoading, 
     return (
         <div className="space-y-2">
             {requests.map(request => (
-                <RequestListItem key={request.id} request={request} locale={locale} />
+                <RequestListItem key={request.id} request={request} />
             ))}
         </div>
     );

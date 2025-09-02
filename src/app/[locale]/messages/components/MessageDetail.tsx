@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
-import { MessageDto, UserPublicProfileDto, messages } from '@/lib/api';
+import { MessageDto, UserPublicProfileDto, messages, API_BASE_URL } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import {Divider} from "@heroui/divider";
 import { User } from "@heroui/user";
-import { API_BASE_URL } from '@/lib/apiClient';
 import type { MailboxType } from '../page';
 
 interface MessageDetailProps {
@@ -42,9 +41,6 @@ const MessageDetail: React.FC<MessageDetailProps> = ({ message, activeMailbox, o
         ? message.sender
         : message.receiver;
 
-    const descriptionText = activeMailbox === 'inbox'
-        ? `${t('to')}: ${message.receiver?.userName || 'N/A'}`
-        : `${t('from')}: ${message.sender?.userName || 'N/A'}`;
 
 
     return (

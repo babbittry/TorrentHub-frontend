@@ -10,7 +10,7 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Tabs, Tab } from "@heroui/tabs";
 import { Avatar } from "@heroui/avatar";
-import { API_BASE_URL } from '@/lib/apiClient';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function SettingsPage() {
     const t = useTranslations('settingsPage');

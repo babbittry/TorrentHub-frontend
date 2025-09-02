@@ -11,22 +11,14 @@ import {
 } from "@heroui/react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { fetchApi } from "@/lib/apiClient";
+import { store } from "@/lib/api";
 
-interface StoreItem {
-    id: number;
-    itemCode: number;
-    name: string;
-    description: string;
-    price: number;
-    isAvailable: boolean;
-    badgeId: number | null;
-}
+import { StoreItemDto } from "@/lib/api";
 
 interface ChangeUsernameModalProps {
     isOpen: boolean;
     onOpenChange: () => void;
-    item: StoreItem | null;
+    item: StoreItemDto | null;
 }
 
 export const ChangeUsernameModal = ({ isOpen, onOpenChange, item }: ChangeUsernameModalProps) => {
@@ -41,15 +33,7 @@ export const ChangeUsernameModal = ({ isOpen, onOpenChange, item }: ChangeUserna
         // NOTE: This assumes a different endpoint or a different payload structure
         // for changing the username. This needs to be coordinated with the backend.
         // For now, we'll call the standard purchase endpoint.
-        fetchApi("/api/store/purchase", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                storeItemId: item.id,
-                // The backend will need to handle this extra payload data
-                newUsername: newUsername.trim(),
-            }),
-        })
+        store.purchaseItem(item.id, { params: { newUsername: newUsername.trim() } })
         .then(() => {
             // TODO: Show success notification and possibly update user state
             onOpenChange();

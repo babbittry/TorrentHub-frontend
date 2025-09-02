@@ -1,44 +1,39 @@
 "use client";
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Header from '@/app/[locale]/components/Header';
 import Footer from '@/app/[locale]/components/Footer';
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function LayoutContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const router = useRouter();
-    const { isAuthenticated, isLoading } = useAuth();
-
-    const noHeaderFooterPaths = ['/login', '/register'];
-    const isPublicPath = noHeaderFooterPaths.some(path => pathname.endsWith(path));
+    const { isLoading } = useAuth();
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        if (!isLoading) {
-            if (!isAuthenticated && !isPublicPath) {
-                router.push('/login');
-            } else if (isAuthenticated && isPublicPath) {
-                router.push('/');
-            }
-        }
-    }, [isLoading, isAuthenticated, isPublicPath, router]);
+        setIsClient(true);
+    }, []);
 
     if (isLoading) {
-        return <div>Loading...</div>; // Or a spinner component
+        // You can replace this with a proper global spinner component
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <p>Loading application...</p>
+            </div>
+        );
     }
 
-    
-
+    const noHeaderFooterPaths = ['/login', '/register'];
     const shouldHideHeaderFooter = noHeaderFooterPaths.some(path => pathname.endsWith(path));
 
     return (
         <>
-            {!shouldHideHeaderFooter && <Header />}
+            {isClient && !shouldHideHeaderFooter && <Header />}
             <main className="flex-grow">
                 {children}
             </main>
-            {!shouldHideHeaderFooter && <Footer />}
+            {isClient && !shouldHideHeaderFooter && <Footer />}
         </>
     );
 }

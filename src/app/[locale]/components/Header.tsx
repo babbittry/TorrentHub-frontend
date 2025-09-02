@@ -16,12 +16,17 @@ export default function Header() {
     const t = useTranslations();
     const router = useRouter();
     const pathname = usePathname();
+    const [isClient, setIsClient] = useState(false);
 
     const [buttonTitle, setButtonTitle] = useState('');
 
     useEffect(() => {
         setButtonTitle(`${t('theme.toggle')} ${t('theme.' + theme)} (${t('theme.' + currentMode)})`);
     }, [theme, currentMode, t]);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const toggleTheme = () => {
         if (theme === 'light') {
@@ -52,7 +57,9 @@ export default function Header() {
         <header className="bg-[var(--color-card-background)] text-[var(--color-foreground)] p-4 shadow-lg">
             <nav className="container mx-auto flex justify-between items-center">
                 <Link href="/" className="flex items-center">
-                    {currentMode === 'light' ? (
+                    {!isClient ? (
+                        <div style={{ width: 128, height: 32 }} /> // Placeholder with size
+                    ) : currentMode === 'light' ? (
                         <Image src="/logo-white.png" alt="Logo" width={115} height={32} />
                     ) : (
                         <Image src="/logo-black.png" alt="Logo" width={128} height={32} />
@@ -124,7 +131,9 @@ export default function Header() {
                         className="p-2 rounded-full bg-[var(--color-border)] hover:bg-[var(--color-secondary)] transition-colors duration-200"
                         title={buttonTitle}
                     >
-                        {theme === 'light' ? (
+                        {!isClient ? (
+                             <div className="h-6 w-6" /> // Placeholder
+                        ) : theme === 'light' ? (
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-6 w-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
                             </svg>
@@ -138,7 +147,9 @@ export default function Header() {
                             </svg>
                         )}
                     </button>
-                    {isAuthenticated ? (
+                    {!isClient ? (
+                        <div className="w-20 h-8" /> // Placeholder for login button or user menu
+                    ) : isAuthenticated ? (
                         <UserMenu />
                     ) : (
                         <Link href="/login" className="btn-primary">
