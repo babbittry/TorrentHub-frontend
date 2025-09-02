@@ -10,17 +10,20 @@ export default api;
 
 // DTOs for User related operations
 export enum UserRole {
-    Mosquito,
-    User,
-    PowerUser,
-    EliteUser,
-    CrazyUser,
-    VeteranUser,
-    VIP,
-    Uploader,
-    Seeder,
-    Moderator,
-    Administrator,
+    // Standard User Tiers (increasing privileges)
+    Mosquito = "Mosquito",   // 低分享率用户
+    User = "User",           // 普通用户 (新注册用户的默认角色)
+    PowerUser = "PowerUser",      // 高级用户
+    EliteUser = "EliteUser",      // 精英用户
+    CrazyUser = "CrazyUser",      // 狂热用户
+    VeteranUser = "VeteranUser",    // 资深用户
+    VIP = "VIP",            // VIP用户（例如，捐赠者或特殊贡献者）
+
+    // Functional Roles
+    Uploader = "Uploader",       // 认证上传者
+    Seeder = "Seeder",         // 保种用户
+    Moderator = "Moderator",      // 版主
+    Administrator = "Administrator",  // 管理员
 }
 
 export type BanStatus = number;
@@ -529,6 +532,15 @@ export const users = {
         const response = await api.get(`/api/users/${id}/peers`);
         return response.data;
     },
+    getUserBadges: async (userId: number): Promise<unknown> => {
+        const response = await api.get(`/api/users/${userId}/badges`);
+        return response.data;
+    },
+
+    getMyBadges: async (): Promise<unknown> => {
+        const response = await api.get('/api/users/me/badges');
+        return response.data;
+    },
 };
 
 // Stats API Functions
@@ -700,6 +712,49 @@ export const forum = {
     createPost: async (topicId: number, postData: CreateForumPostDto): Promise<ForumPostDto> => {
         const response = await api.post(`/api/forum/topics/${topicId}/posts`, postData);
         return response.data;
+    },
+    updateTopic: async (topicId: number, topicData: UpdateForumTopicDto): Promise<void> => {
+        await api.put(`/api/forum/topics/${topicId}`, topicData);
+    },
+    deleteTopic: async (topicId: number): Promise<void> => {
+        await api.delete(`/api/forum/topics/${topicId}`);
+    },
+    updatePost: async (postId: number, postData: UpdateForumPostDto): Promise<void> => {
+        await api.put(`/api/forum/posts/${postId}`, postData);
+    },
+    deletePost: async (postId: number): Promise<void> => {
+        await api.delete(`/api/forum/posts/${postId}`);
+    },
+    lockTopic: async (topicId: number): Promise<void> => {
+        await api.patch(`/api/forum/topics/${topicId}/lock`);
+    },
+    unlockTopic: async (topicId: number): Promise<void> => {
+        await api.patch(`/api/forum/topics/${topicId}/unlock`);
+    },
+    stickyTopic: async (topicId: number): Promise<void> => {
+        await api.patch(`/api/forum/topics/${topicId}/sticky`);
+    },
+    unstickyTopic: async (topicId: number): Promise<void> => {
+        await api.patch(`/api/forum/topics/${topicId}/unsticky`);
+    },
+};
+
+// Coins API Functions
+export const coins = {
+    updateCoins: async (userId: number, data: UpdateCoinsRequestDto): Promise<void> => {
+        await api.patch(`/api/coins/${userId}`, data);
+    },
+};
+
+// TopPlayers API Functions
+export const topPlayers = {
+    getTopPlayers: async (type: TopPlayerType): Promise<UserPublicProfileDto[]> => {
+        const response = await api.get(`/api/top-players/${type}`);
+        return response.data;
+    },
+
+    refreshCache: async (): Promise<void> => {
+        await api.post('/api/top-players/refresh-cache');
     },
 };
 

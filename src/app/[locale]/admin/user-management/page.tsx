@@ -124,10 +124,10 @@ const UserManagementPage = () => {
                             <Select
                                 label={t('userManagement.modal.roleLabel')}
                                 selectedKeys={editFormData.role ? [editFormData.role] : []}
-                                onChange={(e) => handleFormChange('role', Number(e.target.value) as UserRole)}
+                                onChange={(e) => handleFormChange('role', e.target.value as UserRole)}
                            >
-                               {Object.values(UserRole).filter(v => typeof v === 'string').map(role => (
-                                   <SelectItem key={UserRole[role as keyof typeof UserRole]}>{role}</SelectItem>
+                               {Object.values(UserRole).map(role => (
+                                   <SelectItem key={role}>{role}</SelectItem>
                                ))}
                            </Select>
                             <Switch
