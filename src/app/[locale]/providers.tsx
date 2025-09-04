@@ -4,7 +4,7 @@ import { HeroUIProvider } from '@heroui/react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import api, { auth as authApi } from '@/lib/api'; // Import authApi
 import { useEffect } from 'react';
-import axios from "axios";
+import { ToastProvider } from "@heroui/toast";
 
 let isRefreshing = false;
 // The queue now holds callbacks that expect an error or a token
@@ -79,6 +79,7 @@ const AppWithInterceptors = ({ children }: { children: React.ReactNode }) => {
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <HeroUIProvider>
+            <ToastProvider />
             <AuthProvider>
                 <AppWithInterceptors>
                     {children}

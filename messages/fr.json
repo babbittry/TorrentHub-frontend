@@ -52,6 +52,7 @@
         "register": "Inscription",
         "search_torrents": "Rechercher des torrents...",
         "about": "À propos",
+        "polls": "Sondages",
         "admin_dashboard": "Administrateur"
     },
     "footer": {
@@ -395,6 +396,7 @@
             "createNewPoll": "Create New Poll",
             "questionLabel": "Question",
             "questionPlaceholder": "What is your favorite color?",
+            "expiresAtLabel": "Date d'expiration",
             "optionsLabel": "Options",
             "optionPlaceholder": "Option {index}",
             "addOptionButton": "Add Option",
@@ -577,5 +579,23 @@
         "noticeTitle": "Avis",
         "unimplementedFlow": "Article : {itemName} a un processus d'achat différent qui n'a pas encore été mis en œuvre.",
         "close": "Fermer"
+    },
+    "Polls": {
+        "loading": "Chargement du sondage...",
+        "title": "Sondage",
+        "noActive": "Aucun sondage actif pour le moment.",
+        "selectOptionError": "Veuillez sélectionner une option pour voter.",
+        "voteSuccess": "Vote soumis avec succès !",
+        "voteFailed": "Échec de la soumission de votre vote. Vous avez peut-être déjà voté.",
+        "votes": "votes",
+        "totalVotes": "Total des votes",
+        "selectAnOption": "Sélectionnez une option",
+        "submitVote": "Soumettre le vote",
+        "loginToVote": "Connectez-vous pour voter",
+        "currentPoll": "Sondage actuel",
+        "pastPolls": "Sondages passés",
+        "loadingHistory": "Chargement de l'historique des sondages...",
+        "noOptions": "Aucune option disponible pour ce sondage.",
+        "noHistory": "Aucun historique de sondage disponible."
     }
 }

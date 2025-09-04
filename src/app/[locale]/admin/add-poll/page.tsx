@@ -13,6 +13,7 @@ const AddPollPage = () => {
     const t = useTranslations('Admin');
     const [question, setQuestion] = useState('');
     const [options, setOptions] = useState(['', '']);
+    const [expiresAt, setExpiresAt] = useState('');
     const [existingPolls, setExistingPolls] = useState<PollDto[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -53,11 +54,16 @@ const AddPollPage = () => {
             alert(t('addPoll.alert.fillOut'));
             return;
         }
-        const pollData: CreatePollDto = { question, options };
+        const pollData: CreatePollDto = {
+            question,
+            options,
+            expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined
+        };
         try {
             await polls.createPoll(pollData);
             setQuestion('');
             setOptions(['', '']);
+            setExpiresAt('');
             fetchPolls(); // Refresh the list of polls
         } catch (error) {
             console.error("Failed to create poll:", error);
@@ -96,6 +102,18 @@ const AddPollPage = () => {
                                 fullWidth
                             />
                         </div>
+
+                        <div>
+                            <label htmlFor="expiresAt" className="block text-sm font-medium text-gray-700">{t('addPoll.expiresAtLabel')}</label>
+                            <CustomInput
+                                id="expiresAt"
+                                type="datetime-local"
+                                value={expiresAt}
+                                onChange={(e) => setExpiresAt(e.target.value)}
+                                fullWidth
+                            />
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700">{t('addPoll.optionsLabel')}</label>
                             {options.map((option, index) => (

@@ -87,6 +87,11 @@ export default function Header() {
                         </Link>
                     </li>
                     <li>
+                        <Link href="/polls" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                            {t('header.polls')}
+                        </Link>
+                    </li>
+                    <li>
                         <Link href="/user" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
                             {t('header.user_center')}
                         </Link>

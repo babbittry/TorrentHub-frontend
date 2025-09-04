@@ -52,6 +52,7 @@
         "register": "登録",
         "search_torrents": "トレントを検索...",
         "about": "概要",
+        "polls": "投票",
         "admin_dashboard": "管理"
     },
     "footer": {
@@ -395,6 +396,7 @@
             "createNewPoll": "Create New Poll",
             "questionLabel": "Question",
             "questionPlaceholder": "What is your favorite color?",
+            "expiresAtLabel": "有効期限",
             "optionsLabel": "Options",
             "optionPlaceholder": "Option {index}",
             "addOptionButton": "Add Option",
@@ -577,5 +579,23 @@
         "noticeTitle": "通知",
         "unimplementedFlow": "アイテム：{itemName} には、まだ実装されていない異なる購入フローがあります。",
         "close": "閉じる"
+    },
+    "Polls": {
+        "loading": "投票を読み込み中...",
+        "title": "投票",
+        "noActive": "現在アクティブな投票はありません。",
+        "selectOptionError": "投票するオプションを選択してください。",
+        "voteSuccess": "投票が正常に送信されました！",
+        "voteFailed": "投票の送信に失敗しました。すでに投票済みかもしれません。",
+        "votes": "票",
+        "totalVotes": "総投票数",
+        "selectAnOption": "オプションを選択",
+        "submitVote": "投票する",
+        "loginToVote": "ログインして投票",
+        "currentPoll": "現在の投票",
+        "pastPolls": "過去の投票",
+        "loadingHistory": "投票履歴を読み込み中...",
+        "noOptions": "この投票には利用可能なオプションがありません。",
+        "noHistory": "利用可能な投票履歴はありません。"
     }
 }

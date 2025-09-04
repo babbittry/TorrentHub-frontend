@@ -843,19 +843,27 @@ export interface PollOptionDto {
 export interface PollDto {
     id: number;
     question: string;
-    options: PollOptionDto[];
+    // Note: The backend seems to return different shapes for this.
+    // GET /api/polls returns PollOptionDto[], but GET /api/polls/latest returns Record<string, number>
+    // We will handle this defensively in the component.
+    options?: PollOptionDto[] | Record<string, number>;
+    results?: Record<string, number>; // from latest
     totalVotes: number;
     createdAt: string; // date-time
-    createdBy: number;
+    createdBy?: number;
+    userVotedOption?: string | null; // This is returned by /latest but not in the generated spec
+    isActive?: boolean; // This is returned by /latest but not in the generated spec
 }
 
 export interface CreatePollDto {
     question: string;
     options: string[];
+    expiresAt?: string;
 }
 
 export interface VoteDto {
-    optionId: number;
+    optionId?: number; // Kept for compatibility if needed elsewhere
+    option?: string; // As per the actual endpoint requirement
 }
 export interface CheatLogDto {
     id: number;
@@ -917,6 +925,10 @@ export const polls = {
     },
     vote: async (id: number, vote: VoteDto): Promise<void> => {
         await api.post(`/api/polls/${id}/vote`, vote);
+    },
+    getLatest: async (): Promise<PollDto> => {
+        const response = await api.get('/api/polls/latest');
+        return response.data;
     }
 };
 

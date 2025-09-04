@@ -52,6 +52,7 @@
         "register": "Register",
         "search_torrents": "Search Torrents...",
         "about": "About",
+        "polls": "Polls",
         "admin_dashboard": "Admin Dashboard"
     },
     "footer": {
@@ -395,6 +396,7 @@
             "createNewPoll": "Create New Poll",
             "questionLabel": "Question",
             "questionPlaceholder": "What is your favorite color?",
+            "expiresAtLabel": "Expiration Time",
             "optionsLabel": "Options",
             "optionPlaceholder": "Option {index}",
             "addOptionButton": "Add Option",
@@ -577,5 +579,23 @@
         "noticeTitle": "Notice",
         "unimplementedFlow": "Item: {itemName} has a different purchase flow that has not yet been implemented.",
         "close": "Close"
+    },
+    "Polls": {
+        "loading": "Loading Poll...",
+        "title": "Poll",
+        "noActive": "No active poll at the moment.",
+        "selectOptionError": "Please select an option to vote.",
+        "voteSuccess": "Vote submitted successfully!",
+        "voteFailed": "Failed to submit your vote. You may have already voted.",
+        "votes": "votes",
+        "totalVotes": "Total Votes",
+        "selectAnOption": "Select an option",
+        "submitVote": "Submit Vote",
+        "loginToVote": "Login to Vote",
+        "currentPoll": "Current Poll",
+        "pastPolls": "Past Polls",
+        "loadingHistory": "Loading poll history...",
+        "noOptions": "No options available for this poll.",
+        "noHistory": "No poll history available."
     }
 }

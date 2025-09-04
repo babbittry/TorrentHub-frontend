@@ -52,6 +52,7 @@
         "register": "注册",
         "search_torrents": "搜索种子...",
         "about": "关于",
+        "polls": "投票",
         "admin_dashboard": "站点管理"
     },
     "footer": {
@@ -395,6 +396,7 @@
             "createNewPoll": "创建新投票",
             "questionLabel": "问题",
             "questionPlaceholder": "你最喜欢的颜色是什么？",
+            "expiresAtLabel": "过期时间",
             "optionsLabel": "选项",
             "optionPlaceholder": "选项 {index}",
             "addOptionButton": "添加选项",
@@ -577,5 +579,23 @@
         "noticeTitle": "提示",
         "unimplementedFlow": "商品：{itemName} 有一个尚未实现的特殊购买流程。",
         "close": "关闭"
+    },
+    "Polls": {
+        "loading": "投票加载中...",
+        "title": "投票",
+        "noActive": "当前没有进行中的投票。",
+        "selectOptionError": "请选择一个选项进行投票。",
+        "voteSuccess": "投票成功！",
+        "voteFailed": "投票失败，您可能已经投过票了。",
+        "votes": "票",
+        "totalVotes": "总票数",
+        "selectAnOption": "请选择一个选项",
+        "submitVote": "提交投票",
+        "loginToVote": "请登录后投票",
+        "currentPoll": "当前投票",
+        "pastPolls": "历史投票",
+        "loadingHistory": "投票历史加载中...",
+        "noOptions": "该投票没有可用选项。",
+        "noHistory": "暂无历史投票记录。"
     }
 }

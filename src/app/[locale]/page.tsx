@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { announcements, torrentListing, AnnouncementDto, TorrentDto } from "@/lib/api";
+import { announcements, torrentListing, AnnouncementDto, TorrentDto, polls, PollDto } from "@/lib/api";
 import { useTranslations } from 'next-intl';
 import TorrentCard from "./torrents/components/TorrentCard";
 import SiteStats from "./components/SiteStats";
+import Poll from "./components/Poll";
 
 export default function Home() {
     const [_announcements, setAnnouncements] = useState<AnnouncementDto[]>([]);
     const [torrents, setTorrents] = useState<TorrentDto[]>([]);
+    const [latestPoll, setLatestPoll] = useState<PollDto | null>(null);
+    const [loadingPoll, setLoadingPoll] = useState<boolean>(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [loadingAnnouncements, setLoadingAnnouncements] = useState<boolean>(true);
     const [loadingTorrents, setLoadingTorrents] = useState<boolean>(true);
@@ -41,6 +44,16 @@ export default function Home() {
                 setErrorTorrents((err as Error).message || t_common('error'));
             } finally {
                 setLoadingTorrents(false);
+            }
+            setLoadingPoll(true);
+            try {
+                const pollData = await polls.getLatest();
+                setLatestPoll(pollData);
+            } catch (error) {
+                // It's okay if it fails (e.g., 404), just don't show the poll
+                setLatestPoll(null);
+            } finally {
+                setLoadingPoll(false);
             }
         }
         fetchData();
@@ -79,6 +92,13 @@ export default function Home() {
                     <p className="text-center text-[var(--color-text-muted)] text-lg opacity-80">{t_announcements('none')}</p>
                 )}
             </section>
+
+            {/* 投票区 */}
+            {!loadingPoll && latestPoll?.isActive && (
+                <section className="mb-12">
+                    <Poll />
+                </section>
+            )}
 
             {/* 搜索框 */}
             <form onSubmit={handleSearch} className="mb-12 flex justify-center space-x-4">
