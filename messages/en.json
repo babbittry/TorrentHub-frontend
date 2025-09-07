@@ -578,7 +578,53 @@
         },
         "noticeTitle": "Notice",
         "unimplementedFlow": "Item: {itemName} has a different purchase flow that has not yet been implemented.",
-        "close": "Close"
+        "close": "Close",
+        "newUsername": "New Username",
+        "enterNewUsername": "Enter your new username",
+        "enterQuantity": "Enter quantity",
+        "purchasing": "Purchasing...",
+        "store": {
+            "items": {
+                "uploadcredit10gb": {
+                    "name": "10 GB Upload Credit",
+                    "description": "Add 10 GB to your total upload amount."
+                },
+                "uploadcredit100gb": {
+                    "name": "100 GB Upload Credit",
+                    "description": "Add 100 GB to your total upload amount."
+                },
+                "inviteone": {
+                    "name": "1 Invite Code",
+                    "description": "Purchase a single invite code."
+                },
+                "invitefive": {
+                    "name": "5 Invite Codes",
+                    "description": "Purchase five invite codes in a bundle."
+                },
+                "doubleupload": {
+                    "name": "Double Upload Credit",
+                    "description": "Enable double upload credit for a limited time."
+                },
+                "nohitandrun": {
+                    "name": "No Hit & Run",
+                    "description": "Exempts you from Hit & Run rules for a period."
+                },
+                "changeusername": {
+                    "name": "Change Username",
+                    "description": "Allows you to change your username one time."
+                },
+                "badge": {
+                    "name": "Purchase a Badge",
+                    "description": "Display a special badge on your profile."
+                }
+            },
+            "metadata": {
+                "newUsername": {
+                    "label": "New Username",
+                    "placeholder": "Enter your new username"
+                }
+            }
+        }
     },
     "Polls": {
         "loading": "Loading Poll...",

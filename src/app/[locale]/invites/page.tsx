@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { invites, InviteDto } from '@/lib/api';
+import { invites, InviteDto, store, StoreActionType } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from '@heroui/card';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@heroui/react';
+import { useAuth } from '@/context/AuthContext';
 
 const InvitesPage = () => {
     const [invitesList, setInvitesList] = useState<InviteDto[]>([]);
@@ -13,6 +15,10 @@ const InvitesPage = () => {
     const [, setError] = useState<string | null>(null);
     const t = useTranslations('invitesPage');
     const t_common = useTranslations('common');
+    const t_store = useTranslations('Store');
+    const { refreshUser } = useAuth();
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const [invitePrice, setInvitePrice] = useState<number | null>(null);
 
     const fetchInvites = useCallback(async () => {
         try {
@@ -28,12 +34,20 @@ const InvitesPage = () => {
 
     useEffect(() => {
         fetchInvites();
+        store.getItems().then(items => {
+            const inviteItem = items.find(item => item.actionType === StoreActionType.PurchaseWithQuantity && item.nameKey.includes('inviteone'));
+            if (inviteItem) {
+                setInvitePrice(inviteItem.price);
+            }
+        });
     }, [fetchInvites]);
 
-    const handleCreateInvite = async () => {
+    const handlePurchaseConfirm = async () => {
         try {
             await invites.createInvite();
-            fetchInvites(); // Refresh the list
+            await refreshUser();
+            await fetchInvites(); // Refresh the list
+            onOpenChange(); // Close modal
         } catch (err) {
             alert((err as Error).message || t_common('error'));
         }
@@ -62,7 +76,7 @@ const InvitesPage = () => {
 
             <Card>
                 <CardHeader>
-                    <Button onClick={handleCreateInvite} color="primary">
+                    <Button onClick={onOpen} color="primary">
                         {t('createNew')}
                     </Button>
                 </CardHeader>
@@ -85,6 +99,31 @@ const InvitesPage = () => {
                     </Table>
                 </CardBody>
             </Card>
+
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader>{t_store('confirmPurchase')}</ModalHeader>
+                            <ModalBody>
+                                {invitePrice !== null ? (
+                                    <p>{t_store('price')}: {invitePrice}</p>
+                                ) : (
+                                    <p>{t_common('loading')}</p>
+                                )}
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button variant="light" onPress={onClose}>
+                                    {t_store('cancel')}
+                                </Button>
+                                <Button color="primary" onPress={handlePurchaseConfirm} disabled={invitePrice === null}>
+                                    {t_store('confirm')}
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
         </div>
     );
 };

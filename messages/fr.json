@@ -578,7 +578,53 @@
         },
         "noticeTitle": "Avis",
         "unimplementedFlow": "Article : {itemName} a un processus d'achat différent qui n'a pas encore été mis en œuvre.",
-        "close": "Fermer"
+        "close": "Fermer",
+        "newUsername": "Nouveau nom d'utilisateur",
+        "enterNewUsername": "Entrez votre nouveau nom d'utilisateur",
+        "enterQuantity": "Entrez la quantité",
+        "purchasing": "Achat en cours...",
+        "store": {
+            "items": {
+                "uploadcredit10gb": {
+                    "name": "Crédit d'upload de 10 Go",
+                    "description": "Ajoutez 10 Go à votre total d'upload."
+                },
+                "uploadcredit100gb": {
+                    "name": "Crédit d'upload de 100 Go",
+                    "description": "Ajoutez 100 Go à votre total d'upload."
+                },
+                "inviteone": {
+                    "name": "1 Code d'invitation",
+                    "description": "Achetez un code d'invitation unique."
+                },
+                "invitefive": {
+                    "name": "5 Codes d'invitation",
+                    "description": "Achetez un lot de cinq codes d'invitation."
+                },
+                "doubleupload": {
+                    "name": "Crédit d'upload double",
+                    "description": "Activez le crédit d'upload double pour une durée limitée."
+                },
+                "nohitandrun": {
+                    "name": "Pas de Hit & Run",
+                    "description": "Vous exempte des règles de Hit & Run pour une période."
+                },
+                "changeusername": {
+                    "name": "Changer de nom d'utilisateur",
+                    "description": "Vous permet de changer votre nom d'utilisateur une fois."
+                },
+                "badge": {
+                    "name": "Acheter un badge",
+                    "description": "Affichez un badge spécial sur votre profil."
+                }
+            },
+            "metadata": {
+                "newUsername": {
+                    "label": "Nouveau nom d'utilisateur",
+                    "placeholder": "Entrez votre nouveau nom d'utilisateur"
+                }
+            }
+        }
     },
     "Polls": {
         "loading": "Chargement du sondage...",

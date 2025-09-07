@@ -239,6 +239,7 @@ const RequestDetailPage = () => {
                                     placeholder={t('requestsPage.rejection_reason_placeholder')}
                                     value={rejectionReason}
                                     onValueChange={setRejectionReason}
+                                    maxLength={500}
                                 />
                             </ModalBody>
                             <ModalFooter>

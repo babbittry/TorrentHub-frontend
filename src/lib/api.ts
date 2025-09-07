@@ -376,24 +376,31 @@ export interface UpdateForumPostDto {
 }
 
 // DTOs for Store related operations
-export enum StoreItemCode {
-    UploadCredit10GB,
-    UploadCredit50GB,
-    InviteOne,
-    InviteFive,
-    DoubleUpload,
-    NoHitAndRun,
-    Badge,
+export enum StoreActionType {
+    SimplePurchase = "SimplePurchase",
+    PurchaseWithQuantity = "PurchaseWithQuantity",
+    ChangeUsername = "ChangeUsername",
+    PurchaseBadge = "PurchaseBadge",
+}
+
+export interface ActionMetadata {
+    min?: number;
+    max?: number;
+    step?: number;
+    unitKey?: string;
+    inputLabelKey?: string;
+    placeholderKey?: string;
+    badgeId?: number;
 }
 
 export interface StoreItemDto {
     id: number;
-    itemCode?: StoreItemCode;
-    name: string;
-    description?: string | null;
+    nameKey: string;
+    descriptionKey: string;
     price: number;
     isAvailable: boolean;
-    badgeId?: number | null;
+    actionType: StoreActionType;
+    actionMetadata?: ActionMetadata | null;
 }
 
 // DTOs for Torrent related operations

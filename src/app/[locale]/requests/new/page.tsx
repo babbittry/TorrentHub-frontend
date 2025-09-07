@@ -63,6 +63,7 @@ const NewRequestPage = () => {
                             onValueChange={setTitle}
                             labelPlacement="outside"
                             placeholder={t('requestsPage.enter_request_title')}
+                            maxLength={100}
                         />
                         <Textarea
                             isRequired
@@ -71,6 +72,7 @@ const NewRequestPage = () => {
                             onValueChange={setDescription}
                             labelPlacement="outside"
                             placeholder={t('requestsPage.enter_request_description')}
+                            maxLength={500}
                         />
                         <Input
                             label={`${t('requestsPage.initial_bounty')} (${t('common.optional')})`}

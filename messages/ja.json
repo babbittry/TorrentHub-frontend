@@ -578,7 +578,53 @@
         },
         "noticeTitle": "通知",
         "unimplementedFlow": "アイテム：{itemName} には、まだ実装されていない異なる購入フローがあります。",
-        "close": "閉じる"
+        "close": "閉じる",
+        "newUsername": "新しいユーザー名",
+        "enterNewUsername": "新しいユーザー名を入力してください",
+        "enterQuantity": "数量を入力してください",
+        "purchasing": "購入中...",
+        "store": {
+            "items": {
+                "uploadcredit10gb": {
+                    "name": "10 GB アップロードクレジット",
+                    "description": "アップロード総量に10 GBを追加します。"
+                },
+                "uploadcredit100gb": {
+                    "name": "100 GB アップロードクレジット",
+                    "description": "アップロード総量に100 GBを追加します。"
+                },
+                "inviteone": {
+                    "name": "招待コード1つ",
+                    "description": "招待コードを1つ購入します。"
+                },
+                "invitefive": {
+                    "name": "招待コード5つ",
+                    "description": "招待コードを5つセットで購入します。"
+                },
+                "doubleupload": {
+                    "name": "アップロード2倍",
+                    "description": "期間限定でアップロード量が2倍になります。"
+                },
+                "nohitandrun": {
+                    "name": "ヒットアンドラン免除",
+                    "description": "一定期間、ヒットアンドランのルールが免除されます。"
+                },
+                "changeusername": {
+                    "name": "ユーザー名変更",
+                    "description": "ユーザー名を一度変更できます。"
+                },
+                "badge": {
+                    "name": "バッジ購入",
+                    "description": "プロフィールに特別なバッジを表示します。"
+                }
+            },
+            "metadata": {
+                "newUsername": {
+                    "label": "新しいユーザー名",
+                    "placeholder": "新しいユーザー名を入力してください"
+                }
+            }
+        }
     },
     "Polls": {
         "loading": "投票を読み込み中...",

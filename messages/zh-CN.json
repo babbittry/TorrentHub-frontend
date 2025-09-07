@@ -578,7 +578,53 @@
         },
         "noticeTitle": "提示",
         "unimplementedFlow": "商品：{itemName} 有一个尚未实现的特殊购买流程。",
-        "close": "关闭"
+        "close": "关闭",
+        "newUsername": "新用户名",
+        "enterNewUsername": "请输入您的新用户名",
+        "enterQuantity": "请输入数量",
+        "purchasing": "购买中...",
+        "store": {
+            "items": {
+                "uploadcredit10gb": {
+                    "name": "10 GB 上传流量",
+                    "description": "为您的上传总量增加 10 GB。"
+                },
+                "uploadcredit100gb": {
+                    "name": "100 GB 上传流量",
+                    "description": "为您的上传总量增加 100 GB。"
+                },
+                "inviteone": {
+                    "name": "1 个邀请码",
+                    "description": "购买一个邀请码。"
+                },
+                "invitefive": {
+                    "name": "5 个邀请码",
+                    "description": "购买五个邀请码套餐。"
+                },
+                "doubleupload": {
+                    "name": "双倍上传",
+                    "description": "在有限时间内启用双倍上传权限。"
+                },
+                "nohitandrun": {
+                    "name": "免除 H&R",
+                    "description": "在一段时间内免除您的 Hit & Run 规则考核。"
+                },
+                "changeusername": {
+                    "name": "更改用户名",
+                    "description": "允许您更改一次您的用户名。"
+                },
+                "badge": {
+                    "name": "购买徽章",
+                    "description": "在您的个人资料上显示一个特殊徽章。"
+                }
+            },
+            "metadata": {
+                "newUsername": {
+                    "label": "新用户名",
+                    "placeholder": "请输入您的新用户名"
+                }
+            }
+        }
     },
     "Polls": {
         "loading": "投票加载中...",

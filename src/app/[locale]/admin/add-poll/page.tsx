@@ -100,6 +100,7 @@ const AddPollPage = () => {
                                 onChange={(e) => setQuestion(e.target.value)}
                                 placeholder={t('addPoll.questionPlaceholder')}
                                 fullWidth
+                                maxLength={255}
                             />
                         </div>
 
@@ -124,6 +125,7 @@ const AddPollPage = () => {
                                         onChange={(e) => handleOptionChange(index, e.target.value)}
                                         placeholder={t('addPoll.optionPlaceholder', { index: index + 1 })}
                                         fullWidth
+                                        maxLength={255}
                                     />
                                     <Button isIconOnly onClick={() => handleRemoveOption(index)} color="danger" variant="flat">
                                         <FontAwesomeIcon icon={faTrash} />

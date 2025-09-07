@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo, useCallback } from 'react';
-import api, { UserPrivateProfileDto, auth } from '@/lib/api'; // Import auth API and api instance
+import api, { UserPrivateProfileDto, auth, users } from '@/lib/api';
 
 interface AuthContextType {
     user: UserPrivateProfileDto | null;
@@ -9,7 +9,8 @@ interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
     login: (user: UserPrivateProfileDto, token: string) => void;
-    logout: () => void;
+    logout: () => Promise<void>;
+    refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,6 +37,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
+    const refreshUser = useCallback(async () => {
+        try {
+            const updatedUser = await users.getMe();
+            setUser(updatedUser);
+        } catch (error) {
+            console.error("Failed to refresh user data:", error);
+            // Optional: Handle session expiry by logging out the user
+            await logout();
+        }
+    }, [logout]);
+
+
     useEffect(() => {
         const restoreSession = async () => {
             try {
@@ -43,8 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 login(user, accessToken);
             } catch (error) {
                 console.log("No active session or session expired.");
-                // Call logout to ensure all state is cleared consistently
-                logout();
+                await logout();
             } finally {
                 setIsLoading(false);
             }
@@ -59,8 +71,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!accessToken,
         isLoading,
         login,
-        logout
-    }), [user, accessToken, isLoading, login, logout]);
+        logout,
+        refreshUser
+    }), [user, accessToken, isLoading, login, logout, refreshUser]);
 
     return (
         <AuthContext.Provider value={value}>

@@ -1,14 +1,6 @@
 "use client";
 
-import {
-    useDisclosure,
-    Button,
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter
-} from "@heroui/react";
+import { Button } from "@heroui/react";
 import {
     Table,
     TableHeader,
@@ -20,53 +12,21 @@ import {
 import { useEffect, useState } from "react";
 import { store, StoreItemDto } from "@/lib/api";
 import { useTranslations } from "next-intl";
-import { PurchaseCreditModal } from "./components/PurchaseCreditModal";
-import { ChangeUsernameModal } from "./components/ChangeUsernameModal";
+import { PurchaseFlowProvider, usePurchaseFlow } from "./components/PurchaseFlowManager";
 
-const StorePage = () => {
+const StoreContent = () => {
     const t = useTranslations("Store");
     const [items, setItems] = useState<StoreItemDto[]>([]);
-    const [selectedItem, setSelectedItem] = useState<StoreItemDto | null>(null);
-
-    const {
-        isOpen: isCreditModalOpen,
-        onOpen: onCreditModalOpen,
-        onOpenChange: onCreditModalOpenChange
-    } = useDisclosure();
-
-    const {
-        isOpen: isUsernameModalOpen,
-        onOpen: onUsernameModalOpen,
-        onOpenChange: onUsernameModalOpenChange
-    } = useDisclosure();
-
-    const {
-        isOpen: isInfoModalOpen,
-        onOpen: onInfoModalOpen,
-        onOpenChange: onInfoModalOpenChange
-    } = useDisclosure();
-    const [infoModalContent, setInfoModalContent] = useState({ title: "", body: "" });
+    const { openPurchaseFlow } = usePurchaseFlow();
 
     useEffect(() => {
         store.getItems().then((data) => {
-            setItems(data);
+            setItems(data || []);
         });
     }, []);
 
     const handlePurchaseClick = (item: StoreItemDto) => {
-        setSelectedItem(item);
-        // Assuming itemCode 0 is for UploadCredit and 5 is for CustomTitle/Username change
-        if (item.itemCode === 0) {
-            onCreditModalOpen();
-        } else if (item.itemCode === 5) {
-            onUsernameModalOpen();
-        } else {
-            setInfoModalContent({
-                title: t("noticeTitle"),
-                body: t("unimplementedFlow", { itemName: item.name })
-            });
-            onInfoModalOpen();
-        }
+        openPurchaseFlow(item);
     };
 
     return (
@@ -84,8 +44,8 @@ const StorePage = () => {
                     {items.map((item) => (
                         <TableRow key={item.id}>
                             <TableCell>{item.id}</TableCell>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>{item.description}</TableCell>
+                            <TableCell>{t(item.nameKey)}</TableCell>
+                            <TableCell>{t(item.descriptionKey)}</TableCell>
                             <TableCell>{item.price}</TableCell>
                             <TableCell>
                                 <Button color="primary" onClick={() => handlePurchaseClick(item)} disabled={!item.isAvailable}>
@@ -96,37 +56,15 @@ const StorePage = () => {
                     ))}
                 </TableBody>
             </Table>
-
-            <PurchaseCreditModal
-                isOpen={isCreditModalOpen}
-                onOpenChange={onCreditModalOpenChange}
-                item={selectedItem}
-            />
-
-            <ChangeUsernameModal
-                isOpen={isUsernameModalOpen}
-                onOpenChange={onUsernameModalOpenChange}
-                item={selectedItem}
-            />
-
-            <Modal isOpen={isInfoModalOpen} onOpenChange={onInfoModalOpenChange}>
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader>{infoModalContent.title}</ModalHeader>
-                            <ModalBody>
-                                <p className="whitespace-pre-wrap">{infoModalContent.body}</p>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" onClick={onClose}>
-                                    {t("close")}
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
         </div>
+    );
+};
+
+const StorePage = () => {
+    return (
+        <PurchaseFlowProvider>
+            <StoreContent />
+        </PurchaseFlowProvider>
     );
 };
 

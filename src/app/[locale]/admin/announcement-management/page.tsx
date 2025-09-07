@@ -106,11 +106,11 @@ const AnnouncementManagementPage = () => {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label htmlFor="title">{t('announcementManagement.form.titleLabel')}</label>
-                                <CustomInput id="title" type="text" value={title} onChange={e => setTitle(e.target.value)} fullWidth />
+                                <CustomInput id="title" type="text" value={title} onChange={e => setTitle(e.target.value)} fullWidth maxLength={100} />
                             </div>
                             <div>
                                 <label htmlFor="content">{t('announcementManagement.form.contentLabel')}</label>
-                                <CustomTextarea id="content" value={content} onChange={e => setContent(e.target.value)} fullWidth />
+                                <CustomTextarea id="content" value={content} onChange={e => setContent(e.target.value)} fullWidth maxLength={500} />
                             </div>
                             {isCreatingNew && (
                                 <div>
