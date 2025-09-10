@@ -13,6 +13,7 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from 
 import { Link as UILink } from "@heroui/link";
 import { User } from "@heroui/user";
 import { Pagination } from "@heroui/pagination";
+import UserDisplay from "@/app/[locale]/components/UserDisplay";
 
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -41,8 +42,8 @@ export default function TorrentDetailPage() {
             setTorrent(data);
 
             const fetchedComments = await comments.getComments(Number(torrentId), commentsPage, commentsPageSize);
-            setComments(fetchedComments.items);
-            setCommentsTotalCount(fetchedComments.totalCount);
+            setComments(fetchedComments.items || []);
+            setCommentsTotalCount(fetchedComments.totalCount || 0);
 
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
@@ -103,7 +104,7 @@ export default function TorrentDetailPage() {
                             </div>
                             <div className="space-y-2 text-lg text-foreground">
                                 <p><span className="font-semibold text-default-600">{t('common.size')}:</span> {formatBytes(torrent.size)}</p>
-                                <p><span className="font-semibold text-default-600">{t('common.uploader')}:</span> {torrent.uploaderUsername || "Unknown"}</p>
+                                <p><span className="font-semibold text-default-600">{t('common.uploader')}:</span> <UserDisplay user={torrent.uploader} /></p>
                                 <p><span className="font-semibold text-default-600">{t('common.release_time')}:</span> {new Date(torrent.createdAt).toLocaleDateString()}</p>
                                 {torrent.imdbId && (
                                     <p><span className="font-semibold text-default-600">IMDb:</span> <UILink href={`https://www.imdb.com/title/${torrent.imdbId}`} isExternal showAnchorIcon>{torrent.imdbId}</UILink></p>
@@ -167,11 +168,10 @@ export default function TorrentDetailPage() {
                                 <Card key={comment.id} shadow="sm">
                                     <CardHeader className="flex justify-between items-center">
                                         <User
-                                            name={comment.user?.userName || "Unknown User"}
+                                            name={<UserDisplay user={comment.user} />}
                                             description={new Date(comment.createdAt).toLocaleString()}
                                             avatarProps={{
-                                                // Assuming avatar is part of user object
-                                                // src: comment.user?.avatarUrl
+                                                // TODO: Use correct avatar from user object
                                             }}
                                         />
                                     </CardHeader>

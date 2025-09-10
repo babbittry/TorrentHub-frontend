@@ -152,8 +152,13 @@ function TwoFactorAuthSettings() {
 
 export default function SettingsPage() {
     const t = useTranslations('settingsPage');
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const [userTitle, setUserTitle] = useState('');
+    const [isUpdatingTitle, setIsUpdatingTitle] = useState(false);
+    const [titleMessage, setTitleMessage] = useState<string | null>(null);
+    const [titleMessageType, setTitleMessageType] = useState<'success' | 'error' | null>(null);
 
     const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -169,6 +174,30 @@ export default function SettingsPage() {
     const [isChangingPassword, setIsChangingPassword] = useState(false);
 
     const currentUserAvatar = user?.avatar ? `${API_BASE_URL}${user.avatar}` : null;
+
+    useEffect(() => {
+        if (user?.userTitle) {
+            setUserTitle(user.userTitle);
+        }
+    }, [user?.userTitle]);
+
+    const handleUpdateTitle = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsUpdatingTitle(true);
+        setTitleMessage(null);
+
+        try {
+            await users.updateUserTitle(userTitle);
+            await refreshUser();
+            setTitleMessage(t('title_updated_success'));
+            setTitleMessageType('success');
+        } catch (err: unknown) {
+            setTitleMessage((err as Error).message || t('title_updated_error'));
+            setTitleMessageType('error');
+        } finally {
+            setIsUpdatingTitle(false);
+        }
+    };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
@@ -263,6 +292,33 @@ export default function SettingsPage() {
                                         isLoading={isUploadingAvatar}
                                     >
                                         {t('upload_avatar')}
+                                    </Button>
+                                </div>
+                            </form>
+                        </CardBody>
+                    </Card>
+                     <Card className="mt-6">
+                        <CardHeader className="flex flex-col items-start gap-1">
+                            <h2 className="text-xl font-semibold">{t('change_title_title')}</h2>
+                            <p className="text-sm text-default-500">{t('change_title_description')}</p>
+                        </CardHeader>
+                        <CardBody>
+                            <form onSubmit={handleUpdateTitle} className="space-y-4">
+                                <Input
+                                    label={t('custom_title')}
+                                    value={userTitle}
+                                    onValueChange={setUserTitle}
+                                    maxLength={50}
+                                    classNames={inputClassNames}
+                                />
+                                {titleMessage && <p className={titleMessageType === 'success' ? 'text-success' : 'text-danger'}>{titleMessage}</p>}
+                                <div className="flex justify-end">
+                                    <Button
+                                        type="submit"
+                                        color="primary"
+                                        isLoading={isUpdatingTitle}
+                                    >
+                                        {t('save_changes')}
                                     </Button>
                                 </div>
                             </form>

@@ -27,7 +27,7 @@ export const GenericPurchaseModal = ({ isOpen, onOpenChange, item }: GenericPurc
     
     // State for different action types
     const [quantity, setQuantity] = useState(1);
-    const [newUsername, setNewUsername] = useState("");
+    const [newTitle, setNewTitle] = useState("");
 
     // Reset state when a new item is selected or modal is closed
     useEffect(() => {
@@ -38,8 +38,8 @@ export const GenericPurchaseModal = ({ isOpen, onOpenChange, item }: GenericPurc
             } else {
                 setQuantity(1);
             }
-            // Reset username state
-            setNewUsername("");
+            // Reset title state
+            setNewTitle("");
         }
     }, [isOpen, item]);
 
@@ -54,8 +54,8 @@ export const GenericPurchaseModal = ({ isOpen, onOpenChange, item }: GenericPurc
                     await store.purchaseItem(item.id, { quantity });
                     // TODO: Show success notification
                     break;
-                case StoreActionType.ChangeUsername:
-                    await store.purchaseItem(item.id, { params: { newUsername: newUsername.trim() } });
+                case StoreActionType.ChangeUsername: // This action is now for UserTitle
+                    await store.purchaseItem(item.id, { params: { newTitle: newTitle.trim() } });
                      // TODO: Show success notification and update user context
                     break;
                 default:
@@ -98,9 +98,9 @@ export const GenericPurchaseModal = ({ isOpen, onOpenChange, item }: GenericPurc
                         <Input
                             type="text"
                             label={t(item.actionMetadata?.inputLabelKey || "newUsername")}
-                            placeholder={t(item.actionMetadata?.placeholderKey || "enterNewUsername")}
-                            value={newUsername}
-                            onChange={(e) => setNewUsername(e.target.value)}
+                            placeholder={t(item.actionMetadata?.placeholderKey || "enterNewTitle")}
+                            value={newTitle}
+                            onChange={(e) => setNewTitle(e.target.value)}
                         />
                     </div>
                 );
@@ -112,7 +112,7 @@ export const GenericPurchaseModal = ({ isOpen, onOpenChange, item }: GenericPurc
     const isConfirmDisabled = () => {
         if (isLoading) return true;
         if (item?.actionType === StoreActionType.ChangeUsername) {
-            return newUsername.trim() === "";
+            return newTitle.trim() === "";
         }
         return false;
     };

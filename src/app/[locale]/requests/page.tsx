@@ -9,6 +9,7 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDe
 import { Button, ButtonGroup } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { User } from "@heroui/user";
+import UserDisplay from '@/app/[locale]/components/UserDisplay';
 import { Card, CardFooter } from "@heroui/card";
 import { Pagination } from "@heroui/pagination";
 
@@ -74,12 +75,7 @@ const RequestsPage = () => {
                 );
             case 'requestedByUser':
                 return request.requestedByUser ? (
-                    <User
-                        name={request.requestedByUser.userName}
-                        avatarProps={{
-                            src: request.requestedByUser.avatar ? `${API_BASE_URL}${request.requestedByUser.avatar}` : undefined
-                        }}
-                    />
+                    <UserDisplay user={request.requestedByUser} />
                 ) : 'N/A';
             case 'createdAt':
                 return new Date(request.createdAt).toLocaleDateString();

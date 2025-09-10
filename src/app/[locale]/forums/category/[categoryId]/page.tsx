@@ -9,6 +9,7 @@ import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 import { Pagination } from "@heroui/pagination";
+import UserDisplay from '@/app/[locale]/components/UserDisplay';
 
 const CategoryPage = () => {
     const params = useParams();
@@ -42,7 +43,7 @@ const CategoryPage = () => {
             ]);
             const currentCategory = categoriesData.find((c: ForumCategoryDto) => c.id === categoryId);
             setCategory(currentCategory || null);
-            setTopics(topicsData.items);
+            setTopics(topicsData.items || []);
             setTotalCount(topicsData.totalCount || 0);
         } catch (err) {
             setError(t('error_loading_topics'));
@@ -91,7 +92,7 @@ const CategoryPage = () => {
                                         <div className="grid grid-cols-12 gap-4 items-center">
                                             <div className="col-span-8">
                                                 <h3 className="text-lg font-semibold text-foreground">{topic.title}</h3>
-                                                <p className="text-sm text-default-500">{t('by')} {topic.authorName}</p>
+                                                <div className="text-sm text-default-500 flex items-center">{t('by')} <UserDisplay user={topic.author} /></div>
                                             </div>
                                             <div className="col-span-2 text-center text-sm text-default-500">
                                                 <p>{t('posts')}</p>

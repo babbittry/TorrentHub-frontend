@@ -127,6 +127,10 @@
         "enter_your_comment": "请输入您的评论..."
     },
     "loginPage": {
+        "steps": {
+            "credentials": "凭据",
+            "verification": "验证"
+        },
         "failed": "登录失败，请检查您的用户名和密码。",
         "failed_no_token": "登录失败：未从服务器收到身份验证令牌。",
         "already_have_account": "已有账号？",
@@ -660,12 +664,24 @@
                 "badge": {
                     "name": "购买徽章",
                     "description": "在您的个人资料上显示一个特殊徽章。"
+                },
+                "usertitle": {
+                    "name": "自定义头衔",
+                    "description": "设置一个显示在您用户名旁边的自定义头衔。"
+                },
+                "colorfulusername": {
+                    "name": "炫彩用户名",
+                    "description": "在有限时间内，让您的用户名以彩虹渐变色脱颖而出。"
                 }
             },
             "metadata": {
                 "newUsername": {
                     "label": "新用户名",
                     "placeholder": "请输入您的新用户名"
+                },
+                "newTitle": {
+                    "label": "新头衔",
+                    "placeholder": "请输入您的新头衔"
                 }
             }
         }

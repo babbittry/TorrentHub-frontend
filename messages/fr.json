@@ -34,7 +34,7 @@
     },
     "register": {
         "avatar": "Avatar",
-        "refresh_avatar": "Rafraîchir l'avatar",
+        "refresh_avatar": "Vous n'aimez pas ? Donnez-m'en un nouveau !",
         "successful": "Inscription réussie ! Vous pouvez maintenant vous connecter.",
         "successful_needs_verification": "Inscription réussie ! Veuillez consulter votre e-mail pour activer votre compte.",
         "failed": "Échec de l'inscription, veuillez réessayer plus tard.",
@@ -45,7 +45,7 @@
         "select_language": "Sélectionnez votre langue préférée",
         "steps": {
             "language": "Langue",
-            "account_info": "Infos Compte",
+            "account_info": "Informations du compte",
             "activation": "Activation"
         }
     },
@@ -53,7 +53,13 @@
         "steps": {
             "credentials": "Identifiants",
             "verification": "Vérification"
-        }
+        },
+        "failed": "Échec de la connexion. Veuillez vérifier vos identifiants.",
+        "failed_no_token": "Échec de la connexion : Aucun jeton d'authentification n'a été reçu du serveur.",
+        "already_have_account": "Vous avez déjà un compte ?",
+        "no_account_yet": "Pas encore de compte ?",
+        "enter_your_username": "Entrez votre nom d'utilisateur",
+        "enter_your_password": "Entrez votre mot de passe"
     },
     "header": {
         "home": "Accueil",
@@ -660,12 +666,24 @@
                 "badge": {
                     "name": "Acheter un badge",
                     "description": "Affichez un badge spécial sur votre profil."
+                },
+                "usertitle": {
+                    "name": "Titre d'utilisateur personnalisé",
+                    "description": "Définissez un titre personnalisé qui apparaît à côté de votre nom d'utilisateur."
+                },
+                "colorfulusername": {
+                    "name": "Nom d'utilisateur coloré",
+                    "description": "Faites ressortir votre nom d'utilisateur avec un effet de dégradé arc-en-ciel pour une durée limitée."
                 }
             },
             "metadata": {
                 "newUsername": {
                     "label": "Nouveau nom d'utilisateur",
                     "placeholder": "Entrez votre nouveau nom d'utilisateur"
+                },
+                "newTitle": {
+                    "label": "Nouveau titre",
+                    "placeholder": "Entrez votre nouveau titre"
                 }
             }
         }

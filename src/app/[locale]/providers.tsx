@@ -45,7 +45,11 @@ const AppWithInterceptors = ({ children }: { children: React.ReactNode }) => {
                     return new Promise(async (resolve, reject) => {
                         try {
                             const { accessToken, user } = await authApi.refresh();
-                            auth.login(user, accessToken);
+                            if (user && accessToken) {
+                                auth.completeLogin(user, accessToken);
+                            } else {
+                                throw new Error("Invalid refresh response");
+                            }
                             api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                             processQueue(null, accessToken);
                             

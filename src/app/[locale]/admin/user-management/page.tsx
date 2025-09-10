@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback } from 'react';
-import { admin, users, UserProfileDetailDto, UpdateUserAdminDto, UserRole } from '@/lib/api';
+import { admin, users, UserAdminProfileDto, UpdateUserAdminDto, UserRole, BanStatus } from '@/lib/api';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
 import { CustomInput } from '../../components/CustomInputs';
@@ -13,13 +13,13 @@ import { Pagination } from "@heroui/pagination";
 
 const UserManagementPage = () => {
     const t = useTranslations('Admin');
-    const [userList, setUserList] = useState<UserProfileDetailDto[]>([]);
+    const [userList, setUserList] = useState<UserAdminProfileDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [page, setPage] = useState(1);
     const [pageSize] = useState(10);
     const [totalCount, setTotalCount] = useState(0);
-    const [selectedUser, setSelectedUser] = useState<UserProfileDetailDto | null>(null);
+    const [selectedUser, setSelectedUser] = useState<UserAdminProfileDto | null>(null);
     const [editFormData, setEditFormData] = useState<UpdateUserAdminDto>({});
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -27,8 +27,8 @@ const UserManagementPage = () => {
         try {
             setLoading(true);
             const data = await admin.getUsers(page, pageSize, searchTerm);
-            setUserList(data.items);
-            setTotalCount(data.totalCount);
+            setUserList(data?.items || []);
+            setTotalCount(data?.totalCount || 0);
         } catch (error) {
             console.error("Failed to fetch users:", error);
         } finally {
@@ -44,14 +44,23 @@ const UserManagementPage = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [searchTerm, page, fetchUsers]);
 
-    const handleEdit = (user: UserProfileDetailDto) => {
+    const handleEdit = (user: UserAdminProfileDto) => {
         setSelectedUser(user);
-        setEditFormData({ role: user.role, isBanned: user.isBanned, banReason: user.banReason });
+        setEditFormData({ role: user.role, banStatus: user.banStatus, banReason: user.banReason });
         onOpen();
     };
 
-    const handleFormChange = (name: string, value: string | boolean | UserRole | null) => {
-        setEditFormData(prev => ({ ...prev, [name]: value }));
+    const handleFormChange = (name: string, value: string | boolean | UserRole | null | BanStatus) => {
+        if (name === 'banStatus') {
+            const isBanned = value as boolean;
+            setEditFormData(prev => ({
+                ...prev,
+                banStatus: isBanned ? 1 : 0, // Assuming 0 is 'NotBanned' and 1 (or any non-zero) is 'Banned'
+                banReason: isBanned ? prev.banReason : null, // Clear reason if unbanned
+            }));
+        } else {
+            setEditFormData(prev => ({ ...prev, [name]: value as string | UserRole | null }));
+        }
     };
 
     const handleUpdate = async () => {
@@ -131,12 +140,12 @@ const UserManagementPage = () => {
                                ))}
                            </Select>
                             <Switch
-                                isSelected={editFormData.isBanned ?? false}
-                                onValueChange={(val) => handleFormChange('isBanned', val)}
+                                isSelected={!!editFormData.banStatus && editFormData.banStatus > 0}
+                                onValueChange={(val: boolean) => handleFormChange('banStatus', val)}
                             >
                                 {t('userManagement.modal.bannedLabel')}
                             </Switch>
-                            {editFormData.isBanned && (
+                            {!!editFormData.banStatus && editFormData.banStatus > 0 && (
                                 <CustomInput
                                     label={t('userManagement.modal.banReasonLabel')}
                                     value={editFormData.banReason?.toString() ?? ''}

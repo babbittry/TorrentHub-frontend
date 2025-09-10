@@ -3,6 +3,7 @@ import React from 'react';
 import { RequestDto, RequestStatus } from '@/lib/api';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import UserDisplay from '../../components/UserDisplay';
 
 interface RequestListItemProps {
     request: RequestDto;
@@ -42,7 +43,7 @@ const RequestListItem: React.FC<RequestListItemProps> = ({ request }) => {
 
                 {/* Requester */}
                 <div className="col-span-6 sm:col-span-4 md:col-span-3 text-left md:text-center text-sm text-gray-600 dark:text-gray-400">
-                    {request.requestedByUser?.userName || 'N/A'}
+                    <UserDisplay user={request.requestedByUser} />
                 </div>
 
                 {/* Date */}

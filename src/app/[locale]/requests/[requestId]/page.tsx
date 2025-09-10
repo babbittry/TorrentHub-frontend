@@ -12,6 +12,7 @@ import { Input, Textarea } from "@heroui/input";
 import { Chip } from "@heroui/chip";
 import { useAuth } from '@/context/AuthContext';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@heroui/modal";
+import UserDisplay from '@/app/[locale]/components/UserDisplay';
 
 const RequestDetailPage = () => {
     const params = useParams();
@@ -124,19 +125,10 @@ const RequestDetailPage = () => {
             <Card>
                 <CardHeader className="flex flex-col items-start gap-2">
                     <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{request.title}</h1>
-                    <p className="text-sm text-default-500">
-                        {request.requestedByUser ? (
-                            t.rich('requestsPage.meta_requested_by', {
-                                username: request.requestedByUser.userName || 'Anonymous',
-                                date: new Date(request.createdAt).toLocaleString(),
-                                userLink: (chunks) => <Link href={`/users/${request.requestedByUser?.id}`} className="text-primary hover:underline">{chunks}</Link>
-                            })
-                        ) : (
-                            t('requestsPage.meta_anonymous_request', {
-                                date: new Date(request.createdAt).toLocaleString()
-                            })
-                        )}
-                    </p>
+                    <div className="text-sm text-default-500 flex items-center gap-1">
+                        <UserDisplay user={request.requestedByUser} />
+                        <span>- {new Date(request.createdAt).toLocaleString()}</span>
+                    </div>
                 </CardHeader>
                 <CardBody>
                     <h2 className="text-xl font-semibold mb-3">{t('common.description')}</h2>
@@ -146,9 +138,9 @@ const RequestDetailPage = () => {
                 <CardFooter className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                     <div>
                         <h3 className="font-semibold text-default-500">{t('requestsPage.status')}</h3>
-                        <Chip 
-                            color={request.status === RequestStatus.Filled ? "success" : request.status === RequestStatus.PendingConfirmation ? "primary" : request.status === RequestStatus.Rejected ? "danger" : "warning"} 
-                            size="md" 
+                        <Chip
+                            color={request.status === RequestStatus.Filled ? "success" : request.status === RequestStatus.PendingConfirmation ? "primary" : request.status === RequestStatus.Rejected ? "danger" : "warning"}
+                            size="md"
                             variant="flat"
                         >
                             {t(`requestsPage.status_${request.status.toLowerCase().replace(/\s/g, '')}`)}
@@ -158,13 +150,13 @@ const RequestDetailPage = () => {
                         <h3 className="font-semibold text-default-500">{t('requestsPage.current_bounty')}</h3>
                         <p className="font-bold text-lg text-warning">{request.bountyAmount} Coins</p>
                     </div>
-                    {request.status === RequestStatus.Filled || request.status === RequestStatus.Rejected && (
-                        <div>
+                    {(request.status === RequestStatus.Filled || request.status === RequestStatus.Rejected) && request.filledByUser && (
+                         <div>
                             <h3 className="font-semibold text-default-500">{t('requestsPage.filled_by')}</h3>
-                            <p>
-                                <Link href={`/users/${request.filledByUser?.id}`} className="text-primary hover:underline">{request.filledByUser?.userName}</Link>
+                            <div className="flex items-center gap-1">
+                                <UserDisplay user={request.filledByUser} />
                                 {t('requestsPage.with_torrent')} <Link href={`/torrents/${request.filledWithTorrentId}`} className="text-primary hover:underline">#{request.filledWithTorrentId}</Link>
-                            </p>
+                            </div>
                         </div>
                     )}
                 </CardFooter>

@@ -5,6 +5,7 @@ import type { TorrentDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Chip } from "@heroui/chip";
 import { Image } from "@heroui/image";
+import UserDisplay from '../../components/UserDisplay';
 
 interface TorrentListItemProps {
     torrent: TorrentDto;
@@ -63,7 +64,7 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
                         {torrent.snatched}
                     </div>
                     <div className="col-span-2 text-center text-sm text-default-500">
-                        {torrent.uploaderUsername}
+                        <UserDisplay user={torrent.uploader} />
                     </div>
                 </div>
             </div>

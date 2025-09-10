@@ -67,6 +67,8 @@ export interface UserPublicProfileDto {
     signature?: string | null;
     uploadedBytes: number;
     downloadedBytes: number;
+    nominalUploadedBytes: number;
+    nominalDownloadedBytes: number;
     role: UserRole;
     createdAt: string; // date-time
     coins: number;
@@ -75,7 +77,36 @@ export interface UserPublicProfileDto {
     isNoHRActive: boolean;
     noHRExpiresAt?: string | null; // date-time
     totalSeedingTimeMinutes: number;
+    totalLeechingTimeMinutes: number;
     inviteNum: number;
+    invitedBy?: string | null;
+    seedingSize: number;
+    currentSeedingCount: number;
+    currentLeechingCount: number;
+    userTitle?: string | null;
+    equippedBadgeId?: number | null;
+    colorfulUsernameExpiresAt?: string | null;
+}
+
+export enum BadgeCode {
+    EarlySupporter = "EarlySupporter",
+    TorrentMaster = "TorrentMaster",
+}
+
+export interface BadgeDto {
+    id: number;
+    code: BadgeCode;
+}
+
+export interface UserDisplayDto {
+    id: number;
+    username: string;
+    userLevelName?: string | null;
+    userLevelColor?: string | null;
+
+    equippedBadge?: BadgeDto | null;
+    userTitle?: string | null;
+    isColorfulUsernameActive: boolean;
 }
 
 export interface UserPrivateProfileDto {
@@ -104,6 +135,7 @@ export interface UserPrivateProfileDto {
     totalLeechingTimeMinutes: number;
     inviteNum: number;
     twoFactorMethod: string;
+    userTitle?: string | null;
 }
 
 
@@ -124,7 +156,7 @@ export interface ChangePasswordDto {
 
 export interface UpdateUserAdminDto {
     role?: NullableOfUserRole | null;
-    isBanned?: boolean | null;
+    banStatus?: BanStatus | null;
     banReason?: string | null;
     banUntil?: string | null; // date-time
 }
@@ -133,31 +165,34 @@ export interface UpdateRegistrationSettingsDto {
     isOpen: boolean;
 }
 
-export interface UserProfileDetailDto {
+export interface UserAdminProfileDto {
     id: number;
     userName: string;
-    avatar?: string | null;
-    invitedBy?: string | null;
-    role: UserRole;
-    coins: number;
-    seedingSize: number;
     email: string;
-    createdAt: string; // date-time
-    nominalUploadedBytes: number;
-    nominalDownloadedBytes: number;
+    avatar?: string | null;
+    signature?: string | null;
     uploadedBytes: number;
     downloadedBytes: number;
-    currentSeedingCount: number;
-    currentLeechingCount: number;
-    totalLeechingTimeMinutes: number;
+    nominalUploadedBytes: number;
+    nominalDownloadedBytes: number;
+    role: UserRole;
+    createdAt: string;
+    coins: number;
+    isDoubleUploadActive: boolean;
+    doubleUploadExpiresAt?: string | null;
+    isNoHRActive: boolean;
+    noHRExpiresAt?: string | null;
     totalSeedingTimeMinutes: number;
-    isBanned: boolean;
+    totalLeechingTimeMinutes: number;
+    inviteNum: number;
+    banStatus: BanStatus;
     banReason?: string | null;
     banUntil?: string | null;
+    invitedBy?: string | null;
+    seedingSize: number;
+    currentSeedingCount: number;
+    currentLeechingCount: number;
 }
-
-// Other DTOs follow...
-// (Keeping the rest of the DTOs as they were, assuming they are still valid)
 
 export interface PaginatedResult<T> {
     items: T[];
@@ -191,7 +226,7 @@ export interface CommentDto {
     id: number;
     text: string;
     torrentId: number;
-    user?: UserPublicProfileDto;
+    user?: UserDisplayDto;
     createdAt: string; // date-time
     editedAt?: string | null; // date-time
 }
@@ -293,8 +328,8 @@ export interface RequestDto {
     id: number;
     title: string;
     description: string;
-    requestedByUser?: UserPublicProfileDto;
-    filledByUser?: UserPublicProfileDto;
+    requestedByUser?: UserDisplayDto;
+    filledByUser?: UserDisplayDto;
     filledWithTorrentId?: number | null;
     status: RequestStatus;
     rejectionReason?: string | null;
@@ -339,8 +374,7 @@ export interface ForumTopicDto {
     id: number;
     title: string;
     categoryId: number;
-    authorId: number;
-    authorName: string | null;
+    author?: UserDisplayDto;
     postCount: number;
     isSticky: boolean;
     isLocked: boolean;
@@ -352,9 +386,7 @@ export interface ForumPostDto {
     id: number;
     topicId: number;
     content: string;
-    authorId: number;
-    authorName: string | null;
-    authorAvatar: string | null;
+    author?: UserDisplayDto;
     createdAt: string; // date-time
     editedAt: string | null; // date-time
     floor: number;
@@ -365,8 +397,7 @@ export interface ForumTopicDetailDto {
     title: string;
     categoryId: number;
     categoryName: string | null;
-    authorId: number;
-    authorName: string | null;
+    author?: UserDisplayDto;
     isSticky: boolean;
     isLocked: boolean;
     createdAt: string; // date-time
@@ -444,7 +475,7 @@ export interface TorrentDto {
     name: string;
     description?: string | null;
     size: number;
-    uploaderUsername: string;
+    uploader?: UserDisplayDto;
     createdAt: string; // date-time
     category: TorrentCategory;
     isFree: boolean;
@@ -532,6 +563,9 @@ export const users = {
     updateMe: async (user: UpdateUserProfileDto): Promise<void> => {
         await api.patch('/api/users/me', user);
     },
+    updateUserTitle: async (title: string): Promise<void> => {
+        await api.put('/api/users/me/title', { title });
+    },
     changePassword: async (passwords: ChangePasswordDto): Promise<void> => {
         await api.post('/api/users/me/password', passwords);
     },
@@ -552,10 +586,6 @@ export const users = {
     },
     updateUserAdmin: async (id: number, user: UpdateUserAdminDto): Promise<void> => {
         await api.patch(`/api/users/${id}`, user);
-    },
-    getUserProfile: async (id: number): Promise<UserProfileDetailDto> => {
-        const response = await api.get(`/api/users/${id}/profile`);
-        return response.data;
     },
     getUserUploads: async (id: number): Promise<TorrentDto[]> => {
         const response = await api.get(`/api/users/${id}/uploads`);
@@ -977,7 +1007,7 @@ export const polls = {
 
 // Admin API Functions
 export const admin = {
-    getUsers: async (page: number = 1, pageSize: number = 50, searchTerm?: string): Promise<PaginatedResult<UserProfileDetailDto>> => {
+    getUsers: async (page: number = 1, pageSize: number = 50, searchTerm?: string): Promise<PaginatedResult<UserAdminProfileDto>> => {
         const params = new URLSearchParams({
             page: page.toString(),
             pageSize: pageSize.toString(),

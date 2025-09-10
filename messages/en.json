@@ -660,12 +660,24 @@
                 "badge": {
                     "name": "Purchase a Badge",
                     "description": "Display a special badge on your profile."
+                },
+                "usertitle": {
+                    "name": "Custom User Title",
+                    "description": "Set a custom title that appears next to your username."
+                },
+                "colorfulusername": {
+                    "name": "Colorful Username",
+                    "description": "Make your username stand out with a rainbow gradient effect for a limited time."
                 }
             },
             "metadata": {
                 "newUsername": {
                     "label": "New Username",
                     "placeholder": "Enter your new username"
+                },
+                "newTitle": {
+                    "label": "New Title",
+                    "placeholder": "Enter your new title"
                 }
             }
         }

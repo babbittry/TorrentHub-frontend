@@ -2,6 +2,7 @@ import React from 'react';
 import { ForumTopicDto } from '@/lib/api';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import UserDisplay from '../../components/UserDisplay';
 
 interface ForumTopicListItemProps {
     topic: ForumTopicDto;
@@ -18,9 +19,9 @@ const ForumTopicListItem: React.FC<ForumTopicListItemProps> = ({ topic }) => {
                     <p className="font-semibold text-md text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors truncate">
                         {topic.title}
                     </p>
-                    <p className="text-sm text-[var(--color-text-muted)]">
-                        {t('by')} {topic.authorName}
-                    </p>
+                    <div className="text-sm text-[var(--color-text-muted)] flex items-center">
+                        {t('by')} <UserDisplay user={topic.author} />
+                    </div>
                 </div>
 
                 {/* Stats */}

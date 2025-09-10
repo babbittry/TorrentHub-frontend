@@ -11,6 +11,7 @@ import { User } from "@heroui/user";
 import { API_BASE_URL } from "@/lib/api";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 import { Pagination } from "@heroui/pagination";
+import UserDisplay from '@/app/[locale]/components/UserDisplay';
 
 const TopicDetailPage = () => {
     const params = useParams();
@@ -123,15 +124,15 @@ const TopicDetailPage = () => {
             <h1 className="text-3xl font-bold text-foreground mb-6">{topic.title}</h1>
 
             <div className="space-y-6">
-                {topic.posts.items.map((post: ForumPostDto) => (
+                {(topic.posts?.items || []).map((post: ForumPostDto) => (
                     <Card key={post.id} className="relative">
                         <div className="absolute top-2 right-2 text-sm text-default-500">#{post.floor}</div>
                         <CardHeader>
                             <User
-                                name={post.authorName}
+                                name={<UserDisplay user={post.author} />}
                                 description={new Date(post.createdAt).toLocaleString()}
                                 avatarProps={{
-                                    src: post.authorAvatar ? `${API_BASE_URL}${post.authorAvatar}` : undefined
+                                    // TODO: Implement avatar logic in UserDisplay or here
                                 }}
                             />
                         </CardHeader>

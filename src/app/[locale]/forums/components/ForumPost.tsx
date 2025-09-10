@@ -1,6 +1,6 @@
 import React from 'react';
 import { ForumPostDto } from '@/lib/api';
-import { Link } from '@/i18n/navigation';
+import UserDisplay from '../../components/UserDisplay';
 
 interface ForumPostProps {
     post: ForumPostDto;
@@ -11,10 +11,7 @@ const ForumPost: React.FC<ForumPostProps> = ({ post }) => {
         <div className="flex p-4 border-b border-[var(--color-border)]">
             {/* User Info Sidebar */}
             <div className="flex-shrink-0 w-32 text-center mr-4">
-                <Link href={`/user/${post.authorId}`} className="font-bold text-[var(--color-primary)] hover:underline">
-                    {post.authorName}
-                </Link>
-                {/* TODO: Add user avatar, role, etc. here */}
+                <UserDisplay user={post.author} />
             </div>
 
             {/* Post Content */}

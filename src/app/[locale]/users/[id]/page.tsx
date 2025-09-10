@@ -64,6 +64,11 @@ const UserProfilePage = () => {
             { label: t('userProfile.realUpload'), value: formatBytes(profile.uploadedBytes) },
             { label: t('userProfile.realDownload'), value: formatBytes(profile.downloadedBytes) },
             { label: t('userProfile.uploadTime'), value: `${profile.totalSeedingTimeMinutes} ${t('userProfile.minutes')}` },
+            { label: t('userProfile.downloadTime'), value: `${profile.totalLeechingTimeMinutes} ${t('userProfile.minutes')}` },
+            { label: t('userProfile.seedingSize'), value: formatBytes(profile.seedingSize) },
+            { label: t('userProfile.seedingCount'), value: profile.currentSeedingCount },
+            { label: t('userProfile.leechingCount'), value: profile.currentLeechingCount },
+            { label: t('userProfile.invitedBy'), value: profile.invitedBy || t('common.none') }
         ];
     }, [profile, t]);
 

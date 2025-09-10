@@ -34,7 +34,7 @@
     },
     "register": {
         "avatar": "アバター",
-        "refresh_avatar": "アバターを更新",
+        "refresh_avatar": "気に入らない？新しいのをください！",
         "successful": "登録が完了しました！これでログインできます。",
         "successful_needs_verification": "登録が完了しました！メールを確認してアカウントを有効化してください。",
         "failed": "登録に失敗しました。後でもう一度お試しください。",
@@ -53,7 +53,13 @@
         "steps": {
             "credentials": "認証情報",
             "verification": "検証"
-        }
+        },
+        "failed": "ログインに失敗しました。認証情報を確認してください。",
+        "failed_no_token": "ログインに失敗しました：サーバーから認証トークンが受信されませんでした。",
+        "already_have_account": "すでにアカウントをお持ちですか？",
+        "no_account_yet": "まだアカウントをお持ちではありませんか？",
+        "enter_your_username": "ユーザー名を入力してください",
+        "enter_your_password": "パスワードを入力してください"
     },
     "header": {
         "home": "ホーム",
@@ -660,12 +666,24 @@
                 "badge": {
                     "name": "バッジ購入",
                     "description": "プロフィールに特別なバッジを表示します。"
+                },
+                "usertitle": {
+                    "name": "カスタムユーザータイトル",
+                    "description": "ユーザー名の隣に表示されるカスタムタイトルを設定します。"
+                },
+                "colorfulusername": {
+                    "name": "カラフルなユーザー名",
+                    "description": "期間限定で、虹色のグラデーション効果でユーザー名を際立たせます。"
                 }
             },
             "metadata": {
                 "newUsername": {
                     "label": "新しいユーザー名",
                     "placeholder": "新しいユーザー名を入力してください"
+                },
+                "newTitle": {
+                    "label": "新しいタイトル",
+                    "placeholder": "新しいタイトルを入力してください"
                 }
             }
         }
