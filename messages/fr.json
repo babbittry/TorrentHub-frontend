@@ -28,17 +28,32 @@
         "seeders": "Seeders",
         "leechers": "Leecheurs",
         "snatched": "Complétés",
-        "no_data": "Aucune donnée disponible"
+        "no_data": "Aucune donnée disponible",
+        "next_step": "Suivant",
+        "previous_step": "Précédent"
     },
     "register": {
         "avatar": "Avatar",
         "refresh_avatar": "Rafraîchir l'avatar",
         "successful": "Inscription réussie ! Vous pouvez maintenant vous connecter.",
+        "successful_needs_verification": "Inscription réussie ! Veuillez consulter votre e-mail pour activer votre compte.",
         "failed": "Échec de l'inscription, veuillez réessayer plus tard.",
         "enter_your_username": "Entrez votre nom d'utilisateur",
         "enter_your_email": "Entrez votre adresse e-mail",
         "enter_your_password": "Entrez votre mot de passe",
-        "enter_your_invite_code": "Entrez votre code d'invitation"
+        "enter_your_invite_code": "Entrez votre code d'invitation",
+        "select_language": "Sélectionnez votre langue préférée",
+        "steps": {
+            "language": "Langue",
+            "account_info": "Infos Compte",
+            "activation": "Activation"
+        }
+    },
+    "loginPage": {
+        "steps": {
+            "credentials": "Identifiants",
+            "verification": "Vérification"
+        }
     },
     "header": {
         "home": "Accueil",
@@ -118,6 +133,17 @@
         "no_account_yet": "Pas encore de compte ?",
         "enter_your_username": "Entrez votre nom d'utilisateur",
         "enter_your_password": "Entrez votre mot de passe"
+    },
+    "login2fa": {
+        "title": "Authentification à deux facteurs",
+        "enter_code": "Entrez le code à 6 chiffres de votre application d'authentification ou de votre e-mail.",
+        "code_placeholder": "Code de vérification",
+        "submit_button": "Vérifier et se connecter",
+        "no_app_code": "Vous ne pouvez pas obtenir le code de votre application ?",
+        "use_email": "Utiliser la vérification par e-mail à la place",
+        "email_sent": "Un nouveau code de vérification a été envoyé à votre e-mail.",
+        "error_sending_email": "Échec de l'envoi du code par e-mail.",
+        "login_failed": "Échec de la connexion. Le code est peut-être incorrect ou a expiré."
     },
     "requestsPage": {
         "title": "Requêtes de torrents",
@@ -339,7 +365,25 @@
         "changing_password": "Changement de mot de passe...",
         "change_password_button": "Changer le mot de passe",
         "password_updated_success": "Mot de passe mis à jour avec succès !",
-        "password_updated_error": "Échec de la mise à jour du mot de passe."
+        "password_updated_error": "Échec de la mise à jour du mot de passe.",
+        "two_factor_auth_title": "Authentification à deux facteurs",
+        "current_2fa_method": "Méthode 2FA actuelle",
+        "method_email": "Vérification par e-mail",
+        "method_app": "Application d'authentification",
+        "upgrade_to_app_button": "Mettre à niveau vers l'application d'authentification",
+        "downgrade_to_email_button": "Revenir à la vérification par e-mail",
+        "upgrade_modal_title": "Configurer l'application d'authentification",
+        "upgrade_modal_step1": "1. Scannez ce code QR avec votre application d'authentification (par ex., Google Authenticator, Authy).",
+        "upgrade_modal_step2": "Ou saisissez cette clé manuellement :",
+        "upgrade_modal_step3": "2. Saisissez le code à 6 chiffres généré par votre application pour vérifier.",
+        "downgrade_modal_title": "Confirmer le retour à l'e-mail",
+        "downgrade_modal_prompt": "Pour confirmer, veuillez saisir un dernier code de votre application d'authentification.",
+        "verify_and_enable": "Vérifier et activer",
+        "confirm_downgrade": "Confirmer le retour",
+        "verification_code": "Code de vérification",
+        "upgrade_success": "Passage à l'application d'authentification réussi !",
+        "downgrade_success": "Retour à la vérification par e-mail réussi !",
+        "api_error": "Une erreur est survenue. Veuillez réessayer."
     },
     "invitesPage": {
         "title": "Mes invitations",
@@ -643,5 +687,12 @@
         "loadingHistory": "Chargement de l'historique des sondages...",
         "noOptions": "Aucune option disponible pour ce sondage.",
         "noHistory": "Aucun historique de sondage disponible."
+    },
+    "verifyEmail": {
+        "title": "Vérifier l'e-mail",
+        "verifying": "Vérification de votre compte...",
+        "success": "Compte vérifié avec succès ! Vous pouvez maintenant vous connecter.",
+        "failed": "La vérification du compte a échoué. Le jeton est peut-être invalide ou a expiré.",
+        "back_to_login": "Retour à la connexion"
     }
 }

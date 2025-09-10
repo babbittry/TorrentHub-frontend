@@ -1,24 +1,162 @@
-// src/app/[locale]/settings/page.tsx
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { users } from '@/lib/api';
-import type { ChangePasswordDto, UserPrivateProfileDto } from '@/lib/api';
+import { users, API_BASE_URL } from '@/lib/api';
+import type { ChangePasswordDto } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Tabs, Tab } from "@heroui/tabs";
 import { Avatar } from "@heroui/avatar";
-import { API_BASE_URL } from '@/lib/api';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
+import { Image } from '@heroui/image';
+import { addToast } from '@heroui/toast';
+
+function TwoFactorAuthSettings() {
+    const t = useTranslations('settingsPage');
+    const { user, refreshUser } = useAuth();
+
+    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+    const [isDowngradeModalOpen, setIsDowngradeModalOpen] = useState(false);
+    const [setupInfo, setSetupInfo] = useState<{ qrCodeUri: string; manualEntryKey: string } | null>(null);
+    const [verificationCode, setVerificationCode] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleUpgradeClick = async () => {
+        setIsLoading(true);
+        try {
+            const data = await users.generate2faSetup();
+            setSetupInfo(data);
+            setIsUpgradeModalOpen(true);
+        } catch (error) {
+            addToast({ title: t('api_error'), color: 'danger' });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleVerifyAndEnable = async () => {
+        setIsLoading(true);
+        try {
+            await users.switchToApp({ code: verificationCode });
+            await refreshUser();
+            addToast({ title: t('upgrade_success'), color: 'success' });
+            setIsUpgradeModalOpen(false);
+            setVerificationCode('');
+        } catch (error) {
+            addToast({ title: t('api_error'), color: 'danger' });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleConfirmDowngrade = async () => {
+        setIsLoading(true);
+        try {
+            await users.switchToEmail({ code: verificationCode });
+            await refreshUser();
+            addToast({ title: t('downgrade_success'), color: 'success' });
+            setIsDowngradeModalOpen(false);
+            setVerificationCode('');
+        } catch (error) {
+            addToast({ title: t('api_error'), color: 'danger' });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    if (!user) {
+        return <p>{t('common.loading')}</p>;
+    }
+
+    return (
+        <Card className="mt-6">
+            <CardHeader className="flex flex-col items-start gap-1">
+                <h2 className="text-xl font-semibold">{t('two_factor_auth_title')}</h2>
+            </CardHeader>
+            <CardBody>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <p className="text-sm text-default-500">{t('current_2fa_method')}</p>
+                        <p className="font-semibold">
+                            {user.twoFactorMethod === 'AuthenticatorApp' ? t('method_app') : t('method_email')}
+                        </p>
+                    </div>
+                    {user.twoFactorMethod === 'AuthenticatorApp' ? (
+                        <Button color="warning" onPress={() => setIsDowngradeModalOpen(true)}>
+                            {t('downgrade_to_email_button')}
+                        </Button>
+                    ) : (
+                        <Button color="primary" onPress={handleUpgradeClick} isLoading={isLoading}>
+                            {t('upgrade_to_app_button')}
+                        </Button>
+                    )}
+                </div>
+            </CardBody>
+
+            {/* Upgrade Modal */}
+            <Modal isOpen={isUpgradeModalOpen} onOpenChange={setIsUpgradeModalOpen}>
+                <ModalHeader>{t('upgrade_modal_title')}</ModalHeader>
+                <ModalBody>
+                    {setupInfo && (
+                        <div className="space-y-4">
+                            <p>{t('upgrade_modal_step1')}</p>
+                            <div className="flex justify-center p-4 bg-white rounded-lg">
+                                <Image src={setupInfo.qrCodeUri} alt="QR Code" width={200} height={200} />
+                            </div>
+                            <p>{t('upgrade_modal_step2')}</p>
+                            <p className="font-mono bg-default-100 p-2 rounded">{setupInfo.manualEntryKey}</p>
+                            <p className="pt-4">{t('upgrade_modal_step3')}</p>
+                            <Input
+                                label={t('verification_code')}
+                                value={verificationCode}
+                                onValueChange={setVerificationCode}
+                                maxLength={6}
+                            />
+                        </div>
+                    )}
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant="ghost" onPress={() => setIsUpgradeModalOpen(false)}>{t('common.cancel')}</Button>
+                    <Button color="primary" onPress={handleVerifyAndEnable} isLoading={isLoading}>
+                        {t('verify_and_enable')}
+                    </Button>
+                </ModalFooter>
+            </Modal>
+
+            {/* Downgrade Modal */}
+            <Modal isOpen={isDowngradeModalOpen} onOpenChange={setIsDowngradeModalOpen}>
+                <ModalHeader>{t('downgrade_modal_title')}</ModalHeader>
+                <ModalBody>
+                    <p>{t('downgrade_modal_prompt')}</p>
+                    <Input
+                        label={t('verification_code')}
+                        value={verificationCode}
+                        onValueChange={setVerificationCode}
+                        maxLength={6}
+                    />
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant="ghost" onPress={() => setIsDowngradeModalOpen(false)}>{t('common.cancel')}</Button>
+                    <Button color="danger" onPress={handleConfirmDowngrade} isLoading={isLoading}>
+                        {t('confirm_downgrade')}
+                    </Button>
+                </ModalFooter>
+            </Modal>
+        </Card>
+    );
+}
+
 
 export default function SettingsPage() {
     const t = useTranslations('settingsPage');
+    const { user } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-    const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null);
     const [avatarMessage, setAvatarMessage] = useState<string | null>(null);
     const [avatarMessageType, setAvatarMessageType] = useState<'success' | 'error' | null>(null);
     const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
@@ -30,19 +168,7 @@ export default function SettingsPage() {
     const [passwordMessageType, setPasswordMessageType] = useState<'success' | 'error' | null>(null);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-    useEffect(() => {
-        const fetchUserAvatar = async () => {
-            try {
-                const userData: UserPrivateProfileDto = await users.getMe();
-                if (userData.avatar) {
-                    setCurrentUserAvatar(`${API_BASE_URL}${userData.avatar}`);
-                }
-            } catch (error) {
-                console.error("Failed to fetch user avatar:", error);
-            }
-        };
-        fetchUserAvatar();
-    }, []);
+    const currentUserAvatar = user?.avatar ? `${API_BASE_URL}${user.avatar}` : null;
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
@@ -188,6 +314,7 @@ export default function SettingsPage() {
                             </form>
                         </CardBody>
                     </Card>
+                    <TwoFactorAuthSettings />
                 </Tab>
             </Tabs>
         </div>

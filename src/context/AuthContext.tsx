@@ -1,14 +1,16 @@
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo, useCallback } from 'react';
-import api, { UserPrivateProfileDto, auth, users } from '@/lib/api';
+import api, { UserPrivateProfileDto, UserForLoginDto, auth, users } from '@/lib/api';
 
 interface AuthContextType {
     user: UserPrivateProfileDto | null;
     accessToken: string | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (user: UserPrivateProfileDto, token: string) => void;
+    usernameFor2fa: string | null;
+    login: (credentials: UserForLoginDto) => Promise<{ requiresTwoFactor: boolean }>;
+    completeLogin: (user: UserPrivateProfileDto, token: string) => void;
     logout: () => Promise<void>;
     refreshUser: () => Promise<void>;
 }
@@ -19,16 +21,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<UserPrivateProfileDto | null>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [usernameFor2fa, setUsernameFor2fa] = useState<string | null>(null);
 
-    const login = useCallback((userData: UserPrivateProfileDto, token: string) => {
+    const completeLogin = useCallback((userData: UserPrivateProfileDto, token: string) => {
         setUser(userData);
         setAccessToken(token);
+        setUsernameFor2fa(null);
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }, []);
+
+    const login = useCallback(async (credentials: UserForLoginDto) => {
+        const response = await auth.login(credentials);
+
+        if (response.requiresTwoFactor) {
+            setUsernameFor2fa(credentials.userName);
+            return { requiresTwoFactor: true };
+        }
+
+        if (response.user && response.accessToken) {
+            completeLogin(response.user, response.accessToken);
+            return { requiresTwoFactor: false };
+        }
+
+        throw new Error("Invalid API response during login");
+    }, [completeLogin]);
 
     const logout = useCallback(async () => {
         setUser(null);
         setAccessToken(null);
+        setUsernameFor2fa(null);
         delete api.defaults.headers.common['Authorization'];
         try {
             await auth.logout();
@@ -52,8 +73,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const restoreSession = async () => {
             try {
-                const { accessToken, user } = await auth.refresh();
-                login(user, accessToken);
+                // The refresh response contains user and accessToken directly
+                const response = await auth.refresh();
+                if (response.user && response.accessToken) {
+                    completeLogin(response.user, response.accessToken);
+                } else {
+                    throw new Error("Refresh token invalid or expired.");
+                }
             } catch (error) {
                 console.log("No active session or session expired.");
                 await logout();
@@ -63,17 +89,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
 
         restoreSession();
-    }, [login, logout]);
+    }, [completeLogin, logout]);
 
     const value = useMemo(() => ({
         user,
         accessToken,
         isAuthenticated: !!accessToken,
         isLoading,
+        usernameFor2fa,
         login,
+        completeLogin,
         logout,
         refreshUser
-    }), [user, accessToken, isLoading, login, logout, refreshUser]);
+    }), [user, accessToken, isLoading, usernameFor2fa, login, completeLogin, logout, refreshUser]);
 
     return (
         <AuthContext.Provider value={value}>

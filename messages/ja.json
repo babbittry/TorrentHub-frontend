@@ -28,17 +28,32 @@
         "seeders": "シーダー",
         "leechers": "リーチャー",
         "snatched": "完了",
-        "no_data": "データがありません"
+        "no_data": "データがありません",
+        "next_step": "次へ",
+        "previous_step": "前へ"
     },
     "register": {
         "avatar": "アバター",
         "refresh_avatar": "アバターを更新",
         "successful": "登録が完了しました！これでログインできます。",
+        "successful_needs_verification": "登録が完了しました！メールを確認してアカウントを有効化してください。",
         "failed": "登録に失敗しました。後でもう一度お試しください。",
         "enter_your_username": "ユーザー名を入力してください",
         "enter_your_email": "メールアドレスを入力してください",
         "enter_your_password": "パスワードを入力してください",
-        "enter_your_invite_code": "招待コードを入力してください"
+        "enter_your_invite_code": "招待コードを入力してください",
+        "select_language": "希望の言語を選択してください",
+        "steps": {
+            "language": "言語",
+            "account_info": "アカウント情報",
+            "activation": "有効化"
+        }
+    },
+    "loginPage": {
+        "steps": {
+            "credentials": "認証情報",
+            "verification": "検証"
+        }
     },
     "header": {
         "home": "ホーム",
@@ -118,6 +133,17 @@
         "no_account_yet": "まだアカウントをお持ちではありませんか？",
         "enter_your_username": "ユーザー名を入力してください",
         "enter_your_password": "パスワードを入力してください"
+    },
+    "login2fa": {
+        "title": "二要素認証",
+        "enter_code": "認証アプリまたはメールから6桁のコードを入力してください。",
+        "code_placeholder": "認証コード",
+        "submit_button": "確認してログイン",
+        "no_app_code": "アプリからコードを取得できませんか？",
+        "use_email": "代わりにメール認証を使用する",
+        "email_sent": "新しい認証コードがメールに送信されました。",
+        "error_sending_email": "メールコードの送信に失敗しました。",
+        "login_failed": "ログインに失敗しました。コードが間違っているか、期限切れの可能性があります。"
     },
     "requestsPage": {
         "title": "トレントリクエスト",
@@ -339,7 +365,25 @@
         "changing_password": "パスワードを変更中...",
         "change_password_button": "パスワードを変更",
         "password_updated_success": "パスワードが正常に更新されました！",
-        "password_updated_error": "パスワードの更新に失敗しました。"
+        "password_updated_error": "パスワードの更新に失敗しました。",
+        "two_factor_auth_title": "二要素認証",
+        "current_2fa_method": "現在の2FA方式",
+        "method_email": "メール認証",
+        "method_app": "認証アプリ",
+        "upgrade_to_app_button": "認証アプリにアップグレード",
+        "downgrade_to_email_button": "メール認証にダウングレード",
+        "upgrade_modal_title": "認証アプリの設定",
+        "upgrade_modal_step1": "1. 認証アプリ（例：Google Authenticator, Authy）でこのQRコードをスキャンしてください。",
+        "upgrade_modal_step2": "または、このキーを手動で入力してください：",
+        "upgrade_modal_step3": "2. アプリで生成された6桁のコードを入力して確認してください。",
+        "downgrade_modal_title": "メールへのダウングレードを確認",
+        "downgrade_modal_prompt": "確認のため、認証アプリから最後のコードを一度入力してください。",
+        "verify_and_enable": "確認して有効化",
+        "confirm_downgrade": "ダウングレードを確認",
+        "verification_code": "認証コード",
+        "upgrade_success": "認証アプリへの切り替えに成功しました！",
+        "downgrade_success": "メール認証への切り替えに成功しました！",
+        "api_error": "エラーが発生しました。もう一度お試しください。"
     },
     "invitesPage": {
         "title": "私の招待",
@@ -643,5 +687,12 @@
         "loadingHistory": "投票履歴を読み込み中...",
         "noOptions": "この投票には利用可能なオプションがありません。",
         "noHistory": "利用可能な投票履歴はありません。"
+    },
+    "verifyEmail": {
+        "title": "メールアドレスの確認",
+        "verifying": "アカウントを確認しています...",
+        "success": "アカウントの確認が完了しました！ログインできます。",
+        "failed": "アカウントの確認に失敗しました。トークンが無効か期限切れの可能性があります。",
+        "back_to_login": "ログインに戻る"
     }
 }

@@ -36,6 +36,7 @@ export interface UserForRegistrationDto {
     email: string;
     inviteCode: string;
     avatarSvg: string;
+    language?: string;
 }
 
 export interface UserForLoginDto {
@@ -44,8 +45,18 @@ export interface UserForLoginDto {
 }
 
 export interface LoginResponseDto {
-    accessToken: string;
-    user: UserPrivateProfileDto;
+    requiresTwoFactor?: boolean;
+    accessToken?: string | null;
+    user?: UserPrivateProfileDto | null;
+}
+
+export interface UserForLogin2faDto {
+    userName: string;
+    code: string;
+}
+
+export interface SendEmailCodeRequestDto {
+    userName: string;
 }
 
 
@@ -92,6 +103,7 @@ export interface UserPrivateProfileDto {
     totalSeedingTimeMinutes: number;
     totalLeechingTimeMinutes: number;
     inviteNum: number;
+    twoFactorMethod: string;
 }
 
 
@@ -99,6 +111,10 @@ export interface UpdateUserProfileDto {
     avatarUrl?: string | null;
     signature?: string | null;
     language?: string | null;
+}
+
+export interface TwoFactorVerificationRequestDto {
+    code: string;
 }
 
 export interface ChangePasswordDto {
@@ -488,6 +504,16 @@ export const auth = {
         const response = await api.post('/api/auth/register', user);
         return response.data;
     },
+    verifyEmail: async (token: string): Promise<void> => {
+        await api.get(`/api/auth/verify-email?token=${token}`);
+    },
+    login2fa: async (data: UserForLogin2faDto): Promise<LoginResponseDto> => {
+        const response = await api.post<LoginResponseDto>('/api/auth/login-2fa', data);
+        return response.data;
+    },
+    sendEmailCode: async (data: SendEmailCodeRequestDto): Promise<void> => {
+        await api.post('/api/auth/send-email-code', data);
+    },
     logout: async (): Promise<void> => {
         await api.post('/api/auth/logout');
     },
@@ -547,6 +573,16 @@ export const users = {
     getMyBadges: async (): Promise<unknown> => {
         const response = await api.get('/api/users/me/badges');
         return response.data;
+    },
+    generate2faSetup: async (): Promise<{ qrCodeUri: string, manualEntryKey: string }> => {
+        const response = await api.post('/api/users/me/2fa/generate-setup');
+        return response.data;
+    },
+    switchToApp: async (data: TwoFactorVerificationRequestDto): Promise<void> => {
+        await api.post('/api/users/me/2fa/switch-to-app', data);
+    },
+    switchToEmail: async (data: TwoFactorVerificationRequestDto): Promise<void> => {
+        await api.post('/api/users/me/2fa/switch-to-email', data);
     },
 };
 
