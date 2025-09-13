@@ -45,7 +45,8 @@ export interface UserForLoginDto {
 }
 
 export interface LoginResponseDto {
-    requiresTwoFactor?: boolean;
+    result?: 'Success' | 'RequiresTwoFactor' | 'InvalidCredentials' | 'EmailNotVerified' | 'Banned';
+    message?: string | null;
     accessToken?: string | null;
     user?: UserPrivateProfileDto | null;
 }
@@ -59,6 +60,11 @@ export interface SendEmailCodeRequestDto {
     userName: string;
 }
 
+
+export interface ResendVerificationRequestDto {
+    email?: string;
+    userName?: string;
+}
 
 export interface UserPublicProfileDto {
     id: number;
@@ -551,6 +557,9 @@ export const auth = {
     refresh: async (): Promise<LoginResponseDto> => {
         const response = await api.post<LoginResponseDto>('/api/auth/refresh');
         return response.data;
+    },
+    resendVerification: async (data: ResendVerificationRequestDto): Promise<void> => {
+        await api.post('/api/auth/resend-verification', data);
     },
 };
 

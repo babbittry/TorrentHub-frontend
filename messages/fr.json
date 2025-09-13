@@ -30,7 +30,8 @@
         "snatched": "Complétés",
         "no_data": "Aucune donnée disponible",
         "next_step": "Suivant",
-        "previous_step": "Précédent"
+        "previous_step": "Précédent",
+        "cancel": "Annuler"
     },
     "register": {
         "avatar": "Avatar",
@@ -138,7 +139,19 @@
         "already_have_account": "Vous avez déjà un compte ?",
         "no_account_yet": "Pas encore de compte ?",
         "enter_your_username": "Entrez votre nom d'utilisateur",
-        "enter_your_password": "Entrez votre mot de passe"
+        "enter_your_password": "Entrez votre mot de passe",
+        "email_verification_needed": "Veuillez vérifier votre adresse e-mail avant de vous connecter.",
+        "go_to_verification": "Aller à la page de vérification",
+        "resend_verification_email": "Renvoyer l'e-mail de vérification",
+        "enter_email_for_verification": "Veuillez saisir votre nom d'utilisateur/e-mail pour renvoyer le lien de vérification.",
+        "verification_sent_success": "Un nouveau lien de vérification a été envoyé à votre adresse e-mail.",
+        "verification_sent_failed": "Échec de l'envoi de l'e-mail de vérification. Veuillez réessayer plus tard.",
+        "resend_modal_title": "Renvoyer l'e-mail de vérification",
+        "resend_modal_description": "Veuillez saisir l'adresse e-mail associée à votre compte pour recevoir un nouveau lien de vérification.",
+        "resend_modal_submit_button": "Envoyer l'e-mail",
+        "invalid_credentials": "Nom d'utilisateur ou mot de passe invalide.",
+        "account_banned": "Votre compte a été banni.",
+        "unknown_error": "Une erreur inconnue est survenue. Veuillez réessayer."
     },
     "login2fa": {
         "title": "Authentification à deux facteurs",

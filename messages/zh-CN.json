@@ -30,7 +30,8 @@
         "snatched": "完成",
         "no_data": "暂无数据",
         "next_step": "下一步",
-        "previous_step": "上一步"
+        "previous_step": "上一步",
+        "cancel": "取消"
     },
     "register": {
         "avatar": "头像",
@@ -136,7 +137,19 @@
         "already_have_account": "已有账号？",
         "no_account_yet": "还没有账号？",
         "enter_your_username": "请输入您的用户名",
-        "enter_your_password": "请输入您的密码"
+        "enter_your_password": "请输入您的密码",
+        "email_verification_needed": "请在登录前验证您的邮箱地址。",
+        "go_to_verification": "前往验证页面",
+        "resend_verification_email": "重新发送验证邮件",
+        "enter_email_for_verification": "请输入您的用户名/邮箱以重新发送验证链接。",
+        "verification_sent_success": "新的验证链接已发送到您的邮箱地址。",
+        "verification_sent_failed": "发送验证邮件失败，请稍后再试。",
+        "resend_modal_title": "重新发送验证邮件",
+        "resend_modal_description": "请输入您账户关联的邮箱地址，以接收新的验证链接。",
+        "resend_modal_submit_button": "发送邮件",
+        "invalid_credentials": "用户名或密码无效。",
+        "account_banned": "您的账户已被封禁。",
+        "unknown_error": "发生未知错误，请重试。"
     },
     "login2fa": {
         "title": "双因素认证",

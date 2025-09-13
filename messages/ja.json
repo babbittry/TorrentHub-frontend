@@ -30,7 +30,8 @@
         "snatched": "完了",
         "no_data": "データがありません",
         "next_step": "次へ",
-        "previous_step": "前へ"
+        "previous_step": "前へ",
+        "cancel": "キャンセル"
     },
     "register": {
         "avatar": "アバター",
@@ -138,7 +139,19 @@
         "already_have_account": "すでにアカウントをお持ちですか？",
         "no_account_yet": "まだアカウントをお持ちではありませんか？",
         "enter_your_username": "ユーザー名を入力してください",
-        "enter_your_password": "パスワードを入力してください"
+        "enter_your_password": "パスワードを入力してください",
+        "email_verification_needed": "ログインする前にメールアドレスを確認してください。",
+        "go_to_verification": "確認ページへ",
+        "resend_verification_email": "確認メールを再送信",
+        "enter_email_for_verification": "確認リンクを再送信するには、ユーザー名/メールアドレスを入力してください。",
+        "verification_sent_success": "新しい確認リンクがメールアドレスに送信されました。",
+        "verification_sent_failed": "確認メールの送信に失敗しました。後でもう一度お試しください。",
+        "resend_modal_title": "確認メールを再送信",
+        "resend_modal_description": "アカウントに関連付けられたメールアドレスを入力して、新しい確認リンクを受信してください。",
+        "resend_modal_submit_button": "メールを送信",
+        "invalid_credentials": "ユーザー名またはパスワードが無効です。",
+        "account_banned": "あなたのアカウントは禁止されています。",
+        "unknown_error": "不明なエラーが発生しました。もう一度お試しください。"
     },
     "login2fa": {
         "title": "二要素認証",

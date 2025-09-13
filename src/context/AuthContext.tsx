@@ -1,7 +1,7 @@
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo, useCallback } from 'react';
-import api, { UserPrivateProfileDto, UserForLoginDto, auth, users } from '@/lib/api';
+import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo, useCallback, useRef } from 'react';
+import api, { UserPrivateProfileDto, UserForLoginDto, auth, users, LoginResponseDto } from '@/lib/api';
 
 interface AuthContextType {
     user: UserPrivateProfileDto | null;
@@ -9,7 +9,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
     usernameFor2fa: string | null;
-    login: (credentials: UserForLoginDto) => Promise<{ requiresTwoFactor: boolean }>;
+    login: (credentials: UserForLoginDto) => Promise<LoginResponseDto>;
     completeLogin: (user: UserPrivateProfileDto, token: string) => void;
     logout: () => Promise<void>;
     refreshUser: () => Promise<void>;
@@ -22,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [usernameFor2fa, setUsernameFor2fa] = useState<string | null>(null);
+    const refreshAttempted = useRef(false);
 
     const completeLogin = useCallback((userData: UserPrivateProfileDto, token: string) => {
         setUser(userData);
@@ -30,20 +31,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }, []);
 
-    const login = useCallback(async (credentials: UserForLoginDto) => {
-        const response = await auth.login(credentials);
+    const login = useCallback(async (credentials: UserForLoginDto): Promise<LoginResponseDto> => {
+        try {
+            const response = await auth.login(credentials);
 
-        if (response.requiresTwoFactor) {
-            setUsernameFor2fa(credentials.userName);
-            return { requiresTwoFactor: true };
+            if (response.result === 'Success' && response.user && response.accessToken) {
+                completeLogin(response.user, response.accessToken);
+            } else if (response.result === 'RequiresTwoFactor') {
+                setUsernameFor2fa(credentials.userName);
+            }
+
+            return response;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            if (error.response && error.response.data) {
+                // If the error response has data, it's likely our LoginResultDto
+                return error.response.data as LoginResponseDto;
+            }
+            // If not, it's an unexpected network error
+            return { result: undefined, message: 'loginPage.unknown_error' };
         }
-
-        if (response.user && response.accessToken) {
-            completeLogin(response.user, response.accessToken);
-            return { requiresTwoFactor: false };
-        }
-
-        throw new Error("Invalid API response during login");
     }, [completeLogin]);
 
     const logout = useCallback(async () => {
@@ -72,24 +79,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const restoreSession = async () => {
+            if (refreshAttempted.current) {
+                return;
+            }
+            refreshAttempted.current = true;
+
             try {
                 // The refresh response contains user and accessToken directly
                 const response = await auth.refresh();
                 if (response.user && response.accessToken) {
                     completeLogin(response.user, response.accessToken);
                 } else {
-                    throw new Error("Refresh token invalid or expired.");
+                    // This is a normal case when no session exists, so we don't throw an error.
+                    // We just ensure the user is logged out on the client side.
+                    setUser(null);
+                    setAccessToken(null);
                 }
             } catch (error) {
-                console.log("No active session or session expired.");
-                await logout();
+                // This is an expected failure when no session exists, so we just clear the client state.
+                setUser(null);
+                setAccessToken(null);
             } finally {
                 setIsLoading(false);
             }
         };
 
         restoreSession();
-    }, [completeLogin, logout]);
+    }, [completeLogin]);
 
     const value = useMemo(() => ({
         user,

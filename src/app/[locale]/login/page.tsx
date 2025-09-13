@@ -11,6 +11,7 @@ import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Input } from "@heroui/input";
 import StepIndicator from "../components/StepIndicator";
 import { addToast } from "@heroui/toast";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
 
 export default function LoginPage() {
     const [step, setStep] = useState(1);
@@ -19,6 +20,9 @@ export default function LoginPage() {
     const [code, setCode] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [needsVerification, setNeedsVerification] = useState<boolean>(false);
+    const { isOpen: isResendModalOpen, onOpen: onResendModalOpen, onClose: onResendModalClose } = useDisclosure();
+    const [emailForResend, setEmailForResend] = useState<string>("");
     const authContext = useAuth();
     const router = useRouter();
     const t = useTranslations();
@@ -27,15 +31,47 @@ export default function LoginPage() {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
+        setNeedsVerification(false);
+
         try {
             const result = await authContext.login({ userName, password });
-            if (result.requiresTwoFactor) {
-                setStep(2);
-            } else {
-                router.push('/');
+
+            // Handle inconsistent API response: EmailNotVerified might only return a message.
+            if (result.result === undefined && result.message && result.message.includes("verify your email")) {
+                setNeedsVerification(true);
+                setIsLoading(false);
+                return; // Exit early
             }
-        } catch (err: unknown) {
-            setError((err as Error).message || t('loginPage.failed'));
+
+            // Normalize result to string if it's a number from a C# enum
+            let resultType: string | number | undefined = result.result;
+            if (typeof resultType === 'number') {
+                const resultMap = ['Success', 'InvalidCredentials', 'EmailNotVerified', 'Banned', 'RequiresTwoFactor'];
+                resultType = resultMap[resultType];
+            }
+
+            switch (resultType) {
+                case 'Success':
+                    router.push('/');
+                    break;
+                case 'RequiresTwoFactor':
+                    setStep(2);
+                    break;
+                case 'EmailNotVerified':
+                    setNeedsVerification(true);
+                    break;
+                case 'InvalidCredentials':
+                    setError(t('loginPage.invalid_credentials'));
+                    break;
+                case 'Banned':
+                    setError(t('loginPage.account_banned'));
+                    break;
+                default:
+                    setError(result.message || t('loginPage.unknown_error'));
+                    break;
+            }
+        } catch (err) {
+            setError(t('loginPage.unknown_error'));
         } finally {
             setIsLoading(false);
         }
@@ -74,6 +110,23 @@ export default function LoginPage() {
             });
         }
     };
+
+    const handleResendVerification = async () => {
+        if (!emailForResend) {
+            addToast({ title: t('loginPage.enter_email_for_verification'), color: 'warning' });
+            return;
+        }
+        try {
+            await auth.resendVerification({ email: emailForResend });
+            addToast({ title: t('loginPage.verification_sent_success'), color: 'success' });
+            onResendModalClose();
+        } catch (err) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const error = err as any;
+            const errorMessage = error.response?.data?.message || t('loginPage.verification_sent_failed');
+            addToast({ title: errorMessage, color: 'danger' });
+        }
+    };
     
     const stepTitles = [
         t('loginPage.steps.credentials'),
@@ -81,9 +134,10 @@ export default function LoginPage() {
     ];
 
     return (
-        <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
-            <Card className="w-full max-w-md p-4">
-                <CardHeader className="flex flex-col items-center pb-4">
+        <>
+            <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
+                <Card className="w-full max-w-md p-4">
+                    <CardHeader className="flex flex-col items-center pb-4">
                     <h1 className="text-3xl font-bold">{t('header.login')}</h1>
                     <div className="mt-4 w-full">
                         <StepIndicator currentStep={step} totalSteps={2} stepTitles={stepTitles} />
@@ -113,6 +167,14 @@ export default function LoginPage() {
                                 labelPlacement="outside"
                             />
                             {error && <p className="text-danger text-center text-sm font-medium">{error}</p>}
+                            {needsVerification && (
+                                <div className="text-center text-sm font-medium text-warning p-2 rounded-md border border-warning bg-warning/10 flex flex-col items-center gap-2">
+                                    <p>{t('loginPage.email_verification_needed')}</p>
+                                    <Button variant="ghost" color="primary" size="sm" onPress={onResendModalOpen}>
+                                        {t('loginPage.resend_verification_email')}
+                                    </Button>
+                                </div>
+                            )}
                             <Button type="submit" color="primary" className="w-full font-bold text-lg" size="lg" isLoading={isLoading}>
                                 {t('common.next_step')}
                             </Button>
@@ -160,5 +222,31 @@ export default function LoginPage() {
                 </CardFooter>
             </Card>
         </div>
+            <Modal isOpen={isResendModalOpen} onClose={onResendModalClose}>
+                <ModalContent>
+                    <ModalHeader>{t('loginPage.resend_modal_title')}</ModalHeader>
+                    <ModalBody>
+                        <p className="text-sm text-default-500 mb-4">{t('loginPage.resend_modal_description')}</p>
+                        <Input
+                            isRequired
+                            label={t('common.email')}
+                            placeholder={t('register.enter_your_email')}
+                            value={emailForResend}
+                            onValueChange={setEmailForResend}
+                            size="lg"
+                            labelPlacement="outside"
+                        />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button variant="ghost" onPress={onResendModalClose}>
+                            {t('common.cancel')}
+                        </Button>
+                        <Button color="primary" onPress={handleResendVerification}>
+                            {t('loginPage.resend_modal_submit_button')}
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        </>
     );
 }

@@ -30,7 +30,8 @@
         "snatched": "Snatched",
         "no_data": "No data available",
         "next_step": "Next",
-        "previous_step": "Previous"
+        "previous_step": "Previous",
+        "cancel": "Cancel"
     },
     "register": {
         "avatar": "Avatar",
@@ -132,7 +133,19 @@
         "already_have_account": "Already have an account?",
         "no_account_yet": "No account yet?",
         "enter_your_username": "Enter your username",
-        "enter_your_password": "Enter your password"
+        "enter_your_password": "Enter your password",
+        "email_verification_needed": "Please verify your email address before logging in.",
+        "go_to_verification": "Go to Verification Page",
+        "resend_verification_email": "Resend Verification Email",
+        "enter_email_for_verification": "Please enter your username/email to resend the verification link.",
+        "verification_sent_success": "A new verification link has been sent to your email address.",
+        "verification_sent_failed": "Failed to send verification email. Please try again later.",
+        "resend_modal_title": "Resend Verification Email",
+        "resend_modal_description": "Please enter the email address associated with your account to receive a new verification link.",
+        "resend_modal_submit_button": "Send Email",
+        "invalid_credentials": "Invalid username or password.",
+        "account_banned": "Your account has been banned.",
+        "unknown_error": "An unknown error occurred. Please try again."
     },
     "login2fa": {
         "title": "Two-Factor Authentication",
