@@ -17,14 +17,12 @@
         "size": "Size",
         "uploader": "Uploader",
         "release_time": "Release Time",
-        "seeders_leechers": "Seeders/Leechers",
         "free": "Free",
         "description": "Description",
         "comments": "Comments",
         "title": "Title",
         "date": "Date",
         "optional": "(Optional)",
-        "submitting": "Submitting...",
         "seeders": "Seeders",
         "leechers": "Leechers",
         "snatched": "Snatched",
@@ -36,7 +34,6 @@
     "register": {
         "avatar": "Avatar",
         "refresh_avatar": "Don't like? Give me a new one!",
-        "successful": "Registration successful! You can now log in.",
         "successful_needs_verification": "Registration successful! Please check your email to activate your account.",
         "failed": "Registration failed, please try again later.",
         "enter_your_username": "Enter your username",
@@ -54,7 +51,22 @@
         "steps": {
             "credentials": "Credentials",
             "verification": "Verification"
-        }
+        },
+        "failed": "Login failed. Please check your credentials.",
+        "already_have_account": "Already have an account?",
+        "no_account_yet": "No account yet?",
+        "enter_your_username": "Enter your username",
+        "username_or_email": "Username or Email",
+        "enter_your_username_or_email": "Enter your username or email",
+        "enter_your_password": "Enter your password",
+        "email_verification_needed": "Please verify your email address before logging in.",
+        "resend_verification_email": "Resend Verification Email",
+        "enter_username_or_email_for_verification": "Please enter your username or email to resend the verification link.",
+        "verification_sent_success": "A new verification link has been sent to your email address.",
+        "verification_sent_failed": "Failed to send verification email. Please try again later.",
+        "invalid_credentials": "Invalid username or password.",
+        "account_banned": "Your account has been banned.",
+        "unknown_error": "An unknown error occurred. Please try again."
     },
     "header": {
         "home": "Home",
@@ -127,29 +139,9 @@
         "file_list": "File List",
         "enter_your_comment": "Enter your comment..."
     },
-    "loginPage": {
-        "failed": "Login failed. Please check your credentials.",
-        "failed_no_token": "Login failed: No authentication token was received from the server.",
-        "already_have_account": "Already have an account?",
-        "no_account_yet": "No account yet?",
-        "enter_your_username": "Enter your username",
-        "enter_your_password": "Enter your password",
-        "email_verification_needed": "Please verify your email address before logging in.",
-        "go_to_verification": "Go to Verification Page",
-        "resend_verification_email": "Resend Verification Email",
-        "enter_email_for_verification": "Please enter your username/email to resend the verification link.",
-        "verification_sent_success": "A new verification link has been sent to your email address.",
-        "verification_sent_failed": "Failed to send verification email. Please try again later.",
-        "resend_modal_title": "Resend Verification Email",
-        "resend_modal_description": "Please enter the email address associated with your account to receive a new verification link.",
-        "resend_modal_submit_button": "Send Email",
-        "invalid_credentials": "Invalid username or password.",
-        "account_banned": "Your account has been banned.",
-        "unknown_error": "An unknown error occurred. Please try again."
-    },
     "login2fa": {
         "title": "Two-Factor Authentication",
-        "enter_code": "Enter the 6-digit code from your authenticator app or email.",
+        "enter_code": "Enter the 6-digit code from your authenticator app.",
         "code_placeholder": "Verification Code",
         "submit_button": "Verify & Login",
         "no_app_code": "Can't get the code from your app?",
@@ -337,8 +329,6 @@
         "nominalDownload": "Nominal Download",
         "realUpload": "Real Upload",
         "realDownload": "Real Download",
-        "uploadingCount": "Uploading",
-        "downloadingCount": "Downloading",
         "downloadTime": "Download Time",
         "uploadTime": "Upload Time",
         "minutes": "minutes",
@@ -348,12 +338,7 @@
         "client": "Client",
         "ip": "IP",
         "port": "Port",
-        "lastReport": "Last Report",
-        "selfRegistered": "Self-registered"
-    },
-    "about": {
-        "title": "About",
-        "description": "About this site"
+        "lastReport": "Last Report"
     },
     "settingsPage": {
         "title": "Settings",
@@ -364,18 +349,14 @@
         "select_avatar_file": "Select Avatar File",
         "preview": "Preview",
         "upload_avatar": "Upload Avatar",
-        "uploading": "Uploading...",
         "no_file_selected": "No file selected.",
         "avatar_upload_api_missing": "Avatar file upload API is missing. Please provide a backend endpoint for file uploads.",
-        "avatar_updated_success": "Avatar updated successfully!",
-        "avatar_updated_error": "Failed to update avatar.",
         "change_password_title": "Change Password",
         "change_password_description": "Update your account password.",
         "current_password": "Current Password",
         "new_password": "New Password",
         "confirm_new_password": "Confirm New Password",
         "passwords_do_not_match": "New passwords do not match.",
-        "changing_password": "Changing Password...",
         "change_password_button": "Change Password",
         "password_updated_success": "Password updated successfully!",
         "password_updated_error": "Failed to update password.",
@@ -409,18 +390,6 @@
         "noInvites": "No invites found."
     },
     "Admin": {
-        "sidebar": {
-            "adminPanel": "Admin Panel",
-            "dashboard": "Dashboard",
-            "addPoll": "Add Poll",
-            "bannedClients": "Banned Clients",
-            "duplicateIPs": "Duplicate IPs",
-            "bandwidthSettings": "Bandwidth Settings",
-            "userManagement": "User Management",
-            "siteSettings": "Site Settings",
-            "announcementManagement": "Announcement Management",
-            "logViewer": "Log Viewer"
-        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -601,43 +570,9 @@
         "price": "Price",
         "actions": "Actions",
         "purchase": "Purchase",
-        "confirmPurchase": "Confirm Purchase",
         "quantity": "Quantity",
         "cancel": "Cancel",
         "confirm": "Confirm",
-        "UploadCredit": {
-            "name": "Upload Credit",
-            "description": "Increase your upload amount"
-        },
-        "Invite": {
-            "name": "Invite Code",
-            "description": "Purchase an invite code"
-        },
-        "Badge": {
-            "name": "Badge",
-            "description": "Purchase a badge"
-        },
-        "DoubleUpload": {
-            "name": "Double Upload",
-            "description": "Double your upload amount for a period of time"
-        },
-        "FreeLeech": {
-            "name": "Free Leech",
-            "description": "Download for free for a period of time"
-        },
-        "CustomTitle": {
-            "name": "Custom Title",
-            "description": "Customize your title"
-        },
-        "unknown": {
-            "name": "Unknown Item",
-            "description": "This is a mysterious item"
-        },
-        "noticeTitle": "Notice",
-        "unimplementedFlow": "Item: {itemName} has a different purchase flow that has not yet been implemented.",
-        "close": "Close",
-        "newUsername": "New Username",
-        "enterNewUsername": "Enter your new username",
         "enterQuantity": "Enter quantity",
         "purchasing": "Purchasing...",
         "store": {

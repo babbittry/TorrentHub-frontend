@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (response.result === 'Success' && response.user && response.accessToken) {
                 completeLogin(response.user, response.accessToken);
             } else if (response.result === 'RequiresTwoFactor') {
-                setUsernameFor2fa(credentials.userName);
+                setUsernameFor2fa(credentials.userNameOrEmail);
             }
 
             return response;

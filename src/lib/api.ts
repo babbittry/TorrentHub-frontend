@@ -40,7 +40,7 @@ export interface UserForRegistrationDto {
 }
 
 export interface UserForLoginDto {
-    userName: string;
+    userNameOrEmail: string;
     password: string;
 }
 
@@ -62,8 +62,7 @@ export interface SendEmailCodeRequestDto {
 
 
 export interface ResendVerificationRequestDto {
-    email?: string;
-    userName?: string;
+    userNameOrEmail: string;
 }
 
 export interface UserPublicProfileDto {

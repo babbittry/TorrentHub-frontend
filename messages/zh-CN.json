@@ -17,14 +17,12 @@
         "size": "大小",
         "uploader": "上传者",
         "release_time": "发布时间",
-        "seeders_leechers": "做种/下载",
         "free": "免费",
         "description": "描述",
         "comments": "评论",
         "title": "标题",
         "date": "日期",
         "optional": "(可选)",
-        "submitting": "提交中...",
         "seeders": "做种",
         "leechers": "下载",
         "snatched": "完成",
@@ -36,7 +34,6 @@
     "register": {
         "avatar": "头像",
         "refresh_avatar": "不喜欢？换个新的！",
-        "successful": "注册成功！您现在可以登录了。",
         "successful_needs_verification": "注册成功！请检查您的邮箱以激活账户。",
         "failed": "注册失败，请稍后再试。",
         "enter_your_username": "请输入您的用户名",
@@ -54,7 +51,22 @@
         "steps": {
             "credentials": "凭据",
             "verification": "验证"
-        }
+        },
+        "failed": "登录失败，请检查您的用户名和密码。",
+        "already_have_account": "已有账号？",
+        "no_account_yet": "还没有账号？",
+        "enter_your_username": "请输入您的用户名",
+        "username_or_email": "用户名或邮箱",
+        "enter_your_username_or_email": "请输入您的用户名或邮箱",
+        "enter_your_password": "请输入您的密码",
+        "email_verification_needed": "请在登录前验证您的邮箱地址。",
+        "resend_verification_email": "重新发送验证邮件",
+        "enter_username_or_email_for_verification": "请输入您的用户名或邮箱以重新发送验证链接。",
+        "verification_sent_success": "新的验证链接已发送到您的邮箱地址。",
+        "verification_sent_failed": "发送验证邮件失败，请稍后再试。",
+        "invalid_credentials": "用户名或密码无效。",
+        "account_banned": "您的账户已被封禁。",
+        "unknown_error": "发生未知错误，请重试。"
     },
     "header": {
         "home": "首页",
@@ -127,33 +139,9 @@
         "file_list": "文件列表",
         "enter_your_comment": "请输入您的评论..."
     },
-    "loginPage": {
-        "steps": {
-            "credentials": "凭据",
-            "verification": "验证"
-        },
-        "failed": "登录失败，请检查您的用户名和密码。",
-        "failed_no_token": "登录失败：未从服务器收到身份验证令牌。",
-        "already_have_account": "已有账号？",
-        "no_account_yet": "还没有账号？",
-        "enter_your_username": "请输入您的用户名",
-        "enter_your_password": "请输入您的密码",
-        "email_verification_needed": "请在登录前验证您的邮箱地址。",
-        "go_to_verification": "前往验证页面",
-        "resend_verification_email": "重新发送验证邮件",
-        "enter_email_for_verification": "请输入您的用户名/邮箱以重新发送验证链接。",
-        "verification_sent_success": "新的验证链接已发送到您的邮箱地址。",
-        "verification_sent_failed": "发送验证邮件失败，请稍后再试。",
-        "resend_modal_title": "重新发送验证邮件",
-        "resend_modal_description": "请输入您账户关联的邮箱地址，以接收新的验证链接。",
-        "resend_modal_submit_button": "发送邮件",
-        "invalid_credentials": "用户名或密码无效。",
-        "account_banned": "您的账户已被封禁。",
-        "unknown_error": "发生未知错误，请重试。"
-    },
     "login2fa": {
         "title": "双因素认证",
-        "enter_code": "请输入您的验证器应用或邮件中的6位数代码。",
+        "enter_code": "请输入您的验证器应用中的6位数代码。",
         "code_placeholder": "验证码",
         "submit_button": "验证并登录",
         "no_app_code": "无法从应用获取代码？",
@@ -222,20 +210,20 @@
         "date": "日期",
         "subject": "主题",
         "content": "内容",
-        "recipient_id": "收件人用户ID",
+        "recipient_id": "Recipient User ID",
         "send_message": "发送消息",
         "sending": "发送中...",
         "select_a_message": "请选择一条消息阅读。",
         "error_loading_messages": "加载消息失败。",
         "error_all_fields_required": "所有字段均为必填项。",
         "error_sending_message": "发送消息失败。",
-        "loading": "加载消息中...",
+        "loading": "Loading messages...",
         "no_messages_found": "没有消息。",
         "recipient": "收件人",
         "search_recipient_placeholder": "请输入收件人的用户名或者用户ID",
         "error_recipient_not_selected": "请从搜索结果中选择一个收件人。",
         "searching": "搜索中...",
-        "no_users_found": "未找到用户。"
+        "no_users_found": "没找到该用户."
     },
     "forumPage": {
         "title": "论坛",
@@ -258,13 +246,13 @@
         "post_a_reply": "发表回复",
         "write_your_reply": "在此输入你的回复...",
         "submit_reply": "提交回复",
-        "submitting_reply": "提交中...",
+        "submitting_reply": "Submitting...",
         "error_posting_reply": "发表回复失败。",
         "category": "分区",
         "select_category": "-- 请选择一个分区 --",
         "content": "内容",
         "submit_topic": "发布主题",
-        "submitting": "发布中...",
+        "submitting": "Submitting...",
         "error_all_fields_required": "所有字段均为必填项。",
         "error_creating_topic": "创建主题失败。",
         "your_reply": "你的回复",
@@ -341,8 +329,6 @@
         "nominalDownload": "名义下载",
         "realUpload": "实际上传",
         "realDownload": "实际下载",
-        "uploadingCount": "上传数量",
-        "downloadingCount": "下载数量",
         "downloadTime": "下载时间",
         "uploadTime": "上传时间",
         "minutes": "分钟",
@@ -352,12 +338,7 @@
         "client": "客户端",
         "ip": "IP",
         "port": "端口",
-        "lastReport": "最后汇报时间",
-        "selfRegistered": "自行注册"
-    },
-    "about": {
-        "title": "关于",
-        "description": "关于本站"
+        "lastReport": "最后汇报时间"
     },
     "settingsPage": {
         "title": "设置",
@@ -368,18 +349,14 @@
         "select_avatar_file": "选择头像文件",
         "preview": "预览",
         "upload_avatar": "上传头像",
-        "uploading": "上传中...",
         "no_file_selected": "未选择文件。",
         "avatar_upload_api_missing": "头像文件上传API缺失。请提供文件上传的后端接口。",
-        "avatar_updated_success": "头像更新成功！",
-        "avatar_updated_error": "更新头像失败。",
         "change_password_title": "修改密码",
         "change_password_description": "更新您的账户密码。",
         "current_password": "当前密码",
         "new_password": "新密码",
         "confirm_new_password": "确认新密码",
         "passwords_do_not_match": "两次输入的新密码不一致。",
-        "changing_password": "正在修改密码...",
         "change_password_button": "修改密码",
         "password_updated_success": "密码更新成功！",
         "password_updated_error": "密码更新失败。",
@@ -413,18 +390,6 @@
         "noInvites": "没有找到邀请码。"
     },
     "Admin": {
-        "sidebar": {
-            "adminPanel": "管理面板",
-            "dashboard": "仪表盘",
-            "addPoll": "添加投票",
-            "bannedClients": "禁止客户端",
-            "duplicateIPs": "重复IP",
-            "bandwidthSettings": "带宽设置",
-            "userManagement": "用户管理",
-            "siteSettings": "站点设置",
-            "announcementManagement": "公告管理",
-            "logViewer": "日志查看器"
-        },
         "dashboard": {
             "title": "管理员仪表盘",
             "loading": "加载中...",
@@ -605,43 +570,9 @@
         "price": "价格",
         "actions": "操作",
         "purchase": "购买",
-        "confirmPurchase": "确认购买",
         "quantity": "数量",
         "cancel": "取消",
         "confirm": "确认",
-        "UploadCredit": {
-            "name": "上传量",
-            "description": "增加您的上传量"
-        },
-        "Invite": {
-            "name": "邀请码",
-            "description": "购买一个邀请码"
-        },
-        "Badge": {
-            "name": "徽章",
-            "description": "购买一个徽章"
-        },
-        "DoubleUpload": {
-            "name": "双倍上传",
-            "description": "在一定时间内上传量翻倍"
-        },
-        "FreeLeech": {
-            "name": "免费下载",
-            "description": "在一定时间内下载免费"
-        },
-        "CustomTitle": {
-            "name": "自定义头衔",
-            "description": "自定义您的头衔"
-        },
-        "unknown": {
-            "name": "未知商品",
-            "description": "这是一个神秘的商品"
-        },
-        "noticeTitle": "提示",
-        "unimplementedFlow": "商品：{itemName} 有一个尚未实现的特殊购买流程。",
-        "close": "关闭",
-        "newUsername": "新用户名",
-        "enterNewUsername": "请输入您的新用户名",
         "enterQuantity": "请输入数量",
         "purchasing": "购买中...",
         "store": {

@@ -17,14 +17,12 @@
         "size": "サイズ",
         "uploader": "アップローダー",
         "release_time": "リリース時間",
-        "seeders_leechers": "シーダー/リーチャー",
         "free": "無料",
         "description": "説明",
         "comments": "コメント",
         "title": "タイトル",
         "date": "日付",
         "optional": "(任意)",
-        "submitting": "送信中...",
         "seeders": "シーダー",
         "leechers": "リーチャー",
         "snatched": "完了",
@@ -36,7 +34,6 @@
     "register": {
         "avatar": "アバター",
         "refresh_avatar": "気に入らない？新しいのをください！",
-        "successful": "登録が完了しました！これでログインできます。",
         "successful_needs_verification": "登録が完了しました！メールを確認してアカウントを有効化してください。",
         "failed": "登録に失敗しました。後でもう一度お試しください。",
         "enter_your_username": "ユーザー名を入力してください",
@@ -56,11 +53,20 @@
             "verification": "検証"
         },
         "failed": "ログインに失敗しました。認証情報を確認してください。",
-        "failed_no_token": "ログインに失敗しました：サーバーから認証トークンが受信されませんでした。",
         "already_have_account": "すでにアカウントをお持ちですか？",
         "no_account_yet": "まだアカウントをお持ちではありませんか？",
         "enter_your_username": "ユーザー名を入力してください",
-        "enter_your_password": "パスワードを入力してください"
+        "username_or_email": "Username or Email",
+        "enter_your_username_or_email": "Enter your username or email",
+        "enter_your_password": "パスワードを入力してください",
+        "email_verification_needed": "ログインする前にメールアドレスを確認してください。",
+        "resend_verification_email": "確認メールを再送信",
+        "enter_username_or_email_for_verification": "Please enter your username or email to resend the verification link.",
+        "verification_sent_success": "新しい確認リンクがメールアドレスに送信されました。",
+        "verification_sent_failed": "確認メールの送信に失敗しました。後でもう一度お試しください。",
+        "invalid_credentials": "ユーザー名またはパスワードが無効です。",
+        "account_banned": "あなたのアカウントは禁止されています。",
+        "unknown_error": "不明なエラーが発生しました。もう一度お試しください。"
     },
     "header": {
         "home": "ホーム",
@@ -133,29 +139,9 @@
         "file_list": "ファイルリスト",
         "enter_your_comment": "コメントを入力してください..."
     },
-    "loginPage": {
-        "failed": "ログインに失敗しました。ユーザー名とパスワードを確認してください。",
-        "failed_no_token": "ログインに失敗しました：サーバーから認証トークンが受信されませんでした。",
-        "already_have_account": "すでにアカウントをお持ちですか？",
-        "no_account_yet": "まだアカウントをお持ちではありませんか？",
-        "enter_your_username": "ユーザー名を入力してください",
-        "enter_your_password": "パスワードを入力してください",
-        "email_verification_needed": "ログインする前にメールアドレスを確認してください。",
-        "go_to_verification": "確認ページへ",
-        "resend_verification_email": "確認メールを再送信",
-        "enter_email_for_verification": "確認リンクを再送信するには、ユーザー名/メールアドレスを入力してください。",
-        "verification_sent_success": "新しい確認リンクがメールアドレスに送信されました。",
-        "verification_sent_failed": "確認メールの送信に失敗しました。後でもう一度お試しください。",
-        "resend_modal_title": "確認メールを再送信",
-        "resend_modal_description": "アカウントに関連付けられたメールアドレスを入力して、新しい確認リンクを受信してください。",
-        "resend_modal_submit_button": "メールを送信",
-        "invalid_credentials": "ユーザー名またはパスワードが無効です。",
-        "account_banned": "あなたのアカウントは禁止されています。",
-        "unknown_error": "不明なエラーが発生しました。もう一度お試しください。"
-    },
     "login2fa": {
         "title": "二要素認証",
-        "enter_code": "認証アプリまたはメールから6桁のコードを入力してください。",
+        "enter_code": "Enter the 6-digit code from your authenticator app.",
         "code_placeholder": "認証コード",
         "submit_button": "確認してログイン",
         "no_app_code": "アプリからコードを取得できませんか？",
@@ -343,8 +329,6 @@
         "nominalDownload": "名目ダウンロード",
         "realUpload": "実質アップロード",
         "realDownload": "実質ダウンロード",
-        "uploadingCount": "アップロード中",
-        "downloadingCount": "ダウンロード中",
         "downloadTime": "ダウンロード時間",
         "uploadTime": "アップロード時間",
         "minutes": "分",
@@ -354,12 +338,7 @@
         "client": "クライアント",
         "ip": "IP",
         "port": "ポート",
-        "lastReport": "最終報告",
-        "selfRegistered": "自己登録"
-    },
-    "about": {
-        "title": "概要",
-        "description": "このサイトについて"
+        "lastReport": "最終報告"
     },
     "settingsPage": {
         "title": "設定",
@@ -370,18 +349,14 @@
         "select_avatar_file": "アバターファイルを選択",
         "preview": "プレビュー",
         "upload_avatar": "アバターをアップロード",
-        "uploading": "アップロード中...",
         "no_file_selected": "ファイルが選択されていません。",
         "avatar_upload_api_missing": "アバターファイルのアップロードAPIがありません。ファイルのアップロード用のバックエンドエンドポイントを提供してください。",
-        "avatar_updated_success": "アバターが正常に更新されました！",
-        "avatar_updated_error": "アバターの更新に失敗しました。",
         "change_password_title": "パスワードを変更",
         "change_password_description": "アカウントのパスワードを更新します。",
         "current_password": "現在のパスワード",
         "new_password": "新しいパスワード",
         "confirm_new_password": "新しいパスワードの確認",
         "passwords_do_not_match": "新しいパスワードが一致しません。",
-        "changing_password": "パスワードを変更中...",
         "change_password_button": "パスワードを変更",
         "password_updated_success": "パスワードが正常に更新されました！",
         "password_updated_error": "パスワードの更新に失敗しました。",
@@ -415,18 +390,6 @@
         "noInvites": "招待は見つかりませんでした。"
     },
     "Admin": {
-        "sidebar": {
-            "adminPanel": "管理パネル",
-            "dashboard": "ダッシュボード",
-            "addPoll": "投票を追加",
-            "bannedClients": "禁止されたクライアント",
-            "duplicateIPs": "重複IP",
-            "bandwidthSettings": "帯域幅設定",
-            "userManagement": "ユーザー管理",
-            "siteSettings": "サイト設定",
-            "announcementManagement": "お知らせ管理",
-            "logViewer": "ログビューア"
-        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -607,43 +570,9 @@
         "price": "価格",
         "actions": "アクション",
         "purchase": "購入",
-        "confirmPurchase": "購入の確認",
         "quantity": "数量",
         "cancel": "キャンセル",
         "confirm": "確認",
-        "UploadCredit": {
-            "name": "アップロードクレジット",
-            "description": "アップロード量を増やします"
-        },
-        "Invite": {
-            "name": "招待コード",
-            "description": "招待コードを購入します"
-        },
-        "Badge": {
-            "name": "バッジ",
-            "description": "バッジを購入します"
-        },
-        "DoubleUpload": {
-            "name": "ダブルアップロード",
-            "description": "一定期間、アップロード量が2倍になります"
-        },
-        "FreeLeech": {
-            "name": "フリーリーチ",
-            "description": "一定期間、ダウンロードが無料になります"
-        },
-        "CustomTitle": {
-            "name": "カスタムタイトル",
-            "description": "あなたのタイトルをカスタマイズします"
-        },
-        "unknown": {
-            "name": "不明なアイテム",
-            "description": "これは神秘的なアイテムです"
-        },
-        "noticeTitle": "通知",
-        "unimplementedFlow": "アイテム：{itemName} には、まだ実装されていない異なる購入フローがあります。",
-        "close": "閉じる",
-        "newUsername": "新しいユーザー名",
-        "enterNewUsername": "新しいユーザー名を入力してください",
         "enterQuantity": "数量を入力してください",
         "purchasing": "購入中...",
         "store": {

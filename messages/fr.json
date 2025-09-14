@@ -17,14 +17,12 @@
         "size": "Taille",
         "uploader": "Uploader",
         "release_time": "Date de sortie",
-        "seeders_leechers": "Seeders/Leechers",
         "free": "Gratuit",
         "description": "Description",
         "comments": "Commentaires",
         "title": "Titre",
         "date": "Date",
         "optional": "(Optionnel)",
-        "submitting": "Envoi en cours...",
         "seeders": "Seeders",
         "leechers": "Leecheurs",
         "snatched": "Complétés",
@@ -36,7 +34,6 @@
     "register": {
         "avatar": "Avatar",
         "refresh_avatar": "Vous n'aimez pas ? Donnez-m'en un nouveau !",
-        "successful": "Inscription réussie ! Vous pouvez maintenant vous connecter.",
         "successful_needs_verification": "Inscription réussie ! Veuillez consulter votre e-mail pour activer votre compte.",
         "failed": "Échec de l'inscription, veuillez réessayer plus tard.",
         "enter_your_username": "Entrez votre nom d'utilisateur",
@@ -56,11 +53,20 @@
             "verification": "Vérification"
         },
         "failed": "Échec de la connexion. Veuillez vérifier vos identifiants.",
-        "failed_no_token": "Échec de la connexion : Aucun jeton d'authentification n'a été reçu du serveur.",
         "already_have_account": "Vous avez déjà un compte ?",
         "no_account_yet": "Pas encore de compte ?",
         "enter_your_username": "Entrez votre nom d'utilisateur",
-        "enter_your_password": "Entrez votre mot de passe"
+        "username_or_email": "Username or Email",
+        "enter_your_username_or_email": "Enter your username or email",
+        "enter_your_password": "Entrez votre mot de passe",
+        "email_verification_needed": "Veuillez vérifier votre adresse e-mail avant de vous connecter.",
+        "resend_verification_email": "Renvoyer l'e-mail de vérification",
+        "enter_username_or_email_for_verification": "Please enter your username or email to resend the verification link.",
+        "verification_sent_success": "Un nouveau lien de vérification a été envoyé à votre adresse e-mail.",
+        "verification_sent_failed": "Échec de l'envoi de l'e-mail de vérification. Veuillez réessayer plus tard.",
+        "invalid_credentials": "Nom d'utilisateur ou mot de passe invalide.",
+        "account_banned": "Votre compte a été banni.",
+        "unknown_error": "Une erreur inconnue est survenue. Veuillez réessayer."
     },
     "header": {
         "home": "Accueil",
@@ -133,29 +139,9 @@
         "file_list": "Liste des fichiers",
         "enter_your_comment": "Entrez votre commentaire..."
     },
-    "loginPage": {
-        "failed": "Échec de la connexion, veuillez vérifier votre nom d'utilisateur et votre mot de passe.",
-        "failed_no_token": "Échec de la connexion : Aucun jeton d'authentification n'a été reçu du serveur.",
-        "already_have_account": "Vous avez déjà un compte ?",
-        "no_account_yet": "Pas encore de compte ?",
-        "enter_your_username": "Entrez votre nom d'utilisateur",
-        "enter_your_password": "Entrez votre mot de passe",
-        "email_verification_needed": "Veuillez vérifier votre adresse e-mail avant de vous connecter.",
-        "go_to_verification": "Aller à la page de vérification",
-        "resend_verification_email": "Renvoyer l'e-mail de vérification",
-        "enter_email_for_verification": "Veuillez saisir votre nom d'utilisateur/e-mail pour renvoyer le lien de vérification.",
-        "verification_sent_success": "Un nouveau lien de vérification a été envoyé à votre adresse e-mail.",
-        "verification_sent_failed": "Échec de l'envoi de l'e-mail de vérification. Veuillez réessayer plus tard.",
-        "resend_modal_title": "Renvoyer l'e-mail de vérification",
-        "resend_modal_description": "Veuillez saisir l'adresse e-mail associée à votre compte pour recevoir un nouveau lien de vérification.",
-        "resend_modal_submit_button": "Envoyer l'e-mail",
-        "invalid_credentials": "Nom d'utilisateur ou mot de passe invalide.",
-        "account_banned": "Votre compte a été banni.",
-        "unknown_error": "Une erreur inconnue est survenue. Veuillez réessayer."
-    },
     "login2fa": {
         "title": "Authentification à deux facteurs",
-        "enter_code": "Entrez le code à 6 chiffres de votre application d'authentification ou de votre e-mail.",
+        "enter_code": "Enter the 6-digit code from your authenticator app.",
         "code_placeholder": "Code de vérification",
         "submit_button": "Vérifier et se connecter",
         "no_app_code": "Vous ne pouvez pas obtenir le code de votre application ?",
@@ -343,8 +329,6 @@
         "nominalDownload": "Download nominal",
         "realUpload": "Upload réel",
         "realDownload": "Download réel",
-        "uploadingCount": "En upload",
-        "downloadingCount": "En download",
         "downloadTime": "Temps de download",
         "uploadTime": "Temps d'upload",
         "minutes": "minutes",
@@ -354,12 +338,7 @@
         "client": "Client",
         "ip": "IP",
         "port": "Port",
-        "lastReport": "Dernier rapport",
-        "selfRegistered": "Auto-inscrit"
-    },
-    "about": {
-        "title": "À propos",
-        "description": "À propos de ce site"
+        "lastReport": "Dernier rapport"
     },
     "settingsPage": {
         "title": "Paramètres",
@@ -370,18 +349,14 @@
         "select_avatar_file": "Sélectionner le fichier d'avatar",
         "preview": "Aperçu",
         "upload_avatar": "Télécharger l'avatar",
-        "uploading": "Téléchargement...",
         "no_file_selected": "Aucun fichier sélectionné.",
         "avatar_upload_api_missing": "L'API de téléchargement de fichier d'avatar est manquante. Veuillez fournir un point d'accès backend pour le téléchargement de fichiers.",
-        "avatar_updated_success": "Avatar mis à jour avec succès !",
-        "avatar_updated_error": "Échec de la mise à jour de l'avatar.",
         "change_password_title": "Changer de mot de passe",
         "change_password_description": "Mettre à jour le mot de passe de votre compte.",
         "current_password": "Mot de passe actuel",
         "new_password": "Nouveau mot de passe",
         "confirm_new_password": "Confirmer le nouveau mot de passe",
         "passwords_do_not_match": "Les nouveaux mots de passe ne correspondent pas.",
-        "changing_password": "Changement de mot de passe...",
         "change_password_button": "Changer le mot de passe",
         "password_updated_success": "Mot de passe mis à jour avec succès !",
         "password_updated_error": "Échec de la mise à jour du mot de passe.",
@@ -415,18 +390,6 @@
         "noInvites": "Aucune invitation trouvée."
     },
     "Admin": {
-        "sidebar": {
-            "adminPanel": "Panneau d'administration",
-            "dashboard": "Tableau de bord",
-            "addPoll": "Ajouter un sondage",
-            "bannedClients": "Clients bannis",
-            "duplicateIPs": "IPs en double",
-            "bandwidthSettings": "Paramètres de bande passante",
-            "userManagement": "Gestion des utilisateurs",
-            "siteSettings": "Paramètres du site",
-            "announcementManagement": "Gestion des annonces",
-            "logViewer": "Visionneuse de journaux"
-        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -607,43 +570,9 @@
         "price": "Prix",
         "actions": "Actions",
         "purchase": "Acheter",
-        "confirmPurchase": "Confirmer l'achat",
         "quantity": "Quantité",
         "cancel": "Annuler",
         "confirm": "Confirmer",
-        "UploadCredit": {
-            "name": "Crédit d'upload",
-            "description": "Augmentez votre quantité d'upload"
-        },
-        "Invite": {
-            "name": "Code d'invitation",
-            "description": "Achetez un code d'invitation"
-        },
-        "Badge": {
-            "name": "Badge",
-            "description": "Achetez un badge"
-        },
-        "DoubleUpload": {
-            "name": "Upload Double",
-            "description": "Doublez votre quantité d'upload pendant une certaine période"
-        },
-        "FreeLeech": {
-            "name": "Téléchargement Gratuit",
-            "description": "Téléchargez gratuitement pendant une certaine période"
-        },
-        "CustomTitle": {
-            "name": "Titre Personnalisé",
-            "description": "Personnalisez votre titre"
-        },
-        "unknown": {
-            "name": "Article Inconnu",
-            "description": "Ceci est un article mystérieux"
-        },
-        "noticeTitle": "Avis",
-        "unimplementedFlow": "Article : {itemName} a un processus d'achat différent qui n'a pas encore été mis en œuvre.",
-        "close": "Fermer",
-        "newUsername": "Nouveau nom d'utilisateur",
-        "enterNewUsername": "Entrez votre nouveau nom d'utilisateur",
         "enterQuantity": "Entrez la quantité",
         "purchasing": "Achat en cours...",
         "store": {

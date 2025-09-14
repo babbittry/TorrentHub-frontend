@@ -15,14 +15,12 @@ import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure
 
 export default function LoginPage() {
     const [step, setStep] = useState(1);
-    const [userName, setUserName] = useState<string>("");
+    const [userNameOrEmail, setUserNameOrEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [code, setCode] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [needsVerification, setNeedsVerification] = useState<boolean>(false);
-    const { isOpen: isResendModalOpen, onOpen: onResendModalOpen, onClose: onResendModalClose } = useDisclosure();
-    const [emailForResend, setEmailForResend] = useState<string>("");
     const authContext = useAuth();
     const router = useRouter();
     const t = useTranslations();
@@ -34,7 +32,7 @@ export default function LoginPage() {
         setNeedsVerification(false);
 
         try {
-            const result = await authContext.login({ userName, password });
+            const result = await authContext.login({ userNameOrEmail, password });
 
             // Handle inconsistent API response: EmailNotVerified might only return a message.
             if (result.result === undefined && result.message && result.message.includes("verify your email")) {
@@ -82,7 +80,7 @@ export default function LoginPage() {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await auth.login2fa({ userName, code });
+            const response = await auth.login2fa({ userName: userNameOrEmail, code });
             if (response.user && response.accessToken) {
                 authContext.completeLogin(response.user, response.accessToken);
                 router.push('/');
@@ -98,7 +96,7 @@ export default function LoginPage() {
 
     const handleSendEmailCode = async () => {
         try {
-            await auth.sendEmailCode({ userName });
+            await auth.sendEmailCode({ userName: userNameOrEmail });
             addToast({
                 title: t('login2fa.email_sent'),
                 color: 'success'
@@ -112,14 +110,13 @@ export default function LoginPage() {
     };
 
     const handleResendVerification = async () => {
-        if (!emailForResend) {
-            addToast({ title: t('loginPage.enter_email_for_verification'), color: 'warning' });
+        if (!userNameOrEmail) {
+            addToast({ title: t('loginPage.enter_username_or_email_for_verification'), color: 'warning' });
             return;
         }
         try {
-            await auth.resendVerification({ email: emailForResend });
+            await auth.resendVerification({ userNameOrEmail: userNameOrEmail });
             addToast({ title: t('loginPage.verification_sent_success'), color: 'success' });
-            onResendModalClose();
         } catch (err) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const error = err as any;
@@ -149,10 +146,10 @@ export default function LoginPage() {
                         <CardBody className="gap-6">
                             <Input
                                 isRequired
-                                label={t('common.username')}
-                                placeholder={t('loginPage.enter_your_username')}
-                                value={userName}
-                                onValueChange={setUserName}
+                                label={t('loginPage.username_or_email')}
+                                placeholder={t('loginPage.enter_your_username_or_email')}
+                                value={userNameOrEmail}
+                                onValueChange={setUserNameOrEmail}
                                 size="lg"
                                 labelPlacement="outside"
                             />
@@ -170,7 +167,7 @@ export default function LoginPage() {
                             {needsVerification && (
                                 <div className="text-center text-sm font-medium text-warning p-2 rounded-md border border-warning bg-warning/10 flex flex-col items-center gap-2">
                                     <p>{t('loginPage.email_verification_needed')}</p>
-                                    <Button variant="ghost" color="primary" size="sm" onPress={onResendModalOpen}>
+                                    <Button variant="ghost" color="primary" size="sm" onPress={handleResendVerification}>
                                         {t('loginPage.resend_verification_email')}
                                     </Button>
                                 </div>
@@ -212,41 +209,18 @@ export default function LoginPage() {
                     </form>
                 )}
 
-                <CardFooter className="pt-4">
-                    <p className="text-center text-default-500 text-sm w-full">
-                        {t('loginPage.no_account_yet')}{' '}
-                        <Link href="/register" className="text-primary hover:underline font-semibold">
-                            {t('header.register')}
-                        </Link>
-                    </p>
-                </CardFooter>
+                {step === 1 && (
+                    <CardFooter className="pt-4">
+                        <p className="text-center text-default-500 text-sm w-full">
+                            {t('loginPage.no_account_yet')}{' '}
+                            <Link href="/register" className="text-primary hover:underline font-semibold">
+                                {t('header.register')}
+                            </Link>
+                        </p>
+                    </CardFooter>
+                )}
             </Card>
         </div>
-            <Modal isOpen={isResendModalOpen} onClose={onResendModalClose}>
-                <ModalContent>
-                    <ModalHeader>{t('loginPage.resend_modal_title')}</ModalHeader>
-                    <ModalBody>
-                        <p className="text-sm text-default-500 mb-4">{t('loginPage.resend_modal_description')}</p>
-                        <Input
-                            isRequired
-                            label={t('common.email')}
-                            placeholder={t('register.enter_your_email')}
-                            value={emailForResend}
-                            onValueChange={setEmailForResend}
-                            size="lg"
-                            labelPlacement="outside"
-                        />
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button variant="ghost" onPress={onResendModalClose}>
-                            {t('common.cancel')}
-                        </Button>
-                        <Button color="primary" onPress={handleResendVerification}>
-                            {t('loginPage.resend_modal_submit_button')}
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
         </>
     );
 }
