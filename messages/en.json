@@ -137,7 +137,8 @@
         "no_comments": "No comments yet.",
         "download_torrent": "Download Torrent",
         "file_list": "File List",
-        "enter_your_comment": "Enter your comment..."
+        "enter_your_comment": "Enter your comment...",
+        "tip_user": "Tip"
     },
     "login2fa": {
         "title": "Two-Factor Authentication",
@@ -198,7 +199,8 @@
         "error_confirming": "Error confirming fulfillment.",
         "error_rejecting": "Error rejecting fulfillment.",
         "rejection_reason_required": "Rejection reason is required.",
-        "rejection_reason": "Rejection Reason"
+        "rejection_reason": "Rejection Reason",
+        "bounty_help_text": "It will cost {baseCost} coins to create this request. You can add an additional bounty, for a total cost of {totalCost} coins."
     },
     "messagesPage": {
         "title": "Messages",
@@ -338,7 +340,8 @@
         "client": "Client",
         "ip": "IP",
         "port": "Port",
-        "lastReport": "Last Report"
+        "lastReport": "Last Report",
+        "transfer_coins": "Transfer Coins"
     },
     "settingsPage": {
         "title": "Settings",
@@ -390,6 +393,18 @@
         "noInvites": "No invites found."
     },
     "Admin": {
+        "sidebar": {
+            "adminPanel": "Admin Panel",
+            "dashboard": "Dashboard",
+            "addPoll": "Poll Management",
+            "bannedClients": "Banned Clients",
+            "duplicateIPs": "Duplicate IPs",
+            "bandwidthSettings": "Bandwidth Settings",
+            "userManagement": "User Management",
+            "siteSettings": "Site Settings",
+            "announcementManagement": "Announcement Management",
+            "logViewer": "Log Viewer"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -654,5 +669,25 @@
         "success": "Account verified successfully! You can now log in.",
         "failed": "Account verification failed. The token may be invalid or expired.",
         "back_to_login": "Back to Login"
+    },
+    "TransferModal": {
+        "title": "Transfer Coins to {username}",
+        "amount_label": "Amount",
+        "amount_placeholder": "Enter amount to transfer",
+        "notes_label": "Notes (Optional)",
+        "notes_placeholder": "Enter a note",
+        "submit_button": "Confirm Transfer",
+        "error_invalid_amount": "Please enter a valid amount",
+        "error_generic": "Transfer failed. Please try again later.",
+        "success_message": "Transfer successful!"
+    },
+    "TipModal": {
+        "title": "Tip {username}",
+        "amount_label": "Amount",
+        "amount_placeholder": "Enter amount to tip",
+        "submit_button": "Confirm Tip",
+        "error_invalid_amount": "Please enter a valid amount",
+        "error_generic": "Tip failed. Please try again later.",
+        "success_message": "Tip successful!"
     }
 }

@@ -137,7 +137,8 @@
         "no_comments": "まだコメントはありません。",
         "download_torrent": "トレントをダウンロード",
         "file_list": "ファイルリスト",
-        "enter_your_comment": "コメントを入力してください..."
+        "enter_your_comment": "コメントを入力してください...",
+        "tip_user": "チップ"
     },
     "login2fa": {
         "title": "二要素認証",
@@ -198,7 +199,8 @@
         "error_confirming": "履行の確認中にエラーが発生しました。",
         "error_rejecting": "履行の拒否中にエラーが発生しました。",
         "rejection_reason_required": "拒否の理由は必須です。",
-        "rejection_reason": "拒否の理由"
+        "rejection_reason": "拒否の理由",
+        "bounty_help_text": "このリクエストを作成するには{baseCost}コインかかります。追加の懸賞金を追加して、合計{totalCost}コインにすることができます。"
     },
     "messagesPage": {
         "title": "メッセージ",
@@ -338,7 +340,8 @@
         "client": "クライアント",
         "ip": "IP",
         "port": "ポート",
-        "lastReport": "最終報告"
+        "lastReport": "最終報告",
+        "transfer_coins": "コインを送る"
     },
     "settingsPage": {
         "title": "設定",
@@ -390,6 +393,18 @@
         "noInvites": "招待は見つかりませんでした。"
     },
     "Admin": {
+        "sidebar": {
+            "adminPanel": "管理パネル",
+            "dashboard": "ダッシュボード",
+            "addPoll": "投票管理",
+            "bannedClients": "禁止クライアント",
+            "duplicateIPs": "重複IP",
+            "bandwidthSettings": "帯域幅設定",
+            "userManagement": "ユーザー管理",
+            "siteSettings": "サイト設定",
+            "announcementManagement": "お知らせ管理",
+            "logViewer": "ログビューア"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -654,5 +669,25 @@
         "success": "アカウントの確認が完了しました！ログインできます。",
         "failed": "アカウントの確認に失敗しました。トークンが無効か期限切れの可能性があります。",
         "back_to_login": "ログインに戻る"
+    },
+    "TransferModal": {
+        "title": "{username} にコインを送る",
+        "amount_label": "金額",
+        "amount_placeholder": "送る金額を入力",
+        "notes_label": "メモ (任意)",
+        "notes_placeholder": "メモを入力",
+        "submit_button": "送金を確認",
+        "error_invalid_amount": "有効な金額を入力してください",
+        "error_generic": "送金に失敗しました。後でもう一度お試しください。",
+        "success_message": "送金に成功しました！"
+    },
+    "TipModal": {
+        "title": "{username} にチップを渡す",
+        "amount_label": "金額",
+        "amount_placeholder": "チップの金額を入力",
+        "submit_button": "チップを確認",
+        "error_invalid_amount": "有効な金額を入力してください",
+        "error_generic": "チップに失敗しました。後でもう一度お試しください。",
+        "success_message": "チップに成功しました！"
     }
 }

@@ -9,6 +9,8 @@ import { User } from "@heroui/user";
 import { Tabs, Tab } from "@heroui/tabs";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { Link } from '@/i18n/navigation';
+import { Button } from '@heroui/button';
+import TransferModal from '@/app/[locale]/components/TransferModal';
 
 
 
@@ -18,6 +20,7 @@ const UserProfilePage = () => {
     const [peers, setPeers] = useState<PeerDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [isClient, setIsClient] = useState(false);
+    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const t = useTranslations();
     const { id } = useParams();
     const userId = parseInt(id as string);
@@ -99,8 +102,20 @@ const UserProfilePage = () => {
                             <div className="text-center"><p className="text-sm text-default-500">{t('userProfile.registrationTime')}</p><p className="text-xl font-bold">{isClient ? new Date(profile.createdAt).toLocaleDateString() : '...'}</p></div>
                         </div>
                     </div>
+                    <Button onClick={() => setIsTransferModalOpen(true)}>
+                        {t('userProfile.transfer_coins')}
+                    </Button>
                 </CardBody>
             </Card>
+
+            {isClient && profile && (
+                <TransferModal
+                    isOpen={isTransferModalOpen}
+                    onClose={() => setIsTransferModalOpen(false)}
+                    recipientId={profile.id}
+                    recipientName={profile.userName}
+                />
+            )}
 
             <Tabs aria-label="User profile details">
                 <Tab key="stats" title={t('userProfile.personalStats')}>

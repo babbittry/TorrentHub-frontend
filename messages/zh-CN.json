@@ -137,7 +137,8 @@
         "no_comments": "暂无评论。",
         "download_torrent": "下载种子",
         "file_list": "文件列表",
-        "enter_your_comment": "请输入您的评论..."
+        "enter_your_comment": "请输入您的评论...",
+        "tip_user": "打赏"
     },
     "login2fa": {
         "title": "双因素认证",
@@ -198,7 +199,8 @@
         "error_confirming": "确认满足失败。",
         "error_rejecting": "拒绝满足失败。",
         "rejection_reason_required": "必须填写拒绝原因。",
-        "rejection_reason": "拒绝原因"
+        "rejection_reason": "拒绝原因",
+        "bounty_help_text": "发布此求种将花费 {baseCost} 金币作为基础费用。您还可以额外增加悬赏，总花费为 {totalCost} 金币。"
     },
     "messagesPage": {
         "title": "站内信",
@@ -338,7 +340,8 @@
         "client": "客户端",
         "ip": "IP",
         "port": "端口",
-        "lastReport": "最后汇报时间"
+        "lastReport": "最后汇报时间",
+        "transfer_coins": "转账金币"
     },
     "settingsPage": {
         "title": "设置",
@@ -390,6 +393,18 @@
         "noInvites": "没有找到邀请码。"
     },
     "Admin": {
+        "sidebar": {
+            "adminPanel": "管理面板",
+            "dashboard": "仪表盘",
+            "addPoll": "投票管理",
+            "bannedClients": "客户端封禁",
+            "duplicateIPs": "重复IP",
+            "bandwidthSettings": "带宽设置",
+            "userManagement": "用户管理",
+            "siteSettings": "站点设置",
+            "announcementManagement": "公告管理",
+            "logViewer": "日志查看"
+        },
         "dashboard": {
             "title": "管理员仪表盘",
             "loading": "加载中...",
@@ -654,5 +669,25 @@
         "success": "账户验证成功！您现在可以登录了。",
         "failed": "账户验证失败。链接可能无效或已过期。",
         "back_to_login": "返回登录"
+    },
+    "TransferModal": {
+        "title": "向 {username} 转账",
+        "amount_label": "金额",
+        "amount_placeholder": "请输入转账金额",
+        "notes_label": "备注 (可选)",
+        "notes_placeholder": "请输入备注信息",
+        "submit_button": "确认转账",
+        "error_invalid_amount": "请输入有效的金额",
+        "error_generic": "转账失败，请稍后再试",
+        "success_message": "转账成功！"
+    },
+    "TipModal": {
+        "title": "打赏 {username}",
+        "amount_label": "金额",
+        "amount_placeholder": "请输入打赏金额",
+        "submit_button": "确认打赏",
+        "error_invalid_amount": "请输入有效的金额",
+        "error_generic": "打赏失败，请稍后再试",
+        "success_message": "打赏成功！"
     }
 }

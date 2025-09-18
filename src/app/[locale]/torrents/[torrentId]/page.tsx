@@ -14,6 +14,7 @@ import { Link as UILink } from "@heroui/link";
 import { User } from "@heroui/user";
 import { Pagination } from "@heroui/pagination";
 import UserDisplay from "@/app/[locale]/components/UserDisplay";
+import TipModal from "@/app/[locale]/components/TipModal";
 
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -32,7 +33,14 @@ export default function TorrentDetailPage() {
     const [commentsPage, setCommentsPage] = useState<number>(1);
     const [commentsPageSize] = useState<number>(10);
     const [commentsTotalCount, setCommentsTotalCount] = useState<number>(0);
+    const [isTipModalOpen, setIsTipModalOpen] = useState(false);
+    const [selectedCommentForTip, setSelectedCommentForTip] = useState<CommentDto | null>(null);
     const t = useTranslations();
+
+    const handleOpenTipModal = (comment: CommentDto) => {
+        setSelectedCommentForTip(comment);
+        setIsTipModalOpen(true);
+    };
 
     const fetchTorrentDetails = useCallback(async () => {
         setLoading(true);
@@ -178,6 +186,13 @@ export default function TorrentDetailPage() {
                                     <CardBody>
                                         <p>{comment.text}</p>
                                     </CardBody>
+                                    <CardFooter>
+                                        {comment.user && (
+                                            <Button size="sm" onClick={() => handleOpenTipModal(comment)}>
+                                                {t('torrentDetailsPage.tip_user')}
+                                            </Button>
+                                        )}
+                                    </CardFooter>
                                 </Card>
                             ))
                         ) : (
@@ -193,6 +208,17 @@ export default function TorrentDetailPage() {
                     />
                 </CardFooter>
             </Card>
+
+            {selectedCommentForTip && selectedCommentForTip.user && (
+                <TipModal
+                    isOpen={isTipModalOpen}
+                    onClose={() => setIsTipModalOpen(false)}
+                    recipientId={selectedCommentForTip.user.id}
+                    recipientName={selectedCommentForTip.user.username}
+                    contextType="Comment"
+                    contextId={selectedCommentForTip.id}
+                />
+            )}
         </div>
     );
 }

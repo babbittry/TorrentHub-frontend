@@ -525,6 +525,19 @@ export interface UpdateCoinsRequestDto {
     amount: number;
 }
 
+export interface TransferCoinsRequestDto {
+    toUserId: number;
+    amount: number;
+    notes?: string;
+}
+
+export interface TipCoinsRequestDto {
+    toUserId: number;
+    amount: number;
+    contextType: 'Torrent' | 'Comment' | 'ForumPost';
+    contextId: number;
+}
+
 // For file uploads
 export type IFormFile = File;
 
@@ -825,6 +838,12 @@ export const coins = {
     updateCoins: async (userId: number, data: UpdateCoinsRequestDto): Promise<void> => {
         await api.patch(`/api/coins/${userId}`, data);
     },
+    transfer: async (data: TransferCoinsRequestDto): Promise<void> => {
+        await api.post('/api/coins/transfer', data);
+    },
+    tip: async (data: TipCoinsRequestDto): Promise<void> => {
+        await api.post('/api/coins/tip', data);
+    },
 };
 
 // TopPlayers API Functions
@@ -991,6 +1010,16 @@ export interface SiteSettingsDto {
     maintenanceMode: boolean;
 }
 
+export interface PublicSiteSettingsDto {
+  siteName: string;
+  isRequestSystemEnabled: boolean;
+  createRequestCost: number;
+  fillRequestBonus: number;
+  tipTaxRate: number;
+  transferTaxRate: number;
+  invitePrice: number;
+}
+
 // Polls API Functions
 export const polls = {
     getPolls: async (): Promise<PollDto[]> => {
@@ -1062,6 +1091,13 @@ export const admin = {
         if (offset) params.append('offset', offset.toString());
         if (limit) params.append('limit', limit.toString());
         const response = await api.get(`/api/admin/logs/system?${params.toString()}`);
+        return response.data;
+    },
+};
+
+export const settings = {
+    getPublicSettings: async (): Promise<PublicSiteSettingsDto> => {
+        const response = await api.get('/api/settings/public');
         return response.data;
     },
 };

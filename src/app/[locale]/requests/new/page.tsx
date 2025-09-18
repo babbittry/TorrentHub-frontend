@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { requests, CreateRequestDto } from '@/lib/api';
+import { requests, CreateRequestDto, settings, PublicSiteSettingsDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input } from "@heroui/input";
@@ -20,6 +20,20 @@ const NewRequestPage = () => {
     const [initialBounty, setInitialBounty] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [siteSettings, setSiteSettings] = useState<PublicSiteSettingsDto | null>(null);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const fetchedSettings = await settings.getPublicSettings();
+                setSiteSettings(fetchedSettings);
+            } catch (error) {
+                console.error("Failed to fetch site settings:", error);
+            }
+        };
+
+        fetchSettings();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,7 +54,7 @@ const NewRequestPage = () => {
 
         try {
             const newRequest = await requests.createRequest(requestData);
-            router.push(`/${locale}/requests/${newRequest.id}`);
+            router.push(`/requests/${newRequest.id}`);
         } catch (err) {
             setError(t('requestsPage.error_creating_request'));
             console.error(err);
@@ -82,6 +96,14 @@ const NewRequestPage = () => {
                             labelPlacement="outside"
                             placeholder="e.g., 500"
                         />
+                        {siteSettings && (
+                            <p className="text-sm text-gray-500">
+                                {t('requestsPage.bounty_help_text', {
+                                    baseCost: siteSettings.createRequestCost,
+                                    totalCost: siteSettings.createRequestCost + (Number(initialBounty) || 0)
+                                })}
+                            </p>
+                        )}
 
                         {error && <p className="text-danger text-sm">{error}</p>}
 

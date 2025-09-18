@@ -137,7 +137,8 @@
         "no_comments": "Aucun commentaire pour le moment.",
         "download_torrent": "Télécharger le torrent",
         "file_list": "Liste des fichiers",
-        "enter_your_comment": "Entrez votre commentaire..."
+        "enter_your_comment": "Entrez votre commentaire...",
+        "tip_user": "Pourboire"
     },
     "login2fa": {
         "title": "Authentification à deux facteurs",
@@ -198,7 +199,8 @@
         "error_confirming": "Erreur lors de la confirmation de la satisfaction.",
         "error_rejecting": "Erreur lors du rejet de la satisfaction.",
         "rejection_reason_required": "La raison du rejet est requise.",
-        "rejection_reason": "Raison du rejet"
+        "rejection_reason": "Raison du rejet",
+        "bounty_help_text": "La création de cette demande coûtera {baseCost} pièces. Vous pouvez ajouter une prime supplémentaire, pour un coût total de {totalCost} pièces."
     },
     "messagesPage": {
         "title": "Messages",
@@ -338,7 +340,8 @@
         "client": "Client",
         "ip": "IP",
         "port": "Port",
-        "lastReport": "Dernier rapport"
+        "lastReport": "Dernier rapport",
+        "transfer_coins": "Transférer des pièces"
     },
     "settingsPage": {
         "title": "Paramètres",
@@ -390,6 +393,18 @@
         "noInvites": "Aucune invitation trouvée."
     },
     "Admin": {
+        "sidebar": {
+            "adminPanel": "Panneau d'admin",
+            "dashboard": "Tableau de bord",
+            "addPoll": "Gestion des sondages",
+            "bannedClients": "Clients bannis",
+            "duplicateIPs": "IPs dupliquées",
+            "bandwidthSettings": "Paramètres de bande passante",
+            "userManagement": "Gestion des utilisateurs",
+            "siteSettings": "Paramètres du site",
+            "announcementManagement": "Gestion des annonces",
+            "logViewer": "Visionneur de logs"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -654,5 +669,25 @@
         "success": "Compte vérifié avec succès ! Vous pouvez maintenant vous connecter.",
         "failed": "La vérification du compte a échoué. Le jeton est peut-être invalide ou a expiré.",
         "back_to_login": "Retour à la connexion"
+    },
+    "TransferModal": {
+        "title": "Transférer des pièces à {username}",
+        "amount_label": "Montant",
+        "amount_placeholder": "Entrez le montant à transférer",
+        "notes_label": "Notes (Optionnel)",
+        "notes_placeholder": "Entrez une note",
+        "submit_button": "Confirmer le transfert",
+        "error_invalid_amount": "Veuillez entrer un montant valide",
+        "error_generic": "Le transfert a échoué. Veuillez réessayer plus tard.",
+        "success_message": "Transfert réussi !"
+    },
+    "TipModal": {
+        "title": "Donner un pourboire à {username}",
+        "amount_label": "Montant",
+        "amount_placeholder": "Entrez le montant du pourboire",
+        "submit_button": "Confirmer le pourboire",
+        "error_invalid_amount": "Veuillez entrer un montant valide",
+        "error_generic": "Le pourboire a échoué. Veuillez réessayer plus tard.",
+        "success_message": "Pourboire réussi !"
     }
 }

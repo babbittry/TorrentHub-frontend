@@ -113,7 +113,7 @@ export default function Header() {
                     </li>
                     {user?.role === UserRole.Administrator && (
                         <li>
-                            <Link href="/admin/dashboard" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                            <Link href="/admin/dashboard" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
                                 {t('header.admin_dashboard')}
                             </Link>
                         </li>

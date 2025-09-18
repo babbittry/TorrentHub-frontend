@@ -94,7 +94,7 @@ const RequestsPage = () => {
                     <Button onPress={() => setStatusFilter('Pending')} variant={statusFilter === 'Pending' ? 'solid' : 'ghost'}>{t('requestsPage.filter_pending')}</Button>
                     <Button onPress={() => setStatusFilter('Filled')} variant={statusFilter === 'Filled' ? 'solid' : 'ghost'}>{t('requestsPage.filter_filled')}</Button>
                 </ButtonGroup>
-                <Button as={Link} href={`/${locale}/requests/new`} color="primary">
+                <Button as={Link} href={`/requests/new`} color="primary">
                     {t('requestsPage.createNew')}
                 </Button>
             </div>

@@ -24,8 +24,8 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
         );
     }
 
-    const noHeaderFooterPaths = ['/login', '/register'];
-    const shouldHideHeaderFooter = noHeaderFooterPaths.some(path => pathname.endsWith(path));
+    const noHeaderFooterPaths = ['/login', '/register', '/admin'];
+    const shouldHideHeaderFooter = noHeaderFooterPaths.some(path => pathname.includes(path));
 
     return (
         <>
