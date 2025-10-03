@@ -1,14 +1,14 @@
 import { getTranslations } from 'next-intl/server';
 
 export default async function BandwidthSettingsPage() {
-    const t = await getTranslations('AdminDashboard');
+    const t = await getTranslations('Admin');
 
     return (
         <div className="p-4 sm:p-6 lg:p-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-                {t('bandwidthSettings')}
+                {t('bandwidthSettings.title')}
             </h1>
-            <p className="text-gray-700 dark:text-gray-300">{t('bandwidthSettingsDescription')}</p>
+            <p className="text-gray-700 dark:text-gray-300">{t('bandwidthSettings.description')}</p>
         </div>
     );
 }

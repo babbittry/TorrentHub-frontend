@@ -6,6 +6,7 @@ import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faCompactDisc, faArrowUp, faArrowDown, faExclamationTriangle, faShieldAlt, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
+import { Button } from '@heroui/react';
 import { useTranslations } from 'next-intl';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
@@ -83,13 +84,27 @@ const AdminDashboard = () => {
                                 <TableColumn>{t('dashboard.reports.torrent')}</TableColumn>
                                 <TableColumn>{t('dashboard.reports.reason')}</TableColumn>
                                 <TableColumn>{t('dashboard.reports.reportedAt')}</TableColumn>
+                                <TableColumn>{t('dashboard.reports.actions')}</TableColumn>
                             </TableHeader>
                             <TableBody items={pendingReports.slice(0, 5)}>
                                 {(item) => (
                                     <TableRow key={item.id}>
-                                        <TableCell>{item.torrent?.name ?? 'N/A'}</TableCell>
+                                        <TableCell>
+                                           {item.torrent ? (
+                                               <Link href={`/torrents/${item.torrent.id}`} className="text-blue-500 hover:underline">
+                                                   {item.torrent.name}
+                                               </Link>
+                                           ) : (
+                                               'N/A'
+                                           )}
+                                       </TableCell>
                                         <TableCell>{item.reason}</TableCell>
                                         <TableCell>{new Date(item.reportedAt).toLocaleString()}</TableCell>
+                                        <TableCell>
+                                           <Link href={`/admin/reports/${item.id}`}>
+                                               <Button color="primary">{t('dashboard.reports.process')}</Button>
+                                           </Link>
+                                       </TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>

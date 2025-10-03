@@ -739,6 +739,21 @@ export const reports = {
     processReport: async (reportId: number, processData: ProcessReportRequestDto): Promise<void> => {
         await api.patch(`/api/reports/${reportId}/process`, processData);
     },
+    getReportById: async (reportId: number): Promise<ReportDto> => {
+        // This endpoint doesn't exist in the spec, so we'll filter the pending reports
+        // This is not ideal, but it's the best we can do without a dedicated endpoint
+        const pending = await reports.getPendingReports();
+        const report = pending.find(r => r.id === reportId);
+        if (report) {
+            return report;
+        }
+        const processed = await reports.getProcessedReports();
+        const reportFromProcessed = processed.find(r => r.id === reportId);
+        if (reportFromProcessed) {
+            return reportFromProcessed;
+        }
+        throw new Error(`Report with id ${reportId} not found`);
+    }
 };
 
 // Requests API Functions

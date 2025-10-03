@@ -29,7 +29,8 @@
         "no_data": "暂无数据",
         "next_step": "下一步",
         "previous_step": "上一步",
-        "cancel": "取消"
+        "cancel": "取消",
+        "none": "无"
     },
     "register": {
         "avatar": "头像",
@@ -311,7 +312,8 @@
             "Uploader": "上传者",
             "Seeder": "保种员",
             "Admin": "管理员",
-            "Administrator": "管理员"
+            "Administrator": "管理员",
+            "Moderator": "版主"
         }
     },
     "userProfile": {
@@ -341,7 +343,9 @@
         "ip": "IP",
         "port": "端口",
         "lastReport": "最后汇报时间",
-        "transfer_coins": "转账金币"
+        "transfer_coins": "转账金币",
+        "leechingCount": "当前下载数",
+        "seedingCount": "当前做种数"
     },
     "settingsPage": {
         "title": "设置",
@@ -405,6 +409,10 @@
             "announcementManagement": "公告管理",
             "logViewer": "日志查看"
         },
+        "bandwidthSettings": {
+            "title": "带宽设置",
+            "description": "配置上传和下载速度限制"
+        },
         "dashboard": {
             "title": "管理员仪表盘",
             "loading": "加载中...",
@@ -416,13 +424,16 @@
                 "pendingReports": "待处理举报",
                 "cheatLogs": "作弊日志",
                 "siteSettings": "站点设置",
-                "configure": "配置"
+                "configure": "配置",
+                "bandwidthSettings": "带宽设置"
             },
             "reports": {
                 "title": "最近的待处理举报",
                 "torrent": "种子",
                 "reason": "原因",
-                "reportedAt": "举报于"
+                "reportedAt": "举报于",
+                "actions": "操作",
+                "process": "处理"
             },
             "cheatLogs": {
                 "title": "最近的作弊日志",
@@ -430,6 +441,29 @@
                 "reason": "原因",
                 "client": "客户端",
                 "date": "日期"
+            }
+        },
+        "reports": {
+            "process": {
+                "title": "处理举报",
+                "loading": "正在加载举报详情...",
+                "notFound": "未找到举报。",
+                "fetchError": "无法加载举报详情。",
+                "submitError": "处理举报时出错。",
+                "notesRequired": "需要管理员备注。",
+                "reportDetails": "举报详情",
+                "torrent": "种子",
+                "reporter": "举报人",
+                "uploader": "发布人",
+                "reason": "原因",
+                "details": "详情",
+                "noDetails": "无详情",
+                "reportedAt": "举报于",
+                "processAction": "处理操作",
+                "adminNotes": "管理员备注",
+                "notesPlaceholder": "输入您的处理备注...",
+                "markAsProcessed": "标记为已处理",
+                "submitting": "正在提交..."
             }
         },
         "addPoll": {
@@ -562,7 +596,8 @@
                 "username": "用户名",
                 "role": "角色",
                 "createdAt": "创建于",
-                "actions": "操作"
+                "actions": "操作",
+                "email": "邮箱"
             },
             "editButton": "编辑",
             "modal": {

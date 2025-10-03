@@ -29,7 +29,8 @@
         "no_data": "データがありません",
         "next_step": "次へ",
         "previous_step": "前へ",
-        "cancel": "キャンセル"
+        "cancel": "キャンセル",
+        "none": "なし"
     },
     "register": {
         "avatar": "アバター",
@@ -311,7 +312,8 @@
             "Uploader": "アップローダー",
             "Seeder": "シーダー",
             "Admin": "管理者",
-            "Administrator": "管理者"
+            "Administrator": "管理者",
+            "Moderator": "モデレーター"
         }
     },
     "userProfile": {
@@ -341,7 +343,9 @@
         "ip": "IP",
         "port": "ポート",
         "lastReport": "最終報告",
-        "transfer_coins": "コインを送る"
+        "transfer_coins": "コインを送る",
+        "leechingCount": "現在のリーチ数",
+        "seedingCount": "現在のシード数"
     },
     "settingsPage": {
         "title": "設定",
@@ -405,6 +409,10 @@
             "announcementManagement": "お知らせ管理",
             "logViewer": "ログビューア"
         },
+        "bandwidthSettings": {
+            "title": "带宽设置",
+            "description": "配置上传和下载速度限制"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -416,20 +424,46 @@
                 "pendingReports": "Pending Reports",
                 "cheatLogs": "Cheat Logs",
                 "siteSettings": "Site Settings",
-                "configure": "Configure"
+                "configure": "設定",
+                "bandwidthSettings": "帯域幅設定"
             },
             "reports": {
                 "title": "Recent Pending Reports",
                 "torrent": "TORRENT",
                 "reason": "REASON",
-                "reportedAt": "REPORTED AT"
+                "reportedAt": "報告日時",
+                "actions": "操作",
+                "process": "処理"
             },
             "cheatLogs": {
-                "title": "Recent Cheat Logs",
-                "user": "USER",
-                "reason": "REASON",
-                "client": "CLIENT",
-                "date": "DATE"
+                "title": "最近のチートログ",
+                "user": "ユーザー",
+                "reason": "理由",
+                "client": "クライアント",
+                "date": "日付"
+            }
+        },
+        "reports": {
+            "process": {
+                "title": "報告を処理",
+                "loading": "報告詳細を読み込み中...",
+                "notFound": "報告が見つかりません。",
+                "fetchError": "報告詳細の読み込みに失敗しました。",
+                "submitError": "報告の処理に失敗しました。",
+                "notesRequired": "管理者メモは必須です。",
+                "reportDetails": "報告詳細",
+                "torrent": "トレント",
+                "reporter": "報告者",
+                "uploader": "アップローダー",
+                "reason": "理由",
+                "details": "詳細",
+                "noDetails": "詳細はありません。",
+                "reportedAt": "報告日時",
+                "processAction": "処理アクション",
+                "adminNotes": "管理者メモ",
+                "notesPlaceholder": "処理メモを入力してください...",
+                "markAsProcessed": "処理済みとしてマーク",
+                "submitting": "送信中..."
             }
         },
         "addPoll": {
@@ -562,7 +596,8 @@
                 "username": "USERNAME",
                 "role": "ROLE",
                 "createdAt": "CREATED AT",
-                "actions": "ACTIONS"
+                "actions": "ACTIONS",
+                "email": "E-Mail"
             },
             "editButton": "Edit",
             "modal": {

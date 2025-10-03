@@ -29,7 +29,8 @@
         "no_data": "Aucune donnée disponible",
         "next_step": "Suivant",
         "previous_step": "Précédent",
-        "cancel": "Annuler"
+        "cancel": "Annuler",
+        "none": "Aucun"
     },
     "register": {
         "avatar": "Avatar",
@@ -311,7 +312,8 @@
             "Uploader": "Uploadeur",
             "Seeder": "Seeder",
             "Admin": "Admin",
-            "Administrator": "Administrateur"
+            "Administrator": "Administrateur",
+            "Moderator": "Modérateur"
         }
     },
     "userProfile": {
@@ -341,7 +343,9 @@
         "ip": "IP",
         "port": "Port",
         "lastReport": "Dernier rapport",
-        "transfer_coins": "Transférer des pièces"
+        "transfer_coins": "Transférer des pièces",
+        "leechingCount": "Leeching actuel",
+        "seedingCount": "Seeding actuel"
     },
     "settingsPage": {
         "title": "Paramètres",
@@ -405,6 +409,10 @@
             "announcementManagement": "Gestion des annonces",
             "logViewer": "Visionneur de logs"
         },
+        "bandwidthSettings": {
+            "title": "带宽设置",
+            "description": "配置上传和下载速度限制"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -416,20 +424,46 @@
                 "pendingReports": "Pending Reports",
                 "cheatLogs": "Cheat Logs",
                 "siteSettings": "Site Settings",
-                "configure": "Configure"
+                "configure": "Configurer",
+                "bandwidthSettings": "Paramètres de bande passante"
             },
             "reports": {
                 "title": "Recent Pending Reports",
                 "torrent": "TORRENT",
                 "reason": "REASON",
-                "reportedAt": "REPORTED AT"
+                "reportedAt": "SIGNALÉ LE",
+                "actions": "ACTIONS",
+                "process": "Traiter"
             },
             "cheatLogs": {
-                "title": "Recent Cheat Logs",
-                "user": "USER",
-                "reason": "REASON",
+                "title": "Journaux de triche récents",
+                "user": "UTILISATEUR",
+                "reason": "RAISON",
                 "client": "CLIENT",
                 "date": "DATE"
+            }
+        },
+        "reports": {
+            "process": {
+                "title": "Traiter le signalement",
+                "loading": "Chargement des détails du signalement...",
+                "notFound": "Signalement non trouvé.",
+                "fetchError": "Échec du chargement des détails du signalement.",
+                "submitError": "Échec du traitement du signalement.",
+                "notesRequired": "Les notes de l'administrateur sont requises.",
+                "reportDetails": "Détails du signalement",
+                "torrent": "Torrent",
+                "reporter": "Signaleur",
+                "uploader": "Uploadeur",
+                "reason": "Raison",
+                "details": "Détails",
+                "noDetails": "Aucun détail fourni.",
+                "reportedAt": "Signalé le",
+                "processAction": "Action de traitement",
+                "adminNotes": "Notes de l'administrateur",
+                "notesPlaceholder": "Entrez vos notes de traitement...",
+                "markAsProcessed": "Marquer comme traité",
+                "submitting": "Envoi en cours..."
             }
         },
         "addPoll": {
@@ -562,7 +596,8 @@
                 "username": "USERNAME",
                 "role": "ROLE",
                 "createdAt": "CREATED AT",
-                "actions": "ACTIONS"
+                "actions": "ACTIONS",
+                "email": "E-Mail"
             },
             "editButton": "Edit",
             "modal": {

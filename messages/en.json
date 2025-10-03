@@ -29,7 +29,8 @@
         "no_data": "No data available",
         "next_step": "Next",
         "previous_step": "Previous",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "none": "None"
     },
     "register": {
         "avatar": "Avatar",
@@ -311,7 +312,8 @@
             "Uploader": "Uploader",
             "Seeder": "Seeder",
             "Admin": "Admin",
-            "Administrator": "Administrator"
+            "Administrator": "Administrator",
+            "Moderator": "Moderator"
         }
     },
     "userProfile": {
@@ -341,7 +343,9 @@
         "ip": "IP",
         "port": "Port",
         "lastReport": "Last Report",
-        "transfer_coins": "Transfer Coins"
+        "transfer_coins": "Transfer Coins",
+        "leechingCount": "Current Leeching",
+        "seedingCount": "Current Seeding"
     },
     "settingsPage": {
         "title": "Settings",
@@ -405,6 +409,10 @@
             "announcementManagement": "Announcement Management",
             "logViewer": "Log Viewer"
         },
+        "bandwidthSettings": {
+            "title": "带宽设置",
+            "description": "配置上传和下载速度限制"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "loading": "Loading...",
@@ -416,13 +424,16 @@
                 "pendingReports": "Pending Reports",
                 "cheatLogs": "Cheat Logs",
                 "siteSettings": "Site Settings",
-                "configure": "Configure"
+                "configure": "Configure",
+                "bandwidthSettings": "Bandwidth Settings"
             },
             "reports": {
                 "title": "Recent Pending Reports",
                 "torrent": "TORRENT",
                 "reason": "REASON",
-                "reportedAt": "REPORTED AT"
+                "reportedAt": "REPORTED AT",
+                "actions": "ACTIONS",
+                "process": "Process"
             },
             "cheatLogs": {
                 "title": "Recent Cheat Logs",
@@ -430,6 +441,29 @@
                 "reason": "REASON",
                 "client": "CLIENT",
                 "date": "DATE"
+            }
+        },
+        "reports": {
+            "process": {
+                "title": "Process Report",
+                "loading": "Loading report details...",
+                "notFound": "Report not found.",
+                "fetchError": "Failed to load report details.",
+                "submitError": "Failed to process report.",
+                "notesRequired": "Admin notes are required.",
+                "reportDetails": "Report Details",
+                "torrent": "Torrent",
+                "reporter": "Reporter",
+                "uploader": "Uploader",
+                "reason": "Reason",
+                "details": "Details",
+                "noDetails": "No details provided.",
+                "reportedAt": "Reported At",
+                "processAction": "Process Action",
+                "adminNotes": "Admin Notes",
+                "notesPlaceholder": "Enter your processing notes...",
+                "markAsProcessed": "Mark as Processed",
+                "submitting": "Submitting..."
             }
         },
         "addPoll": {
@@ -562,7 +596,8 @@
                 "username": "USERNAME",
                 "role": "ROLE",
                 "createdAt": "CREATED AT",
-                "actions": "ACTIONS"
+                "actions": "ACTIONS",
+                "email": "E-Mail"
             },
             "editButton": "Edit",
             "modal": {
