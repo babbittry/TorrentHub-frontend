@@ -8,13 +8,14 @@ import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
-import { Textarea } from "@heroui/input";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { Link as UILink } from "@heroui/link";
 import { User } from "@heroui/user";
 import { Pagination } from "@heroui/pagination";
 import UserDisplay from "@/app/[locale]/components/UserDisplay";
 import TipModal from "@/app/[locale]/components/TipModal";
+import RichEditor from "@/app/[locale]/components/RichEditor";
+import MarkdownRenderer from "@/app/[locale]/components/MarkdownRenderer";
 
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -157,14 +158,14 @@ export default function TorrentDetailPage() {
                 <CardHeader><h2 className="text-2xl font-bold text-foreground">{t('common.comments')}</h2></CardHeader>
                 <CardBody>
                     <form onSubmit={handleAddComment} className="flex flex-col gap-4 mb-8">
-                        <Textarea
+                        <RichEditor
+                            value={newComment}
+                            onChange={setNewComment}
                             label={t('torrentDetailsPage.add_comment')}
                             labelPlacement="outside"
                             placeholder={t('torrentDetailsPage.enter_your_comment')}
-                            value={newComment}
-                            onValueChange={setNewComment}
-                            maxLength={500}
-                            description={`${newComment.length} / 500`}
+                            maxLength={5000}
+                            height={250}
                         />
                         <Button type="submit" color="primary" className="self-end">
                             {t('torrentDetailsPage.submit_comment')}
@@ -184,7 +185,7 @@ export default function TorrentDetailPage() {
                                         />
                                     </CardHeader>
                                     <CardBody>
-                                        <p>{comment.text}</p>
+                                        <MarkdownRenderer content={comment.text} />
                                     </CardBody>
                                     <CardFooter>
                                         {comment.user && (

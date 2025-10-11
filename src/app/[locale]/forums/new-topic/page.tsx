@@ -5,10 +5,11 @@ import { forum, ForumCategoryDto, CreateForumTopicDto, UserRole } from '@/lib/ap
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@heroui/button';
-import { CustomInput, CustomTextarea } from '../../components/CustomInputs';
+import { CustomInput } from '../../components/CustomInputs';
 import { Select, SelectItem } from '@heroui/select';
 import { Card, CardBody, CardHeader } from '@heroui/card';
 import { useAuth } from '@/context/AuthContext';
+import RichEditor from '../../components/RichEditor';
 
 const NewTopicPage = () => {
     const router = useRouter();
@@ -129,16 +130,16 @@ const NewTopicPage = () => {
                             isDisabled={isForbidden}
                             description={`${title.length} / 100`}
                         />
-                        <CustomTextarea
+                        <RichEditor
+                            value={content}
+                            onChange={setContent}
                             label={t('content')}
                             labelPlacement="outside"
                             placeholder={t('content_placeholder')}
-                            value={content}
-                            onValueChange={setContent}
                             isRequired
-                            maxLength={1000}
+                            maxLength={10000}
                             isDisabled={isForbidden}
-                            description={`${content.length} / 1000`}
+                            height={400}
                         />
                         {error && <p className="text-danger text-sm">{error}</p>}
                         <div className="flex justify-end">

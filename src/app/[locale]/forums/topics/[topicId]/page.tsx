@@ -6,12 +6,12 @@ import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
-import { Textarea } from "@heroui/input";
 import { User } from "@heroui/user";
-import { API_BASE_URL } from "@/lib/api";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 import { Pagination } from "@heroui/pagination";
 import UserDisplay from '@/app/[locale]/components/UserDisplay';
+import RichEditor from '@/app/[locale]/components/RichEditor';
+import MarkdownRenderer from '@/app/[locale]/components/MarkdownRenderer';
 
 const TopicDetailPage = () => {
     const params = useParams();
@@ -137,9 +137,7 @@ const TopicDetailPage = () => {
                             />
                         </CardHeader>
                         <CardBody>
-                            <div className="prose dark:prose-invert max-w-none text-foreground">
-                                {post.content}
-                            </div>
+                            <MarkdownRenderer content={post.content} />
                         </CardBody>
                     </Card>
                 ))}
@@ -162,15 +160,15 @@ const TopicDetailPage = () => {
                 </CardHeader>
                 <CardBody>
                     <form onSubmit={handleReplySubmit} className="flex flex-col gap-4">
-                        <Textarea
+                        <RichEditor
+                            value={replyContent}
+                            onChange={setReplyContent}
                             label={t('your_reply')}
                             labelPlacement="outside"
                             placeholder={t('write_your_reply')}
-                            value={replyContent}
-                            onValueChange={setReplyContent}
                             isRequired
-                            maxLength={1000}
-                            description={`${replyContent.length} / 1000`}
+                            maxLength={10000}
+                            height={300}
                         />
                         <div className="flex justify-end">
                             <Button type="submit" color="primary" isLoading={isSubmitting}>

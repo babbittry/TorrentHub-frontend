@@ -64,6 +64,151 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+/* Rich Text Editor Styles */
+.rich-editor-wrapper {
+  /* Increase toolbar icon size */
+  --md-editor-toolbar-height: 42px;
+}
+
+.rich-editor-wrapper .w-md-editor-toolbar {
+  padding: 8px !important;
+  min-height: var(--md-editor-toolbar-height) !important;
+}
+
+.rich-editor-wrapper .w-md-editor-toolbar button {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 6px !important;
+}
+
+.rich-editor-wrapper .w-md-editor-toolbar svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Dark mode styles for MDEditor */
+.rich-editor-wrapper[data-color-mode='dark'] {
+  --color-canvas-default: var(--color-card-background);
+  --color-canvas-subtle: var(--color-background);
+  --color-border-default: var(--color-border);
+  --color-fg-default: var(--color-foreground);
+  --color-fg-muted: var(--color-text-muted);
+  --color-neutral-muted: rgba(255, 255, 255, 0.1);
+  --color-accent-fg: var(--color-primary);
+  --color-accent-emphasis: var(--color-primary);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor {
+  background-color: var(--color-card-background);
+  color: var(--color-foreground);
+  border-color: var(--color-border);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-toolbar {
+  background-color: var(--color-card-background);
+  border-color: var(--color-border);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-content,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-toolbar button {
+  color: var(--color-foreground);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-toolbar button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Fix dark mode text input area - ensure text is visible */
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text-pre,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text-input,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text-pre > code,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-input,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text,
+.rich-editor-wrapper[data-color-mode='dark'] textarea.w-md-editor-text-input {
+  background-color: var(--color-input-background) !important;
+  color: var(--color-foreground) !important;
+}
+
+/* Additional specificity for textarea */
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-content textarea {
+  background-color: var(--color-input-background) !important;
+  color: var(--color-foreground) !important;
+  caret-color: var(--color-foreground) !important;
+}
+
+/* Ensure the editing area wrapper also respects the colors */
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-area {
+  background-color: var(--color-input-background) !important;
+}
+
+/* Fix preview area background in dark mode */
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview {
+  background-color: transparent !important;
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown code,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown pre {
+  background-color: transparent !important;
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown code {
+  padding: 2px 4px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown pre code {
+  background-color: transparent !important;
+  padding: 0;
+}
+
+/* Light mode styles for MDEditor */
+.rich-editor-wrapper[data-color-mode='light'] {
+  --color-canvas-default: var(--color-card-background);
+  --color-canvas-subtle: var(--color-background);
+  --color-border-default: var(--color-border);
+  --color-fg-default: var(--color-foreground);
+  --color-fg-muted: var(--color-text-muted);
+  --color-neutral-muted: rgba(0, 0, 0, 0.05);
+  --color-accent-fg: var(--color-primary);
+  --color-accent-emphasis: var(--color-primary);
+}
+
+/* Toolbar button tooltips - make them invisible by default */
+.w-md-editor-toolbar button[title] {
+  position: relative;
+}
+
+/* Custom Chinese tooltips for toolbar buttons */
+.w-md-editor-toolbar button[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 1000;
+  margin-bottom: 5px;
+}
+
+.w-md-editor-toolbar button[data-tooltip]:hover::after {
+  opacity: 1;
+}
+
 /* Note: You may need to change the path to fit your project structure */
 @source '../../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));

@@ -724,5 +724,23 @@
         "error_invalid_amount": "请输入有效的金额",
         "error_generic": "打赏失败，请稍后再试",
         "success_message": "打赏成功！"
+    },
+    "richEditor": {
+        "toolbar": {
+            "bold": "粗体",
+            "italic": "斜体",
+            "strikethrough": "删除线",
+            "heading": "标题",
+            "quote": "引用",
+            "code": "代码",
+            "link": "链接",
+            "image": "图片",
+            "unordered_list": "无序列表",
+            "ordered_list": "有序列表",
+            "checklist": "任务列表"
+        },
+        "preview_mode": "预览模式",
+        "edit_mode": "编辑模式",
+        "live_mode": "实时预览"
     }
 }

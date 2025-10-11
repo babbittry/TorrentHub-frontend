@@ -87,28 +87,28 @@ const CategoryPage = () => {
                     <div className="space-y-4">
                         {topics.map(topic => (
                             <Card key={topic.id} isHoverable isPressable className="w-full">
-                                <Link href={`/forums/topics/${topic.id}`} className="block w-full h-full">
-                                    <CardBody>
-                                        <div className="grid grid-cols-12 gap-4 items-center">
-                                            <div className="col-span-8">
-                                                <h3 className="text-lg font-semibold text-foreground">{topic.title}</h3>
-                                                <div className="text-sm text-default-500 flex items-center">{t('by')} <UserDisplay user={topic.author} /></div>
-                                            </div>
-                                            <div className="col-span-2 text-center text-sm text-default-500">
-                                                <p>{t('posts')}</p>
-                                                <p className="font-bold text-foreground">{topic.postCount}</p>
-                                            </div>
-                                            <div className="col-span-2 text-right text-sm text-default-500">
-                                                {topic.lastPostTime && (
-                                                    <>
-                                                        <p>{t('last_reply')}</p>
-                                                        <p className="font-semibold text-foreground">{new Date(topic.lastPostTime).toLocaleString()}</p>
-                                                    </>
-                                                )}
-                                            </div>
+                                <CardBody>
+                                    <div className="grid grid-cols-12 gap-4 items-center">
+                                        <div className="col-span-8">
+                                            <Link href={`/forums/topics/${topic.id}`}>
+                                                <h3 className="text-lg font-semibold text-foreground hover:text-primary transition-colors">{topic.title}</h3>
+                                            </Link>
+                                            <div className="text-sm text-default-500 flex items-center">{t('by')} <UserDisplay user={topic.author} /></div>
                                         </div>
-                                    </CardBody>
-                                </Link>
+                                        <div className="col-span-2 text-center text-sm text-default-500">
+                                            <p>{t('posts')}</p>
+                                            <p className="font-bold text-foreground">{topic.postCount}</p>
+                                        </div>
+                                        <div className="col-span-2 text-right text-sm text-default-500">
+                                            {topic.lastPostTime && (
+                                                <>
+                                                    <p>{t('last_reply')}</p>
+                                                    <p className="font-semibold text-foreground">{new Date(topic.lastPostTime).toLocaleString()}</p>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </CardBody>
                             </Card>
                         ))}
                     </div>
