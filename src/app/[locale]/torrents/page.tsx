@@ -47,7 +47,7 @@ export default function TorrentsPage() {
         try {
             const response = await torrentListing.getTorrentListing(page, pageSize, category, searchTerm, sortBy, sortOrder);
             setTorrents(response.items || []);
-            setTotalCount(response.totalCount || 0);
+            setTotalCount(response.totalItems || 0);
         } catch (err: unknown) {
             setError((err as Error).message || t_common('error'));
         } finally {

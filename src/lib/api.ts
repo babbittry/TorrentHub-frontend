@@ -201,7 +201,7 @@ export interface UserAdminProfileDto {
 
 export interface PaginatedResult<T> {
     items: T[];
-    totalCount: number;
+    totalItems: number;
     page: number;
     pageSize: number;
 }

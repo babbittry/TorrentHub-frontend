@@ -41,7 +41,7 @@ const RequestsPage = () => {
                     setTotalCount(data.length);
                 } else {
                     setRequestsList(data?.items || []);
-                    setTotalCount(data?.totalCount || 0);
+                    setTotalCount(data?.totalItems || 0);
                 }
                 setError(null);
             } catch (err) {

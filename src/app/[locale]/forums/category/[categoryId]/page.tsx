@@ -44,7 +44,7 @@ const CategoryPage = () => {
             const currentCategory = categoriesData.find((c: ForumCategoryDto) => c.id === categoryId);
             setCategory(currentCategory || null);
             setTopics(topicsData.items || []);
-            setTotalCount(topicsData.totalCount || 0);
+            setTotalCount(topicsData.totalItems || 0);
         } catch (err) {
             setError(t('error_loading_topics'));
             console.error(err);

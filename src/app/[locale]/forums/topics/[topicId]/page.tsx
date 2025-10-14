@@ -85,7 +85,7 @@ const TopicDetailPage = () => {
             await forum.createPost(topicId, postData);
             setReplyContent('');
             // Refetch to see the new post, ideally go to the last page
-            const totalPosts = topic?.posts.totalCount || 0;
+            const totalPosts = topic?.posts.totalItems || 0;
             const lastPage = Math.ceil((totalPosts + 1) / pageSize);
             setPage(lastPage);
             fetchDetails();
@@ -146,7 +146,7 @@ const TopicDetailPage = () => {
             <Card className="mt-6">
                 <CardFooter>
                     <Pagination
-                        total={Math.ceil((topic.posts.totalCount || 0) / pageSize)}
+                        total={Math.ceil((topic.posts.totalItems || 0) / pageSize)}
                         page={page}
                         onChange={setPage}
                     />

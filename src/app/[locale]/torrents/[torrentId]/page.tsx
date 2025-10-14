@@ -52,7 +52,7 @@ export default function TorrentDetailPage() {
 
             const fetchedComments = await comments.getComments(Number(torrentId), commentsPage, commentsPageSize);
             setComments(fetchedComments.items || []);
-            setCommentsTotalCount(fetchedComments.totalCount || 0);
+            setCommentsTotalCount(fetchedComments.totalItems || 0);
 
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));

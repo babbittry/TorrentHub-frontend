@@ -28,7 +28,7 @@ const UserManagementPage = () => {
             setLoading(true);
             const data = await admin.getUsers(page, pageSize, searchTerm);
             setUserList(data?.items || []);
-            setTotalCount(data?.totalCount || 0);
+            setTotalCount(data?.totalItems || 0);
         } catch (error) {
             console.error("Failed to fetch users:", error);
         } finally {
