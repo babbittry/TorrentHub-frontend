@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from "react";
-import { torrents, comments, TorrentDto, CommentDto } from "@/lib/api";
+import { torrents, comments, TorrentDto, CommentDto, CreateCommentRequestDto } from "@/lib/api";
 import { useParams } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
@@ -10,12 +10,10 @@ import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { Link as UILink } from "@heroui/link";
-import { User } from "@heroui/user";
-import { Pagination } from "@heroui/pagination";
 import UserDisplay from "@/app/[locale]/components/UserDisplay";
 import TipModal from "@/app/[locale]/components/TipModal";
-import RichEditor from "@/app/[locale]/components/RichEditor";
-import MarkdownRenderer from "@/app/[locale]/components/MarkdownRenderer";
+import CommentTree from "@/app/[locale]/components/CommentTree";
+import ReplyEditor from "@/app/[locale]/components/ReplyEditor";
 
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -30,12 +28,12 @@ export default function TorrentDetailPage() {
     const [torrentComments, setComments] = useState<CommentDto[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [newComment, setNewComment] = useState<string>("");
-    const [commentsPage, setCommentsPage] = useState<number>(1);
-    const [commentsPageSize] = useState<number>(10);
-    const [commentsTotalCount, setCommentsTotalCount] = useState<number>(0);
+    const [lastFloor, setLastFloor] = useState<number>(0);
+    const [hasMore, setHasMore] = useState<boolean>(true);
+    const [loadingMore, setLoadingMore] = useState<boolean>(false);
     const [isTipModalOpen, setIsTipModalOpen] = useState(false);
     const [selectedCommentForTip, setSelectedCommentForTip] = useState<CommentDto | null>(null);
+    const [replyTarget, setReplyTarget] = useState<{ parentId: number; user: CommentDto['user'] } | null>(null);
     const t = useTranslations();
 
     const handleOpenTipModal = (comment: CommentDto) => {
@@ -50,16 +48,17 @@ export default function TorrentDetailPage() {
             const data: TorrentDto = await torrents.getTorrentById(Number(torrentId));
             setTorrent(data);
 
-            const fetchedComments = await comments.getComments(Number(torrentId), commentsPage, commentsPageSize);
-            setComments(fetchedComments.items || []);
-            setCommentsTotalCount(fetchedComments.totalItems || 0);
+            const response = await comments.getComments(Number(torrentId), 0, 30);
+            setComments(response.comments);
+            setHasMore(response.hasMore);
+            setLastFloor(response.comments[response.comments.length - 1]?.floor || 0);
 
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
         } finally {
             setLoading(false);
         }
-    }, [torrentId, t, commentsPage, commentsPageSize]);
+    }, [torrentId, t]);
 
     useEffect(() => {
         if (torrentId) {
@@ -67,17 +66,52 @@ export default function TorrentDetailPage() {
         }
     }, [torrentId, fetchTorrentDetails]);
 
-    const handleAddComment = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newComment.trim()) return;
-
+    const handleLoadMore = async () => {
+        if (loadingMore || !hasMore) return;
+        
+        setLoadingMore(true);
         try {
-            await comments.createComment(Number(torrentId), { text: newComment });
-            setNewComment("");
-            fetchTorrentDetails(); // Refresh comments
+            const response = await comments.getComments(Number(torrentId), lastFloor, 30);
+            setComments(prev => [...prev, ...response.comments]);
+            setHasMore(response.hasMore);
+            setLastFloor(response.comments[response.comments.length - 1]?.floor || lastFloor);
+        } catch (err: unknown) {
+            setError((err as Error).message || t('common.error'));
+        } finally {
+            setLoadingMore(false);
+        }
+    };
+
+    const handleSubmitTopLevelComment = async (data: CreateCommentRequestDto) => {
+        try {
+            const newComment = await comments.createComment(Number(torrentId), data);
+            setComments(prev => [...prev, newComment]);
+        } catch (err: unknown) {
+            throw new Error((err as Error).message || t('common.error'));
+        }
+    };
+
+    const handleSubmitReply = async (data: CreateCommentRequestDto) => {
+        try {
+            const newComment = await comments.createComment(Number(torrentId), data);
+            setComments(prev => [...prev, newComment]);
+            setReplyTarget(null);
+        } catch (err: unknown) {
+            throw new Error((err as Error).message || t('common.error'));
+        }
+    };
+
+    const handleDeleteComment = async (commentId: number) => {
+        try {
+            await comments.deleteComment(commentId);
+            setComments(prev => prev.filter(c => c.id !== commentId));
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
         }
+    };
+
+    const handleReplyClick = (parentId: number, replyToUser: CommentDto['user']) => {
+        setReplyTarget({ parentId, user: replyToUser });
     };
 
     const formatBytes = (bytes: number): string => {
@@ -157,57 +191,42 @@ export default function TorrentDetailPage() {
             <Card>
                 <CardHeader><h2 className="text-2xl font-bold text-foreground">{t('common.comments')}</h2></CardHeader>
                 <CardBody>
-                    <form onSubmit={handleAddComment} className="flex flex-col gap-4 mb-8">
-                        <RichEditor
-                            value={newComment}
-                            onChange={setNewComment}
-                            label={t('torrentDetailsPage.add_comment')}
-                            labelPlacement="outside"
-                            placeholder={t('torrentDetailsPage.enter_your_comment')}
-                            maxLength={5000}
-                            height={250}
+                    <div className="mb-8">
+                        <ReplyEditor
+                            onSubmit={handleSubmitTopLevelComment}
+                            onCancel={() => {}}
                         />
-                        <Button type="submit" color="primary" className="self-end">
-                            {t('torrentDetailsPage.submit_comment')}
-                        </Button>
-                    </form>
-                    <div className="space-y-6">
-                        {torrentComments.length > 0 ? (
-                            torrentComments.map((comment) => (
-                                <Card key={comment.id} shadow="sm">
-                                    <CardHeader className="flex justify-between items-center">
-                                        <User
-                                            name={<UserDisplay user={comment.user} />}
-                                            description={new Date(comment.createdAt).toLocaleString()}
-                                            avatarProps={{
-                                                // TODO: Use correct avatar from user object
-                                            }}
-                                        />
-                                    </CardHeader>
-                                    <CardBody>
-                                        <MarkdownRenderer content={comment.text} />
-                                    </CardBody>
-                                    <CardFooter>
-                                        {comment.user && (
-                                            <Button size="sm" onClick={() => handleOpenTipModal(comment)}>
-                                                {t('torrentDetailsPage.tip_user')}
-                                            </Button>
-                                        )}
-                                    </CardFooter>
-                                </Card>
-                            ))
-                        ) : (
-                            <p className="text-default-500 text-center">{t('torrentDetailsPage.no_comments')}</p>
-                        )}
                     </div>
-                </CardBody>
-                <CardFooter>
-                    <Pagination
-                        total={Math.ceil(commentsTotalCount / commentsPageSize)}
-                        page={commentsPage}
-                        onChange={setCommentsPage}
+                    
+                    {replyTarget && (
+                        <div className="mb-6 p-4 border border-gray-200 rounded-lg">
+                            <ReplyEditor
+                                onSubmit={handleSubmitReply}
+                                onCancel={() => setReplyTarget(null)}
+                                parentId={replyTarget.parentId}
+                                replyToUser={replyTarget.user}
+                            />
+                        </div>
+                    )}
+
+                    <CommentTree
+                        comments={torrentComments}
+                        onReply={handleReplyClick}
+                        onDelete={handleDeleteComment}
                     />
-                </CardFooter>
+                    {hasMore && (
+                        <div className="mt-6 flex justify-center">
+                            <Button
+                                onClick={handleLoadMore}
+                                disabled={loadingMore}
+                                color="primary"
+                                variant="flat"
+                            >
+                                {loadingMore ? t('reply.loading') : t('reply.load_more')}
+                            </Button>
+                        </div>
+                    )}
+                </CardBody>
             </Card>
 
             {selectedCommentForTip && selectedCommentForTip.user && (

@@ -234,10 +234,24 @@ export interface CommentDto {
     user?: UserDisplayDto;
     createdAt: string; // date-time
     editedAt?: string | null; // date-time
+    floor: number;
+    parentCommentId?: number | null;
+    replyToUser?: UserDisplayDto | null;
+    depth: number;
+    replyCount: number;
+}
+
+export interface CommentListResponse {
+    comments: CommentDto[];
+    hasMore: boolean;
+    totalCount: number;
+    loadedCount: number;
 }
 
 export interface CreateCommentRequestDto {
     text: string;
+    parentCommentId?: number | null;
+    replyToUserId?: number | null;
 }
 
 export interface UpdateCommentRequestDto {
@@ -395,6 +409,17 @@ export interface ForumPostDto {
     createdAt: string; // date-time
     editedAt: string | null; // date-time
     floor: number;
+    parentPostId?: number | null;
+    replyToUser?: UserDisplayDto | null;
+    depth: number;
+    replyCount: number;
+}
+
+export interface ForumPostListResponse {
+    posts: ForumPostDto[];
+    hasMore: boolean;
+    totalCount: number;
+    loadedCount: number;
 }
 
 export interface ForumTopicDetailDto {
@@ -417,6 +442,8 @@ export interface CreateForumTopicDto {
 
 export interface CreateForumPostDto {
     content: string;
+    parentPostId?: number | null;
+    replyToUserId?: number | null;
 }
 
 export interface UpdateForumTopicDto {
@@ -670,10 +697,10 @@ export const comments = {
         const response = await api.post(`/api/torrents/${torrentId}/comments`, comment);
         return response.data;
     },
-    getComments: async (torrentId: number, page: number = 1, pageSize: number = 10): Promise<PaginatedResult<CommentDto>> => {
+    getComments: async (torrentId: number, afterFloor: number = 0, limit: number = 30): Promise<CommentListResponse> => {
         const params = new URLSearchParams({
-            page: page.toString(),
-            pageSize: pageSize.toString(),
+            afterFloor: afterFloor.toString(),
+            limit: limit.toString(),
         });
         const response = await api.get(`/api/torrents/${torrentId}/comments?${params.toString()}`);
         return response.data;
@@ -812,6 +839,14 @@ export const forum = {
             pageSize: pageSize.toString(),
         });
         const response = await api.get(`/api/forum/topics/${topicId}?${params.toString()}`);
+        return response.data;
+    },
+    getTopicPosts: async (topicId: number, afterFloor: number = 0, limit: number = 30): Promise<ForumPostListResponse> => {
+        const params = new URLSearchParams({
+            afterFloor: afterFloor.toString(),
+            limit: limit.toString(),
+        });
+        const response = await api.get(`/api/forum/topics/${topicId}/posts?${params.toString()}`);
         return response.data;
     },
     createTopic: async (topicData: CreateForumTopicDto): Promise<ForumTopicDetailDto> => {

@@ -742,5 +742,24 @@
         "preview_mode": "预览模式",
         "edit_mode": "编辑模式",
         "live_mode": "实时预览"
+    },
+    "reply": {
+        "reply": "回复",
+        "reply_to": "回复给",
+        "replying_to": "正在回复",
+        "show_replies": "显示回复",
+        "hide_replies": "隐藏回复",
+        "no_comments": "暂无评论",
+        "comment_required": "评论内容不能为空",
+        "comment_too_long": "评论内容不能超过{{max}}字符",
+        "write_comment": "写一条评论...",
+        "submit": "提交",
+        "cancel": "取消",
+        "delete": "删除",
+        "deleting": "删除中...",
+        "load_more": "加载更多",
+        "loading": "加载中...",
+        "submitting": "提交中...",
+        "submit_failed": "提交失败,请重试"
     }
 }

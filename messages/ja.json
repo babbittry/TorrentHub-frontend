@@ -724,5 +724,24 @@
         "error_invalid_amount": "有効な金額を入力してください",
         "error_generic": "チップに失敗しました。後でもう一度お試しください。",
         "success_message": "チップに成功しました！"
+    },
+    "reply": {
+        "reply": "返信",
+        "reply_to": "に返信",
+        "replying_to": "に返信中",
+        "show_replies": "返信を表示",
+        "hide_replies": "返信を非表示",
+        "no_comments": "コメントはまだありません",
+        "comment_required": "コメントは空にできません",
+        "comment_too_long": "コメントは{{max}}文字を超えることはできません",
+        "write_comment": "コメントを書く...",
+        "submit": "送信",
+        "cancel": "キャンセル",
+        "delete": "削除",
+        "deleting": "削除中...",
+        "load_more": "さらに読む",
+        "loading": "読み込み中...",
+        "submitting": "送信中...",
+        "submit_failed": "送信に失敗しました。もう一度お試しください"
     }
 }

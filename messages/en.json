@@ -724,5 +724,24 @@
         "error_invalid_amount": "Please enter a valid amount",
         "error_generic": "Tip failed. Please try again later.",
         "success_message": "Tip successful!"
+    },
+    "reply": {
+        "reply": "Reply",
+        "reply_to": "Reply to",
+        "replying_to": "Replying to",
+        "show_replies": "Show replies",
+        "hide_replies": "Hide replies",
+        "no_comments": "No comments yet",
+        "comment_required": "Comment cannot be empty",
+        "comment_too_long": "Comment cannot exceed {{max}} characters",
+        "write_comment": "Write a comment...",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleting": "Deleting...",
+        "load_more": "Load more",
+        "loading": "Loading...",
+        "submitting": "Submitting...",
+        "submit_failed": "Failed to submit, please try again"
     }
 }

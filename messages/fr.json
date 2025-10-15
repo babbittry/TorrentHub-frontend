@@ -724,5 +724,24 @@
         "error_invalid_amount": "Veuillez entrer un montant valide",
         "error_generic": "Le pourboire a échoué. Veuillez réessayer plus tard.",
         "success_message": "Pourboire réussi !"
+    },
+    "reply": {
+        "reply": "Répondre",
+        "reply_to": "Répondre à",
+        "replying_to": "Réponse à",
+        "show_replies": "Afficher les réponses",
+        "hide_replies": "Masquer les réponses",
+        "no_comments": "Aucun commentaire",
+        "comment_required": "Le commentaire ne peut pas être vide",
+        "comment_too_long": "Le commentaire ne peut pas dépasser {{max}} caractères",
+        "write_comment": "Écrire un commentaire...",
+        "submit": "Soumettre",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "deleting": "Suppression...",
+        "load_more": "Charger plus",
+        "loading": "Chargement...",
+        "submitting": "Soumission...",
+        "submit_failed": "Échec de la soumission, veuillez réessayer"
     }
 }

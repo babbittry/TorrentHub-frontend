@@ -1,29 +1,28 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { forum, ForumTopicDetailDto, CreateForumPostDto, ForumCategoryDto, ForumPostDto } from '@/lib/api';
+import { forum, ForumTopicDetailDto, CreateForumPostDto, ForumCategoryDto, ForumPostDto, CommentDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
-import { User } from "@heroui/user";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
-import { Pagination } from "@heroui/pagination";
 import UserDisplay from '@/app/[locale]/components/UserDisplay';
-import RichEditor from '@/app/[locale]/components/RichEditor';
-import MarkdownRenderer from '@/app/[locale]/components/MarkdownRenderer';
+import CommentTree from '@/app/[locale]/components/CommentTree';
+import ReplyEditor from '@/app/[locale]/components/ReplyEditor';
 
 const TopicDetailPage = () => {
     const params = useParams();
     const topicId = Number(params.topicId);
     const [topic, setTopic] = useState<ForumTopicDetailDto | null>(null);
     const [categories, setCategories] = useState<ForumCategoryDto[]>([]);
+    const [posts, setPosts] = useState<ForumPostDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [replyContent, setReplyContent] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [page, setPage] = useState(1);
-    const [pageSize] = useState(20);
+    const [lastFloor, setLastFloor] = useState<number>(0);
+    const [hasMore, setHasMore] = useState<boolean>(true);
+    const [loadingMore, setLoadingMore] = useState<boolean>(false);
+    const [replyTarget, setReplyTarget] = useState<{ parentId: number; user: ForumPostDto['author'] } | null>(null);
     const t = useTranslations('forumPage');
     const t_header = useTranslations('header');
     const t_cat = useTranslations('forum_categories');
@@ -37,18 +36,24 @@ const TopicDetailPage = () => {
         try {
             setIsLoading(true);
             const [topicData, categoriesData] = await Promise.all([
-                forum.getTopicById(topicId, page, pageSize),
+                forum.getTopicById(topicId, 0, 30),
                 forum.getCategories()
             ]);
             setTopic(topicData);
             setCategories(categoriesData);
+            
+            // Extract posts from topic response
+            const postsList = topicData.posts?.items || [];
+            setPosts(postsList);
+            setHasMore(postsList.length >= 30);
+            setLastFloor(postsList[postsList.length - 1]?.floor || 0);
         } catch (err) {
             setError(t('error_loading_topic_details'));
             console.error(err);
         } finally {
             setIsLoading(false);
         }
-    }, [topicId, page, pageSize, t]);
+    }, [topicId, t]);
 
     useEffect(() => {
         fetchDetails();
@@ -75,26 +80,64 @@ const TopicDetailPage = () => {
         return null;
     }, [topic, categories, getCategoryName]);
 
-    const handleReplySubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!replyContent.trim()) return;
-
-        setIsSubmitting(true);
+    const handleLoadMore = async () => {
+        if (loadingMore || !hasMore) return;
+        
+        setLoadingMore(true);
         try {
-            const postData: CreateForumPostDto = { content: replyContent };
-            await forum.createPost(topicId, postData);
-            setReplyContent('');
-            // Refetch to see the new post, ideally go to the last page
-            const totalPosts = topic?.posts.totalItems || 0;
-            const lastPage = Math.ceil((totalPosts + 1) / pageSize);
-            setPage(lastPage);
-            fetchDetails();
+            const response = await forum.getTopicPosts(topicId, lastFloor, 30);
+            setPosts(prev => [...prev, ...response.posts]);
+            setHasMore(response.hasMore);
+            setLastFloor(response.posts[response.posts.length - 1]?.floor || lastFloor);
         } catch (err) {
-            alert(t('error_posting_reply'));
+            setError(t('error_loading_topic_details'));
             console.error(err);
         } finally {
-            setIsSubmitting(false);
+            setLoadingMore(false);
         }
+    };
+
+    const handleSubmitTopLevelPost = async (data: { text: string; parentCommentId?: number | null; replyToUserId?: number | null }) => {
+        try {
+            const postData: CreateForumPostDto = {
+                content: data.text,
+                parentPostId: data.parentCommentId || undefined,
+                replyToUserId: data.replyToUserId || undefined
+            };
+            const newPost = await forum.createPost(topicId, postData);
+            setPosts(prev => [...prev, newPost]);
+        } catch (err) {
+            throw new Error(t('error_posting_reply'));
+        }
+    };
+
+    const handleSubmitReply = async (data: { text: string; parentCommentId?: number | null; replyToUserId?: number | null }) => {
+        try {
+            const postData: CreateForumPostDto = {
+                content: data.text,
+                parentPostId: data.parentCommentId || undefined,
+                replyToUserId: data.replyToUserId || undefined
+            };
+            const newPost = await forum.createPost(topicId, postData);
+            setPosts(prev => [...prev, newPost]);
+            setReplyTarget(null);
+        } catch (err) {
+            throw new Error(t('error_posting_reply'));
+        }
+    };
+
+    const handleDeletePost = async (postId: number) => {
+        try {
+            await forum.deletePost(postId);
+            setPosts(prev => prev.filter(p => p.id !== postId));
+        } catch (err) {
+            setError(t('error_loading_topic_details'));
+            console.error(err);
+        }
+    };
+
+    const handleReplyClick = (parentId: number, replyToUser: ForumPostDto['author']) => {
+        setReplyTarget({ parentId, user: replyToUser });
     };
 
     if (isLoading) {
@@ -123,59 +166,47 @@ const TopicDetailPage = () => {
 
             <h1 className="text-3xl font-bold text-foreground mb-6">{topic.title}</h1>
 
-            <div className="space-y-6">
-                {(topic.posts?.items || []).map((post: ForumPostDto) => (
-                    <Card key={post.id} className="relative">
-                        <div className="absolute top-2 right-2 text-sm text-default-500">#{post.floor}</div>
-                        <CardHeader>
-                            <User
-                                name={<UserDisplay user={post.author} />}
-                                description={new Date(post.createdAt).toLocaleString()}
-                                avatarProps={{
-                                    // TODO: Implement avatar logic in UserDisplay or here
-                                }}
-                            />
-                        </CardHeader>
-                        <CardBody>
-                            <MarkdownRenderer content={post.content} />
-                        </CardBody>
-                    </Card>
-                ))}
-            </div>
-            
-            <Card className="mt-6">
-                <CardFooter>
-                    <Pagination
-                        total={Math.ceil((topic.posts.totalItems || 0) / pageSize)}
-                        page={page}
-                        onChange={setPage}
-                    />
-                </CardFooter>
-            </Card>
-
-            {/* Reply Form */}
             <Card className="mt-8">
                 <CardHeader>
                     <h2 className="text-xl font-bold">{t('post_a_reply')}</h2>
                 </CardHeader>
                 <CardBody>
-                    <form onSubmit={handleReplySubmit} className="flex flex-col gap-4">
-                        <RichEditor
-                            value={replyContent}
-                            onChange={setReplyContent}
-                            label={t('your_reply')}
-                            labelPlacement="outside"
-                            placeholder={t('write_your_reply')}
-                            isRequired
-                            maxLength={10000}
-                            height={300}
+                    <div className="mb-8">
+                        <ReplyEditor
+                            onSubmit={handleSubmitTopLevelPost}
+                            onCancel={() => {}}
                         />
-                        <div className="flex justify-end">
-                            <Button type="submit" color="primary" isLoading={isSubmitting}>
-                                {t('submit_reply')}
+                    </div>
+                    
+                    {replyTarget && (
+                        <div className="mb-6 p-4 border border-gray-200 rounded-lg">
+                            <ReplyEditor
+                                onSubmit={handleSubmitReply}
+                                onCancel={() => setReplyTarget(null)}
+                                parentId={replyTarget.parentId}
+                                replyToUser={replyTarget.user}
+                            />
+                        </div>
+                    )}
+
+                    <CommentTree
+                        comments={posts as unknown as CommentDto[]}
+                        onReply={handleReplyClick}
+                        onDelete={handleDeletePost}
+                    />
+                    
+                    {hasMore && (
+                        <div className="mt-6 flex justify-center">
+                            <Button
+                                onClick={handleLoadMore}
+                                disabled={loadingMore}
+                                color="primary"
+                                variant="flat"
+                            >
+                                {loadingMore ? t('loading') : t('load_more')}
                             </Button>
                         </div>
-                    </form>
+                    )}
                 </CardBody>
             </Card>
         </div>
