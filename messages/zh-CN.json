@@ -753,6 +753,7 @@
         "comment_required": "评论内容不能为空",
         "comment_too_long": "评论内容不能超过{{max}}字符",
         "write_comment": "写一条评论...",
+        "write_comment_placeholder": "分享你的想法...",
         "submit": "提交",
         "cancel": "取消",
         "delete": "删除",
@@ -760,6 +761,9 @@
         "load_more": "加载更多",
         "loading": "加载中...",
         "submitting": "提交中...",
-        "submit_failed": "提交失败,请重试"
+        "submit_failed": "提交失败,请重试",
+        "quote": "引用",
+        "expand": "展开",
+        "collapse": "收起"
     }
 }

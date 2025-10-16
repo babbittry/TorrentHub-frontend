@@ -106,6 +106,7 @@ export interface BadgeDto {
 export interface UserDisplayDto {
     id: number;
     username: string;
+    avatar?: string | null;
     userLevelName?: string | null;
     userLevelColor?: string | null;
 

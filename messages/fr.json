@@ -735,6 +735,7 @@
         "comment_required": "Le commentaire ne peut pas être vide",
         "comment_too_long": "Le commentaire ne peut pas dépasser {{max}} caractères",
         "write_comment": "Écrire un commentaire...",
+        "write_comment_placeholder": "Partagez vos pensées...",
         "submit": "Soumettre",
         "cancel": "Annuler",
         "delete": "Supprimer",
@@ -742,6 +743,9 @@
         "load_more": "Charger plus",
         "loading": "Chargement...",
         "submitting": "Soumission...",
-        "submit_failed": "Échec de la soumission, veuillez réessayer"
+        "submit_failed": "Échec de la soumission, veuillez réessayer",
+        "quote": "Citation",
+        "expand": "Développer",
+        "collapse": "Réduire"
     }
 }

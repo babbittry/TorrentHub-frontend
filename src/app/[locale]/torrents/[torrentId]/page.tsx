@@ -85,7 +85,14 @@ export default function TorrentDetailPage() {
     const handleSubmitTopLevelComment = async (data: CreateCommentRequestDto) => {
         try {
             const newComment = await comments.createComment(Number(torrentId), data);
-            setComments(prev => [...prev, newComment]);
+            // 乐观更新: 添加新评论并按 Floor 排序
+            setComments(prev => [...prev, newComment].sort((a, b) => a.floor - b.floor));
+            
+            // 滚动到新评论
+            setTimeout(() => {
+                const element = document.getElementById(`comment-${newComment.id}`);
+                element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         } catch (err: unknown) {
             throw new Error((err as Error).message || t('common.error'));
         }
@@ -94,8 +101,14 @@ export default function TorrentDetailPage() {
     const handleSubmitReply = async (data: CreateCommentRequestDto) => {
         try {
             const newComment = await comments.createComment(Number(torrentId), data);
-            setComments(prev => [...prev, newComment]);
-            setReplyTarget(null);
+            // 乐观更新: 添加新评论并按 Floor 排序
+            setComments(prev => [...prev, newComment].sort((a, b) => a.floor - b.floor));
+            
+            // 滚动到新评论
+            setTimeout(() => {
+                const element = document.getElementById(`comment-${newComment.id}`);
+                element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         } catch (err: unknown) {
             throw new Error((err as Error).message || t('common.error'));
         }
@@ -111,6 +124,8 @@ export default function TorrentDetailPage() {
     };
 
     const handleReplyClick = (parentId: number, replyToUser: CommentDto['user']) => {
+        // CommentTree 组件内部处理回复编辑器的显示
+        // 这里只需要更新 replyTarget 状态
         setReplyTarget({ parentId, user: replyToUser });
     };
 
@@ -191,28 +206,22 @@ export default function TorrentDetailPage() {
             <Card>
                 <CardHeader><h2 className="text-2xl font-bold text-foreground">{t('common.comments')}</h2></CardHeader>
                 <CardBody>
-                    <div className="mb-8">
+                    {/* 顶级评论编辑器 */}
+                    <div className="mb-6">
+                        <h3 className="text-lg font-semibold mb-3">{t('reply.write_comment')}</h3>
                         <ReplyEditor
                             onSubmit={handleSubmitTopLevelComment}
-                            onCancel={() => {}}
+                            placeholder={t('reply.write_comment_placeholder')}
                         />
                     </div>
-                    
-                    {replyTarget && (
-                        <div className="mb-6 p-4 border border-gray-200 rounded-lg">
-                            <ReplyEditor
-                                onSubmit={handleSubmitReply}
-                                onCancel={() => setReplyTarget(null)}
-                                parentId={replyTarget.parentId}
-                                replyToUser={replyTarget.user}
-                            />
-                        </div>
-                    )}
 
+                    {/* 评论列表 */}
                     <CommentTree
                         comments={torrentComments}
                         onReply={handleReplyClick}
                         onDelete={handleDeleteComment}
+                        canDelete={(comment) => comment.user?.id === comment.user?.id} // 临时权限检查
+                        onSubmitReply={handleSubmitReply}
                     />
                     {hasMore && (
                         <div className="mt-6 flex justify-center">

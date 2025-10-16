@@ -735,6 +735,7 @@
         "comment_required": "Comment cannot be empty",
         "comment_too_long": "Comment cannot exceed {{max}} characters",
         "write_comment": "Write a comment...",
+        "write_comment_placeholder": "Share your thoughts...",
         "submit": "Submit",
         "cancel": "Cancel",
         "delete": "Delete",
@@ -742,6 +743,9 @@
         "load_more": "Load more",
         "loading": "Loading...",
         "submitting": "Submitting...",
-        "submit_failed": "Failed to submit, please try again"
+        "submit_failed": "Failed to submit, please try again",
+        "quote": "Quote",
+        "expand": "Expand",
+        "collapse": "Collapse"
     }
 }

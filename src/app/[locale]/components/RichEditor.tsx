@@ -1,16 +1,10 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
-import dynamic from 'next/dynamic';
-import { Card, CardBody } from '@heroui/card';
-import { toMarkdown } from '@/lib/formatConverter';
+import React from 'react';
+import { MdEditor } from 'md-editor-rt';
+import 'md-editor-rt/lib/style.css';
 import { useTheme } from '@/context/ThemeContext';
-
-// Dynamic import to avoid SSR issues with MDEditor
-const MDEditor = dynamic(
-    () => import('@uiw/react-md-editor').then((mod) => mod.default),
-    { ssr: false }
-);
+import { useLocale } from 'next-intl';
 
 export interface RichEditorProps {
     value: string;
@@ -40,43 +34,7 @@ export default function RichEditor({
     onBlur,
 }: RichEditorProps) {
     const { currentMode } = useTheme();
-    const [internalValue, setInternalValue] = useState(value);
-
-    // Auto-convert BBCode/HTML to Markdown on paste
-    const handlePaste = useCallback((event: React.ClipboardEvent) => {
-        const pastedText = event.clipboardData.getData('text');
-        if (pastedText) {
-            const markdown = toMarkdown(pastedText);
-            if (markdown !== pastedText) {
-                event.preventDefault();
-                const textarea = event.target as HTMLTextAreaElement;
-                const start = textarea.selectionStart;
-                const end = textarea.selectionEnd;
-                const newValue = 
-                    internalValue.substring(0, start) + 
-                    markdown + 
-                    internalValue.substring(end);
-                setInternalValue(newValue);
-                onChange(newValue);
-            }
-        }
-    }, [internalValue, onChange]);
-
-    const handleChange = useCallback((val?: string) => {
-        const newValue = val || '';
-        setInternalValue(newValue);
-        onChange(newValue);
-    }, [onChange]);
-
-    // Character counter
-    const characterCount = useMemo(() => {
-        return maxLength ? `${internalValue.length} / ${maxLength}` : null;
-    }, [internalValue, maxLength]);
-
-    // Validate max length
-    const isOverLimit = useMemo(() => {
-        return maxLength ? internalValue.length > maxLength : false;
-    }, [internalValue, maxLength]);
+    const locale = useLocale();
 
     return (
         <div className="w-full">
@@ -86,50 +44,27 @@ export default function RichEditor({
                     {isRequired && <span className="text-danger ml-1">*</span>}
                 </label>
             )}
-            
-            <Card className={isDisabled ? 'opacity-50' : ''}>
-                <CardBody className="p-0">
-                    <div
-                        onPaste={handlePaste}
-                        data-color-mode={currentMode}
-                        className="rich-editor-wrapper"
-                    >
-                        <MDEditor
-                            value={internalValue}
-                            onChange={handleChange}
-                            height={height}
-                            preview="live"
-                            hideToolbar={false}
-                            enableScroll={true}
-                            textareaProps={{
-                                placeholder: placeholder,
-                                disabled: isDisabled,
-                                maxLength: maxLength,
-                                onBlur: onBlur,
-                            }}
-                            previewOptions={{
-                                rehypePlugins: [],
-                            }}
-                        />
-                    </div>
-                </CardBody>
-            </Card>
-
-            {(description || characterCount) && (
+            <div className={isDisabled ? 'opacity-50' : ''}>
+                <MdEditor
+                    modelValue={value}
+                    onChange={onChange}
+                    theme={currentMode === 'dark' ? 'dark' : 'light'}
+                    language={locale}
+                    placeholder={placeholder}
+                    style={{ height: `${height}px` }}
+                    maxLength={maxLength}
+                    onBlur={onBlur}
+                />
+            </div>
+            {(description || maxLength) && (
                 <div className="flex justify-between items-center mt-2 text-sm">
                     <span className="text-default-500">{description}</span>
-                    {characterCount && (
-                        <span className={isOverLimit ? 'text-danger' : 'text-default-500'}>
-                            {characterCount}
+                    {maxLength && (
+                        <span className={value.length > maxLength ? 'text-danger' : 'text-default-500'}>
+                            {value.length} / {maxLength}
                         </span>
                     )}
                 </div>
-            )}
-
-            {isOverLimit && (
-                <p className="text-danger text-sm mt-1">
-                    Content exceeds maximum length of {maxLength} characters
-                </p>
             )}
         </div>
     );

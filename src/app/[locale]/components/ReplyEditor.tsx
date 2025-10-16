@@ -2,7 +2,8 @@
 
 import { CreateCommentRequestDto, UserDisplayDto } from '@/lib/api';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslations } from 'next-intl';
+import RichEditor from './RichEditor';
 
 interface ReplyEditorProps {
   onSubmit: (data: CreateCommentRequestDto) => Promise<void>;
@@ -21,7 +22,7 @@ export default function ReplyEditor({
   isSubmitting = false,
   placeholder,
 }: ReplyEditorProps) {
-  const { t } = useTranslation();
+  const t = useTranslations('reply');
   const [content, setContent] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -34,8 +35,8 @@ export default function ReplyEditor({
       return;
     }
 
-    if (content.length > 500) {
-      setError(t('comment_too_long', { max: 500 }));
+    if (content.length > 1000) {
+      setError(t('comment_too_long', { max: 1000 }));
       return;
     }
 
@@ -54,25 +55,23 @@ export default function ReplyEditor({
   return (
     <form onSubmit={handleSubmit} className="space-y-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
       {replyToUser && (
-        <div className="text-sm text-blue-600">
+        <div className="text-sm font-medium text-blue-600 mb-2">
           {t('replying_to')} @{replyToUser.username}
         </div>
       )}
 
       <div className="space-y-2">
-        <textarea
+        <RichEditor
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={setContent}
           placeholder={placeholder || t('write_comment')}
-          maxLength={500}
-          rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-          disabled={isSubmitting}
+          height={200}
+          maxLength={1000}
+          isDisabled={isSubmitting}
         />
-        <div className="flex justify-between items-center text-xs text-gray-500">
-          <span>{content.length}/500</span>
-          {error && <span className="text-red-600">{error}</span>}
-        </div>
+        {error && (
+          <div className="text-sm text-red-600">{error}</div>
+        )}
       </div>
 
       <div className="flex gap-2 justify-end">

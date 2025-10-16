@@ -8,9 +8,12 @@ import { Link } from '@/i18n/navigation';
 
 interface UserDisplayProps {
     user: UserDisplayDto | null | undefined;
+    showAvatar?: boolean;
+    avatarSize?: 'sm' | 'md' | 'lg';
+    showUsername?: boolean;
 }
 
-const UserDisplay: React.FC<UserDisplayProps> = ({ user }) => {
+const UserDisplay: React.FC<UserDisplayProps> = ({ user, showAvatar = false, avatarSize = 'md', showUsername = true }) => {
     if (!user) {
         return <span>Unknown User</span>;
     }
@@ -18,6 +21,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ user }) => {
     const {
         id,
         username,
+        avatar,
         userLevelName,
         userLevelColor,
         equippedBadge,
@@ -37,21 +41,46 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ user }) => {
         usernameStyle.fontWeight = 'bold';
     }
 
+    const avatarSizeClasses = {
+        sm: 'h-8 w-8',
+        md: 'h-12 w-12',
+        lg: 'h-16 w-16'
+    };
+
+    const avatarUrl = user.avatar
+        ? user.avatar.startsWith('http')
+            ? user.avatar
+            : `${API_BASE_URL}/${user.avatar}`
+        : '/default-avatar.svg';
+
     return (
-        <span className="inline-flex items-center space-x-1">
-            {equippedBadge && (
-                <Tooltip title={equippedBadge.code}>
+        <span className="inline-flex items-center space-x-2">
+            {showAvatar && (
+                <Link href={`/users/${id}`} className="flex-shrink-0">
                     <img
-                        src={`${API_BASE_URL}/badges/${equippedBadge.code}.svg`}
-                        alt={equippedBadge.code}
-                        className="h-5 w-5"
+                        src={avatarUrl}
+                        alt={username}
+                        className={`${avatarSizeClasses[avatarSize]} rounded-full border-2 border-gray-200`}
                     />
-                </Tooltip>
+                </Link>
             )}
-            <Link href={`/users/${id}`} style={usernameStyle} title={userLevelName || ''}>
-                {username}
-            </Link>
-            {userTitle && <span className="text-gray-500 text-sm">[{userTitle}]</span>}
+            {showUsername && (
+                <>
+                    {equippedBadge && (
+                        <Tooltip title={equippedBadge.code}>
+                            <img
+                                src={`${API_BASE_URL}/badges/${equippedBadge.code}.svg`}
+                                alt={equippedBadge.code}
+                                className="h-5 w-5"
+                            />
+                        </Tooltip>
+                    )}
+                    <Link href={`/users/${id}`} style={usernameStyle} title={userLevelName || ''}>
+                        {username}
+                    </Link>
+                    {userTitle && <span className="text-gray-500 text-sm">[{userTitle}]</span>}
+                </>
+            )}
         </span>
     );
 };
