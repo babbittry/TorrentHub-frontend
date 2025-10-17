@@ -3,7 +3,7 @@
 import React from 'react';
 import { MdEditor, ToolbarNames, config } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from 'next-themes';
 import { useLocale } from 'next-intl';
 
 import FR_FR from '@vavt/cm-extension/dist/locale/fr-FR';
@@ -45,7 +45,7 @@ export default function RichEditor({
     isDisabled = false,
     onBlur,
 }: RichEditorProps) {
-    const { currentMode } = useTheme();
+    const { resolvedTheme } = useTheme();
     const locale = useLocale();
 
     const toolbarsToExclude: ToolbarNames[] = [
@@ -78,7 +78,7 @@ export default function RichEditor({
                 <MdEditor
                     modelValue={value}
                     onChange={onChange}
-                    theme={currentMode === 'dark' ? 'dark' : 'light'}
+                    theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
                     language={editorLanguage}
                     placeholder={placeholder}
                     style={{ height: `${height}px` }}

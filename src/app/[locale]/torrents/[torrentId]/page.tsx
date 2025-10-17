@@ -206,15 +206,6 @@ export default function TorrentDetailPage() {
             <Card>
                 <CardHeader><h2 className="text-2xl font-bold text-foreground">{t('common.comments')}</h2></CardHeader>
                 <CardBody>
-                    {/* 顶级评论编辑器 */}
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold mb-3">{t('reply.write_comment')}</h3>
-                        <ReplyEditor
-                            onSubmit={handleSubmitTopLevelComment}
-                            placeholder={t('reply.write_comment_placeholder')}
-                        />
-                    </div>
-
                     {/* 评论列表 */}
                     <TorrentCommentTree
                         comments={torrentComments}
@@ -237,6 +228,16 @@ export default function TorrentDetailPage() {
                     )}
                 </CardBody>
             </Card>
+
+            {/* 顶级评论编辑器 */}
+            <div className="mt-8">
+                <h2 className="text-xl font-bold text-foreground mb-4">{t('reply.write_comment')}</h2>
+                <ReplyEditor
+                    onSubmit={handleSubmitTopLevelComment}
+                    placeholder={t('reply.write_comment_placeholder')}
+                    maxLength={500}
+                />
+            </div>
 
             {selectedCommentForTip && selectedCommentForTip.user && (
                 <TipModal

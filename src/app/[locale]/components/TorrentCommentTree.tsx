@@ -95,7 +95,7 @@ export default function TorrentCommentTree({
 			<div
 				key={comment.id}
 				id={`comment-${comment.id}`}
-				className="border-b border-gray-200 last:border-b-0 py-4 hover:bg-gray-50 transition-colors"
+				className="border-b border-gray-200 dark:border-gray-700 last:border-b-0 py-4"
 			>
 				{/* 评论主体 */}
 				<div className="flex items-start gap-4">
@@ -126,29 +126,33 @@ export default function TorrentCommentTree({
 
 						{/* 引用信息 */}
 						{parentComment && comment.replyToUser && (
-							<div className="mb-3 bg-blue-50 border-l-4 border-blue-400 rounded-r overflow-hidden">
+							<div className="mb-3 bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-500 rounded-r overflow-hidden">
 								<div className="px-3 py-2">
 									<div className="flex items-center justify-between mb-1">
-										<div className="flex items-center gap-1.5 text-sm text-blue-600">
+										<div className="flex items-center gap-1.5 text-sm text-blue-600 dark:text-blue-300">
 											<FontAwesomeIcon icon={faQuoteLeft} className="w-3 h-3" />
 											<span>
 												{t('quote')} #{parentComment.floor} @{comment.replyToUser.username}
 											</span>
 										</div>
-										{parentComment.text.split('\n').length > 3 && (
+										{parentComment.text.length > 150 && (
 											<button
 												onClick={() => toggleQuote(comment.id)}
-												className="text-xs text-blue-600 hover:text-blue-800"
+												className="text-xs text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 flex-shrink-0"
 											>
 												{isQuoteExpanded ? t('collapse') : t('expand')}
 											</button>
 										)}
 									</div>
 									<div
-										className={`text-sm text-gray-600 italic ${!isQuoteExpanded && parentComment.text.split('\n').length > 3
-												? 'line-clamp-3'
-												: ''
-											}`}
+										className="text-sm text-gray-600 dark:text-gray-300 italic"
+										style={{
+											maxHeight: !isQuoteExpanded && parentComment.text.length > 150 ? '4.5em' : 'none',
+											overflow: 'hidden',
+											display: '-webkit-box',
+											WebkitLineClamp: !isQuoteExpanded && parentComment.text.length > 150 ? 3 : 'unset',
+											WebkitBoxOrient: 'vertical',
+										}}
 									>
 										{parentComment.text}
 									</div>
@@ -196,6 +200,7 @@ export default function TorrentCommentTree({
 							onCancel={handleCancelReply}
 							parentId={comment.id}
 							replyToUser={comment.user}
+							maxLength={500}
 						/>
 					</div>
 				)}

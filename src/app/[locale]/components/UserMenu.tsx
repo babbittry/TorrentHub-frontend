@@ -50,9 +50,9 @@ export default function UserMenu() {
             onMouseLeave={handleMouseLeave}
         >
             <Link href={`/users/${user.id}`}>
-                <div className="w-10 h-10 rounded-full overflow-hidden cursor-pointer bg-gray-200">
+                <div className="w-10 h-10 rounded-full overflow-hidden cursor-pointer bg-gray-200 dark:bg-gray-700">
                     <Image
-                        src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/logo-black.png'}
+                        src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/default-avatar.svg'}
                         alt="User Avatar"
                         width={40}
                         height={40}
@@ -65,9 +65,9 @@ export default function UserMenu() {
                 <div className="absolute right-0 mt-2 w-72 bg-[var(--color-card-background)] rounded-lg shadow-lg p-4 z-50 border border-[var(--color-border)]">
                     <Link href={`/users/${user.id}`}>
                         <div className="flex items-center mb-4">
-                            <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0 bg-gray-300">
+                            <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0 bg-gray-300 dark:bg-gray-600">
                                 <Image
-                                    src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/logo-black.png'}
+                                    src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/default-avatar.svg'}
                                     alt="User Avatar"
                                     width={64}
                                     height={64}

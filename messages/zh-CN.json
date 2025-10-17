@@ -94,7 +94,7 @@
         "toggle": "切换主题: 当前",
         "light": "亮色",
         "dark": "暗色",
-        "auto": "自动"
+        "system": "跟随系统"
     },
     "categories": {
         "Movie": "电影",
@@ -261,7 +261,8 @@
         "your_reply": "你的回复",
         "error_permission_denied": "你没有权限在此分区发帖。",
         "title_placeholder": "请输入标题",
-        "content_placeholder": "请输入内容"
+        "content_placeholder": "请输入内容",
+        "write_reply_placeholder": "写下你的想法，保持友善。"
     },
     "forum_categories": {
         "Announcement": "公告区",
@@ -752,7 +753,7 @@
         "no_comments": "暂无评论",
         "comment_required": "评论内容不能为空",
         "comment_too_long": "评论内容不能超过{{max}}字符",
-        "write_comment": "写一条评论...",
+        "write_comment": "写一条评论",
         "write_comment_placeholder": "分享你的想法...",
         "submit": "提交",
         "cancel": "取消",

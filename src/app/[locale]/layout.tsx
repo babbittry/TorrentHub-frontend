@@ -1,8 +1,6 @@
 import LayoutContent from '@/app/[locale]/components/LayoutContent';
 import type {Metadata} from "next";
 import "./globals.css";
-import {AuthProvider} from "@/context/AuthContext";
-import {ThemeProvider} from "@/context/ThemeContext";
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
@@ -33,18 +31,14 @@ export default async function RootLayout({
     }
 
     return (
-        <html lang={locale}>
+        <html lang={locale} suppressHydrationWarning>
         <body
             className={`antialiased flex flex-col min-h-screen`}
         >
         <Providers>
-            <AuthProvider>
-                <ThemeProvider>
-                    <NextIntlClientProvider locale={locale} messages={messages}>
-                        <LayoutContent>{children}</LayoutContent>
-                    </NextIntlClientProvider>
-                </ThemeProvider>
-            </AuthProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+                <LayoutContent>{children}</LayoutContent>
+            </NextIntlClientProvider>
         </Providers>
         </body>
         </html>

@@ -12,6 +12,7 @@ interface ReplyEditorProps {
     onCancel?: () => void;
     isSubmitting?: boolean;
     placeholder?: string;
+    maxLength?: number;
 }
 
 export default function ReplyEditor({
@@ -21,6 +22,7 @@ export default function ReplyEditor({
     onCancel,
     isSubmitting = false,
     placeholder,
+    maxLength = 1000,
 }: ReplyEditorProps) {
     const t = useTranslations('reply');
     const [content, setContent] = useState('');
@@ -35,8 +37,8 @@ export default function ReplyEditor({
             return;
         }
 
-        if (content.length > 1000) {
-            setError(t('comment_too_long', { max: 1000 }));
+        if (content.length > maxLength) {
+            setError(t('comment_too_long', { max: maxLength }));
             return;
         }
 
@@ -53,9 +55,9 @@ export default function ReplyEditor({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <form onSubmit={handleSubmit} className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
             {replyToUser && (
-                <div className="text-sm font-medium text-blue-600 mb-2">
+                <div className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">
                     {t('replying_to')} @{replyToUser.username}
                 </div>
             )}
@@ -66,7 +68,7 @@ export default function ReplyEditor({
                     onChange={setContent}
                     placeholder={placeholder || t('write_comment')}
                     height={200}
-                    maxLength={1000}
+                    maxLength={maxLength}
                     isDisabled={isSubmitting}
                 />
                 {error && (
@@ -80,7 +82,7 @@ export default function ReplyEditor({
                         type="button"
                         onClick={onCancel}
                         disabled={isSubmitting}
-                        className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                        className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 transition-colors"
                     >
                         {t('cancel')}
                     </button>

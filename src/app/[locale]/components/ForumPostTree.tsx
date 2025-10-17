@@ -94,7 +94,7 @@ export default function ForumPostTree({
             <div
                 key={post.id}
                 id={`post-${post.id}`}
-                className="border-b border-gray-200 last:border-b-0 py-4 hover:bg-gray-50 transition-colors"
+                className="border-b border-gray-200 dark:border-gray-700 last:border-b-0 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
                 {/* 帖子主体 */}
                 <div className="flex items-start gap-4">
@@ -113,9 +113,9 @@ export default function ForumPostTree({
                                 {post.author && (
                                     <UserDisplay user={post.author} />
                                 )}
-                                <span className="text-sm font-semibold text-gray-600">#{post.floor}</span>
+                                <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">#{post.floor}</span>
                             </div>
-                            <span className="text-xs text-gray-400 flex-shrink-0">
+                            <span className="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">
                                 {formatDistanceToNow(new Date(post.createdAt), {
                                     addSuffix: true,
                                     locale: dateLocales[locale],
@@ -125,29 +125,33 @@ export default function ForumPostTree({
 
                         {/* 引用信息 */}
                         {parentPost && post.replyToUser && (
-                            <div className="mb-3 bg-blue-50 border-l-4 border-blue-400 rounded-r overflow-hidden">
+                            <div className="mb-3 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-500 rounded-r overflow-hidden">
                                 <div className="px-3 py-2">
                                     <div className="flex items-center justify-between mb-1">
-                                        <div className="flex items-center gap-1.5 text-sm text-blue-600">
+                                        <div className="flex items-center gap-1.5 text-sm text-blue-600 dark:text-blue-400">
                                             <FontAwesomeIcon icon={faQuoteLeft} className="w-3 h-3" />
                                             <span>
                                                 {t('quote')} #{parentPost.floor} @{post.replyToUser.username}
                                             </span>
                                         </div>
-                                        {parentPost.content.split('\n').length > 3 && (
+                                        {parentPost.content.length > 150 && (
                                             <button
                                                 onClick={() => toggleQuote(post.id)}
-                                                className="text-xs text-blue-600 hover:text-blue-800"
+                                                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex-shrink-0"
                                             >
                                                 {isQuoteExpanded ? t('collapse') : t('expand')}
                                             </button>
                                         )}
                                     </div>
                                     <div
-                                        className={`text-sm text-gray-600 italic ${!isQuoteExpanded && parentPost.content.split('\n').length > 3
-                                                ? 'line-clamp-3'
-                                                : ''
-                                            }`}
+                                        className="text-sm text-gray-600 dark:text-gray-400 italic"
+                                        style={{
+                                            maxHeight: !isQuoteExpanded && parentPost.content.length > 150 ? '4.5em' : 'none',
+                                            overflow: 'hidden',
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: !isQuoteExpanded && parentPost.content.length > 150 ? 3 : 'unset',
+                                            WebkitBoxOrient: 'vertical',
+                                        }}
                                     >
                                         <MarkdownRenderer content={parentPost.content} />
                                     </div>
@@ -156,7 +160,7 @@ export default function ForumPostTree({
                         )}
 
                         {/* 帖子内容 */}
-                        <div className="text-gray-800 mb-3 break-words">
+                        <div className="text-gray-800 dark:text-gray-200 mb-3 break-words">
                             <MarkdownRenderer content={post.content} />
                         </div>
 
@@ -164,7 +168,7 @@ export default function ForumPostTree({
                         <div className="flex items-center justify-end gap-3">
                             <button
                                 onClick={() => handleReplyClick(post)}
-                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors"
+                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
                             >
                                 <FontAwesomeIcon icon={faReply} className="w-3.5 h-3.5" />
                                 <span>{t('reply')}</span>
@@ -174,7 +178,7 @@ export default function ForumPostTree({
                                 <button
                                     onClick={() => onDelete(post.id)}
                                     disabled={isDeleting}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors disabled:opacity-50"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors disabled:opacity-50"
                                 >
                                     <FontAwesomeIcon icon={faTrash} className="w-3.5 h-3.5" />
                                     <span>{isDeleting ? t('deleting') : t('delete')}</span>
@@ -205,12 +209,12 @@ export default function ForumPostTree({
     return (
         <div className="space-y-0">
             {sortedPosts.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                     {t('no_posts')}
                 </div>
             ) : (
                 <>
-                    <div className="divide-y divide-gray-200">
+                    <div className="divide-y divide-gray-200 dark:divide-gray-700">
                         {sortedPosts.map((post) => renderPost(post))}
                     </div>
                     {hasMore && onLoadMore && (
@@ -218,7 +222,7 @@ export default function ForumPostTree({
                             <button
                                 onClick={onLoadMore}
                                 disabled={isLoading}
-                                className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 rounded-md transition-colors font-medium text-gray-700"
+                                className="w-full py-3 px-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 rounded-md transition-colors font-medium text-gray-700 dark:text-gray-200"
                             >
                                 {isLoading ? t('loading') : t('load_more')}
                             </button>

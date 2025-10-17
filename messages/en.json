@@ -94,7 +94,7 @@
         "toggle": "Toggle Theme: Current",
         "light": "Light",
         "dark": "Dark",
-        "auto": "Auto"
+        "system": "System"
     },
     "categories": {
         "Movie": "Movie",
@@ -261,7 +261,8 @@
         "your_reply": "Your Reply",
         "error_permission_denied": "You do not have permission to post in this category.",
         "title_placeholder": "Please enter a title",
-        "content_placeholder": "Please enter the content"
+        "content_placeholder": "Please enter the content",
+        "write_reply_placeholder": "Share your thoughts, be kind."
     },
     "forum_categories": {
         "Announcement": "Announcements",
@@ -734,7 +735,7 @@
         "no_comments": "No comments yet",
         "comment_required": "Comment cannot be empty",
         "comment_too_long": "Comment cannot exceed {{max}} characters",
-        "write_comment": "Write a comment...",
+        "write_comment": "Write a comment",
         "write_comment_placeholder": "Share your thoughts...",
         "submit": "Submit",
         "cancel": "Cancel",

@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 import api, { auth as authApi } from '@/lib/api'; // Import authApi
 import { useEffect } from 'react';
 import { ToastProvider } from "@heroui/toast";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 let isRefreshing = false;
 // The queue now holds callbacks that expect an error or a token
@@ -82,13 +83,21 @@ const AppWithInterceptors = ({ children }: { children: React.ReactNode }) => {
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <HeroUIProvider>
-            <ToastProvider />
-            <AuthProvider>
-                <AppWithInterceptors>
-                    {children}
-                </AppWithInterceptors>
-            </AuthProvider>
-        </HeroUIProvider>
+        <NextThemesProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem={true}
+            storageKey="torrenthub-theme"
+            disableTransitionOnChange={false}
+        >
+            <HeroUIProvider>
+                <ToastProvider />
+                <AuthProvider>
+                    <AppWithInterceptors>
+                        {children}
+                    </AppWithInterceptors>
+                </AuthProvider>
+            </HeroUIProvider>
+        </NextThemesProvider>
     )
 }

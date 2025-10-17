@@ -5,8 +5,8 @@ export default function Footer() {
     const t = useTranslations();
 
     return (
-        <footer className="bg-[var(--color-card-background)] text-[var(--color-foreground)] p-4 mt-8 shadow-inner">
-            <div className="container mx-auto text-[var(--color-text-muted)]">
+        <footer className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 p-4 mt-8 shadow-inner">
+            <div className="container mx-auto text-slate-500 dark:text-slate-400">
                 <div className="flex justify-between items-center">
                     <div className="text-left">
                         <SiteStats mode="simple" />

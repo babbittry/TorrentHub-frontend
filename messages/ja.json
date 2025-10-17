@@ -94,7 +94,7 @@
         "toggle": "テーマ切り替え: 現在",
         "light": "ライト",
         "dark": "ダーク",
-        "auto": "自動"
+        "system": "システム"
     },
     "categories": {
         "Movie": "映画",
@@ -261,7 +261,8 @@
         "your_reply": "あなたの返信",
         "error_permission_denied": "このカテゴリに投稿する権限がありません。",
         "title_placeholder": "Please enter a title",
-        "content_placeholder": "Please enter the content"
+        "content_placeholder": "Please enter the content",
+        "write_reply_placeholder": "あなたの考えを共有し、親切に。"
     },
     "forum_categories": {
         "Announcement": "お知らせ",
@@ -734,7 +735,7 @@
         "no_comments": "コメントはまだありません",
         "comment_required": "コメントは空にできません",
         "comment_too_long": "コメントは{{max}}文字を超えることはできません",
-        "write_comment": "コメントを書く...",
+        "write_comment": "コメントを書く",
         "write_comment_placeholder": "あなたの考えを共有してください...",
         "submit": "送信",
         "cancel": "キャンセル",

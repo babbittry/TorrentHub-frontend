@@ -94,7 +94,7 @@
         "toggle": "Basculer le thème: Actuel",
         "light": "Clair",
         "dark": "Sombre",
-        "auto": "Auto"
+        "system": "Système"
     },
     "categories": {
         "Movie": "Film",
@@ -261,7 +261,8 @@
         "your_reply": "Votre réponse",
         "error_permission_denied": "Vous n'avez pas la permission de poster dans cette catégorie.",
         "title_placeholder": "Please enter a title",
-        "content_placeholder": "Please enter the content"
+        "content_placeholder": "Please enter the content",
+        "write_reply_placeholder": "Partagez vos pensées, soyez gentil."
     },
     "forum_categories": {
         "Announcement": "Annonces",
@@ -734,7 +735,7 @@
         "no_comments": "Aucun commentaire",
         "comment_required": "Le commentaire ne peut pas être vide",
         "comment_too_long": "Le commentaire ne peut pas dépasser {{max}} caractères",
-        "write_comment": "Écrire un commentaire...",
+        "write_comment": "Écrire un commentaire",
         "write_comment_placeholder": "Partagez vos pensées...",
         "submit": "Soumettre",
         "cancel": "Annuler",

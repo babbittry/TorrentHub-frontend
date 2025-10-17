@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from '@/context/AuthContext';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -12,7 +12,7 @@ import { users, UserRole } from '@/lib/api';
 
 export default function Header() {
     const { isAuthenticated, user } = useAuth();
-    const { theme, setTheme, currentMode } = useTheme();
+    const { theme, setTheme, resolvedTheme } = useTheme();
     const t = useTranslations();
     const router = useRouter();
     const pathname = usePathname();
@@ -21,8 +21,10 @@ export default function Header() {
     const [buttonTitle, setButtonTitle] = useState('');
 
     useEffect(() => {
-        setButtonTitle(`${t('theme.toggle')} ${t('theme.' + theme)} (${t('theme.' + currentMode)})`);
-    }, [theme, currentMode, t]);
+        if (resolvedTheme) {
+            setButtonTitle(`${t('theme.toggle')} ${t('theme.' + theme)} (${t('theme.' + resolvedTheme)})`);
+        }
+    }, [theme, resolvedTheme, t]);
 
     useEffect(() => {
         setIsClient(true);
@@ -32,7 +34,7 @@ export default function Header() {
         if (theme === 'light') {
             setTheme('dark');
         } else if (theme === 'dark') {
-            setTheme('auto');
+            setTheme('system');
         } else {
             setTheme('light');
         }
@@ -54,66 +56,66 @@ export default function Header() {
     };
 
     return (
-        <header className="bg-[var(--color-card-background)] text-[var(--color-foreground)] p-4 shadow-lg">
+        <header className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 p-4 shadow-lg">
             <nav className="container mx-auto flex justify-between items-center">
                 <Link href="/" className="flex items-center">
                     {!isClient ? (
                         <div style={{ width: 128, height: 32 }} /> // Placeholder with size
-                    ) : currentMode === 'light' ? (
-                        <Image src="/logo-white.png" alt="Logo" width={115} height={32} />
-                    ) : (
+                    ) : resolvedTheme === 'light' ? (
                         <Image src="/logo-black.png" alt="Logo" width={128} height={32} />
+                    ) : (
+                        <Image src="/logo-white.png" alt="Logo" width={115} height={32} />
                     )}
                 </Link>
                 <ul className="flex space-x-6">
                     <li>
-                        <Link href="/" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                        <Link href="/" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.home')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/torrents" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                        <Link href="/torrents" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.torrents')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/forums" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                        <Link href="/forums" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.forums')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/requests" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                        <Link href="/requests" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.requests')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/polls" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                        <Link href="/polls" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.polls')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/user" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                        <Link href="/user" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.user_center')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/messages" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                        <Link href="/messages" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.messages')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/store" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                        <Link href="/store" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.store')}
                         </Link>
                     </li>
                     <li>
-                        <Link href="/about" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                        <Link href="/about" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.about')}
                         </Link>
                     </li>
                     {user?.role === UserRole.Administrator && (
                         <li>
-                            <Link href="/admin/dashboard" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-primary-hover)] transition-colors duration-200">
+                            <Link href="/admin/dashboard" target="_blank" rel="noopener noreferrer" className="hover:text-primary-500 transition-colors duration-200">
                                 {t('header.admin_dashboard')}
                             </Link>
                         </li>
@@ -123,7 +125,7 @@ export default function Header() {
                     <select
                         onChange={(e) => changeLanguage(e.target.value)}
                         value={pathname.split('/')[1]}
-                        className="input-field bg-[var(--color-input-background)] border-[var(--color-input-border)] text-[var(--color-foreground)]"
+                        className="input-field bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200"
                     >
                         <option value="en">English</option>
                         <option value="zh-CN">中文</option>
@@ -133,7 +135,7 @@ export default function Header() {
 
                     <button
                         onClick={toggleTheme}
-                        className="p-2 rounded-full bg-[var(--color-border)] hover:bg-[var(--color-secondary)] transition-colors duration-200"
+                        className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
                         title={buttonTitle}
                     >
                         {!isClient ? (

@@ -170,17 +170,6 @@ const TopicDetailPage = () => {
 
             <Card className="mt-8">
                 <CardBody>
-                    {replyTarget && (
-                        <div className="mb-6 p-4 border border-gray-200 rounded-lg">
-                            <ReplyEditor
-                                onSubmit={handleSubmitReply}
-                                onCancel={() => setReplyTarget(null)}
-                                parentId={replyTarget.parentId}
-                                replyToUser={replyTarget.user}
-                            />
-                        </div>
-                    )}
-
                     <ForumPostTree
                         posts={posts}
                         onReply={handleReplyClick}
@@ -203,19 +192,14 @@ const TopicDetailPage = () => {
                 </CardBody>
             </Card>
 
-            <Card className="mt-8">
-                <CardHeader>
-                    <h2 className="text-xl font-bold text-foreground">{t('post_a_reply')}</h2>
-                </CardHeader>
-                <CardBody>
-                    <div className="mb-8">
-                        <ReplyEditor
-                            onSubmit={handleSubmitTopLevelPost}
-                            onCancel={() => {}}
-                        />
-                    </div>
-                </CardBody>
-            </Card>
+            {/* 编辑器 */}
+            <div className="mt-8">
+                <h2 className="text-xl font-bold text-foreground mb-4">{t('post_a_reply')}</h2>
+                <ReplyEditor
+                    onSubmit={handleSubmitTopLevelPost}
+                    placeholder={t('write_reply_placeholder')}
+                />
+            </div>
         </div>
     );
 };

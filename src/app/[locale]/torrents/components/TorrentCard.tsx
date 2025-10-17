@@ -5,6 +5,7 @@ import type { TorrentDto } from '@/lib/api';
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Image } from "@heroui/image";
 import { Chip } from "@heroui/chip";
+import { useTheme } from 'next-themes';
 
 interface TorrentCardProps {
     torrent: TorrentDto;
@@ -13,9 +14,11 @@ interface TorrentCardProps {
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 export default function TorrentCard({ torrent }: TorrentCardProps) {
+    const { resolvedTheme } = useTheme();
+    const fallbackImage = resolvedTheme === 'dark' ? '/logo-white.png' : '/logo-black.png';
     const posterUrl = torrent.posterPath
         ? `${TMDB_IMAGE_BASE_URL}${torrent.posterPath}`
-        : '/logo-black.png'; // A fallback image
+        : fallbackImage;
 
     return (
         <Link href={`/torrents/${torrent.id}`} className="block">
