@@ -8,7 +8,7 @@ import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 import UserDisplay from '@/app/[locale]/components/UserDisplay';
-import CommentTree from '@/app/[locale]/components/CommentTree';
+import ForumPostTree from '@/app/[locale]/components/ForumPostTree';
 import ReplyEditor from '@/app/[locale]/components/ReplyEditor';
 
 const TopicDetailPage = () => {
@@ -19,7 +19,7 @@ const TopicDetailPage = () => {
     const [posts, setPosts] = useState<ForumPostDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [lastFloor, setLastFloor] = useState<number>(0);
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loadingMore, setLoadingMore] = useState<boolean>(false);
     const [replyTarget, setReplyTarget] = useState<{ parentId: number; user: ForumPostDto['author'] } | null>(null);
@@ -36,7 +36,7 @@ const TopicDetailPage = () => {
         try {
             setIsLoading(true);
             const [topicData, categoriesData] = await Promise.all([
-                forum.getTopicById(topicId, 0, 30),
+                forum.getTopicById(topicId, 1, 30),
                 forum.getCategories()
             ]);
             setTopic(topicData);
@@ -45,8 +45,8 @@ const TopicDetailPage = () => {
             // Extract posts from topic response
             const postsList = topicData.posts?.items || [];
             setPosts(postsList);
-            setHasMore(postsList.length >= 30);
-            setLastFloor(postsList[postsList.length - 1]?.floor || 0);
+            setHasMore(topicData.posts.page < topicData.posts.totalPages);
+            setCurrentPage(topicData.posts.page);
         } catch (err) {
             setError(t('error_loading_topic_details'));
             console.error(err);
@@ -85,10 +85,12 @@ const TopicDetailPage = () => {
         
         setLoadingMore(true);
         try {
-            const response = await forum.getTopicPosts(topicId, lastFloor, 30);
-            setPosts(prev => [...prev, ...response.posts]);
-            setHasMore(response.hasMore);
-            setLastFloor(response.posts[response.posts.length - 1]?.floor || lastFloor);
+            const nextPage = currentPage + 1;
+            const response = await forum.getTopicPosts(topicId, nextPage, 30);
+            const newPosts = response.items || [];
+            setPosts(prev => [...prev, ...newPosts]);
+            setHasMore(response.page < response.totalPages);
+            setCurrentPage(response.page);
         } catch (err) {
             setError(t('error_loading_topic_details'));
             console.error(err);
@@ -154,7 +156,7 @@ const TopicDetailPage = () => {
 
     return (
         <div className="container mx-auto p-4 sm:p-6">
-            <Breadcrumbs className="mb-4">
+            <Breadcrumbs className="mb-4 text-foreground">
                 <BreadcrumbItem href="/forums">{t_header('forums')}</BreadcrumbItem>
                 {categoryForBreadcrumb && (
                     <BreadcrumbItem href={`/forums/category/${categoryForBreadcrumb.id}`}>
@@ -167,17 +169,7 @@ const TopicDetailPage = () => {
             <h1 className="text-3xl font-bold text-foreground mb-6">{topic.title}</h1>
 
             <Card className="mt-8">
-                <CardHeader>
-                    <h2 className="text-xl font-bold">{t('post_a_reply')}</h2>
-                </CardHeader>
                 <CardBody>
-                    <div className="mb-8">
-                        <ReplyEditor
-                            onSubmit={handleSubmitTopLevelPost}
-                            onCancel={() => {}}
-                        />
-                    </div>
-                    
                     {replyTarget && (
                         <div className="mb-6 p-4 border border-gray-200 rounded-lg">
                             <ReplyEditor
@@ -189,10 +181,11 @@ const TopicDetailPage = () => {
                         </div>
                     )}
 
-                    <CommentTree
-                        comments={posts as unknown as CommentDto[]}
+                    <ForumPostTree
+                        posts={posts}
                         onReply={handleReplyClick}
                         onDelete={handleDeletePost}
+                        onSubmitReply={handleSubmitReply}
                     />
                     
                     {hasMore && (
@@ -207,6 +200,20 @@ const TopicDetailPage = () => {
                             </Button>
                         </div>
                     )}
+                </CardBody>
+            </Card>
+
+            <Card className="mt-8">
+                <CardHeader>
+                    <h2 className="text-xl font-bold text-foreground">{t('post_a_reply')}</h2>
+                </CardHeader>
+                <CardBody>
+                    <div className="mb-8">
+                        <ReplyEditor
+                            onSubmit={handleSubmitTopLevelPost}
+                            onCancel={() => {}}
+                        />
+                    </div>
                 </CardBody>
             </Card>
         </div>

@@ -12,7 +12,7 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from 
 import { Link as UILink } from "@heroui/link";
 import UserDisplay from "@/app/[locale]/components/UserDisplay";
 import TipModal from "@/app/[locale]/components/TipModal";
-import CommentTree from "@/app/[locale]/components/CommentTree";
+import TorrentCommentTree from "@/app/[locale]/components/TorrentCommentTree";
 import ReplyEditor from "@/app/[locale]/components/ReplyEditor";
 
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -216,7 +216,7 @@ export default function TorrentDetailPage() {
                     </div>
 
                     {/* 评论列表 */}
-                    <CommentTree
+                    <TorrentCommentTree
                         comments={torrentComments}
                         onReply={handleReplyClick}
                         onDelete={handleDeleteComment}

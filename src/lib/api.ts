@@ -205,6 +205,7 @@ export interface PaginatedResult<T> {
     totalItems: number;
     page: number;
     pageSize: number;
+    totalPages: number;
 }
 
 // DTOs for Announcement related operations
@@ -416,12 +417,7 @@ export interface ForumPostDto {
     replyCount: number;
 }
 
-export interface ForumPostListResponse {
-    posts: ForumPostDto[];
-    hasMore: boolean;
-    totalCount: number;
-    loadedCount: number;
-}
+export type ForumPostListResponse = PaginatedResult<ForumPostDto>;
 
 export interface ForumTopicDetailDto {
     id: number;
@@ -842,10 +838,10 @@ export const forum = {
         const response = await api.get(`/api/forum/topics/${topicId}?${params.toString()}`);
         return response.data;
     },
-    getTopicPosts: async (topicId: number, afterFloor: number = 0, limit: number = 30): Promise<ForumPostListResponse> => {
+    getTopicPosts: async (topicId: number, page: number = 1, pageSize: number = 30): Promise<ForumPostListResponse> => {
         const params = new URLSearchParams({
-            afterFloor: afterFloor.toString(),
-            limit: limit.toString(),
+            page: page.toString(),
+            pageSize: pageSize.toString(),
         });
         const response = await api.get(`/api/forum/topics/${topicId}/posts?${params.toString()}`);
         return response.data;

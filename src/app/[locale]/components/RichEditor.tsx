@@ -1,10 +1,22 @@
 'use client';
 
 import React from 'react';
-import { MdEditor } from 'md-editor-rt';
+import { MdEditor, ToolbarNames, config } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { useTheme } from '@/context/ThemeContext';
 import { useLocale } from 'next-intl';
+
+import FR_FR from '@vavt/cm-extension/dist/locale/fr-FR';
+import JA_JP from '@vavt/cm-extension/dist/locale/jp-JP';
+
+config({
+    editorConfig: {
+        languageUserDefined: {
+            'fr-FR': FR_FR,
+            'ja-JP': JA_JP,
+        }
+    }
+});
 
 export interface RichEditorProps {
     value: string;
@@ -36,6 +48,24 @@ export default function RichEditor({
     const { currentMode } = useTheme();
     const locale = useLocale();
 
+    const toolbarsToExclude: ToolbarNames[] = [
+        'mermaid',
+        'katex',
+        'save',
+        'fullscreen',
+        'htmlPreview',
+        'github',
+    ];
+
+    const languageMap: { [key: string]: string } = {
+        en: 'en-US',
+        'zh-CN': 'zh-CN',
+        fr: 'fr-FR',
+        ja: 'ja-JP',
+    };
+
+    const editorLanguage = languageMap[locale] || 'en-US';
+
     return (
         <div className="w-full">
             {label && labelPlacement === 'outside' && (
@@ -49,11 +79,12 @@ export default function RichEditor({
                     modelValue={value}
                     onChange={onChange}
                     theme={currentMode === 'dark' ? 'dark' : 'light'}
-                    language={locale}
+                    language={editorLanguage}
                     placeholder={placeholder}
                     style={{ height: `${height}px` }}
                     maxLength={maxLength}
                     onBlur={onBlur}
+                    toolbarsExclude={toolbarsToExclude}
                 />
             </div>
             {(description || maxLength) && (
