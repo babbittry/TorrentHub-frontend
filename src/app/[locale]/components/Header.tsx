@@ -20,13 +20,6 @@ export default function Header() {
 
     const [buttonTitle, setButtonTitle] = useState('');
 
-    // Debug logging for unread messages
-    useEffect(() => {
-        console.log('[Header] User object:', user);
-        console.log('[Header] unreadMessagesCount:', user?.unreadMessagesCount);
-        console.log('[Header] typeof unreadMessagesCount:', typeof user?.unreadMessagesCount);
-    }, [user]);
-
     useEffect(() => {
         if (resolvedTheme) {
             setButtonTitle(`${t('theme.toggle')} ${t('theme.' + theme)} (${t('theme.' + resolvedTheme)})`);
@@ -169,17 +162,12 @@ export default function Header() {
                                 href="/messages"
                                 className="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
                                 title={t('header.messages_tooltip')}
-                                onClick={() => {
-                                    console.log('[Header] Messages link clicked');
-                                    console.log('[Header] Current unreadMessagesCount:', user?.unreadMessagesCount);
-                                }}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                                 </svg>
                                 {(() => {
                                     const shouldShow = user?.unreadMessagesCount !== undefined && user.unreadMessagesCount > 0;
-                                    console.log('[Header] Badge render - shouldShow:', shouldShow, 'count:', user?.unreadMessagesCount);
                                     return shouldShow && (
                                         <span className="absolute -top-1 -right-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold leading-none text-white bg-red-600 rounded-full">
                                             {user.unreadMessagesCount > 99 ? '99+' : user.unreadMessagesCount}

@@ -1,6 +1,6 @@
 'use client';
 
-import { ForumPostDto, UserDisplayDto, CreateForumPostDto } from '@/lib/api';
+import { ForumPostDto, UserDisplayDto, CreateForumPostDto, COMMENT_TYPE } from '@/lib/api';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN, enUS, fr, ja } from 'date-fns/locale';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ import { Link } from '@/i18n/navigation';
 import UserDisplay from './UserDisplay';
 import ReplyEditor from './ReplyEditor';
 import MarkdownRenderer from './MarkdownRenderer';
+import CommentReactionBar from './CommentReactionBar';
 
 interface ForumPostTreeProps {
     posts: ForumPostDto[];
@@ -163,6 +164,17 @@ export default function ForumPostTree({
                         <div className="text-gray-800 dark:text-gray-200 mb-3 break-words">
                             <MarkdownRenderer content={post.content} />
                         </div>
+
+                        {/* 表情反应栏 */}
+                        {post.reactions && (
+                            <div className="mb-3">
+                                <CommentReactionBar
+                                    commentType={COMMENT_TYPE.FORUM_POST}
+                                    commentId={post.id}
+                                    initialReactions={post.reactions}
+                                />
+                            </div>
+                        )}
 
                         {/* 操作按钮区 */}
                         <div className="flex items-center justify-end gap-3">

@@ -242,6 +242,7 @@ export interface CommentDto {
     replyToUser?: UserDisplayDto | null;
     depth: number;
     replyCount: number;
+    reactions?: CommentReactionsDto; // 新增：表情反应数据
 }
 
 export interface CommentListResponse {
@@ -416,6 +417,7 @@ export interface ForumPostDto {
     replyToUser?: UserDisplayDto | null;
     depth: number;
     replyCount: number;
+    reactions?: CommentReactionsDto; // 新增：表情反应数据
 }
 
 export type ForumPostListResponse = PaginatedResult<ForumPostDto>;
@@ -583,6 +585,50 @@ export interface TipCoinsRequestDto {
     amount: number;
     contextType: 'Torrent' | 'Comment' | 'ForumPost';
     contextId: number;
+}
+
+// DTOs for Reaction related operations
+// CommentType 常量
+export const COMMENT_TYPE = {
+    TORRENT_COMMENT: 'TorrentComment',
+    FORUM_POST: 'ForumPost',
+} as const;
+
+export type CommentType = typeof COMMENT_TYPE[keyof typeof COMMENT_TYPE];
+
+// 表情类型枚举（与后端保持一致：数字枚举）
+export enum ReactionType {
+    ThumbsUp = "ThumbsUp",
+    ThumbsDown = "ThumbsDown",
+    Heart = "Heart",
+    Celebration = "Celebration",
+    Thinking = "Thinking",
+    Laugh = "Laugh",
+    Eyes = "Eyes"
+}
+
+// 单个表情反应的汇总
+export interface ReactionSummaryDto {
+    type: ReactionType;
+    count: number;
+    viewerReacted: boolean;
+    users: UserDisplayDto[];  // 单个接口最多10个，批量接口为空数组
+}
+
+// 评论的所有反应
+export interface CommentReactionsDto {
+    totalCount: number;
+    reactions: ReactionSummaryDto[];
+}
+
+// 添加反应请求
+export interface AddReactionRequestDto {
+    type: ReactionType;
+}
+
+// 批量获取请求
+export interface GetReactionsBatchRequestDto {
+    commentIds: number[];
 }
 
 // For file uploads
@@ -914,6 +960,45 @@ export const coins = {
     tip: async (data: TipCoinsRequestDto): Promise<void> => {
         await api.post('/api/coins/tip', data);
     },
+};
+
+// Reactions API Functions
+export const reactions = {
+    // 添加反应
+    addReaction: async (
+        commentType: CommentType,
+        commentId: number,
+        data: AddReactionRequestDto
+    ): Promise<void> => {
+        await api.post(`/api/${commentType}/${commentId}/reactions`, data);
+    },
+
+    // 移除反应
+    removeReaction: async (
+        commentType: CommentType,
+        commentId: number,
+        type: ReactionType
+    ): Promise<void> => {
+        await api.delete(`/api/${commentType}/${commentId}/reactions/${type}`);
+    },
+
+    // 获取单个评论的反应
+    getReactions: async (
+        commentType: CommentType,
+        commentId: number
+    ): Promise<CommentReactionsDto> => {
+        const response = await api.get(`/api/${commentType}/${commentId}/reactions`);
+        return response.data;
+    },
+
+    // 批量获取反应
+    getReactionsBatch: async (
+        commentType: CommentType,
+        commentIds: number[]
+    ): Promise<Record<number, CommentReactionsDto>> => {
+        const response = await api.post(`/api/${commentType}/reactions/batch`, { commentIds });
+        return response.data;
+    }
 };
 
 // TopPlayers API Functions

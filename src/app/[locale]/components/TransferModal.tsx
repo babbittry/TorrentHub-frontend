@@ -46,7 +46,13 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose, recipien
             }, 2000);
         } catch (err) {
             if (err instanceof AxiosError) {
-                setError(err.response?.data?.message || t('TransferModal.error_generic'));
+                const errorKey = err.response?.data?.message;
+                if (errorKey) {
+                    const translated = t(errorKey);
+                    setError(translated !== errorKey ? translated : t('TransferModal.error_generic'));
+                } else {
+                    setError(t('TransferModal.error_generic'));
+                }
             } else {
                 setError(t('TransferModal.error_generic'));
             }

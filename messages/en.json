@@ -719,6 +719,29 @@
         "error_generic": "Transfer failed. Please try again later.",
         "success_message": "Transfer successful!"
     },
+    "error": {
+        "transfer": {
+            "self": "Cannot transfer coins to yourself",
+            "zeroAmount": "Transfer amount must be greater than 0",
+            "insufficientCoins": "Insufficient coin balance",
+            "unknown": "Transfer failed, please try again later"
+        },
+        "tip": {
+            "self": "Cannot tip yourself",
+            "zeroAmount": "Tip amount must be greater than 0",
+            "insufficientCoins": "Insufficient coin balance",
+            "unknown": "Tip failed, please try again later"
+        },
+        "user": {
+            "notFound": "User not found"
+        }
+    },
+    "transfer": {
+        "success": "Transfer successful!"
+    },
+    "tip": {
+        "success": "Tip successful!"
+    },
     "TipModal": {
         "title": "Tip {username}",
         "amount_label": "Amount",
@@ -749,7 +772,8 @@
         "submit_failed": "Failed to submit, please try again",
         "quote": "Quote",
         "expand": "Expand",
-        "collapse": "Collapse"
+        "collapse": "Collapse",
+        "tip": "Tip"
     },
     "torrentUpload": {
         "title": "Upload Torrent",
@@ -778,5 +802,19 @@
         "error_category_required": "Please select a category",
         "validating": "Validating...",
         "parsing": "Parsing torrent file..."
+    },
+    "reactions": {
+        "thumbs_up": "Thumbs Up",
+        "thumbs_down": "Thumbs Down",
+        "heart": "Heart",
+        "celebration": "Celebration",
+        "thinking": "Thinking",
+        "laugh": "Laugh",
+        "eyes": "Eyes",
+        "add_reaction": "Add reaction",
+        "login_required": "Please login to react",
+        "error_generic": "Operation failed, please try again later",
+        "you_reacted": "You reacted",
+        "users_count": "{count}+ users"
     }
 }

@@ -48,8 +48,12 @@ const TipModal: React.FC<TipModalProps> = ({ isOpen, onClose, recipientId, recip
                 setSuccess(null);
             }, 2000);
         } catch (err) {
-            if (err instanceof AxiosError) {
-                setError(err.response?.data?.message || t('TipModal.error_generic'));
+            if (err instanceof AxiosError && err.response?.data?.message) {
+                // 提取后端返回的错误键
+                const errorKey = err.response.data.message;
+                // 尝试翻译错误键，如果不存在则使用通用错误消息
+                const translatedError = t(errorKey, { defaultValue: t('TipModal.error_generic') });
+                setError(translatedError);
             } else {
                 setError(t('TipModal.error_generic'));
             }

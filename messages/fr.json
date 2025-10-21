@@ -719,6 +719,29 @@
         "error_generic": "Le transfert a échoué. Veuillez réessayer plus tard.",
         "success_message": "Transfert réussi !"
     },
+    "error": {
+        "transfer": {
+            "self": "Impossible de transférer des pièces à vous-même",
+            "zeroAmount": "Le montant du transfert doit être supérieur à 0",
+            "insufficientCoins": "Solde de pièces insuffisant",
+            "unknown": "Le transfert a échoué, veuillez réessayer plus tard"
+        },
+        "tip": {
+            "self": "Impossible de vous donner un pourboire à vous-même",
+            "zeroAmount": "Le montant du pourboire doit être supérieur à 0",
+            "insufficientCoins": "Solde de pièces insuffisant",
+            "unknown": "Le pourboire a échoué, veuillez réessayer plus tard"
+        },
+        "user": {
+            "notFound": "Utilisateur non trouvé"
+        }
+    },
+    "transfer": {
+        "success": "Transfert réussi !"
+    },
+    "tip": {
+        "success": "Pourboire réussi !"
+    },
     "TipModal": {
         "title": "Donner un pourboire à {username}",
         "amount_label": "Montant",
@@ -749,7 +772,8 @@
         "submit_failed": "Échec de la soumission, veuillez réessayer",
         "quote": "Citation",
         "expand": "Développer",
-        "collapse": "Réduire"
+        "collapse": "Réduire",
+        "tip": "Pourboire"
     },
     "torrentUpload": {
         "title": "Télécharger un Torrent",
@@ -778,5 +802,19 @@
         "error_category_required": "Veuillez sélectionner une catégorie",
         "validating": "Validation en cours...",
         "parsing": "Analyse du fichier torrent..."
+    },
+    "reactions": {
+        "thumbs_up": "Pouce levé",
+        "thumbs_down": "Pouce baissé",
+        "heart": "Cœur",
+        "celebration": "Célébration",
+        "thinking": "Réflexion",
+        "laugh": "Rire",
+        "eyes": "Yeux",
+        "add_reaction": "Ajouter une réaction",
+        "login_required": "Veuillez vous connecter pour réagir",
+        "error_generic": "L'opération a échoué, veuillez réessayer plus tard",
+        "you_reacted": "Vous avez réagi",
+        "users_count": "{count}+ utilisateurs"
     }
 }

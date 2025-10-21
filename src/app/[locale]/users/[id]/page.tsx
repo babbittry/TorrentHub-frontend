@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { users as apiUsers, UserPublicProfileDto, TorrentDto, PeerDto, API_BASE_URL } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { Card, CardBody } from "@heroui/card";
 import { User } from "@heroui/user";
 import { Tabs, Tab } from "@heroui/tabs";
@@ -24,6 +25,8 @@ const UserProfilePage = () => {
     const t = useTranslations();
     const { id } = useParams();
     const userId = parseInt(id as string);
+    const { user: currentUser } = useAuth();
+    const isOwnProfile = currentUser?.id === profile?.id;
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -102,9 +105,11 @@ const UserProfilePage = () => {
                             <div className="text-center"><p className="text-sm text-default-500">{t('userProfile.registrationTime')}</p><p className="text-xl font-bold">{isClient ? new Date(profile.createdAt).toLocaleDateString() : '...'}</p></div>
                         </div>
                     </div>
-                    <Button onClick={() => setIsTransferModalOpen(true)}>
-                        {t('userProfile.transfer_coins')}
-                    </Button>
+                    {!isOwnProfile && (
+                        <Button onClick={() => setIsTransferModalOpen(true)}>
+                            {t('userProfile.transfer_coins')}
+                        </Button>
+                    )}
                 </CardBody>
             </Card>
 

@@ -719,6 +719,29 @@
         "error_generic": "送金に失敗しました。後でもう一度お試しください。",
         "success_message": "送金に成功しました！"
     },
+    "error": {
+        "transfer": {
+            "self": "自分自身にコインを送ることはできません",
+            "zeroAmount": "送金額は0より大きくなければなりません",
+            "insufficientCoins": "コイン残高が不足しています",
+            "unknown": "送金に失敗しました。後でもう一度お試しください"
+        },
+        "tip": {
+            "self": "自分自身にチップを渡すことはできません",
+            "zeroAmount": "チップ額は0より大きくなければなりません",
+            "insufficientCoins": "コイン残高が不足しています",
+            "unknown": "チップに失敗しました。後でもう一度お試しください"
+        },
+        "user": {
+            "notFound": "ユーザーが見つかりません"
+        }
+    },
+    "transfer": {
+        "success": "送金に成功しました！"
+    },
+    "tip": {
+        "success": "チップに成功しました！"
+    },
     "TipModal": {
         "title": "{username} にチップを渡す",
         "amount_label": "金額",
@@ -749,7 +772,8 @@
         "submit_failed": "送信に失敗しました。もう一度お試しください",
         "quote": "引用",
         "expand": "展開",
-        "collapse": "折りたたむ"
+        "collapse": "折りたたむ",
+        "tip": "チップ"
     },
     "torrentUpload": {
         "title": "トレントをアップロード",
@@ -778,5 +802,19 @@
         "error_category_required": "カテゴリを選択してください",
         "validating": "検証中...",
         "parsing": "トレントファイルを解析中..."
+    },
+    "reactions": {
+        "thumbs_up": "いいね",
+        "thumbs_down": "よくない",
+        "heart": "ハート",
+        "celebration": "お祝い",
+        "thinking": "考え中",
+        "laugh": "笑",
+        "eyes": "注目",
+        "add_reaction": "リアクションを追加",
+        "login_required": "リアクションするにはログインしてください",
+        "error_generic": "操作に失敗しました。後でもう一度お試しください",
+        "you_reacted": "リアクションしました",
+        "users_count": "{count}+ 人のユーザー"
     }
 }

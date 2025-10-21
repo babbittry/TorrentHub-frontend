@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { torrents, comments, TorrentDto, CommentDto, CreateCommentRequestDto } from "@/lib/api";
 import { useParams } from "next/navigation";
 import { useTranslations } from 'next-intl';
+import { useAuth } from "@/context/AuthContext";
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
@@ -32,9 +33,11 @@ export default function TorrentDetailPage() {
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loadingMore, setLoadingMore] = useState<boolean>(false);
     const [isTipModalOpen, setIsTipModalOpen] = useState(false);
+    const [isTorrentTipModalOpen, setIsTorrentTipModalOpen] = useState(false);
     const [selectedCommentForTip, setSelectedCommentForTip] = useState<CommentDto | null>(null);
     const [replyTarget, setReplyTarget] = useState<{ parentId: number; user: CommentDto['user'] } | null>(null);
     const t = useTranslations();
+    const { user: currentUser } = useAuth();
 
     const handleOpenTipModal = (comment: CommentDto) => {
         setSelectedCommentForTip(comment);
@@ -168,8 +171,17 @@ export default function TorrentDetailPage() {
                                     <p><span className="font-semibold text-default-600">IMDb:</span> <UILink href={`https://www.imdb.com/title/${torrent.imdbId}`} isExternal showAnchorIcon>{torrent.imdbId}</UILink></p>
                                 )}
                             </div>
-                            <div className="mt-auto pt-4">
+                            <div className="mt-auto pt-4 flex gap-3">
                                 <Button color="primary" size="lg">{t('torrentDetailsPage.download_torrent')}</Button>
+                                {currentUser && torrent.uploader && currentUser.id !== torrent.uploader.id && (
+                                    <Button
+                                        color="secondary"
+                                        size="lg"
+                                        onClick={() => setIsTorrentTipModalOpen(true)}
+                                    >
+                                        {t('torrentDetailsPage.tip_user')}
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -247,6 +259,17 @@ export default function TorrentDetailPage() {
                     recipientName={selectedCommentForTip.user.username}
                     contextType="Comment"
                     contextId={selectedCommentForTip.id}
+                />
+            )}
+
+            {torrent && torrent.uploader && (
+                <TipModal
+                    isOpen={isTorrentTipModalOpen}
+                    onClose={() => setIsTorrentTipModalOpen(false)}
+                    recipientId={torrent.uploader.id}
+                    recipientName={torrent.uploader.username}
+                    contextType="Torrent"
+                    contextId={torrent.id}
                 />
             )}
         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { CommentDto, UserDisplayDto } from '@/lib/api';
+import { CommentDto, UserDisplayDto, COMMENT_TYPE } from '@/lib/api';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN, enUS, fr, ja } from 'date-fns/locale';
 import { useState } from 'react';
@@ -12,6 +12,7 @@ import UserDisplay from './UserDisplay';
 import ReplyEditor from './ReplyEditor';
 import { CreateCommentRequestDto } from '@/lib/api';
 import MarkdownRenderer from './MarkdownRenderer';
+import CommentReactionBar from './CommentReactionBar';
 
 interface CommentTreeProps {
 	comments: CommentDto[];
@@ -23,6 +24,7 @@ interface CommentTreeProps {
 	onDelete?: (commentId: number) => void;
 	isDeleting?: boolean;
 	onSubmitReply?: (data: CreateCommentRequestDto) => Promise<void>;
+	// 未来可以添加: onLike?: (commentId: number) => void;
 }
 
 const dateLocales = {
@@ -165,6 +167,17 @@ export default function TorrentCommentTree({
 							<MarkdownRenderer content={comment.text} />
 						</div>
 
+						{/* 表情反应栏 */}
+						{comment.reactions && (
+							<div className="mb-3">
+								<CommentReactionBar
+									commentType={COMMENT_TYPE.TORRENT_COMMENT}
+									commentId={comment.id}
+									initialReactions={comment.reactions}
+								/>
+							</div>
+						)}
+
 						{/* 操作按钮区 */}
 						<div className="flex items-center justify-end gap-3">
 							<button
@@ -174,6 +187,8 @@ export default function TorrentCommentTree({
 								<FontAwesomeIcon icon={faReply} className="w-3.5 h-3.5" />
 								<span>{t('reply')}</span>
 							</button>
+
+							{/* 未来可以在这里添加点赞/爱心按钮 */}
 
 							{canDelete && canDelete(comment) && onDelete && (
 								<button

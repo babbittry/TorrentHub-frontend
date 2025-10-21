@@ -25,8 +25,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const refreshAttempted = useRef(false);
 
     const completeLogin = useCallback((userData: UserPrivateProfileDto, token: string) => {
-        console.log('[AuthContext] completeLogin - User data:', userData);
-        console.log('[AuthContext] completeLogin - unreadMessagesCount:', userData.unreadMessagesCount);
         setUser(userData);
         setAccessToken(token);
         setUsernameFor2fa(null);
@@ -70,8 +68,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const refreshUser = useCallback(async () => {
         try {
             const updatedUser = await users.getMe();
-            console.log('[AuthContext] refreshUser - Updated user data:', updatedUser);
-            console.log('[AuthContext] refreshUser - unreadMessagesCount:', updatedUser.unreadMessagesCount);
             setUser(updatedUser);
         } catch (error) {
             console.error("Failed to refresh user data:", error);
@@ -91,9 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             try {
                 // The refresh response contains user and accessToken directly
                 const response = await auth.refresh();
-                console.log('[AuthContext] restoreSession - Refresh response:', response);
                 if (response.user && response.accessToken) {
-                    console.log('[AuthContext] restoreSession - User found, unreadMessagesCount:', response.user.unreadMessagesCount);
                     completeLogin(response.user, response.accessToken);
                 } else {
                     // This is a normal case when no session exists, so we don't throw an error.
@@ -103,7 +97,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
             } catch (error) {
                 // This is an expected failure when no session exists, so we just clear the client state.
-                console.log('[AuthContext] restoreSession - Error during refresh:', error);
+                if (process.env.NODE_ENV === 'development') {
+                    console.error('[AuthContext] restoreSession failed:', error);
+                }
                 setUser(null);
                 setAccessToken(null);
             } finally {
