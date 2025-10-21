@@ -830,9 +830,9 @@
         "laugh": "哈哈",
         "eyes": "关注",
         "add_reaction": "做出回应",
-        "login_required": "请先登录再进行反应",
+        "login_required": "请先登录再进行回应",
         "error_generic": "操作失败，请稍后重试",
-        "you_reacted": "你添加了反应",
+        "you_reacted": "你添加了回应",
         "users_count": "{count}+ 个用户"
     }
 }

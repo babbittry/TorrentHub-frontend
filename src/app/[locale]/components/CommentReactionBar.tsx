@@ -48,7 +48,7 @@ export default function CommentReactionBar({
     const [showPicker, setShowPicker] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // 使用 SWR 获取反应数据
+    // 使用 SWR 获取回应数据
     const { data: reactions, mutate } = useSWR<CommentReactionsDto>(
         `reactions-${commentType}-${commentId}`,
         async () => {
@@ -66,7 +66,7 @@ export default function CommentReactionBar({
         }
     );
 
-    // 切换反应（乐观更新）
+    // 切换回应（乐观更新）
     const handleToggleReaction = async (type: ReactionType) => {
         if (!currentUser) {
             setError(t('login_required'));
@@ -75,7 +75,7 @@ export default function CommentReactionBar({
 
         if (!reactions) return;
 
-        // 找到当前表情的反应
+        // 找到当前表情的回应
         const reaction = reactions.reactions.find(r => r.type === type);
         const hasReacted = reaction?.viewerReacted || false;
 
@@ -85,7 +85,7 @@ export default function CommentReactionBar({
             const index = newReactions.findIndex(r => r.type === type);
             
             if (hasReacted) {
-                // 移除反应
+                // 移除回应
                 if (index !== -1) {
                     newReactions[index] = {
                         ...newReactions[index],
@@ -97,7 +97,7 @@ export default function CommentReactionBar({
                     }
                 }
             } else {
-                // 添加反应
+                // 添加回应
                 if (index !== -1) {
                     newReactions[index] = {
                         ...newReactions[index],
@@ -158,7 +158,7 @@ export default function CommentReactionBar({
     };
 
     if (!reactions || reactions.totalCount === 0) {
-        // 如果没有反应，只显示添加按钮
+        // 如果没有回应，只显示添加按钮
         return currentUser ? (
             <div className="flex items-center gap-2">
                 <div className="relative">
@@ -200,7 +200,7 @@ export default function CommentReactionBar({
 
     return (
         <div className="flex items-center gap-2 flex-wrap">
-            {/* 显示已有的反应 */}
+            {/* 显示已有的回应 */}
             {reactions.reactions.map((reaction) => {
                 const config = REACTION_CONFIG[reaction.type];
                 if (!config) return null;
@@ -236,7 +236,7 @@ export default function CommentReactionBar({
                 );
             })}
 
-            {/* 添加新反应按钮 */}
+            {/* 添加新回应按钮 */}
             {currentUser && (
                 <div className="relative">
                     <button

@@ -242,7 +242,7 @@ export interface CommentDto {
     replyToUser?: UserDisplayDto | null;
     depth: number;
     replyCount: number;
-    reactions?: CommentReactionsDto; // 新增：表情反应数据
+    reactions?: CommentReactionsDto; // 新增：表情回应数据
 }
 
 export interface CommentListResponse {
@@ -417,7 +417,7 @@ export interface ForumPostDto {
     replyToUser?: UserDisplayDto | null;
     depth: number;
     replyCount: number;
-    reactions?: CommentReactionsDto; // 新增：表情反应数据
+    reactions?: CommentReactionsDto; // 新增：表情回应数据
 }
 
 export type ForumPostListResponse = PaginatedResult<ForumPostDto>;
@@ -607,7 +607,7 @@ export enum ReactionType {
     Eyes = "Eyes"
 }
 
-// 单个表情反应的汇总
+// 单个表情回应的汇总
 export interface ReactionSummaryDto {
     type: ReactionType;
     count: number;
@@ -615,13 +615,13 @@ export interface ReactionSummaryDto {
     users: UserDisplayDto[];  // 单个接口最多10个，批量接口为空数组
 }
 
-// 评论的所有反应
+// 评论的所有回应
 export interface CommentReactionsDto {
     totalCount: number;
     reactions: ReactionSummaryDto[];
 }
 
-// 添加反应请求
+// 添加回应请求
 export interface AddReactionRequestDto {
     type: ReactionType;
 }
@@ -964,7 +964,7 @@ export const coins = {
 
 // Reactions API Functions
 export const reactions = {
-    // 添加反应
+    // 添加回应
     addReaction: async (
         commentType: CommentType,
         commentId: number,
@@ -973,7 +973,7 @@ export const reactions = {
         await api.post(`/api/${commentType}/${commentId}/reactions`, data);
     },
 
-    // 移除反应
+    // 移除回应
     removeReaction: async (
         commentType: CommentType,
         commentId: number,
@@ -982,7 +982,7 @@ export const reactions = {
         await api.delete(`/api/${commentType}/${commentId}/reactions/${type}`);
     },
 
-    // 获取单个评论的反应
+    // 获取单个评论的回应
     getReactions: async (
         commentType: CommentType,
         commentId: number
@@ -991,7 +991,7 @@ export const reactions = {
         return response.data;
     },
 
-    // 批量获取反应
+    // 批量获取回应
     getReactionsBatch: async (
         commentType: CommentType,
         commentIds: number[]

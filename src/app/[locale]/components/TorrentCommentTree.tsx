@@ -167,7 +167,7 @@ export default function TorrentCommentTree({
 							<MarkdownRenderer content={comment.text} />
 						</div>
 
-						{/* 表情反应栏 */}
+						{/* 表情回应栏 */}
 						{comment.reactions && (
 							<div className="mb-3">
 								<CommentReactionBar

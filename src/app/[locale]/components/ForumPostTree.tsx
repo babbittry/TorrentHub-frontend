@@ -165,16 +165,14 @@ export default function ForumPostTree({
                             <MarkdownRenderer content={post.content} />
                         </div>
 
-                        {/* 表情反应栏 */}
-                        {post.reactions && (
-                            <div className="mb-3">
-                                <CommentReactionBar
-                                    commentType={COMMENT_TYPE.FORUM_POST}
-                                    commentId={post.id}
-                                    initialReactions={post.reactions}
-                                />
-                            </div>
-                        )}
+                        {/* 表情回应栏 */}
+                        <div className="mb-3">
+                            <CommentReactionBar
+                                commentType={COMMENT_TYPE.FORUM_POST}
+                                commentId={post.id}
+                                initialReactions={post.reactions}
+                            />
+                        </div>
 
                         {/* 操作按钮区 */}
                         <div className="flex items-center justify-end gap-3">
