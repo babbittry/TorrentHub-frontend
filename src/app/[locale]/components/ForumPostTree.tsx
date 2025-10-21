@@ -124,7 +124,7 @@ export default function ForumPostTree({
                         </div>
 
                         {/* 引用信息 */}
-                        {parentPost && post.replyToUser && (
+                        {parentPost && post.replyToUser && parentPost.content && (
                             <div className="mb-3 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-500 rounded-r overflow-hidden">
                                 <div className="px-3 py-2">
                                     <div className="flex items-center justify-between mb-1">

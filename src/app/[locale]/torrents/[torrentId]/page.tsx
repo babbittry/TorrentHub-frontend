@@ -49,9 +49,9 @@ export default function TorrentDetailPage() {
             setTorrent(data);
 
             const response = await comments.getComments(Number(torrentId), 0, 30);
-            setComments(response.comments);
+            setComments(response.items);
             setHasMore(response.hasMore);
-            setLastFloor(response.comments[response.comments.length - 1]?.floor || 0);
+            setLastFloor(response.items[response.items.length - 1]?.floor || 0);
 
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
@@ -72,9 +72,9 @@ export default function TorrentDetailPage() {
         setLoadingMore(true);
         try {
             const response = await comments.getComments(Number(torrentId), lastFloor, 30);
-            setComments(prev => [...prev, ...response.comments]);
+            setComments(prev => [...prev, ...response.items]);
             setHasMore(response.hasMore);
-            setLastFloor(response.comments[response.comments.length - 1]?.floor || lastFloor);
+            setLastFloor(response.items[response.items.length - 1]?.floor || lastFloor);
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
         } finally {

@@ -5,6 +5,7 @@ import { Card, CardBody, CardHeader } from "@heroui/card";
 import {Divider} from "@heroui/divider";
 import { User } from "@heroui/user";
 import type { MailboxType } from '../page';
+import { useAuth } from '@/context/AuthContext';
 
 interface MessageDetailProps {
     message: MessageDto | null;
@@ -14,20 +15,24 @@ interface MessageDetailProps {
 
 const MessageDetail: React.FC<MessageDetailProps> = ({ message, activeMailbox, onMessageRead }) => {
     const t = useTranslations('messagesPage');
+    const { refreshUser } = useAuth();
 
     useEffect(() => {
         if (message && activeMailbox === 'inbox' && !message.isRead) {
             // Mark message as read
             messages.markMessageAsRead(message.id)
                 .then(() => {
+                    console.log('[MessageDetail] Message marked as read, refreshing user data');
                     onMessageRead(message.id); // Update parent state
+                    // Refresh user data to update unread messages count in header
+                    refreshUser();
                 })
                 .catch(error => {
                     console.error("Failed to mark message as read:", error);
                     // Optionally, show an error to the user
                 });
         }
-    }, [message, activeMailbox, onMessageRead]);
+    }, [message, activeMailbox, onMessageRead, refreshUser]);
 
     if (!message) {
         return (

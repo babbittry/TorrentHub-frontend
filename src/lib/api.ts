@@ -142,6 +142,7 @@ export interface UserPrivateProfileDto {
     inviteNum: number;
     twoFactorMethod: string;
     userTitle?: string | null;
+    unreadMessagesCount: number;
 }
 
 
@@ -244,7 +245,7 @@ export interface CommentDto {
 }
 
 export interface CommentListResponse {
-    comments: CommentDto[];
+    items: CommentDto[];
     hasMore: boolean;
     totalCount: number;
     loadedCount: number;
@@ -497,6 +498,28 @@ export enum TorrentCategory {
     Sports = 7,
     Concert = 8,
     Other = 9
+}
+
+export interface TorrentCategoryDto {
+    id: number;
+    name: string;
+    key: string;
+}
+
+export interface UploadTorrentResponseDto {
+    id: number;
+    name: string;
+    description?: string | null;
+    size: number;
+    uploader?: UserDisplayDto;
+    createdAt: string;
+    category: TorrentCategory;
+    isFree: boolean;
+    stickyStatus: TorrentStickyStatus;
+    seeders: number;
+    leechers: number;
+    snatched: number;
+    imdbId?: string | null;
 }
 
 export interface TorrentDto {
@@ -918,17 +941,32 @@ export const store = {
 
 // Torrents API Functions
 export const torrents = {
-    uploadTorrent: async (torrentFile: File, description: string, category: string): Promise<void> => {
+    getCategories: async (): Promise<TorrentCategoryDto[]> => {
+        const response = await api.get('/api/torrents/categories');
+        return response.data;
+    },
+    uploadTorrent: async (
+        torrentFile: File,
+        description: string,
+        category: string,
+        imdbId?: string,
+        onUploadProgress?: (progressEvent: { loaded: number; total?: number }) => void
+    ): Promise<UploadTorrentResponseDto> => {
         const formData = new FormData();
         formData.append('torrentFile', torrentFile);
         formData.append('Description', description);
         formData.append('Category', category);
+        if (imdbId) {
+            formData.append('ImdbId', imdbId);
+        }
 
-        await api.post('/api/torrents', formData, {
+        const response = await api.post<UploadTorrentResponseDto>('/api/torrents', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
-            }
+            },
+            onUploadProgress
         });
+        return response.data;
     },
     getTorrentById: async (id: number): Promise<TorrentDto> => {
         const response = await api.get(`/api/torrents/${id}`);

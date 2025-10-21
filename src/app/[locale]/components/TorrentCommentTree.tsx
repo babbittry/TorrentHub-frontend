@@ -125,7 +125,7 @@ export default function TorrentCommentTree({
 						</div>
 
 						{/* 引用信息 */}
-						{parentComment && comment.replyToUser && (
+						{parentComment && comment.replyToUser && parentComment.text && (
 							<div className="mb-3 bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-500 rounded-r overflow-hidden">
 								<div className="px-3 py-2">
 									<div className="flex items-center justify-between mb-1">
