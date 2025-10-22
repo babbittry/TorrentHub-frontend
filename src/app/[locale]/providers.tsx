@@ -6,6 +6,7 @@ import api, { auth as authApi } from '@/lib/api'; // Import authApi
 import { useEffect } from 'react';
 import { ToastProvider } from "@heroui/toast";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { RootProvider } from 'fumadocs-ui/provider';
 
 let isRefreshing = false;
 // The queue now holds callbacks that expect an error or a token
@@ -39,10 +40,10 @@ const AppWithInterceptors = ({ children }: { children: React.ReactNode }) => {
                             });
                         });
                     }
-            
+
                     originalRequest._retry = true;
                     isRefreshing = true;
-            
+
                     return new Promise(async (resolve, reject) => {
                         try {
                             const { accessToken, user } = await authApi.refresh();
@@ -53,11 +54,11 @@ const AppWithInterceptors = ({ children }: { children: React.ReactNode }) => {
                             }
                             api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                             processQueue(null, accessToken);
-                            
+
                             // Retry the original request
                             originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
                             resolve(api(originalRequest));
-            
+
                         } catch (refreshError) {
                             processQueue(refreshError as Error, null);
                             auth.logout();
@@ -92,11 +93,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
         >
             <HeroUIProvider>
                 <ToastProvider />
-                <AuthProvider>
-                    <AppWithInterceptors>
-                        {children}
-                    </AppWithInterceptors>
-                </AuthProvider>
+                <RootProvider>      {/* fumadocs-ui/provider */}
+                    <AuthProvider>
+                        <AppWithInterceptors>
+                            {children}
+                        </AppWithInterceptors>
+                    </AuthProvider>
+                </RootProvider>     {/* fumadocs-ui/provider */}
             </HeroUIProvider>
         </NextThemesProvider>
     )

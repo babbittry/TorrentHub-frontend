@@ -84,7 +84,8 @@
         "search_torrents": "搜索种子...",
         "about": "关于",
         "polls": "投票",
-        "admin_dashboard": "站点管理"
+        "admin_dashboard": "站点管理",
+        "docs": "文档"
     },
     "footer": {
         "all_rights_reserved": "保留所有权利。",

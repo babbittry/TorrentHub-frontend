@@ -84,7 +84,8 @@
         "search_torrents": "Rechercher des torrents...",
         "about": "À propos",
         "polls": "Sondages",
-        "admin_dashboard": "Administrateur"
+        "admin_dashboard": "Administrateur",
+        "docs": "Documentation"
     },
     "footer": {
         "all_rights_reserved": "Tous droits réservés.",

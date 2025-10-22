@@ -120,6 +120,11 @@ export default function Header() {
                             </Link>
                         </li>
                     )}
+                    <li>
+                        <Link href="/docs" target="_blank" rel="noopener noreferrer" className="hover:text-primary-500 transition-colors duration-200">
+                            {t('header.docs')}
+                        </Link>
+                    </li>
                 </ul>
                 <div className="flex items-center space-x-4">
                     <select

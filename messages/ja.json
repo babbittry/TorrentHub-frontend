@@ -84,7 +84,8 @@
         "search_torrents": "トレントを検索...",
         "about": "概要",
         "polls": "投票",
-        "admin_dashboard": "管理"
+        "admin_dashboard": "管理",
+        "docs": "ドキュメント"
     },
     "footer": {
         "all_rights_reserved": "全著作権所有。",

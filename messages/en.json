@@ -84,7 +84,8 @@
         "search_torrents": "Search Torrents...",
         "about": "About",
         "polls": "Polls",
-        "admin_dashboard": "Admin Dashboard"
+        "admin_dashboard": "Admin Dashboard",
+        "docs": "Docs"
     },
     "footer": {
         "all_rights_reserved": "All rights reserved.",

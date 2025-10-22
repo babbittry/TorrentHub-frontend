@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @config "../../../tailwind.config.ts"; /* 路径相对于当前 CSS 文件 */
 @plugin './hero.ts';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
 /* Base colors for light mode */
 :root {
   --color-background: #f8fafc; /* 浅蓝灰色背景 */

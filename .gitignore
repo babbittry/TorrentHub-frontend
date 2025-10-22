@@ -87,6 +87,9 @@ web_modules/
 .next
 out
 
+# Fumadocs MDX generated files
+.source
+
 # Nuxt.js build / generate output
 .nuxt
 dist
