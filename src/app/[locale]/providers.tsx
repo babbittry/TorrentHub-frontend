@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { ToastProvider } from "@heroui/toast";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { RootProvider } from 'fumadocs-ui/provider';
+import { defineI18nUI } from 'fumadocs-ui/i18n';
 
 let isRefreshing = false;
 // The queue now holds callbacks that expect an error or a token

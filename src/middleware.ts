@@ -20,15 +20,11 @@ export async function middleware(request: NextRequest) {
     const refreshToken = request.cookies.get('refreshToken')?.value;
     const { pathname } = request.nextUrl;
 
-    console.log(`[Middleware] Request Path: ${pathname}, RefreshToken: ${refreshToken ? 'Present' : 'Not Present'}`);
-
-    const publicPaths = ['/login', '/register', '/rules'];
+    const publicPaths = ['/login', '/register', '/rules', '/docs'];
 
     // Extract the path without the locale prefix (e.g., /en/torrents -> /torrents)
     const pathWithoutLocale = pathname.replace(/^\/[a-zA-Z]{2,5}(-[a-zA-Z]{2,5})?/, '') || '/';
     const isPublicPath = publicPaths.some(p => pathWithoutLocale === p || pathWithoutLocale.startsWith(`${p}/`));
-
-    console.log(`[Middleware] Path Without Locale: ${pathWithoutLocale}, Is Public Path: ${isPublicPath}`);
 
     // If the user is not authenticated and is trying to access a protected page...
     if (!refreshToken && !isPublicPath) {
@@ -46,7 +42,6 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL(`/${locale}/`, request.url));
     }
 
-    console.log(`[Middleware] No redirect needed. Proceeding.`);
     // If no auth-related redirect is needed, return the response from next-intl.
     return response;
 }
@@ -57,7 +52,7 @@ export const config = {
         // Match all pathnames except for
         // - … if they start with `/api`, `/_next` or `/_vercel`
         // - … the ones containing a dot (e.g. `favicon.ico`)
-        '/((?!api|_next|_vercel|.*\\..*).*)',
+        '/((?!api|_next|_vercel|favicon.ico|.*\\..*).*)',
         // Match all pathnames starting with a locale (e.g. `/en`, `/fr`, `/ja`, `/zh`)
         '/(en|fr|ja|zh-CN)/:path*',
     ]
