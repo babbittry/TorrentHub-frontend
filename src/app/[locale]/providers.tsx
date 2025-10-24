@@ -18,7 +18,6 @@ const processQueue = (error: Error | null, token: string | null = null) => {
     failedRequestsQueue = [];
 };
 
-
 const AppWithInterceptors = ({ children }: { children: React.ReactNode }) => {
     const auth = useAuth();
     useEffect(() => {
