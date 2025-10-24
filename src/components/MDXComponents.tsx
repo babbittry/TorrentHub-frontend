@@ -12,30 +12,77 @@ interface HeadingProps {
   id?: string;
 }
 
-// 标题组件 - 自动生成锚点
-const H1 = ({ children, id }: HeadingProps) => (
-  <h1 id={id} className="scroll-mt-20">
-    {children}
-  </h1>
-);
+/**
+ * 生成标题 ID
+ * 与 extractTableOfContents 使用相同的逻辑
+ */
+const generateHeadingId = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
 
-const H2 = ({ children, id }: HeadingProps) => (
-  <h2 id={id} className="scroll-mt-20">
-    {children}
-  </h2>
-);
+/**
+ * 从 children 中提取文本内容
+ */
+const getTextContent = (children: ReactNode): string => {
+  if (typeof children === 'string') {
+    return children;
+  }
+  if (Array.isArray(children)) {
+    return children.map(getTextContent).join('');
+  }
+  if (children && typeof children === 'object' && 'props' in children) {
+    return getTextContent((children as any).props.children);
+  }
+  return '';
+};
 
-const H3 = ({ children, id }: HeadingProps) => (
-  <h3 id={id} className="scroll-mt-20">
-    {children}
-  </h3>
-);
+// 标题组件 - 自动生成锚点并添加样式
+const H1 = ({ children, id }: HeadingProps) => {
+  const textContent = getTextContent(children);
+  const headingId = id || generateHeadingId(textContent);
+  
+  return (
+    <h1 id={headingId} className="scroll-mt-20 text-4xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
+      {children}
+    </h1>
+  );
+};
 
-const H4 = ({ children, id }: HeadingProps) => (
-  <h4 id={id} className="scroll-mt-20">
-    {children}
-  </h4>
-);
+const H2 = ({ children, id }: HeadingProps) => {
+  const textContent = getTextContent(children);
+  const headingId = id || generateHeadingId(textContent);
+  
+  return (
+    <h2 id={headingId} className="scroll-mt-20 text-3xl font-bold text-gray-900 dark:text-white mt-10 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+      {children}
+    </h2>
+  );
+};
+
+const H3 = ({ children, id }: HeadingProps) => {
+  const textContent = getTextContent(children);
+  const headingId = id || generateHeadingId(textContent);
+  
+  return (
+    <h3 id={headingId} className="scroll-mt-20 text-2xl font-semibold text-gray-900 dark:text-white mt-8 mb-3">
+      {children}
+    </h3>
+  );
+};
+
+const H4 = ({ children, id }: HeadingProps) => {
+  const textContent = getTextContent(children);
+  const headingId = id || generateHeadingId(textContent);
+  
+  return (
+    <h4 id={headingId} className="scroll-mt-20 text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-2">
+      {children}
+    </h4>
+  );
+};
 
 // 自定义链接组件
 interface CustomLinkProps {
@@ -181,19 +228,55 @@ const TD = ({ children }: TableProps) => (
   </td>
 );
 
+// 段落组件
+const P = ({ children }: { children?: ReactNode }) => (
+  <p className="text-base leading-7 text-gray-700 dark:text-gray-300 mb-4">
+    {children}
+  </p>
+);
+
+// 列表组件
+const Ul = ({ children }: { children?: ReactNode }) => (
+  <ul className="list-disc list-inside space-y-2 mb-4 text-gray-700 dark:text-gray-300">
+    {children}
+  </ul>
+);
+
+const Ol = ({ children }: { children?: ReactNode }) => (
+  <ol className="list-decimal list-inside space-y-2 mb-4 text-gray-700 dark:text-gray-300">
+    {children}
+  </ol>
+);
+
+const Li = ({ children }: { children?: ReactNode }) => (
+  <li className="ml-4">
+    {children}
+  </li>
+);
+
 /**
  * MDX 组件映射
- * 这些组件会替换 MDX 中的默认 HTML 元素
+ * 为所有 Markdown 元素添加样式
  */
 export const MDXComponents = {
+  // 标题组件
   h1: H1,
   h2: H2,
   h3: H3,
   h4: H4,
+  // 段落和列表
+  p: P,
+  ul: Ul,
+  ol: Ol,
+  li: Li,
+  // 链接
   a: CustomLink,
+  // 图片
   img: CustomImage,
+  // 代码
   code: Code,
   pre: Pre,
+  // 引用和表格
   blockquote: Blockquote,
   table: Table,
   thead: THead,

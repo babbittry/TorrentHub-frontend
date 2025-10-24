@@ -15,12 +15,12 @@ export default async function DocsLayout({ children, params }: DocsLayoutProps) 
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 max-w-[1600px]">
         <div className="flex gap-8">
           {/* 侧边栏导航 */}
           <DocsNavigation locale={locale} />
           
-          {/* 主内容区域 */}
+          {/* 主内容区域 - 包含文档内容和目录 */}
           <main className="flex-1 min-w-0">
             {children}
           </main>

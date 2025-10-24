@@ -33,6 +33,15 @@ export interface DocumentNavItem {
 }
 
 /**
+ * 目录项接口
+ */
+export interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+/**
  * 内容目录的基础路径
  */
 const CONTENT_DIR = path.join(process.cwd(), 'src', 'content');
@@ -157,4 +166,28 @@ export async function documentExists(locale: string, slug: string[]): Promise<bo
   } catch {
     return false;
   }
+}
+
+/**
+ * 从 Markdown 内容中提取目录
+ */
+export function extractTableOfContents(content: string): TocItem[] {
+  const headingRegex = /^(#{2,4})\s+(.+)$/gm;
+  const toc: TocItem[] = [];
+  let match;
+
+  while ((match = headingRegex.exec(content)) !== null) {
+    const level = match[1].length;
+    const text = match[2].trim();
+    
+    // 生成唯一的 ID（用于锚点）
+    const id = text
+      .toLowerCase()
+      .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
+    toc.push({ id, text, level });
+  }
+
+  return toc;
 }

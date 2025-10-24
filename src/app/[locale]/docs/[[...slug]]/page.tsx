@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getMDXDocument, getAllDocuments, documentExists } from '@/lib/mdx-utils';
+import { getMDXDocument, getAllDocuments, documentExists, extractTableOfContents } from '@/lib/mdx-utils';
 import { MDXComponents } from '@/components/MDXComponents';
+import { TableOfContents } from '@/components/TableOfContents';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -90,26 +91,33 @@ export default async function DocumentPage(props: PageProps) {
 
   // 获取文档内容
   const { content, meta } = await getMDXDocument(locale, slug);
+  
+  // 提取目录
+  const toc = extractTableOfContents(content);
 
   return (
-    <article className="prose prose-slate dark:prose-invert max-w-none">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">{meta.title}</h1>
-        {meta.description && (
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            {meta.description}
-          </p>
-        )}
-        {meta.date && (
-          <time className="text-sm text-gray-500 dark:text-gray-500">
-            {new Date(meta.date).toLocaleDateString(locale)}
-          </time>
-        )}
-      </header>
+    <div className="flex gap-8">
+      <article className="flex-1 max-w-3xl prose prose-slate dark:prose-invert">
+        <header className="mb-8">
+          <h1 className="text-4xl font-bold mb-2">{meta.title}</h1>
+          {meta.description && (
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              {meta.description}
+            </p>
+          )}
+          {meta.date && (
+            <time className="text-sm text-gray-500 dark:text-gray-500">
+              {new Date(meta.date).toLocaleDateString(locale)}
+            </time>
+          )}
+        </header>
+        
+        <div className="mdx-content">
+          <MDXRemote source={content} components={MDXComponents} />
+        </div>
+      </article>
       
-      <div className="mdx-content">
-        <MDXRemote source={content} components={MDXComponents} />
-      </div>
-    </article>
+      <TableOfContents items={toc} />
+    </div>
   );
 }
