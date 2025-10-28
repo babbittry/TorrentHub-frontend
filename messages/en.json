@@ -30,8 +30,10 @@
         "next_step": "Next",
         "previous_step": "Previous",
         "cancel": "Cancel",
-        "none": "None"
-    },
+        "none": "None",
+        "author": "Author",
+        "version": "Version"
+      },
     "register": {
         "avatar": "Avatar",
         "refresh_avatar": "Don't like? Give me a new one!",
@@ -801,7 +803,8 @@
         "error_description_required": "Description cannot be empty",
         "error_category_required": "Please select a category",
         "validating": "Validating...",
-        "parsing": "Parsing torrent file..."
+        "parsing": "Parsing torrent file...",
+        "cancel": "Cancel"
     },
     "reactions": {
         "thumbs_up": "Thumbs Up",

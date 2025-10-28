@@ -801,7 +801,8 @@
         "error_description_required": "説明は空にできません",
         "error_category_required": "カテゴリを選択してください",
         "validating": "検証中...",
-        "parsing": "トレントファイルを解析中..."
+        "parsing": "トレントファイルを解析中...",
+        "cancel": "キャンセル"
     },
     "reactions": {
         "thumbs_up": "いいね",

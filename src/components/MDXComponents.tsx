@@ -24,6 +24,15 @@ const generateHeadingId = (text: string): string => {
 };
 
 /**
+ * React 元素类型定义
+ */
+interface ReactElementWithProps {
+  props: {
+    children?: ReactNode;
+  };
+}
+
+/**
  * 从 children 中提取文本内容
  */
 const getTextContent = (children: ReactNode): string => {
@@ -34,7 +43,8 @@ const getTextContent = (children: ReactNode): string => {
     return children.map(getTextContent).join('');
   }
   if (children && typeof children === 'object' && 'props' in children) {
-    return getTextContent((children as any).props.children);
+    const element = children as ReactElementWithProps;
+    return getTextContent(element.props.children);
   }
   return '';
 };
@@ -81,6 +91,28 @@ const H4 = ({ children, id }: HeadingProps) => {
     <h4 id={headingId} className="scroll-mt-20 text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-2">
       {children}
     </h4>
+  );
+};
+
+const H5 = ({ children, id }: HeadingProps) => {
+  const textContent = getTextContent(children);
+  const headingId = id || generateHeadingId(textContent);
+  
+  return (
+    <h5 id={headingId} className="scroll-mt-20 text-lg font-semibold text-gray-800 dark:text-gray-200 mt-5 mb-2">
+      {children}
+    </h5>
+  );
+};
+
+const H6 = ({ children, id }: HeadingProps) => {
+  const textContent = getTextContent(children);
+  const headingId = id || generateHeadingId(textContent);
+  
+  return (
+    <h6 id={headingId} className="scroll-mt-20 font-semibold text-gray-700 dark:text-gray-300 mt-4 mb-2">
+      {children}
+    </h6>
   );
 };
 
@@ -197,7 +229,7 @@ interface TableProps {
 }
 
 const Table = ({ children }: TableProps) => (
-  <div className="overflow-x-auto">
+  <div className="overflow-x-auto my-6 border border-gray-200 dark:border-gray-700 rounded-lg">
     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
       {children}
     </table>
@@ -217,13 +249,13 @@ const TBody = ({ children }: TableProps) => (
 );
 
 const TH = ({ children }: TableProps) => (
-  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800">
     {children}
   </th>
 );
 
 const TD = ({ children }: TableProps) => (
-  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+  <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
     {children}
   </td>
 );
@@ -264,6 +296,8 @@ export const MDXComponents = {
   h2: H2,
   h3: H3,
   h4: H4,
+  h5: H5,
+  h6: H6,
   // 段落和列表
   p: P,
   ul: Ul,

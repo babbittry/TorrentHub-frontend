@@ -801,7 +801,8 @@
         "error_description_required": "La description ne peut pas être vide",
         "error_category_required": "Veuillez sélectionner une catégorie",
         "validating": "Validation en cours...",
-        "parsing": "Analyse du fichier torrent..."
+        "parsing": "Analyse du fichier torrent...",
+        "cancel": "Annuler"
     },
     "reactions": {
         "thumbs_up": "Pouce levé",

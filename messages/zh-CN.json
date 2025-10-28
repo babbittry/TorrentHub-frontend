@@ -30,8 +30,10 @@
         "next_step": "下一步",
         "previous_step": "上一步",
         "cancel": "取消",
-        "none": "无"
-    },
+        "none": "无",
+        "author": "作者",
+        "version": "版本"
+      },
     "register": {
         "avatar": "头像",
         "refresh_avatar": "不喜欢？换个新的！",
@@ -819,7 +821,8 @@
         "error_description_required": "描述不能为空",
         "error_category_required": "请选择分类",
         "validating": "验证中...",
-        "parsing": "解析种子文件..."
+        "parsing": "解析种子文件...",
+        "cancel": "取消"
     },
     "reactions": {
         "thumbs_up": "赞同",

@@ -7,11 +7,11 @@ import matter from 'gray-matter';
  */
 export interface DocumentMeta {
   title: string;
-  description?: string;
+  order: number;
   date?: string;
   author?: string;
-  tags?: string[];
-  [key: string]: any;
+  version?: string;
+  [key: string]: string | number | string[] | undefined;
 }
 
 /**
@@ -30,6 +30,7 @@ export interface DocumentNavItem {
   slug: string;
   title: string;
   path: string;
+  order?: number;
 }
 
 /**
@@ -145,14 +146,20 @@ export async function getDocumentNavigation(locale: string): Promise<DocumentNav
       navigation.push({
         slug,
         title: meta.title || slug,
-        path: `/docs/${slug}`
+        path: `/docs/${slug}`,
+        order: meta.order || 999
       });
     } catch (error) {
       console.error(`Error loading navigation for ${slug}:`, error);
     }
   }
 
-  return navigation;
+  // 按照 order 字段排序，如果没有 order 则排在最后
+  return navigation.sort((a, b) => {
+    const orderA = a.order ?? 999;
+    const orderB = b.order ?? 999;
+    return orderA - orderB;
+  });
 }
 
 /**

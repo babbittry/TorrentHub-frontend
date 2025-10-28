@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
 import { getMDXDocument, getAllDocuments, documentExists, extractTableOfContents } from '@/lib/mdx-utils';
 import { MDXComponents } from '@/components/MDXComponents';
 import { TableOfContents } from '@/components/TableOfContents';
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 interface PageProps {
   params: Promise<{
@@ -49,7 +51,8 @@ export async function generateStaticParams() {
  */
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
-  let { locale, slug = [] } = params;
+  const { locale } = params;
+  let { slug = [] } = params;
 
   // 如果 slug 为空，使用 home
   if (slug.length === 0) {
@@ -61,7 +64,6 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     
     return {
       title: meta.title,
-      description: meta.description,
     };
   } catch {
     return {
@@ -76,7 +78,9 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
  */
 export default async function DocumentPage(props: PageProps) {
   const params = await props.params;
-  let { locale, slug = [] } = params;
+  const { locale } = params;
+  let { slug = [] } = params;
+  const t = await getTranslations({ locale, namespace: 'common' });
 
   // 如果访问根路径 /docs，重定向到 /docs/home
   if (slug.length === 0) {
@@ -100,20 +104,36 @@ export default async function DocumentPage(props: PageProps) {
       <article className="flex-1 max-w-3xl prose prose-slate dark:prose-invert">
         <header className="mb-8">
           <h1 className="text-4xl font-bold mb-2">{meta.title}</h1>
-          {meta.description && (
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              {meta.description}
-            </p>
-          )}
-          {meta.date && (
-            <time className="text-sm text-gray-500 dark:text-gray-500">
-              {new Date(meta.date).toLocaleDateString(locale)}
-            </time>
-          )}
+          
+          <div className="flex items-center gap-x-4 text-sm text-gray-500 dark:text-gray-400 mt-2">
+            {meta.author && (
+              <span>
+                <strong>{t('author')}:</strong> {String(meta.author)}
+              </span>
+            )}
+            {meta.date && (
+              <time dateTime={meta.date}>
+                <strong>{t('date')}:</strong> {new Date(meta.date).toLocaleDateString(locale)}
+              </time>
+            )}
+            {meta.version && (
+              <span>
+                <strong>{t('version')}:</strong> {String(meta.version)}
+              </span>
+            )}
+          </div>
         </header>
         
         <div className="mdx-content">
-          <MDXRemote source={content} components={MDXComponents} />
+          <MDXRemote
+            source={content}
+            components={MDXComponents}
+            options={{
+              mdxOptions: {
+                remarkPlugins: [remarkGfm],
+              },
+            }}
+          />
         </div>
       </article>
       

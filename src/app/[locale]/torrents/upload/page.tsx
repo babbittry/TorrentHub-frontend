@@ -40,6 +40,7 @@ interface FormErrors {
 
 export default function TorrentUploadPage() {
   const t = useTranslations('torrentUpload');
+  const tCategories = useTranslations('categories');
   const router = useRouter();
   const params = useParams();
   const locale = params.locale as string;
@@ -358,7 +359,7 @@ export default function TorrentUploadPage() {
               >
                 {categories.map((cat) => (
                   <SelectItem key={cat.key}>
-                    {cat.name}
+                    {tCategories(cat.name)}
                   </SelectItem>
                 ))}
               </Select>
@@ -408,7 +409,7 @@ export default function TorrentUploadPage() {
                 onClick={() => router.back()}
                 isDisabled={isUploading}
               >
-                {t('common.cancel')}
+                {t('cancel')}
               </Button>
             </div>
           </form>
