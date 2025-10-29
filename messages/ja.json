@@ -387,7 +387,9 @@
         "verification_code": "認証コード",
         "upgrade_success": "認証アプリへの切り替えに成功しました！",
         "downgrade_success": "メール認証への切り替えに成功しました！",
-        "api_error": "エラーが発生しました。もう一度お試しください。"
+        "api_error": "エラーが発生しました。もう一度お試しください。",
+        "credentials_settings": "ダウンロード認証情報",
+        "rss_settings": "RSS購読"
     },
     "invitesPage": {
         "title": "私の招待",
@@ -816,6 +818,144 @@
         "login_required": "リアクションするにはログインしてください",
         "error_generic": "操作に失敗しました。後でもう一度お試しください",
         "you_reacted": "リアクションしました",
+        "users_count": "{count}+ 人のユーザー"
+    },
+    "credentialManagement": {
+        "title": "ダウンロード認証情報管理",
+        "description": "各トレントには独立したダウンロード認証情報があります。認証情報が漏洩した疑いがある場合、個別に取り消すことができます。",
+        "loadingCredentials": "認証情報を読み込み中...",
+        "noCredentials": "ダウンロード認証情報はまだありません",
+        "noCredentialsHint": "トレントをダウンロードして最初の認証情報を生成してください",
+        "stats": {
+            "total": "合計",
+            "active": "有効",
+            "revoked": "取り消し済み"
+        },
+        "table": {
+            "torrent": "トレント",
+            "createdAt": "作成日時",
+            "status": "ステータス",
+            "actions": "操作"
+        },
+        "status": {
+            "active": "有効",
+            "revoked": "{date}に取り消し"
+        },
+        "actions": {
+            "revoke": "取り消す",
+            "revokeAll": "すべて取り消す",
+            "revokeAllConfirm": "すべてのダウンロード認証情報を取り消してもよろしいですか？この操作は元に戻せません！",
+            "revokeConfirm": "この認証情報を取り消してもよろしいですか？このトレントのアップロード/ダウンロードを続けることができなくなります。",
+            "revoking": "取り消し中...",
+            "revokeSuccess": "認証情報を取り消しました",
+            "revokeFailed": "認証情報の取り消しに失敗しました",
+            "revokeAllSuccess": "すべての認証情報を取り消しました",
+            "revokeAllFailed": "すべての認証情報の取り消しに失敗しました"
+        }
+    },
+    "rssFeedManagement": {
+        "title": "RSS購読管理",
+        "description": "異なるRSSリーダー用に独立したRSSトークンを作成できます。各トークンは異なる権限で設定できます。",
+        "createToken": "新しいトークンを作成",
+        "loadingTokens": "トークンを読み込み中...",
+        "noTokens": "RSSトークンはまだありません",
+        "noTokensHint": "最初のRSSトークンを作成して購読を開始してください",
+        "form": {
+            "name": "トークン名",
+            "namePlaceholder": "例：qBittorrent購読",
+            "nameHint": "このトークンを識別しやすくします",
+            "feedType": "フィードタイプ",
+            "feedTypes": {
+                "latest": "最新のトレント",
+                "category": "カテゴリフィルター",
+                "bookmarks": "マイブックマーク",
+                "custom": "カスタム"
+            },
+            "categoryFilter": "カテゴリフィルター",
+            "categoryFilterHint": "購読するカテゴリを選択",
+            "categories": {
+                "movie": "映画",
+                "tv": "TVシリーズ",
+                "anime": "アニメ",
+                "music": "音楽",
+                "game": "ゲーム",
+                "software": "ソフトウェア",
+                "other": "その他"
+            },
+            "maxResults": "最大結果数",
+            "maxResultsHint": "フィードあたりの最大アイテム数（10-100）",
+            "expiresAt": "有効期限",
+            "expiresAtHint": "オプション、空白のままにすると期限なし",
+            "creating": "作成中...",
+            "createSuccess": "トークンを作成しました",
+            "createFailed": "トークンの作成に失敗しました"
+        },
+        "table": {
+            "name": "名前",
+            "feedType": "タイプ",
+            "categories": "カテゴリ",
+            "maxResults": "最大結果数",
+            "status": "ステータス",
+            "usage": "使用状況",
+            "lastUsed": "最終使用",
+            "actions": "操作"
+        },
+        "status": {
+            "active": "有効",
+            "revoked": "取り消し済み",
+            "expired": "期限切れ"
+        },
+        "actions": {
+            "copyUrl": "URLをコピー",
+            "revoke": "取り消す",
+            "revokeAll": "すべて取り消す",
+            "revokeConfirm": "このトークンを取り消してもよろしいですか？",
+            "revokeAllConfirm": "すべてのRSSトークンを取り消してもよろしいですか？",
+            "revoking": "取り消し中...",
+            "urlCopied": "RSS URLをクリップボードにコピーしました",
+            "revokeSuccess": "トークンを取り消しました",
+            "revokeFailed": "トークンの取り消しに失敗しました",
+            "revokeAllSuccess": "すべてのトークンを取り消しました",
+            "revokeAllFailed": "すべてのトークンの取り消しに失敗しました"
+        },
+        "usage": {
+            "count": "{count}回",
+            "never": "未使用"
+        }
+    },
+    "cheatLogsPage": {
+        "title": "不正行為ログ",
+        "description": "システムが検出した異常な動作の記録を表示",
+        "loadingLogs": "ログを読み込み中...",
+        "noLogs": "不正行為ログはありません",
+        "table": {
+            "user": "ユーザー",
+            "torrent": "トレント",
+            "ip": "IPアドレス",
+            "detectionType": "検出タイプ",
+            "details": "詳細",
+            "time": "時刻"
+        },
+        "detectionTypes": {
+            "announceFrequency": "アナウンス頻度",
+            "multiLocation": "複数地点"
+        },
+        "filters": {
+            "userId": "ユーザーID",
+            "userIdPlaceholder": "ユーザーIDでフィルター",
+            "detectionType": "検出タイプ",
+            "allTypes": "すべてのタイプ",
+            "search": "検索"
+        },
+        "pagination": {
+            "previous": "前へ",
+            "next": "次へ",
+            "page": "ページ {current} / {total}"
+        }
+    },
+    "homepage": {
+        "hero_title": "TorrentHubへようこそ",
+        "hero_subtitle": "モダンなプライベートトラッカープラットフォーム",
         "users_count": "{count}+ 人のユーザー"
     }
 }

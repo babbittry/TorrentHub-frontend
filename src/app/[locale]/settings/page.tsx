@@ -13,6 +13,8 @@ import { Avatar } from "@heroui/avatar";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
 import { Image } from '@heroui/image';
 import { addToast } from '@heroui/toast';
+import CredentialManagement from './CredentialManagement';
+import RssFeedManagement from './RssFeedManagement';
 
 function TwoFactorAuthSettings() {
     const t = useTranslations('settingsPage');
@@ -371,6 +373,12 @@ export default function SettingsPage() {
                         </CardBody>
                     </Card>
                     <TwoFactorAuthSettings />
+                </Tab>
+                <Tab key="credentials" title={t('credentials_settings')}>
+                    <CredentialManagement />
+                </Tab>
+                <Tab key="rss" title={t('rss_settings')}>
+                    <RssFeedManagement />
                 </Tab>
             </Tabs>
         </div>

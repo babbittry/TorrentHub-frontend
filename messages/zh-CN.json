@@ -198,7 +198,7 @@
         "reject_fulfillment": "拒绝满足",
         "confirmation_deadline_notice": "您有72小时的时间来确认或拒绝此满足。如果您不采取任何操作，它将被自动确认。",
         "reject_fulfillment_reason": "拒绝原因",
-        "reason": "原因",
+        "detectionType": "检测类型",
         "rejection_reason_placeholder": "请提供拒绝此满足的原因。",
         "submit_rejection": "提交拒绝",
         "error_confirming": "确认满足失败。",
@@ -344,7 +344,7 @@
         "torrentInfo": "种子信息",
         "myUploads": "我发布的种子",
         "clientInfo": "当前客户端",
-        "client": "客户端",
+        "ip": "IP地址",
         "ip": "IP",
         "port": "端口",
         "lastReport": "最后汇报时间",
@@ -389,7 +389,15 @@
         "verification_code": "验证码",
         "upgrade_success": "成功切换到验证器应用！",
         "downgrade_success": "成功切换回邮箱验证！",
-        "api_error": "发生错误，请重试。"
+        "api_error": "发生错误，请重试。",
+        "credentials_settings": "下载凭证",
+        "rss_settings": "RSS订阅",
+        "save_changes": "保存更改",
+        "change_title_title": "自定义头衔",
+        "change_title_description": "设置您的个性化头衔",
+        "custom_title": "自定义头衔",
+        "title_updated_success": "头衔更新成功！",
+        "title_updated_error": "头衔更新失败"
     },
     "invitesPage": {
         "title": "我的邀请",
@@ -435,7 +443,7 @@
             "reports": {
                 "title": "最近的待处理举报",
                 "torrent": "种子",
-                "reason": "原因",
+                "detectionType": "检测类型",
                 "reportedAt": "举报于",
                 "actions": "操作",
                 "process": "处理"
@@ -443,8 +451,8 @@
             "cheatLogs": {
                 "title": "最近的作弊日志",
                 "user": "用户",
-                "reason": "原因",
-                "client": "客户端",
+                "detectionType": "检测类型",
+                "ip": "IP地址",
                 "date": "日期"
             }
         },
@@ -460,7 +468,7 @@
                 "torrent": "种子",
                 "reporter": "举报人",
                 "uploader": "发布人",
-                "reason": "原因",
+                "detectionType": "检测类型",
                 "details": "详情",
                 "noDetails": "无详情",
                 "reportedAt": "举报于",
@@ -550,7 +558,7 @@
             "table": {
                 "peerIdPrefix": "PEER ID 前缀",
                 "userAgentPattern": "USER-AGENT 模式",
-                "reason": "原因",
+                "detectionType": "检测类型",
                 "actions": "操作"
             },
             "alert": {
@@ -587,8 +595,8 @@
                 "table": {
                     "user": "用户",
                     "torrent": "种子",
-                    "client": "客户端",
-                    "reason": "原因",
+                    "ip": "IP地址",
+                    "detectionType": "检测类型",
                     "date": "日期"
                 }
             }
@@ -837,5 +845,150 @@
         "error_generic": "操作失败，请稍后重试",
         "you_reacted": "你添加了回应",
         "users_count": "{count}+ 个用户"
+    },
+    "credentialManagement": {
+        "title": "下载凭证管理",
+        "description": "每个种子都有独立的下载凭证。如果怀疑某个种子泄露，可以单独撤销它的凭证。",
+        "loading": "加载中...",
+        "load_error": "加载凭证列表失败",
+        "no_credentials": "您还没有下载任何种子",
+        "total_credentials": "共 {count} 个凭证",
+        "active_credentials": "有效: {count}",
+        "revoked_credentials": "已撤销: {count}",
+        "revoke_button": "撤销",
+        "revoke_all_button": "撤销所有凭证",
+        "revoke_success": "凭证撤销成功",
+        "revoke_error": "凭证撤销失败",
+        "revoke_all_success": "所有凭证已撤销",
+        "revoke_all_error": "批量撤销失败",
+        "revoke_all_reason": "用户批量撤销",
+        "table": {
+            "torrent_name": "种子名称",
+            "created_at": "创建时间",
+            "status": "状态",
+            "actions": "操作"
+        },
+        "status": {
+            "active": "有效",
+            "revoked": "已撤销"
+        },
+        "revoke_modal": {
+            "title": "确认撤销凭证",
+            "description": "您确定要撤销此凭证吗？",
+            "warning": "撤销后该种子将无法继续上传/下载，但不影响其他种子。此操作不可撤销！",
+            "cancel": "取消",
+            "confirm": "确认撤销"
+        },
+        "revoke_all_modal": {
+            "title": "确认撤销所有凭证",
+            "description": "您确定要撤销所有 {count} 个有效凭证吗？",
+            "warning": "此操作将导致所有种子无法继续上传/下载！此操作不可撤销！",
+            "cancel": "取消",
+            "confirm": "确认撤销全部"
+        }
+    },
+    "rssFeedManagement": {
+        "title": "RSS订阅管理",
+        "description": "为不同的RSS阅读器创建独立的订阅Token，每个Token可以配置不同的权限。",
+        "loading": "加载中...",
+        "load_error": "加载Token列表失败",
+        "no_tokens": "您还没有创建任何RSS Token",
+        "total_tokens": "共 {count} 个Token",
+        "active_tokens": "有效: {count}",
+        "create_button": "创建Token",
+        "revoke_button": "撤销",
+        "revoke_all_button": "撤销所有Token",
+        "create_success": "Token创建成功",
+        "create_error": "Token创建失败",
+        "revoke_success": "Token撤销成功",
+        "revoke_error": "Token撤销失败",
+        "revoke_all_success": "所有Token已撤销",
+        "revoke_all_error": "批量撤销失败",
+        "copy_success": "RSS链接已复制到剪贴板",
+        "copy_error": "复制失败",
+        "copy_url": "复制RSS链接",
+        "unnamed_token": "未命名Token",
+        "categories": "分类",
+        "used_count": "使用 {count} 次",
+        "last_used": "最后使用",
+        "never": "从未使用",
+        "table": {
+            "name": "名称",
+            "feed_type": "订阅类型",
+            "usage": "使用情况",
+            "created_at": "创建时间",
+            "status": "状态",
+            "actions": "操作"
+        },
+        "status": {
+            "active": "有效",
+            "revoked": "已撤销",
+            "expired": "已过期"
+        },
+        "feed_types": {
+            "latest": "最新种子",
+            "category": "分类订阅",
+            "bookmarks": "我的收藏"
+        },
+        "create_modal": {
+            "title": "创建RSS Token",
+            "name_label": "Token名称",
+            "name_placeholder": "例如：qBittorrent订阅",
+            "feed_type_label": "订阅类型",
+            "max_results_label": "最大结果数",
+            "expires_at_label": "过期时间（可选）",
+            "expires_at_description": "留空则永不过期",
+            "cancel": "取消",
+            "confirm": "创建"
+        },
+        "url_modal": {
+            "title": "RSS订阅链接",
+            "description": "请将此链接添加到您的RSS阅读器中：",
+            "copy_button": "复制链接",
+            "close": "关闭"
+        },
+        "revoke_modal": {
+            "title": "确认撤销Token",
+            "description": "您确定要撤销此Token吗？",
+            "warning": "撤销后该Token将无法继续使用。此操作不可撤销！",
+            "cancel": "取消",
+            "confirm": "确认撤销"
+        },
+        "revoke_all_modal": {
+            "title": "确认撤销所有Token",
+            "description": "您确定要撤销所有 {count} 个有效Token吗？",
+            "warning": "此操作将导致所有RSS订阅失效！此操作不可撤销！",
+            "cancel": "取消",
+            "confirm": "确认撤销全部"
+        }
+    },
+    "cheatLogsPage": {
+        "title": "作弊日志",
+        "filters_title": "筛选条件",
+        "user_id_label": "用户ID",
+        "user_id_placeholder": "输入用户ID",
+        "detection_type_label": "检测类型",
+        "detection_type_placeholder": "选择检测类型",
+        "all_types": "所有类型",
+        "search_button": "搜索",
+        "reset_button": "重置",
+        "logs_title": "作弊日志列表",
+        "total_logs": "共 {count} 条日志",
+        "loading": "加载中...",
+        "no_logs": "暂无作弊日志",
+        "table": {
+            "user": "用户",
+            "torrent": "种子",
+            "detection_type": "检测类型",
+            "details": "详情",
+            "ip_address": "IP地址",
+            "detected_at": "检测时间"
+        },
+        "types": {
+            "announce_frequency": "Announce频率异常",
+            "announcefrequency": "Announce频率异常",
+            "multi_location": "多地做种",
+            "multilocation": "多地做种"
+        }
     }
 }

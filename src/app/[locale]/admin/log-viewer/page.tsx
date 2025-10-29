@@ -94,18 +94,18 @@ const LogViewerPage = () => {
                                     <TableHeader>
                                         <TableColumn>{t('logViewer.cheatLogs.table.user')}</TableColumn>
                                         <TableColumn>{t('logViewer.cheatLogs.table.torrent')}</TableColumn>
-                                        <TableColumn>{t('logViewer.cheatLogs.table.client')}</TableColumn>
-                                        <TableColumn>{t('logViewer.cheatLogs.table.reason')}</TableColumn>
+                                        <TableColumn>{t('logViewer.cheatLogs.table.ip')}</TableColumn>
+                                        <TableColumn>{t('logViewer.cheatLogs.table.detectionType')}</TableColumn>
                                         <TableColumn>{t('logViewer.cheatLogs.table.date')}</TableColumn>
                                     </TableHeader>
                                     <TableBody items={cheatLogs}>
                                         {(item) => (
                                             <TableRow key={item.id}>
-                                                <TableCell>{item.userName}</TableCell>
-                                                <TableCell>{item.torrentName}</TableCell>
-                                                <TableCell>{item.client}</TableCell>
-                                                <TableCell>{item.reason}</TableCell>
-                                                <TableCell>{new Date(item.createdAt).toLocaleString()}</TableCell>
+                                                <TableCell>{item.userName || `User #${item.userId}`}</TableCell>
+                                                <TableCell>{item.torrentName || 'N/A'}</TableCell>
+                                                <TableCell>{item.ipAddress}</TableCell>
+                                                <TableCell>{item.detectionType}</TableCell>
+                                                <TableCell>{new Date(item.detectedAt).toLocaleString()}</TableCell>
                                             </TableRow>
                                         )}
                                     </TableBody>

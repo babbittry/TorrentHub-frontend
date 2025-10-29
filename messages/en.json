@@ -389,7 +389,9 @@
         "verification_code": "Verification Code",
         "upgrade_success": "Successfully switched to Authenticator App!",
         "downgrade_success": "Successfully switched back to Email Verification.",
-        "api_error": "An error occurred. Please try again."
+        "api_error": "An error occurred. Please try again.",
+        "credentials_settings": "Download Credentials",
+        "rss_settings": "RSS Subscriptions",
     },
     "invitesPage": {
         "title": "My Invites",
@@ -818,6 +820,144 @@
         "login_required": "Please login to react",
         "error_generic": "Operation failed, please try again later",
         "you_reacted": "You reacted",
+        "users_count": "{count}+ users"
+    },
+    "credentialManagement": {
+        "title": "Download Credentials Management",
+        "description": "Each torrent has an independent download credential. If you suspect a credential has been leaked, you can revoke it individually.",
+        "loadingCredentials": "Loading credentials...",
+        "noCredentials": "No download credentials yet",
+        "noCredentialsHint": "Download a torrent to generate your first credential",
+        "stats": {
+            "total": "Total",
+            "active": "Active",
+            "revoked": "Revoked"
+        },
+        "table": {
+            "torrent": "Torrent",
+            "createdAt": "Created",
+            "status": "Status",
+            "actions": "Actions"
+        },
+        "status": {
+            "active": "Active",
+            "revoked": "Revoked on {date}"
+        },
+        "actions": {
+            "revoke": "Revoke",
+            "revokeAll": "Revoke All",
+            "revokeAllConfirm": "Are you sure you want to revoke ALL download credentials? This action cannot be undone!",
+            "revokeConfirm": "Are you sure you want to revoke this credential? You won't be able to continue uploading/downloading this torrent.",
+            "revoking": "Revoking...",
+            "revokeSuccess": "Credential revoked successfully",
+            "revokeFailed": "Failed to revoke credential",
+            "revokeAllSuccess": "All credentials revoked successfully",
+            "revokeAllFailed": "Failed to revoke all credentials"
+        }
+    },
+    "rssFeedManagement": {
+        "title": "RSS Subscription Management",
+        "description": "Create independent RSS tokens for different RSS readers. Each token can be configured with different permissions.",
+        "createToken": "Create New Token",
+        "loadingTokens": "Loading tokens...",
+        "noTokens": "No RSS tokens yet",
+        "noTokensHint": "Create your first RSS token to start subscribing",
+        "form": {
+            "name": "Token Name",
+            "namePlaceholder": "e.g., qBittorrent Subscription",
+            "nameHint": "Easy to identify this token",
+            "feedType": "Feed Type",
+            "feedTypes": {
+                "latest": "Latest Torrents",
+                "category": "Category Filter",
+                "bookmarks": "My Bookmarks",
+                "custom": "Custom"
+            },
+            "categoryFilter": "Category Filter",
+            "categoryFilterHint": "Select categories to subscribe to",
+            "categories": {
+                "movie": "Movie",
+                "tv": "TV Series",
+                "anime": "Anime",
+                "music": "Music",
+                "game": "Game",
+                "software": "Software",
+                "other": "Other"
+            },
+            "maxResults": "Max Results",
+            "maxResultsHint": "Maximum number of items per feed (10-100)",
+            "expiresAt": "Expiration Time",
+            "expiresAtHint": "Optional, leave empty for no expiration",
+            "creating": "Creating...",
+            "createSuccess": "Token created successfully",
+            "createFailed": "Failed to create token"
+        },
+        "table": {
+            "name": "Name",
+            "feedType": "Type",
+            "categories": "Categories",
+            "maxResults": "Max Results",
+            "status": "Status",
+            "usage": "Usage",
+            "lastUsed": "Last Used",
+            "actions": "Actions"
+        },
+        "status": {
+            "active": "Active",
+            "revoked": "Revoked",
+            "expired": "Expired"
+        },
+        "actions": {
+            "copyUrl": "Copy URL",
+            "revoke": "Revoke",
+            "revokeAll": "Revoke All",
+            "revokeConfirm": "Are you sure you want to revoke this token?",
+            "revokeAllConfirm": "Are you sure you want to revoke ALL RSS tokens?",
+            "revoking": "Revoking...",
+            "urlCopied": "RSS URL copied to clipboard",
+            "revokeSuccess": "Token revoked successfully",
+            "revokeFailed": "Failed to revoke token",
+            "revokeAllSuccess": "All tokens revoked successfully",
+            "revokeAllFailed": "Failed to revoke all tokens"
+        },
+        "usage": {
+            "count": "{count} times",
+            "never": "Never used"
+        }
+    },
+    "cheatLogsPage": {
+        "title": "Cheat Logs",
+        "description": "View system-detected abnormal behavior records",
+        "loadingLogs": "Loading logs...",
+        "noLogs": "No cheat logs",
+        "table": {
+            "user": "User",
+            "torrent": "Torrent",
+            "ip": "IP Address",
+            "detectionType": "Detection Type",
+            "details": "Details",
+            "time": "Time"
+        },
+        "detectionTypes": {
+            "announceFrequency": "Announce Frequency",
+            "multiLocation": "Multi-Location"
+        },
+        "filters": {
+            "userId": "User ID",
+            "userIdPlaceholder": "Filter by user ID",
+            "detectionType": "Detection Type",
+            "allTypes": "All Types",
+            "search": "Search"
+        },
+        "pagination": {
+            "previous": "Previous",
+            "next": "Next",
+            "page": "Page {current} of {total}"
+        }
+    },
+    "homepage": {
+        "hero_title": "Welcome to TorrentHub",
+        "hero_subtitle": "A modern private tracker platform",
         "users_count": "{count}+ users"
     }
 }

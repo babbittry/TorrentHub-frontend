@@ -119,16 +119,14 @@ const AdminDashboard = () => {
                             <TableHeader>
                                 <TableColumn>{t('dashboard.cheatLogs.user')}</TableColumn>
                                 <TableColumn>{t('dashboard.cheatLogs.reason')}</TableColumn>
-                                <TableColumn>{t('dashboard.cheatLogs.client')}</TableColumn>
                                 <TableColumn>{t('dashboard.cheatLogs.date')}</TableColumn>
                             </TableHeader>
                             <TableBody items={cheatLogs.slice(0, 5)}>
                                 {(item) => (
                                     <TableRow key={item.id}>
-                                        <TableCell>{item.userName}</TableCell>
-                                        <TableCell>{item.reason}</TableCell>
-                                        <TableCell>{item.client}</TableCell>
-                                        <TableCell>{new Date(item.createdAt).toLocaleString()}</TableCell>
+                                        <TableCell>{item.userName || `User #${item.userId}`}</TableCell>
+                                        <TableCell>{item.detectionType}</TableCell>
+                                        <TableCell>{new Date(item.detectedAt).toLocaleString()}</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>

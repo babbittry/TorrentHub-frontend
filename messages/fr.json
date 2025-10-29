@@ -387,7 +387,9 @@
         "verification_code": "Code de vérification",
         "upgrade_success": "Passage à l'application d'authentification réussi !",
         "downgrade_success": "Retour à la vérification par e-mail réussi !",
-        "api_error": "Une erreur est survenue. Veuillez réessayer."
+        "api_error": "Une erreur est survenue. Veuillez réessayer.",
+        "credentials_settings": "Identifiants de Téléchargement",
+        "rss_settings": "Abonnements RSS"
     },
     "invitesPage": {
         "title": "Mes invitations",
@@ -816,6 +818,144 @@
         "login_required": "Veuillez vous connecter pour réagir",
         "error_generic": "L'opération a échoué, veuillez réessayer plus tard",
         "you_reacted": "Vous avez réagi",
+        "users_count": "{count}+ utilisateurs"
+    },
+    "credentialManagement": {
+        "title": "Gestion des Identifiants de Téléchargement",
+        "description": "Chaque torrent possède un identifiant de téléchargement indépendant. Si vous suspectez une fuite d'identifiant, vous pouvez le révoquer individuellement.",
+        "loadingCredentials": "Chargement des identifiants...",
+        "noCredentials": "Aucun identifiant de téléchargement pour le moment",
+        "noCredentialsHint": "Téléchargez un torrent pour générer votre premier identifiant",
+        "stats": {
+            "total": "Total",
+            "active": "Actif",
+            "revoked": "Révoqué"
+        },
+        "table": {
+            "torrent": "Torrent",
+            "createdAt": "Créé le",
+            "status": "Statut",
+            "actions": "Actions"
+        },
+        "status": {
+            "active": "Actif",
+            "revoked": "Révoqué le {date}"
+        },
+        "actions": {
+            "revoke": "Révoquer",
+            "revokeAll": "Révoquer Tout",
+            "revokeAllConfirm": "Êtes-vous sûr de vouloir révoquer TOUS les identifiants de téléchargement ? Cette action est irréversible !",
+            "revokeConfirm": "Êtes-vous sûr de vouloir révoquer cet identifiant ? Vous ne pourrez plus continuer à uploader/télécharger ce torrent.",
+            "revoking": "Révocation...",
+            "revokeSuccess": "Identifiant révoqué avec succès",
+            "revokeFailed": "Échec de la révocation de l'identifiant",
+            "revokeAllSuccess": "Tous les identifiants ont été révoqués avec succès",
+            "revokeAllFailed": "Échec de la révocation de tous les identifiants"
+        }
+    },
+    "rssFeedManagement": {
+        "title": "Gestion des Abonnements RSS",
+        "description": "Créez des jetons RSS indépendants pour différents lecteurs RSS. Chaque jeton peut être configuré avec des permissions différentes.",
+        "createToken": "Créer un Nouveau Jeton",
+        "loadingTokens": "Chargement des jetons...",
+        "noTokens": "Aucun jeton RSS pour le moment",
+        "noTokensHint": "Créez votre premier jeton RSS pour commencer à vous abonner",
+        "form": {
+            "name": "Nom du Jeton",
+            "namePlaceholder": "ex. Abonnement qBittorrent",
+            "nameHint": "Facilite l'identification de ce jeton",
+            "feedType": "Type de Flux",
+            "feedTypes": {
+                "latest": "Derniers Torrents",
+                "category": "Filtre par Catégorie",
+                "bookmarks": "Mes Favoris",
+                "custom": "Personnalisé"
+            },
+            "categoryFilter": "Filtre de Catégorie",
+            "categoryFilterHint": "Sélectionnez les catégories auxquelles vous abonner",
+            "categories": {
+                "movie": "Film",
+                "tv": "Série TV",
+                "anime": "Anime",
+                "music": "Musique",
+                "game": "Jeu",
+                "software": "Logiciel",
+                "other": "Autre"
+            },
+            "maxResults": "Résultats Max",
+            "maxResultsHint": "Nombre maximum d'éléments par flux (10-100)",
+            "expiresAt": "Date d'Expiration",
+            "expiresAtHint": "Optionnel, laissez vide pour aucune expiration",
+            "creating": "Création...",
+            "createSuccess": "Jeton créé avec succès",
+            "createFailed": "Échec de la création du jeton"
+        },
+        "table": {
+            "name": "Nom",
+            "feedType": "Type",
+            "categories": "Catégories",
+            "maxResults": "Résultats Max",
+            "status": "Statut",
+            "usage": "Utilisation",
+            "lastUsed": "Dernière Utilisation",
+            "actions": "Actions"
+        },
+        "status": {
+            "active": "Actif",
+            "revoked": "Révoqué",
+            "expired": "Expiré"
+        },
+        "actions": {
+            "copyUrl": "Copier l'URL",
+            "revoke": "Révoquer",
+            "revokeAll": "Révoquer Tout",
+            "revokeConfirm": "Êtes-vous sûr de vouloir révoquer ce jeton ?",
+            "revokeAllConfirm": "Êtes-vous sûr de vouloir révoquer TOUS les jetons RSS ?",
+            "revoking": "Révocation...",
+            "urlCopied": "URL RSS copiée dans le presse-papiers",
+            "revokeSuccess": "Jeton révoqué avec succès",
+            "revokeFailed": "Échec de la révocation du jeton",
+            "revokeAllSuccess": "Tous les jetons ont été révoqués avec succès",
+            "revokeAllFailed": "Échec de la révocation de tous les jetons"
+        },
+        "usage": {
+            "count": "{count} fois",
+            "never": "Jamais utilisé"
+        }
+    },
+    "cheatLogsPage": {
+        "title": "Journaux de Triche",
+        "description": "Afficher les enregistrements de comportements anormaux détectés par le système",
+        "loadingLogs": "Chargement des journaux...",
+        "noLogs": "Aucun journal de triche",
+        "table": {
+            "user": "Utilisateur",
+            "torrent": "Torrent",
+            "ip": "Adresse IP",
+            "detectionType": "Type de Détection",
+            "details": "Détails",
+            "time": "Heure"
+        },
+        "detectionTypes": {
+            "announceFrequency": "Fréquence d'Annonce",
+            "multiLocation": "Multi-Localisation"
+        },
+        "filters": {
+            "userId": "ID Utilisateur",
+            "userIdPlaceholder": "Filtrer par ID utilisateur",
+            "detectionType": "Type de Détection",
+            "allTypes": "Tous les Types",
+            "search": "Rechercher"
+        },
+        "pagination": {
+            "previous": "Précédent",
+            "next": "Suivant",
+            "page": "Page {current} sur {total}"
+        }
+    },
+    "homepage": {
+        "hero_title": "Bienvenue sur TorrentHub",
+        "hero_subtitle": "Une plateforme de tracker privé moderne",
         "users_count": "{count}+ utilisateurs"
     }
 }

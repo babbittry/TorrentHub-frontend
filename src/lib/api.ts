@@ -1135,16 +1135,80 @@ export interface VoteDto {
     optionId?: number; // Kept for compatibility if needed elsewhere
     option?: string; // As per the actual endpoint requirement
 }
+
+export interface CredentialDto {
+    id: number;
+    torrentId: number;
+    torrentName: string;
+    credential: string; // UUID格式
+    isRevoked: boolean;
+    createdAt: string; // ISO 8601 date-time
+    revokedAt: string | null; // ISO 8601 date-time
+}
+
+export interface RevokeCredentialRequest {
+    reason?: string | null;
+}
+
+export enum RssFeedType {
+    Latest = "Latest",
+    Category = "Category",
+    Bookmarks = "Bookmarks",
+    Custom = "Custom",
+}
+
+export interface RssFeedTokenDto {
+    id: number;
+    token: string; // UUID格式
+    feedType: string; // RssFeedType的字符串表示
+    name: string | null;
+    categoryFilter: string | null; // JSON字符串格式，例如: '["Movie", "TV"]'
+    maxResults: number;
+    isActive: boolean;
+    expiresAt: string | null; // ISO 8601 date-time
+    lastUsedAt: string | null; // ISO 8601 date-time
+    usageCount: number;
+    userAgent: string | null;
+    lastIp: string | null;
+    createdAt: string; // ISO 8601 date-time
+    revokedAt: string | null; // ISO 8601 date-time
+}
+
+export interface CreateRssFeedTokenRequest {
+    feedType: string; // "Latest" | "Category" | "Bookmarks" | "Custom"
+    name?: string | null;
+    categoryFilter?: string[] | null; // 数组类型，后端会处理转换
+    maxResults?: number; // 默认50
+    expiresAt?: string | null; // ISO 8601 date-time
+}
+
+export interface RssFeedTokenResponse {
+    token: RssFeedTokenDto;
+    rssUrl: string;
+}
+
+export enum CheatDetectionType {
+    AnnounceFrequency = "AnnounceFrequency",
+    MultiLocation = "MultiLocation",
+}
+
 export interface CheatLogDto {
     id: number;
     userId: number;
-    userName?: string | null;
-    torrentId: number;
-    torrentName?: string | null;
-    client?: string | null;
-    reason?: string | null;
-    details?: string | null;
-    createdAt: string; // date-time
+    userName: string | null;
+    torrentId: number | null;
+    torrentName: string | null;
+    detectionType: CheatDetectionType;
+    details: string;
+    ipAddress: string;
+    detectedAt: string; // ISO 8601 date-time
+}
+
+export interface CheatLogFilters {
+    page?: number;
+    pageSize?: number;
+    userId?: number;
+    detectionType?: CheatDetectionType;
 }
 
 export interface SystemLogDto {
@@ -1292,6 +1356,155 @@ export const torrentListing = {
             params.append('SortOrder', sortOrder);
         }
         const response = await api.get(`/api/torrents/listing?${params.toString()}`);
+        return response.data;
+    },
+};
+
+// ==================== Credential认证系统 API ====================
+export const credential = {
+    /**
+     * 获取当前用户的所有凭证列表
+     * @param includeRevoked 是否包含已撤销的凭证（默认false）
+     */
+    getMy: async (includeRevoked: boolean = false): Promise<CredentialDto[]> => {
+        const params = new URLSearchParams({
+            includeRevoked: includeRevoked.toString(),
+        });
+        const response = await api.get(`/api/Credential/my?${params.toString()}`);
+        return response.data;
+    },
+
+    /**
+     * 撤销单个凭证（使用UUID）
+     * @param credentialUuid 凭证的UUID
+     * @param reason 撤销原因（可选）
+     */
+    revoke: async (credentialUuid: string, reason?: string): Promise<void> => {
+        const data: RevokeCredentialRequest = reason ? { reason } : {};
+        await api.post(`/api/Credential/revoke/${credentialUuid}`, data);
+    },
+
+    /**
+     * 获取指定种子的凭证信息
+     * @param torrentId 种子ID
+     */
+    getByTorrent: async (torrentId: number): Promise<CredentialDto> => {
+        const response = await api.get(`/api/Credential/torrent/${torrentId}`);
+        return response.data;
+    },
+
+    // ========== 管理员专用API ==========
+    /**
+     * 获取指定用户的所有凭证（管理员）
+     * @param userId 用户ID
+     * @param includeRevoked 是否包含已撤销的凭证
+     */
+    getUserCredentials: async (userId: number, includeRevoked: boolean = false): Promise<CredentialDto[]> => {
+        const params = new URLSearchParams({
+            includeRevoked: includeRevoked.toString(),
+        });
+        const response = await api.get(`/api/Credential/user/${userId}?${params.toString()}`);
+        return response.data;
+    },
+
+    /**
+     * 撤销单个凭证（管理员）
+     * @param credentialUuid 凭证的UUID
+     * @param reason 撤销原因
+     */
+    adminRevoke: async (credentialUuid: string, reason: string): Promise<void> => {
+        await api.post(`/api/Credential/admin/revoke/${credentialUuid}`, { reason });
+    },
+
+    /**
+     * 撤销指定用户的所有凭证（管理员）
+     * @param userId 用户ID
+     * @param reason 撤销原因
+     */
+    adminRevokeUser: async (userId: number, reason: string): Promise<void> => {
+        await api.post(`/api/Credential/admin/revoke-user/${userId}`, { reason });
+    },
+
+    /**
+     * 清理不活跃的凭证（管理员）
+     * @param inactiveDays 不活跃天数阈值（默认90天）
+     */
+    adminCleanup: async (inactiveDays: number = 90): Promise<void> => {
+        const params = new URLSearchParams({
+            inactiveDays: inactiveDays.toString(),
+        });
+        await api.post(`/api/Credential/admin/cleanup?${params.toString()}`);
+    },
+};
+
+// ==================== RSS Feed Token系统 API ====================
+export const rssFeed = {
+    /**
+     * 创建新的RSS Token
+     * @param data 创建请求数据
+     */
+    createToken: async (data: CreateRssFeedTokenRequest): Promise<RssFeedTokenResponse> => {
+        // 将categoryFilter数组转换为JSON字符串（如果存在）
+        const payload = {
+            ...data,
+            categoryFilter: data.categoryFilter ? JSON.stringify(data.categoryFilter) : null,
+        };
+        const response = await api.post('/api/RssFeed/tokens', payload);
+        return response.data;
+    },
+
+    /**
+     * 获取当前用户的所有RSS Tokens
+     */
+    getTokens: async (): Promise<RssFeedTokenDto[]> => {
+        const response = await api.get('/api/RssFeed/tokens');
+        return response.data;
+    },
+
+    /**
+     * 撤销单个RSS Token
+     * @param tokenId Token的ID
+     */
+    revokeToken: async (tokenId: number): Promise<void> => {
+        await api.post(`/api/RssFeed/tokens/${tokenId}/revoke`);
+    },
+
+    /**
+     * 撤销所有RSS Tokens
+     */
+    revokeAll: async (): Promise<void> => {
+        await api.post('/api/RssFeed/tokens/revoke-all');
+    },
+
+    /**
+     * 生成RSS Feed URL（前端辅助函数）
+     * @param token Token的UUID
+     */
+    getFeedUrl: (token: string): string => {
+        return `${API_BASE_URL}/api/RssFeed/feed/${token}`;
+    },
+};
+
+// ==================== 反作弊系统 API（管理员专用）====================
+export const cheatLogs = {
+    /**
+     * 获取作弊日志列表（分页+筛选）
+     * @param filters 筛选条件
+     */
+    getLogs: async (filters: CheatLogFilters = {}): Promise<PaginatedResult<CheatLogDto>> => {
+        const params = new URLSearchParams({
+            page: (filters.page || 1).toString(),
+            pageSize: (filters.pageSize || 20).toString(),
+        });
+        
+        if (filters.userId !== undefined) {
+            params.append('userId', filters.userId.toString());
+        }
+        if (filters.detectionType) {
+            params.append('detectionType', filters.detectionType);
+        }
+
+        const response = await api.get(`/api/admin/logs/cheat?${params.toString()}`);
         return response.data;
     },
 };
