@@ -835,7 +835,26 @@
             "torrent": "Torrent",
             "createdAt": "Créé le",
             "status": "Statut",
+            "usage_stats": "Statistiques d'Utilisation",
+            "last_used": "Dernière Utilisation",
             "actions": "Actions"
+        },
+        "active_indicator": "Actif",
+        "announce_count": "{count} annonces",
+        "never_used": "Jamais utilisé",
+        "filters": {
+            "search_placeholder": "Rechercher un nom de torrent...",
+            "status_label": "Filtre de Statut",
+            "status_all": "Tous",
+            "status_active": "Actifs",
+            "status_revoked": "Révoqués",
+            "sort_by_label": "Trier par",
+            "sort_created_at": "Date de Création",
+            "sort_last_used": "Dernière Utilisation",
+            "sort_upload": "Upload",
+            "sort_download": "Download",
+            "showing": "Affichage de {count}",
+            "no_results": "Aucun identifiant correspondant trouvé"
         },
         "status": {
             "active": "Actif",
@@ -850,7 +869,40 @@
             "revokeSuccess": "Identifiant révoqué avec succès",
             "revokeFailed": "Échec de la révocation de l'identifiant",
             "revokeAllSuccess": "Tous les identifiants ont été révoqués avec succès",
+            "revokeAllSuccess_detail": "{count} identifiants révoqués avec succès affectant {torrentCount} torrents",
             "revokeAllFailed": "Échec de la révocation de tous les identifiants"
+        },
+        "bulk": {
+            "revoke_selected": "Révoquer la Sélection",
+            "revoke_reason": "Révocation en Lot",
+            "revoke_success": "{count} identifiants révoqués avec succès",
+            "revoke_success_detail": "{count} identifiants révoqués avec succès affectant {torrentCount} torrents",
+            "revoke_error": "Échec de la révocation en lot",
+            "modal_title": "Révoquer les Identifiants en Lot",
+            "modal_description": "Êtes-vous sûr de vouloir révoquer {count} identifiants sélectionnés ?",
+            "modal_warning": "Après révocation, ces torrents ne pourront plus être uploadés/téléchargés.",
+            "modal_cancel": "Annuler",
+            "modal_confirm": "Confirmer la Révocation"
+        },
+        "export": {
+            "csv_button": "Exporter CSV",
+            "json_button": "Exporter JSON",
+            "csv_success": "Fichier CSV exporté avec succès",
+            "json_success": "Fichier JSON exporté avec succès"
+        },
+        "edit_button": "Éditer",
+        "edit_success": "Token mis à jour avec succès",
+        "edit_error": "Échec de la mise à jour du token",
+        "edit_modal": {
+            "title": "Éditer le Token RSS",
+            "name_label": "Nom du Token",
+            "name_placeholder": "ex. Abonnement qBittorrent",
+            "feed_type_label": "Type de Flux",
+            "max_results_label": "Résultats Max",
+            "expires_at_label": "Date d'Expiration",
+            "expires_at_description": "Optionnel, laissez vide pour aucune expiration",
+            "cancel": "Annuler",
+            "confirm": "Mettre à jour"
         }
     },
     "rssFeedManagement": {
@@ -921,6 +973,19 @@
         "usage": {
             "count": "{count} fois",
             "never": "Jamais utilisé"
+        },
+        "details": {
+            "usage_stats": "Statistiques d'Utilisation",
+            "usage_count": "Nombre d'Utilisations",
+            "last_used": "Dernière Utilisation",
+            "client": "Client",
+            "ip": "Adresse IP"
+        },
+        "time": {
+            "just_now": "À l'instant",
+            "minutes_ago": "Il y a {count} minutes",
+            "hours_ago": "Il y a {count} heures",
+            "days_ago": "Il y a {count} jours"
         }
     },
     "cheatLogsPage": {

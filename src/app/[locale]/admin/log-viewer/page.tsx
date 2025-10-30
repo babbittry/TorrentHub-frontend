@@ -96,6 +96,7 @@ const LogViewerPage = () => {
                                         <TableColumn>{t('logViewer.cheatLogs.table.torrent')}</TableColumn>
                                         <TableColumn>{t('logViewer.cheatLogs.table.ip')}</TableColumn>
                                         <TableColumn>{t('logViewer.cheatLogs.table.detectionType')}</TableColumn>
+                                        <TableColumn>{t('logViewer.cheatLogs.table.details')}</TableColumn>
                                         <TableColumn>{t('logViewer.cheatLogs.table.date')}</TableColumn>
                                     </TableHeader>
                                     <TableBody items={cheatLogs}>
@@ -104,7 +105,8 @@ const LogViewerPage = () => {
                                                 <TableCell>{item.userName || `User #${item.userId}`}</TableCell>
                                                 <TableCell>{item.torrentName || 'N/A'}</TableCell>
                                                 <TableCell>{item.ipAddress || '-'}</TableCell>
-                                                <TableCell>{item.reason}</TableCell>
+                                                <TableCell>{item.detectionType}</TableCell>
+                                                <TableCell>{item.details || '-'}</TableCell>
                                                 <TableCell>{new Date(item.timestamp).toLocaleString()}</TableCell>
                                             </TableRow>
                                         )}

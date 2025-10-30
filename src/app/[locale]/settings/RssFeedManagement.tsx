@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { rssFeed } from '@/lib/api';
-import type { RssFeedTokenDto, CreateRssFeedTokenRequest, RssFeedType } from '@/lib/api';
+import { rssFeed, RssFeedType } from '@/lib/api';
+import type { RssFeedTokenDto, CreateRssFeedTokenRequest } from '@/lib/api';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
@@ -31,10 +31,11 @@ export default function RssFeedManagement() {
     const [tokens, setTokens] = useState<RssFeedTokenDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [revokeTarget, setRevokeTarget] = useState<RssFeedTokenDto | null>(null);
+    const [editTarget, setEditTarget] = useState<RssFeedTokenDto | null>(null);
     
     // 创建Token表单状态
     const [tokenName, setTokenName] = useState('');
-    const [feedType, setFeedType] = useState<string>('Latest');
+    const [feedType, setFeedType] = useState<RssFeedType>(RssFeedType.Latest);
     const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
     const [maxResults, setMaxResults] = useState('50');
     const [expiresAt, setExpiresAt] = useState('');
@@ -42,6 +43,7 @@ export default function RssFeedManagement() {
     const [copiedToken, setCopiedToken] = useState<string | null>(null);
     
     const { isOpen: isCreateModalOpen, onOpen: onCreateModalOpen, onClose: onCreateModalClose } = useDisclosure();
+    const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onClose: onEditModalClose } = useDisclosure();
     const { isOpen: isRevokeModalOpen, onOpen: onRevokeModalOpen, onClose: onRevokeModalClose } = useDisclosure();
     const { isOpen: isRevokeAllModalOpen, onOpen: onRevokeAllModalOpen, onClose: onRevokeAllModalClose } = useDisclosure();
     const { isOpen: isUrlModalOpen, onOpen: onUrlModalOpen, onClose: onUrlModalClose } = useDisclosure();
@@ -90,7 +92,7 @@ export default function RssFeedManagement() {
             
             // 重置表单
             setTokenName('');
-            setFeedType('Latest');
+            setFeedType(RssFeedType.Latest);
             setCategoryFilter([]);
             setMaxResults('50');
             setExpiresAt('');
@@ -101,6 +103,54 @@ export default function RssFeedManagement() {
                 title: t('create_error'),
                 description: (error as Error).message,
                 color: 'danger' 
+            });
+        }
+    };
+
+    const handleEditClick = (token: RssFeedTokenDto) => {
+        setEditTarget(token);
+        setTokenName(token.name || '');
+        setFeedType(token.feedType);
+        // categoryFilter 现在直接是数组，不需要 JSON.parse
+        setCategoryFilter(token.categoryFilter || []);
+        setMaxResults(token.maxResults.toString());
+        setExpiresAt(token.expiresAt ? new Date(token.expiresAt).toISOString().slice(0, 16) : '');
+        onEditModalOpen();
+    };
+
+    const handleConfirmEdit = async () => {
+        if (!editTarget) return;
+
+        try {
+            const request: CreateRssFeedTokenRequest = {
+                feedType,
+                name: tokenName || null,
+                categoryFilter: categoryFilter.length > 0 ? categoryFilter : null,
+                maxResults: parseInt(maxResults) || 50,
+                expiresAt: expiresAt || null,
+            };
+            
+            await rssFeed.updateToken(editTarget.id, request);
+            addToast({
+                title: t('edit_success'),
+                color: 'success'
+            });
+            
+            onEditModalClose();
+            
+            // 重置表单
+            setTokenName('');
+            setFeedType(RssFeedType.Latest);
+            setCategoryFilter([]);
+            setMaxResults('50');
+            setExpiresAt('');
+            
+            await loadTokens();
+        } catch (error) {
+            addToast({
+                title: t('edit_error'),
+                description: (error as Error).message,
+                color: 'danger'
             });
         }
     };
@@ -169,6 +219,27 @@ export default function RssFeedManagement() {
         return dateString ? new Date(dateString).toLocaleString() : t('never');
     };
 
+    // 格式化相对时间
+    const formatRelativeTime = (dateString: string | null): string => {
+        if (!dateString) return t('never');
+        
+        const now = new Date();
+        const date = new Date(dateString);
+        const diffMs = now.getTime() - date.getTime();
+        const diffMinutes = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+        
+        if (diffMinutes < 1) return t('time.just_now');
+        if (diffMinutes < 60) return t('time.minutes_ago', { count: diffMinutes });
+        if (diffHours < 24) return t('time.hours_ago', { count: diffHours });
+        return t('time.days_ago', { count: diffDays });
+    };
+
+    // 将数字枚举转换为翻译键
+    const getFeedTypeTranslation = (type: RssFeedType): string => {
+        return t(`feed_types.${RssFeedType[type].toLowerCase()}`);
+    };
 
     const activeCount = tokens.filter(t => t.isActive).length;
 
@@ -225,21 +296,34 @@ export default function RssFeedManagement() {
                                         <TableCell>
                                             <div>
                                                 <div className="font-semibold">{token.name || t('unnamed_token')}</div>
-                                                {token.categoryFilter && (
+                                                {token.categoryFilter && token.categoryFilter.length > 0 && (
                                                     <div className="text-xs text-default-500">
-                                                        {t('categories')}: {token.categoryFilter?.join(', ') || t('rssFeedManagement.form.categoryFilterHint')}
+                                                        {t('categories')}: {token.categoryFilter.join(', ')}
                                                     </div>
                                                 )}
                                             </div>
                                         </TableCell>
-                                        <TableCell>{token.feedType}</TableCell>
+                                        <TableCell>{getFeedTypeTranslation(token.feedType)}</TableCell>
                                         <TableCell>
-                                            <div className="text-sm">
-                                                <div>{t('used_count', { count: token.usageCount })}</div>
-                                                <div className="text-xs text-default-500">
-                                                    {t('last_used')}: {formatDate(token.lastUsedAt)}
+                                            <Tooltip content={
+                                                <div className="px-1 py-2">
+                                                    <div className="text-small font-bold">{t('details.usage_stats')}</div>
+                                                    <div className="text-tiny mt-1">
+                                                        <div>{t('details.usage_count')}: {token.usageCount}</div>
+                                                        <div>{t('details.last_used')}: {token.lastUsedAt ? formatDate(token.lastUsedAt) : t('never')}</div>
+                                                        {token.userAgent && <div>{t('details.client')}: {token.userAgent}</div>}
+                                                        {token.lastIp && <div>{t('details.ip')}: {token.lastIp}</div>}
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            }>
+                                                <div className="text-sm cursor-help">
+                                                    <div>{t('used_count', { count: token.usageCount })}</div>
+                                                    <div className="text-xs text-default-500">
+                                                        <div>{token.lastUsedAt ? formatRelativeTime(token.lastUsedAt) : t('never')}</div>
+                                                        {token.userAgent && <div>{token.userAgent.split('/')[0]}</div>}
+                                                    </div>
+                                                </div>
+                                            </Tooltip>
                                         </TableCell>
                                         <TableCell>{formatDate(token.createdAt)}</TableCell>
                                         <TableCell>
@@ -274,14 +358,24 @@ export default function RssFeedManagement() {
                                                     </Button>
                                                 </Tooltip>
                                                 {token.isActive && (
-                                                    <Button
-                                                        size="sm"
-                                                        color="danger"
-                                                        variant="flat"
-                                                        onPress={() => handleRevokeClick(token)}
-                                                    >
-                                                        {t('revoke_button')}
-                                                    </Button>
+                                                    <>
+                                                        <Button
+                                                            size="sm"
+                                                            color="primary"
+                                                            variant="flat"
+                                                            onPress={() => handleEditClick(token)}
+                                                        >
+                                                            {t('edit_button')}
+                                                        </Button>
+                                                        <Button
+                                                            size="sm"
+                                                            color="danger"
+                                                            variant="flat"
+                                                            onPress={() => handleRevokeClick(token)}
+                                                        >
+                                                            {t('revoke_button')}
+                                                        </Button>
+                                                    </>
                                                 )}
                                             </div>
                                         </TableCell>
@@ -307,12 +401,13 @@ export default function RssFeedManagement() {
                         
                         <Select
                             label={t('create_modal.feed_type_label')}
-                            selectedKeys={[feedType]}
-                            onChange={(e) => setFeedType(e.target.value)}
+                            selectedKeys={[feedType.toString()]}
+                            onChange={(e) => setFeedType(parseInt(e.target.value) as RssFeedType)}
                         >
-                            <SelectItem key="Latest">{t('feed_types.latest')}</SelectItem>
-                            <SelectItem key="Category">{t('feed_types.category')}</SelectItem>
-                            <SelectItem key="Bookmarks">{t('feed_types.bookmarks')}</SelectItem>
+                            <SelectItem key={RssFeedType.Latest.toString()}>{t('feed_types.latest')}</SelectItem>
+                            <SelectItem key={RssFeedType.Category.toString()}>{t('feed_types.category')}</SelectItem>
+                            <SelectItem key={RssFeedType.Bookmarks.toString()}>{t('feed_types.bookmarks')}</SelectItem>
+                            <SelectItem key={RssFeedType.Custom.toString()}>{t('feed_types.custom')}</SelectItem>
                         </Select>
                         
                         <Input
@@ -339,6 +434,57 @@ export default function RssFeedManagement() {
                     </Button>
                     <Button color="primary" onPress={handleCreateToken}>
                         {t('create_modal.confirm')}
+                    </Button>
+                </ModalFooter>
+            </Modal>
+
+            {/* 编辑Token模态框 */}
+            <Modal isOpen={isEditModalOpen} onClose={onEditModalClose} size="2xl">
+                <ModalHeader>{t('edit_modal.title')}</ModalHeader>
+                <ModalBody>
+                    <div className="space-y-4">
+                        <Input
+                            label={t('edit_modal.name_label')}
+                            placeholder={t('edit_modal.name_placeholder')}
+                            value={tokenName}
+                            onValueChange={setTokenName}
+                        />
+                        
+                        <Select
+                            label={t('edit_modal.feed_type_label')}
+                            selectedKeys={[feedType.toString()]}
+                            onChange={(e) => setFeedType(parseInt(e.target.value) as RssFeedType)}
+                        >
+                            <SelectItem key={RssFeedType.Latest.toString()}>{t('feed_types.latest')}</SelectItem>
+                            <SelectItem key={RssFeedType.Category.toString()}>{t('feed_types.category')}</SelectItem>
+                            <SelectItem key={RssFeedType.Bookmarks.toString()}>{t('feed_types.bookmarks')}</SelectItem>
+                            <SelectItem key={RssFeedType.Custom.toString()}>{t('feed_types.custom')}</SelectItem>
+                        </Select>
+                        
+                        <Input
+                            label={t('edit_modal.max_results_label')}
+                            type="number"
+                            value={maxResults}
+                            onValueChange={setMaxResults}
+                            min="10"
+                            max="100"
+                        />
+                        
+                        <Input
+                            label={t('edit_modal.expires_at_label')}
+                            type="datetime-local"
+                            value={expiresAt}
+                            onValueChange={setExpiresAt}
+                            description={t('edit_modal.expires_at_description')}
+                        />
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant="ghost" onPress={onEditModalClose}>
+                        {t('edit_modal.cancel')}
+                    </Button>
+                    <Button color="primary" onPress={handleConfirmEdit}>
+                        {t('edit_modal.confirm')}
                     </Button>
                 </ModalFooter>
             </Modal>

@@ -391,7 +391,7 @@
         "downgrade_success": "Successfully switched back to Email Verification.",
         "api_error": "An error occurred. Please try again.",
         "credentials_settings": "Download Credentials",
-        "rss_settings": "RSS Subscriptions",
+        "rss_settings": "RSS Subscriptions"
     },
     "invitesPage": {
         "title": "My Invites",
@@ -835,9 +835,28 @@
         },
         "table": {
             "torrent": "Torrent",
+            "usage_stats": "Usage Stats",
+            "last_used": "Last Used",
             "createdAt": "Created",
             "status": "Status",
             "actions": "Actions"
+        },
+        "active_indicator": "Active",
+        "announce_count": "{count} announces",
+        "never_used": "Never used",
+        "filters": {
+            "search_placeholder": "Search torrent name...",
+            "status_label": "Status Filter",
+            "status_all": "All",
+            "status_active": "Active",
+            "status_revoked": "Revoked",
+            "sort_by_label": "Sort By",
+            "sort_created_at": "Created Date",
+            "sort_last_used": "Last Used",
+            "sort_upload": "Upload",
+            "sort_download": "Download",
+            "showing": "Showing {count}",
+            "no_results": "No matching credentials found"
         },
         "status": {
             "active": "Active",
@@ -852,13 +871,33 @@
             "revokeSuccess": "Credential revoked successfully",
             "revokeFailed": "Failed to revoke credential",
             "revokeAllSuccess": "All credentials revoked successfully",
-            "revokeAllFailed": "Failed to revoke all credentials"
+            "revokeAllFailed": "Failed to revoke all credentials",
+            "revoke_all_success_detail": "Successfully revoked {count} credentials affecting {torrentCount} torrents"
+        },
+        "bulk": {
+            "revoke_selected": "Revoke Selected",
+            "revoke_reason": "Batch Revocation",
+            "revoke_success": "Successfully revoked {count} credentials",
+            "revoke_success_detail": "Successfully revoked {count} credentials affecting {torrentCount} torrents",
+            "revoke_error": "Failed to batch revoke credentials",
+            "modal_title": "Batch Revoke Credentials",
+            "modal_description": "Are you sure you want to revoke {count} selected credentials?",
+            "modal_warning": "After revocation, these torrents will no longer be able to upload/download.",
+            "modal_cancel": "Cancel",
+            "modal_confirm": "Confirm Revocation"
+        },
+        "export": {
+            "csv_button": "Export CSV",
+            "json_button": "Export JSON",
+            "csv_success": "CSV file exported successfully",
+            "json_success": "JSON file exported successfully"
         }
     },
     "rssFeedManagement": {
         "title": "RSS Subscription Management",
         "description": "Create independent RSS tokens for different RSS readers. Each token can be configured with different permissions.",
         "createToken": "Create New Token",
+        "edit_button": "Edit",
         "loadingTokens": "Loading tokens...",
         "noTokens": "No RSS tokens yet",
         "noTokensHint": "Create your first RSS token to start subscribing",
@@ -890,7 +929,20 @@
             "expiresAtHint": "Optional, leave empty for no expiration",
             "creating": "Creating...",
             "createSuccess": "Token created successfully",
-            "createFailed": "Failed to create token"
+            "createFailed": "Failed to create token",
+            "edit_success": "Token updated successfully",
+            "edit_error": "Failed to update token"
+        },
+        "edit_modal": {
+            "title": "Edit RSS Token",
+            "name_label": "Token Name",
+            "name_placeholder": "e.g., qBittorrent Subscription",
+            "feed_type_label": "Feed Type",
+            "max_results_label": "Max Results",
+            "expires_at_label": "Expiration Time",
+            "expires_at_description": "Optional, leave empty for no expiration",
+            "cancel": "Cancel",
+            "confirm": "Update"
         },
         "table": {
             "name": "Name",
@@ -923,6 +975,19 @@
         "usage": {
             "count": "{count} times",
             "never": "Never used"
+        },
+        "details": {
+            "usage_stats": "Usage Statistics",
+            "usage_count": "Usage Count",
+            "last_used": "Last Used",
+            "client": "Client",
+            "ip": "IP Address"
+        },
+        "time": {
+            "just_now": "Just now",
+            "minutes_ago": "{count} minutes ago",
+            "hours_ago": "{count} hours ago",
+            "days_ago": "{count} days ago"
         }
     },
     "cheatLogsPage": {

@@ -1,10 +1,67 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+
+// ==================== API 响应格式和错误处理 (U-14) ====================
+
+/**
+ * 统一的 API 响应包装器
+ */
+export interface ApiResponse<T> {
+    success: boolean;
+    data?: T;
+    message?: string;
+    errors?: Record<string, string[]>;
+}
+
+/**
+ * 自定义 API 错误类
+ */
+export class ApiError extends Error {
+    public readonly errors?: Record<string, string[]>;
+
+    constructor(message: string, errors?: Record<string, string[]>) {
+        super(message);
+        this.name = 'ApiError';
+        this.errors = errors;
+    }
+}
 
 // Base Axios instance
 const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5014",
     withCredentials: true,
 });
+
+/**
+ * 统一的 API 调用包装器
+ * @param requestPromise - 一个返回 AxiosResponse<ApiResponse<T>> 的 Promise
+ * @returns 返回解包后的数据 T
+ * @throws {ApiError} 如果请求失败或 success 为 false
+ */
+async function callApi<T>(requestPromise: Promise<AxiosResponse<ApiResponse<T>>>): Promise<T> {
+    try {
+        const response = await requestPromise;
+        const apiResponse = response.data;
+
+        if (apiResponse.success) {
+            // 后端可能在成功时不返回 data，但 TypeScript 类型需要它
+            return apiResponse.data as T;
+        } else {
+            throw new ApiError(apiResponse.message || 'An unknown API error occurred', apiResponse.errors);
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError<ApiResponse<unknown>>;
+            if (axiosError.response && axiosError.response.data) {
+                const errorData = axiosError.response.data;
+                throw new ApiError(errorData.message || axiosError.message, errorData.errors);
+            } else {
+                throw new ApiError(axiosError.message);
+            }
+        }
+        // 重新抛出非 axios 错误
+        throw error;
+    }
+}
 
 export default api;
 
@@ -1136,6 +1193,9 @@ export interface VoteDto {
     option?: string; // As per the actual endpoint requirement
 }
 
+/**
+ * Credential DTO - 下载凭证信息（U-9: 添加使用统计）
+ */
 export interface CredentialDto {
     id: number;
     torrentId: number;
@@ -1144,25 +1204,49 @@ export interface CredentialDto {
     isRevoked: boolean;
     createdAt: string; // ISO 8601 date-time
     revokedAt: string | null; // ISO 8601 date-time
+    
+    // U-9: 使用统计信息
+    totalUploadedBytes?: number;      // 总上传字节数
+    totalDownloadedBytes?: number;    // 总下载字节数
+    announceCount?: number;           // Announce 次数
+    firstUsedAt?: string | null;      // 首次使用时间
+    lastUsedAt?: string | null;       // 最后使用时间
+    lastIpAddress?: string | null;    // 最后使用的IP
+    lastUserAgent?: string | null;    // 最后使用的客户端
 }
 
 export interface RevokeCredentialRequest {
     reason?: string | null;
 }
 
-export enum RssFeedType {
-    Latest = "Latest",
-    Category = "Category",
-    Bookmarks = "Bookmarks",
-    Custom = "Custom",
+/**
+ * 批量撤销凭证响应 (U-5)
+ */
+export interface RevokeAllCredentialsResponse {
+    revokedCount: number;           // 撤销数量
+    affectedTorrentIds: number[];   // 受影响的种子ID列表
+    message: string;                // 结果消息
 }
 
+/**
+ * RSS Feed 类型枚举 - 数字枚举（U-6: 类型安全改进）
+ */
+export enum RssFeedType {
+    Latest = 0,
+    Category = 1,
+    Bookmarks = 2,
+    Custom = 3,
+}
+
+/**
+ * RSS Feed Token DTO（U-6: feedType 改为数字枚举）
+ */
 export interface RssFeedTokenDto {
     id: number;
     token: string; // UUID格式
-    feedType: string; // RssFeedType的字符串表示
+    feedType: RssFeedType; // 🔄 数字枚举（原为 string）
     name: string | null;
-    categoryFilter: string[] | null; // ✅ 数组类型（后端已修复）
+    categoryFilter: string[] | null; // ✅ 后端现在直接返回数组
     maxResults: number;
     isActive: boolean;
     expiresAt: string | null; // ISO 8601 date-time
@@ -1174,10 +1258,13 @@ export interface RssFeedTokenDto {
     revokedAt: string | null; // ISO 8601 date-time
 }
 
+/**
+ * 创建 RSS Feed Token 请求（U-6: feedType 改为数字枚举）
+ */
 export interface CreateRssFeedTokenRequest {
-    feedType: string; // "Latest" | "Category" | "Bookmarks" | "Custom"
+    feedType: RssFeedType; // 🔄 数字枚举
     name?: string | null;
-    categoryFilter?: string[] | null; // 数组类型，后端会处理转换
+    categoryFilter?: string[] | null; // 数组类型
     maxResults?: number; // 默认50
     expiresAt?: string | null; // ISO 8601 date-time
 }
@@ -1187,22 +1274,44 @@ export interface RssFeedTokenResponse {
     rssUrl: string;
 }
 
+// ==================== 作弊检测枚举 (U-1, U-6, U-8) ====================
+
+/**
+ * 作弊检测类型 - 数字枚举（与后端一致）
+ */
 export enum CheatDetectionType {
-    AnnounceFrequency = "AnnounceFrequency",
-    MultiLocation = "MultiLocation",
+    AnnounceFrequency = 1,
+    MultiLocation = 2,
 }
 
+/**
+ * 作弊严重等级 - 数字枚举
+ */
+export enum CheatSeverity {
+    Low = 1,      // 轻微
+    Medium = 2,   // 中等
+    High = 3,     // 严重
+    Critical = 4, // 致命
+}
+
+/**
+ * 作弊日志DTO
+ * @remarks
+ * - reason 字段已删除（U-1: 与 detectionType 冗余）
+ * - severity 字段已添加（U-8: 支持严重等级）
+ * - detectionType 改为数字枚举（U-6: 类型安全）
+ */
 export interface CheatLogDto {
     id: number;
     userId: number;
     userName: string | null;
     torrentId: number | null;
     torrentName: string | null;
-    detectionType: CheatDetectionType;
-    reason: string; // 检测原因（必填）
-    details: string | null; // 详细信息（可选）
+    detectionType: CheatDetectionType; // 数字枚举
+    severity: CheatSeverity;           // 严重等级
+    details: string | null;            // 详细信息（整合了原 reason 的内容）
     ipAddress: string | null;
-    timestamp: string; // ISO 8601 date-time（后端实际字段名）
+    timestamp: string; // ISO 8601 date-time
 }
 
 export interface CheatLogFilters {
@@ -1364,15 +1473,28 @@ export const torrentListing = {
 // ==================== Credential认证系统 API ====================
 export const credential = {
     /**
-     * 获取当前用户的所有凭证列表
-     * @param includeRevoked 是否包含已撤销的凭证（默认false）
+     * 获取当前用户的所有凭证列表（支持分页和筛选）
+     * @param options 查询选项
      */
-    getMy: async (includeRevoked: boolean = false): Promise<CredentialDto[]> => {
-        const params = new URLSearchParams({
-            includeRevoked: includeRevoked.toString(),
-        });
-        const response = await api.get(`/api/Credential/my?${params.toString()}`);
-        return response.data;
+    getMy: async (options?: {
+        searchKeyword?: string;
+        includeRevoked?: boolean;
+        onlyRevoked?: boolean;
+        sortBy?: string;
+        sortDirection?: string;
+        page?: number;
+        pageSize?: number;
+    }): Promise<PaginatedResult<CredentialDto>> => {
+        const params = new URLSearchParams();
+        if (options?.searchKeyword) params.append('SearchKeyword', options.searchKeyword);
+        if (options?.includeRevoked !== undefined) params.append('IncludeRevoked', options.includeRevoked.toString());
+        if (options?.onlyRevoked !== undefined) params.append('OnlyRevoked', options.onlyRevoked.toString());
+        if (options?.sortBy) params.append('SortBy', options.sortBy);
+        if (options?.sortDirection) params.append('SortDirection', options.sortDirection);
+        if (options?.page) params.append('Page', options.page.toString());
+        if (options?.pageSize) params.append('PageSize', options.pageSize.toString());
+
+        return callApi(api.get<ApiResponse<PaginatedResult<CredentialDto>>>(`/api/Credential/my?${params.toString()}`));
     },
 
     /**
@@ -1382,39 +1504,66 @@ export const credential = {
      */
     revoke: async (credentialUuid: string, reason?: string): Promise<void> => {
         const data: RevokeCredentialRequest = reason ? { reason } : {};
-        await api.post(`/api/Credential/revoke/${credentialUuid}`, data);
+        return callApi(api.post<ApiResponse<void>>(`/api/Credential/revoke/${credentialUuid}`, data));
     },
 
     /**
-     * 撤销当前用户的所有凭证（服务器端批量操作）
+     * 撤销当前用户的所有凭证
      * @param reason 撤销原因（可选）
+     * @returns 返回撤销统计信息
      */
-    revokeAll: async (reason?: string): Promise<void> => {
+    revokeAll: async (reason?: string): Promise<RevokeAllCredentialsResponse> => {
         const data: RevokeCredentialRequest = reason ? { reason } : {};
-        await api.post('/api/Credential/revoke-all', data);
+        return callApi(api.post<ApiResponse<RevokeAllCredentialsResponse>>('/api/Credential/revoke-all', data));
+    },
+
+    /**
+     * 批量撤销指定的凭证（使用UUID数组）
+     * @param credentialUuids 凭证UUID数组
+     * @param reason 撤销原因（可选）
+     * @returns 返回撤销统计信息
+     */
+    revokeBatch: async (credentialUuids: string[], reason?: string): Promise<RevokeAllCredentialsResponse> => {
+        const data = {
+            credentialIds: credentialUuids,
+            reason: reason || undefined,
+        };
+        return callApi(api.post<ApiResponse<RevokeAllCredentialsResponse>>('/api/Credential/revoke-batch', data));
     },
 
     /**
      * 获取指定种子的凭证信息
      * @param torrentId 种子ID
      */
-    getByTorrent: async (torrentId: number): Promise<CredentialDto> => {
-        const response = await api.get(`/api/Credential/torrent/${torrentId}`);
-        return response.data;
+    getByTorrent: async (torrentId: number): Promise<string> => {
+        return callApi(api.get<ApiResponse<string>>(`/api/Credential/torrent/${torrentId}`));
     },
 
     // ========== 管理员专用API ==========
     /**
-     * 获取指定用户的所有凭证（管理员）
+     * 获取指定用户的所有凭证（管理员，支持分页和筛选）
      * @param userId 用户ID
-     * @param includeRevoked 是否包含已撤销的凭证
+     * @param options 查询选项
      */
-    getUserCredentials: async (userId: number, includeRevoked: boolean = false): Promise<CredentialDto[]> => {
-        const params = new URLSearchParams({
-            includeRevoked: includeRevoked.toString(),
-        });
-        const response = await api.get(`/api/Credential/user/${userId}?${params.toString()}`);
-        return response.data;
+    getUserCredentials: async (userId: number, options?: {
+        searchKeyword?: string;
+        includeRevoked?: boolean;
+        onlyRevoked?: boolean;
+        sortBy?: string;
+        sortDirection?: string;
+        page?: number;
+        pageSize?: number;
+    }): Promise<PaginatedResult<CredentialDto>> => {
+        const params = new URLSearchParams();
+        if (options?.searchKeyword) params.append('SearchKeyword', options.searchKeyword);
+        if (options?.includeRevoked !== undefined) params.append('IncludeRevoked', options.includeRevoked.toString());
+        if (options?.onlyRevoked !== undefined) params.append('OnlyRevoked', options.onlyRevoked.toString());
+        if (options?.sortBy) params.append('SortBy', options.sortBy);
+        if (options?.sortDirection) params.append('SortDirection', options.sortDirection);
+        if (options?.page) params.append('Page', options.page.toString());
+        if (options?.pageSize) params.append('PageSize', options.pageSize.toString());
+
+        return callApi(api.get<ApiResponse<PaginatedResult<CredentialDto>>>(`/api/Credential/user/${userId}?${params.toString()}`));
     },
 
     /**
@@ -1423,27 +1572,43 @@ export const credential = {
      * @param reason 撤销原因
      */
     adminRevoke: async (credentialUuid: string, reason: string): Promise<void> => {
-        await api.post(`/api/Credential/admin/revoke/${credentialUuid}`, { reason });
+        return callApi(api.post<ApiResponse<void>>(`/api/Credential/admin/revoke/${credentialUuid}`, { reason }));
     },
 
     /**
      * 撤销指定用户的所有凭证（管理员）
      * @param userId 用户ID
      * @param reason 撤销原因
+     * @returns 返回撤销统计信息
      */
-    adminRevokeUser: async (userId: number, reason: string): Promise<void> => {
-        await api.post(`/api/Credential/admin/revoke-user/${userId}`, { reason });
+    adminRevokeUser: async (userId: number, reason: string): Promise<RevokeAllCredentialsResponse> => {
+        return callApi(api.post<ApiResponse<RevokeAllCredentialsResponse>>(`/api/Credential/admin/revoke-user/${userId}`, { reason }));
+    },
+
+    /**
+     * 批量撤销凭证（管理员）
+     * @param credentialUuids 凭证UUID数组
+     * @param reason 撤销原因
+     * @returns 返回撤销统计信息
+     */
+    adminRevokeBatch: async (credentialUuids: string[], reason: string): Promise<RevokeAllCredentialsResponse> => {
+        const data = {
+            credentialIds: credentialUuids,
+            reason,
+        };
+        return callApi(api.post<ApiResponse<RevokeAllCredentialsResponse>>('/api/Credential/admin/revoke-batch', data));
     },
 
     /**
      * 清理不活跃的凭证（管理员）
      * @param inactiveDays 不活跃天数阈值（默认90天）
+     * @returns 返回清理数量
      */
-    adminCleanup: async (inactiveDays: number = 90): Promise<void> => {
+    adminCleanup: async (inactiveDays: number = 90): Promise<number> => {
         const params = new URLSearchParams({
             inactiveDays: inactiveDays.toString(),
         });
-        await api.post(`/api/Credential/admin/cleanup?${params.toString()}`);
+        return callApi(api.post<ApiResponse<number>>(`/api/Credential/admin/cleanup?${params.toString()}`));
     },
 };
 
@@ -1454,17 +1619,26 @@ export const rssFeed = {
      * @param data 创建请求数据
      */
     createToken: async (data: CreateRssFeedTokenRequest): Promise<RssFeedTokenResponse> => {
-        // ✅ 后端已更新：直接接收数组，无需JSON.stringify
-        const response = await api.post('/api/RssFeed/tokens', data);
-        return response.data;
+        return callApi(api.post<ApiResponse<RssFeedTokenResponse>>('/api/RssFeed/tokens', data));
     },
 
     /**
      * 获取当前用户的所有RSS Tokens
      */
     getTokens: async (): Promise<RssFeedTokenDto[]> => {
-        const response = await api.get('/api/RssFeed/tokens');
-        return response.data;
+        return callApi(api.get<ApiResponse<RssFeedTokenDto[]>>('/api/RssFeed/tokens'));
+    },
+
+    /**
+     * 更新RSS Token（U-11：新增功能）
+     * @param tokenId Token的ID
+     * @param data 更新数据（所有字段均为可选）
+     * @remarks
+     * 后端端点: PATCH /api/RssFeed/tokens/{id}
+     * 响应格式: ApiResponse<RssFeedTokenDto>
+     */
+    updateToken: async (tokenId: number, data: Partial<CreateRssFeedTokenRequest>): Promise<RssFeedTokenDto> => {
+        return callApi(api.patch<ApiResponse<RssFeedTokenDto>>(`/api/RssFeed/tokens/${tokenId}`, data));
     },
 
     /**
@@ -1472,14 +1646,15 @@ export const rssFeed = {
      * @param tokenId Token的ID
      */
     revokeToken: async (tokenId: number): Promise<void> => {
-        await api.post(`/api/RssFeed/tokens/${tokenId}/revoke`);
+        return callApi(api.post<ApiResponse<void>>(`/api/RssFeed/tokens/${tokenId}/revoke`));
     },
 
     /**
      * 撤销所有RSS Tokens
+     * @returns 返回撤销数量
      */
-    revokeAll: async (): Promise<void> => {
-        await api.post('/api/RssFeed/tokens/revoke-all');
+    revokeAll: async (): Promise<number> => {
+        return callApi(api.post<ApiResponse<number>>('/api/RssFeed/tokens/revoke-all'));
     },
 
     /**
@@ -1492,6 +1667,24 @@ export const rssFeed = {
 };
 
 // ==================== 反作弊系统 API（管理员专用）====================
+
+/**
+ * CheatLog 处理状态接口（U-12）
+ */
+export interface ProcessCheatLogRequest {
+    notes?: string | null;
+}
+
+export interface BatchProcessCheatLogsRequest {
+    logIds: number[];
+    notes?: string | null;
+}
+
+export interface BatchProcessResponse {
+    processedCount: number;
+    totalRequested: number;
+}
+
 export const cheatLogs = {
     /**
      * 获取作弊日志列表（分页+筛选）
@@ -1506,11 +1699,35 @@ export const cheatLogs = {
         if (filters.userId !== undefined) {
             params.append('userId', filters.userId.toString());
         }
-        if (filters.detectionType) {
-            params.append('detectionType', filters.detectionType);
+        if (filters.detectionType !== undefined) {
+            params.append('detectionType', filters.detectionType.toString());
         }
 
-        const response = await api.get(`/api/admin/logs/cheat?${params.toString()}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<PaginatedResult<CheatLogDto>>>(`/api/admin/logs/cheat?${params.toString()}`));
+    },
+
+    /**
+     * 处理单个作弊日志（U-12）
+     * @param id 日志ID
+     * @param request 处理请求
+     */
+    processLog: async (id: number, request: ProcessCheatLogRequest): Promise<CheatLogDto> => {
+        return callApi(api.post<ApiResponse<CheatLogDto>>(`/api/admin/logs/cheat/${id}/process`, request));
+    },
+
+    /**
+     * 批量处理作弊日志（U-12）
+     * @param request 批量处理请求
+     */
+    processBatch: async (request: BatchProcessCheatLogsRequest): Promise<BatchProcessResponse> => {
+        return callApi(api.post<ApiResponse<BatchProcessResponse>>('/api/admin/logs/cheat/process-batch', request));
+    },
+
+    /**
+     * 取消处理作弊日志（U-12）
+     * @param id 日志ID
+     */
+    unprocessLog: async (id: number): Promise<void> => {
+        return callApi(api.post<ApiResponse<void>>(`/api/admin/logs/cheat/${id}/unprocess`));
     },
 };

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { cheatLogs } from '@/lib/api';
-import type { CheatLogDto, CheatLogFilters, CheatDetectionType } from '@/lib/api';
+import { cheatLogs, CheatDetectionType, CheatSeverity } from '@/lib/api';
+import type { CheatLogDto, CheatLogFilters } from '@/lib/api';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
@@ -72,12 +72,38 @@ export default function CheatLogsPage() {
 
     const getDetectionTypeColor = (type: CheatDetectionType) => {
         switch (type) {
-            case 'AnnounceFrequency':
+            case CheatDetectionType.AnnounceFrequency:
                 return 'warning';
-            case 'MultiLocation':
+            case CheatDetectionType.MultiLocation:
                 return 'danger';
             default:
                 return 'default';
+        }
+    };
+
+    const getSeverityColor = (severity: CheatSeverity) => {
+        switch (severity) {
+            case CheatSeverity.Low:
+                return 'success';
+            case CheatSeverity.Medium:
+                return 'warning';
+            case CheatSeverity.High:
+                return 'danger';
+            case CheatSeverity.Critical:
+                return 'danger';
+            default:
+                return 'default';
+        }
+    };
+
+    const getDetectionTypeName = (type: CheatDetectionType): string => {
+        switch (type) {
+            case CheatDetectionType.AnnounceFrequency:
+                return 'announce_frequency';
+            case CheatDetectionType.MultiLocation:
+                return 'multi_location';
+            default:
+                return 'unknown';
         }
     };
 
@@ -102,12 +128,19 @@ export default function CheatLogsPage() {
                         <Select
                             label={t('detection_type_label')}
                             placeholder={t('detection_type_placeholder')}
-                            selectedKeys={detectionType ? [detectionType] : []}
-                            onChange={(e) => setDetectionType(e.target.value as CheatDetectionType | '')}
+                            selectedKeys={detectionType ? [detectionType.toString()] : []}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                setDetectionType(value ? parseInt(value) as CheatDetectionType : '');
+                            }}
                         >
                             <SelectItem key="">{t('all_types')}</SelectItem>
-                            <SelectItem key="AnnounceFrequency">{t('types.announce_frequency')}</SelectItem>
-                            <SelectItem key="MultiLocation">{t('types.multi_location')}</SelectItem>
+                            <SelectItem key={CheatDetectionType.AnnounceFrequency.toString()}>
+                                {t('types.announce_frequency')}
+                            </SelectItem>
+                            <SelectItem key={CheatDetectionType.MultiLocation.toString()}>
+                                {t('types.multi_location')}
+                            </SelectItem>
                         </Select>
                         
                         <div className="flex gap-2 items-end">
@@ -149,6 +182,7 @@ export default function CheatLogsPage() {
                                     <TableColumn>{t('table.user')}</TableColumn>
                                     <TableColumn>{t('table.torrent')}</TableColumn>
                                     <TableColumn>{t('table.detection_type')}</TableColumn>
+                                    <TableColumn>{t('table.severity')}</TableColumn>
                                     <TableColumn>{t('table.details')}</TableColumn>
                                     <TableColumn>{t('table.ip_address')}</TableColumn>
                                     <TableColumn>{t('table.detected_at')}</TableColumn>
@@ -177,11 +211,20 @@ export default function CheatLogsPage() {
                                                 )}
                                             </TableCell>
                                             <TableCell>
-                                                <Chip 
-                                                    color={getDetectionTypeColor(log.detectionType)} 
+                                                <Chip
+                                                    color={getDetectionTypeColor(log.detectionType)}
                                                     size="sm"
                                                 >
-                                                    {t(`types.${log.detectionType.toLowerCase()}`)}
+                                                    {t(`types.${getDetectionTypeName(log.detectionType)}`)}
+                                                </Chip>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    color={getSeverityColor(log.severity)}
+                                                    size="sm"
+                                                    variant="flat"
+                                                >
+                                                    {t(`severity.${log.severity}`)}
                                                 </Chip>
                                             </TableCell>
                                             <TableCell>

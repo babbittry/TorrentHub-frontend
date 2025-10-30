@@ -835,7 +835,26 @@
             "torrent": "トレント",
             "createdAt": "作成日時",
             "status": "ステータス",
+            "usage_stats": "使用統計",
+            "last_used": "最終使用",
             "actions": "操作"
+        },
+        "active_indicator": "有効",
+        "announce_count": "{count}回アナウンス",
+        "never_used": "未使用",
+        "filters": {
+            "search_placeholder": "トレント名を検索...",
+            "status_label": "ステータス絞り込み",
+            "status_all": "すべて",
+            "status_active": "有効",
+            "status_revoked": "取り消し済み",
+            "sort_by_label": "並び替え",
+            "sort_created_at": "作成日時",
+            "sort_last_used": "最終使用",
+            "sort_upload": "アップロード",
+            "sort_download": "ダウンロード",
+            "showing": "{count}件表示中",
+            "no_results": "一致する認証情報が見つかりません"
         },
         "status": {
             "active": "有効",
@@ -850,7 +869,40 @@
             "revokeSuccess": "認証情報を取り消しました",
             "revokeFailed": "認証情報の取り消しに失敗しました",
             "revokeAllSuccess": "すべての認証情報を取り消しました",
+            "revokeAllSuccess_detail": "{count}個の認証情報を取り消しました（{torrentCount}個のトレントに影響）",
             "revokeAllFailed": "すべての認証情報の取り消しに失敗しました"
+        },
+        "bulk": {
+            "revoke_selected": "選択を取り消す",
+            "revoke_reason": "一括取り消し",
+            "revoke_success": "{count}件の認証情報を取り消しました",
+            "revoke_success_detail": "{count}件の認証情報を取り消しました（{torrentCount}個のトレントに影響）",
+            "revoke_error": "一括取り消しに失敗しました",
+            "modal_title": "認証情報を一括取り消し",
+            "modal_description": "選択した{count}件の認証情報を取り消してもよろしいですか？",
+            "modal_warning": "取り消し後、これらのトレントはアップロード/ダウンロードできなくなります。",
+            "modal_cancel": "キャンセル",
+            "modal_confirm": "取り消しを確認"
+        },
+        "export": {
+            "csv_button": "CSVエクスポート",
+            "json_button": "JSONエクスポート",
+            "csv_success": "CSVファイルをエクスポートしました",
+            "json_success": "JSONファイルをエクスポートしました"
+        },
+        "edit_button": "編集",
+        "edit_success": "Tokenを更新しました",
+        "edit_error": "Tokenの更新に失敗しました",
+        "edit_modal": {
+            "title": "RSS Tokenを編集",
+            "name_label": "トークン名",
+            "name_placeholder": "例：qBittorrent購読",
+            "feed_type_label": "フィードタイプ",
+            "max_results_label": "最大結果数",
+            "expires_at_label": "有効期限",
+            "expires_at_description": "オプション、空白のままにすると期限なし",
+            "cancel": "キャンセル",
+            "confirm": "更新"
         }
     },
     "rssFeedManagement": {
@@ -921,7 +973,22 @@
         "usage": {
             "count": "{count}回",
             "never": "未使用"
-        }
+        },
+        "details": {
+            "usage_stats": "使用統計",
+            "usage_count": "使用回数",
+            "last_used": "最終使用",
+            "client": "クライアント",
+            "ip": "IPアドレス"
+        },
+        "time": {
+            "just_now": "たった今",
+            "minutes_ago": "{count}分前",
+            "hours_ago": "{count}時間前",
+            "days_ago": "{count}日前"
+        },
+        "used_count": "{count}回使用",
+        "never": "未使用"
     },
     "cheatLogsPage": {
         "title": "不正行為ログ",

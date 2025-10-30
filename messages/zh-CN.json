@@ -860,13 +860,33 @@
         "revoke_success": "凭证撤销成功",
         "revoke_error": "凭证撤销失败",
         "revoke_all_success": "所有凭证已撤销",
+        "revoke_all_success_detail": "成功撤销 {count} 个凭证，影响 {torrentCount} 个种子",
         "revoke_all_error": "批量撤销失败",
         "revoke_all_reason": "用户批量撤销",
         "table": {
             "torrent_name": "种子名称",
+            "usage_stats": "使用统计",
+            "last_used": "最后使用",
             "created_at": "创建时间",
             "status": "状态",
             "actions": "操作"
+        },
+        "active_indicator": "活跃",
+        "announce_count": "Announce {count} 次",
+        "never_used": "从未使用",
+        "filters": {
+            "search_placeholder": "搜索种子名称...",
+            "status_label": "状态筛选",
+            "status_all": "全部",
+            "status_active": "有效",
+            "status_revoked": "已撤销",
+            "sort_by_label": "排序方式",
+            "sort_created_at": "创建时间",
+            "sort_last_used": "最后使用",
+            "sort_upload": "上传量",
+            "sort_download": "下载量",
+            "showing": "显示 {count} 条",
+            "no_results": "没有找到匹配的凭证"
         },
         "status": {
             "active": "有效",
@@ -885,6 +905,24 @@
             "warning": "此操作将导致所有种子无法继续上传/下载！此操作不可撤销！",
             "cancel": "取消",
             "confirm": "确认撤销全部"
+        },
+        "bulk": {
+            "revoke_selected": "撤销选中",
+            "revoke_reason": "批量撤销",
+            "revoke_success": "成功撤销 {count} 个凭证",
+            "revoke_success_detail": "成功撤销 {count} 个凭证，影响 {torrentCount} 个种子",
+            "revoke_error": "批量撤销失败",
+            "modal_title": "批量撤销凭证",
+            "modal_description": "确定要撤销选中的 {count} 个凭证吗？",
+            "modal_warning": "撤销后，这些种子将无法继续上传/下载。",
+            "modal_cancel": "取消",
+            "modal_confirm": "确认撤销"
+        },
+        "export": {
+            "csv_button": "导出CSV",
+            "json_button": "导出JSON",
+            "csv_success": "CSV文件导出成功",
+            "json_success": "JSON文件导出成功"
         }
     },
     "rssFeedManagement": {
@@ -896,10 +934,13 @@
         "total_tokens": "共 {count} 个Token",
         "active_tokens": "有效: {count}",
         "create_button": "创建Token",
+        "edit_button": "编辑",
         "revoke_button": "撤销",
         "revoke_all_button": "撤销所有Token",
         "create_success": "Token创建成功",
         "create_error": "Token创建失败",
+        "edit_success": "Token更新成功",
+        "edit_error": "Token更新失败",
         "revoke_success": "Token撤销成功",
         "revoke_error": "Token撤销失败",
         "revoke_all_success": "所有Token已撤销",
@@ -912,6 +953,19 @@
         "used_count": "使用 {count} 次",
         "last_used": "最后使用",
         "never": "从未使用",
+        "details": {
+            "usage_stats": "使用统计",
+            "usage_count": "使用次数",
+            "last_used": "最后使用",
+            "client": "客户端",
+            "ip": "IP地址"
+        },
+        "time": {
+            "just_now": "刚刚",
+            "minutes_ago": "{count} 分钟前",
+            "hours_ago": "{count} 小时前",
+            "days_ago": "{count} 天前"
+        },
         "table": {
             "name": "名称",
             "feed_type": "订阅类型",
@@ -928,7 +982,8 @@
         "feed_types": {
             "latest": "最新种子",
             "category": "分类订阅",
-            "bookmarks": "我的收藏"
+            "bookmarks": "我的收藏",
+            "custom": "自定义"
         },
         "create_modal": {
             "title": "创建RSS Token",
@@ -940,6 +995,17 @@
             "expires_at_description": "留空则永不过期",
             "cancel": "取消",
             "confirm": "创建"
+        },
+        "edit_modal": {
+            "title": "编辑RSS Token",
+            "name_label": "Token名称",
+            "name_placeholder": "例如：qBittorrent订阅",
+            "feed_type_label": "订阅类型",
+            "max_results_label": "最大结果数",
+            "expires_at_label": "过期时间（可选）",
+            "expires_at_description": "留空则永不过期",
+            "cancel": "取消",
+            "confirm": "更新"
         },
         "url_modal": {
             "title": "RSS订阅链接",
@@ -980,6 +1046,7 @@
             "user": "用户",
             "torrent": "种子",
             "detection_type": "检测类型",
+            "severity": "严重等级",
             "details": "详情",
             "ip_address": "IP地址",
             "detected_at": "检测时间"
@@ -989,6 +1056,12 @@
             "announcefrequency": "Announce频率异常",
             "multi_location": "多地做种",
             "multilocation": "多地做种"
+        },
+        "severity": {
+            "1": "轻微",
+            "2": "中等",
+            "3": "严重",
+            "4": "致命"
         }
     }
 }

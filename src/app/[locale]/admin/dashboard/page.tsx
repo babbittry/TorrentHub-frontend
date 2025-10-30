@@ -125,7 +125,7 @@ const AdminDashboard = () => {
                                 {(item) => (
                                     <TableRow key={item.id}>
                                         <TableCell>{item.userName || `User #${item.userId}`}</TableCell>
-                                        <TableCell>{item.reason}</TableCell>
+                                        <TableCell>{item.details || '-'}</TableCell>
                                         <TableCell>{new Date(item.timestamp).toLocaleString()}</TableCell>
                                     </TableRow>
                                 )}
