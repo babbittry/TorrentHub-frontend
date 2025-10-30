@@ -12,6 +12,7 @@ import { Checkbox } from "@heroui/checkbox";
 import { Modal, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@heroui/modal';
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
+import { Pagination } from "@heroui/pagination";
 import { addToast } from '@heroui/toast';
 import { Link } from '@/i18n/navigation';
 
@@ -36,16 +37,35 @@ export default function CredentialManagement() {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [sortBy, setSortBy] = useState<SortOption>('createdAt');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+    
+    // 分页状态
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
+    const [totalItems, setTotalItems] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     const loadCredentials = async () => {
         setIsLoading(true);
         try {
-            // 使用新的分页API格式
+            // 根据筛选条件构建API参数
+            const includeRevoked = statusFilter === 'all' || statusFilter === 'revoked';
+            const onlyRevoked = statusFilter === 'revoked';
+            
             const result = await credential.getMy({
-                includeRevoked: true,
-                pageSize: 1000 // 暂时获取所有凭证
+                searchKeyword: searchQuery.trim() || undefined,
+                includeRevoked,
+                onlyRevoked,
+                sortBy: sortBy === 'uploadBytes' ? 'TotalUploadedBytes' :
+                       sortBy === 'downloadBytes' ? 'TotalDownloadedBytes' :
+                       sortBy === 'lastUsedAt' ? 'LastUsedAt' : 'CreatedAt',
+                sortDirection: sortOrder === 'asc' ? 'Ascending' : 'Descending',
+                page: currentPage,
+                pageSize: pageSize
             });
+            
             setCredentials(result.items);
+            setTotalItems(result.totalItems);
+            setTotalPages(result.totalPages);
         } catch (error) {
             addToast({
                 title: t('load_error'),
@@ -59,7 +79,14 @@ export default function CredentialManagement() {
 
     useEffect(() => {
         loadCredentials();
-    }, []);
+    }, [currentPage, pageSize, searchQuery, statusFilter, sortBy, sortOrder]);
+    
+    // 当筛选条件改变时，重置到第一页
+    useEffect(() => {
+        if (currentPage !== 1) {
+            setCurrentPage(1);
+        }
+    }, [searchQuery, statusFilter, sortBy, sortOrder]);
 
     const handleRevokeClick = (cred: CredentialDto) => {
         setRevokeTarget(cred);
@@ -115,7 +142,7 @@ export default function CredentialManagement() {
     // 批量选择处理
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
-            const activeCredentials = filteredAndSortedCredentials
+            const activeCredentials = credentials
                 .filter(c => !c.isRevoked)
                 .map(c => c.credential);
             setSelectedCredentials(new Set(activeCredentials));
@@ -163,14 +190,39 @@ export default function CredentialManagement() {
         }
     };
 
-    // 导出功能
-    const handleExport = (format: ExportFormat) => {
-        const dataToExport = filteredAndSortedCredentials;
-        
-        if (format === 'csv') {
-            exportToCSV(dataToExport);
-        } else {
-            exportToJSON(dataToExport);
+    // 导出功能 - 导出所有数据（不仅当前页）
+    const handleExport = async (format: ExportFormat) => {
+        try {
+            setIsLoading(true);
+            // 获取所有凭证用于导出
+            const includeRevoked = statusFilter === 'all' || statusFilter === 'revoked';
+            const onlyRevoked = statusFilter === 'revoked';
+            
+            const result = await credential.getMy({
+                searchKeyword: searchQuery.trim() || undefined,
+                includeRevoked,
+                onlyRevoked,
+                sortBy: sortBy === 'uploadBytes' ? 'TotalUploadedBytes' :
+                       sortBy === 'downloadBytes' ? 'TotalDownloadedBytes' :
+                       sortBy === 'lastUsedAt' ? 'LastUsedAt' : 'CreatedAt',
+                sortDirection: sortOrder === 'asc' ? 'Ascending' : 'Descending',
+                page: 1,
+                pageSize: 10000 // 获取所有数据用于导出
+            });
+            
+            if (format === 'csv') {
+                exportToCSV(result.items);
+            } else {
+                exportToJSON(result.items);
+            }
+        } catch (error) {
+            addToast({
+                title: t('export.error'),
+                description: (error as Error).message,
+                color: 'danger'
+            });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -280,56 +332,16 @@ export default function CredentialManagement() {
         return lastUsed > sevenDaysAgo;
     };
 
-    // 过滤和排序逻辑
-    const filteredAndSortedCredentials = useMemo(() => {
-        let result = [...credentials];
-        
-        // 1. 搜索过滤
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
-            result = result.filter(cred =>
-                cred.torrentName.toLowerCase().includes(query)
-            );
-        }
-        
-        // 2. 状态过滤
-        if (statusFilter === 'active') {
-            result = result.filter(cred => !cred.isRevoked);
-        } else if (statusFilter === 'revoked') {
-            result = result.filter(cred => cred.isRevoked);
-        }
-        
-        // 3. 排序
-        result.sort((a, b) => {
-            let compareValue = 0;
-            
-            switch (sortBy) {
-                case 'createdAt':
-                    compareValue = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-                    break;
-                case 'lastUsedAt':
-                    const aTime = a.lastUsedAt ? new Date(a.lastUsedAt).getTime() : 0;
-                    const bTime = b.lastUsedAt ? new Date(b.lastUsedAt).getTime() : 0;
-                    compareValue = aTime - bTime;
-                    break;
-                case 'uploadBytes':
-                    compareValue = (a.totalUploadedBytes || 0) - (b.totalUploadedBytes || 0);
-                    break;
-                case 'downloadBytes':
-                    compareValue = (a.totalDownloadedBytes || 0) - (b.totalDownloadedBytes || 0);
-                    break;
-            }
-            
-            return sortOrder === 'asc' ? compareValue : -compareValue;
-        });
-        
-        return result;
-    }, [credentials, searchQuery, statusFilter, sortBy, sortOrder]);
-
-    const activeCount = credentials.filter(c => !c.isRevoked).length;
-    const activeCredentialsInView = filteredAndSortedCredentials.filter(c => !c.isRevoked);
+    // 当前页的活跃凭证
+    const activeCredentialsInView = credentials.filter(c => !c.isRevoked);
     const allActiveSelected = activeCredentialsInView.length > 0 &&
         activeCredentialsInView.every(c => selectedCredentials.has(c.credential));
+    
+    // 统计信息（显示服务器端的总数）
+    const activeCount = useMemo(() => {
+        // 这里只是估算，真实数字由后端提供
+        return credentials.filter(c => !c.isRevoked).length;
+    }, [credentials]);
 
     return (
         <Card>
@@ -345,7 +357,7 @@ export default function CredentialManagement() {
                             color="primary"
                             variant="flat"
                             onPress={() => handleExport('csv')}
-                            isDisabled={filteredAndSortedCredentials.length === 0}
+                            isDisabled={totalItems === 0}
                             startContent={
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -358,7 +370,7 @@ export default function CredentialManagement() {
                             color="primary"
                             variant="flat"
                             onPress={() => handleExport('json')}
-                            isDisabled={filteredAndSortedCredentials.length === 0}
+                            isDisabled={totalItems === 0}
                             startContent={
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -442,24 +454,25 @@ export default function CredentialManagement() {
                 </div>
                 
                 <div className="flex gap-4 text-sm">
-                    <span>{t('total_credentials', { count: credentials.length })}</span>
-                    <span className="text-success">{t('active_credentials', { count: activeCount })}</span>
-                    <span className="text-danger">{t('revoked_credentials', { count: credentials.length - activeCount })}</span>
-                    {filteredAndSortedCredentials.length !== credentials.length && (
-                        <span className="text-primary">
-                            {t('filters.showing', { count: filteredAndSortedCredentials.length })}
-                        </span>
-                    )}
+                    <span>{t('total_credentials', { count: totalItems })}</span>
+                    <span className="text-primary">
+                        {t('filters.showing_page', {
+                            from: (currentPage - 1) * pageSize + 1,
+                            to: Math.min(currentPage * pageSize, totalItems),
+                            total: totalItems
+                        })}
+                    </span>
                 </div>
             </CardHeader>
             <CardBody>
                 {isLoading ? (
                     <p className="text-center py-8">{t('loading')}</p>
-                ) : credentials.length === 0 ? (
+                ) : totalItems === 0 ? (
                     <p className="text-center py-8 text-default-500">{t('no_credentials')}</p>
-                ) : filteredAndSortedCredentials.length === 0 ? (
+                ) : credentials.length === 0 ? (
                     <p className="text-center py-8 text-default-500">{t('filters.no_results')}</p>
                 ) : (
+                    <>
                     <Table aria-label="Credentials table">
                         <TableHeader>
                             <TableColumn width={50}>
@@ -478,7 +491,7 @@ export default function CredentialManagement() {
                             <TableColumn>{t('table.actions')}</TableColumn>
                         </TableHeader>
                         <TableBody>
-                            {filteredAndSortedCredentials.map((cred) => (
+                            {credentials.map((cred) => (
                                 <TableRow key={cred.id}>
                                     <TableCell>
                                         {/* 单个复选框 */}
@@ -558,6 +571,38 @@ export default function CredentialManagement() {
                             ))}
                         </TableBody>
                     </Table>
+                    
+                    {/* 分页控件 */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 px-2">
+                        <div className="flex items-center gap-2">
+                            <span className="text-small text-default-400">
+                                {t('pagination.rows_per_page')}:
+                            </span>
+                            <Select
+                                size="sm"
+                                selectedKeys={[pageSize.toString()]}
+                                onChange={(e) => {
+                                    setPageSize(parseInt(e.target.value));
+                                    setCurrentPage(1);
+                                }}
+                                className="w-20"
+                            >
+                                <SelectItem key="10">10</SelectItem>
+                                <SelectItem key="20">20</SelectItem>
+                                <SelectItem key="50">50</SelectItem>
+                                <SelectItem key="100">100</SelectItem>
+                            </Select>
+                        </div>
+                        
+                        <Pagination
+                            total={totalPages}
+                            page={currentPage}
+                            onChange={setCurrentPage}
+                            showControls
+                            size="sm"
+                        />
+                    </div>
+                    </>
                 )}
             </CardBody>
 

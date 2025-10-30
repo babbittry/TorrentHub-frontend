@@ -886,6 +886,7 @@
             "sort_upload": "上传量",
             "sort_download": "下载量",
             "showing": "显示 {count} 条",
+            "showing_page": "显示 {from}-{to} / 共 {total} 条",
             "no_results": "没有找到匹配的凭证"
         },
         "status": {
@@ -922,7 +923,11 @@
             "csv_button": "导出CSV",
             "json_button": "导出JSON",
             "csv_success": "CSV文件导出成功",
-            "json_success": "JSON文件导出成功"
+            "json_success": "JSON文件导出成功",
+            "error": "导出失败"
+        },
+        "pagination": {
+            "rows_per_page": "每页显示"
         }
     },
     "rssFeedManagement": {
