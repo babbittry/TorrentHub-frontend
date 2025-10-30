@@ -185,14 +185,14 @@ export default function CheatLogsPage() {
                                                 </Chip>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="max-w-md truncate" title={log.details}>
-                                                    {log.details}
+                                                <div className="max-w-md truncate" title={log.details || undefined}>
+                                                    {log.details || '-'}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
                                                 <span className="font-mono text-sm">{log.ipAddress}</span>
                                             </TableCell>
-                                            <TableCell>{formatDate(log.detectedAt)}</TableCell>
+                                            <TableCell>{formatDate(log.timestamp)}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

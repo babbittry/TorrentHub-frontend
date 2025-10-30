@@ -169,14 +169,6 @@ export default function RssFeedManagement() {
         return dateString ? new Date(dateString).toLocaleString() : t('never');
     };
 
-    const parseCategoryFilter = (filterString: string | null): string[] => {
-        if (!filterString) return [];
-        try {
-            return JSON.parse(filterString);
-        } catch {
-            return [];
-        }
-    };
 
     const activeCount = tokens.filter(t => t.isActive).length;
 
@@ -235,7 +227,7 @@ export default function RssFeedManagement() {
                                                 <div className="font-semibold">{token.name || t('unnamed_token')}</div>
                                                 {token.categoryFilter && (
                                                     <div className="text-xs text-default-500">
-                                                        {t('categories')}: {parseCategoryFilter(token.categoryFilter).join(', ')}
+                                                        {t('categories')}: {token.categoryFilter?.join(', ') || t('rssFeedManagement.form.categoryFilterHint')}
                                                     </div>
                                                 )}
                                             </div>

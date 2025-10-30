@@ -1162,7 +1162,7 @@ export interface RssFeedTokenDto {
     token: string; // UUID格式
     feedType: string; // RssFeedType的字符串表示
     name: string | null;
-    categoryFilter: string | null; // JSON字符串格式，例如: '["Movie", "TV"]'
+    categoryFilter: string[] | null; // ✅ 数组类型（后端已修复）
     maxResults: number;
     isActive: boolean;
     expiresAt: string | null; // ISO 8601 date-time
@@ -1199,9 +1199,10 @@ export interface CheatLogDto {
     torrentId: number | null;
     torrentName: string | null;
     detectionType: CheatDetectionType;
-    details: string;
-    ipAddress: string;
-    detectedAt: string; // ISO 8601 date-time
+    reason: string; // 检测原因（必填）
+    details: string | null; // 详细信息（可选）
+    ipAddress: string | null;
+    timestamp: string; // ISO 8601 date-time（后端实际字段名）
 }
 
 export interface CheatLogFilters {
@@ -1385,6 +1386,15 @@ export const credential = {
     },
 
     /**
+     * 撤销当前用户的所有凭证（服务器端批量操作）
+     * @param reason 撤销原因（可选）
+     */
+    revokeAll: async (reason?: string): Promise<void> => {
+        const data: RevokeCredentialRequest = reason ? { reason } : {};
+        await api.post('/api/Credential/revoke-all', data);
+    },
+
+    /**
      * 获取指定种子的凭证信息
      * @param torrentId 种子ID
      */
@@ -1444,12 +1454,8 @@ export const rssFeed = {
      * @param data 创建请求数据
      */
     createToken: async (data: CreateRssFeedTokenRequest): Promise<RssFeedTokenResponse> => {
-        // 将categoryFilter数组转换为JSON字符串（如果存在）
-        const payload = {
-            ...data,
-            categoryFilter: data.categoryFilter ? JSON.stringify(data.categoryFilter) : null,
-        };
-        const response = await api.post('/api/RssFeed/tokens', payload);
+        // ✅ 后端已更新：直接接收数组，无需JSON.stringify
+        const response = await api.post('/api/RssFeed/tokens', data);
         return response.data;
     },
 

@@ -103,9 +103,9 @@ const LogViewerPage = () => {
                                             <TableRow key={item.id}>
                                                 <TableCell>{item.userName || `User #${item.userId}`}</TableCell>
                                                 <TableCell>{item.torrentName || 'N/A'}</TableCell>
-                                                <TableCell>{item.ipAddress}</TableCell>
-                                                <TableCell>{item.detectionType}</TableCell>
-                                                <TableCell>{new Date(item.detectedAt).toLocaleString()}</TableCell>
+                                                <TableCell>{item.ipAddress || '-'}</TableCell>
+                                                <TableCell>{item.reason}</TableCell>
+                                                <TableCell>{new Date(item.timestamp).toLocaleString()}</TableCell>
                                             </TableRow>
                                         )}
                                     </TableBody>

@@ -71,22 +71,19 @@ export default function CredentialManagement() {
 
     const handleConfirmRevokeAll = async () => {
         try {
-            // 撤销所有有效凭证
-            const activeCredentials = credentials.filter(c => !c.isRevoked);
-            await Promise.all(
-                activeCredentials.map(c => credential.revoke(c.credential, t('revoke_all_reason')))
-            );
-            addToast({ 
+            // 使用服务器端批量撤销API（原子操作）
+            await credential.revokeAll(t('revoke_all_reason'));
+            addToast({
                 title: t('revoke_all_success'),
-                color: 'success' 
+                color: 'success'
             });
             await loadCredentials();
             onRevokeAllModalClose();
         } catch (error) {
-            addToast({ 
+            addToast({
                 title: t('revoke_all_error'),
                 description: (error as Error).message,
-                color: 'danger' 
+                color: 'danger'
             });
         }
     };
