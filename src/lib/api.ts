@@ -213,6 +213,14 @@ export interface TwoFactorVerificationRequestDto {
     code: string;
 }
 
+/**
+ * 2FA 设置响应 (新增 - Users 模块需要)
+ */
+export interface TwoFactorSetupDto {
+    manualEntryKey: string;
+    qrCodeImageUrl: string;
+}
+
 export interface ChangePasswordDto {
     currentPassword: string;
     newPassword: string;
@@ -728,17 +736,16 @@ export const auth = {
 // Users API Functions
 export const users = {
     getMe: async (): Promise<UserPrivateProfileDto> => {
-        const response = await api.get('/api/users/me');
-        return response.data;
+        return callApi(api.get<ApiResponse<UserPrivateProfileDto>>('/api/users/me'));
     },
-    updateMe: async (user: UpdateUserProfileDto): Promise<void> => {
-        await api.patch('/api/users/me', user);
+    updateMe: async (user: UpdateUserProfileDto): Promise<UserPrivateProfileDto> => {
+        return callApi(api.patch<ApiResponse<UserPrivateProfileDto>>('/api/users/me', user));
     },
     updateUserTitle: async (title: string): Promise<void> => {
-        await api.put('/api/users/me/title', { title });
+        return callApi(api.put<ApiResponse<void>>('/api/users/me/title', { title }));
     },
     changePassword: async (passwords: ChangePasswordDto): Promise<void> => {
-        await api.post('/api/users/me/password', passwords);
+        return callApi(api.post<ApiResponse<void>>('/api/users/me/password', passwords));
     },
     getUsers: async (page: number = 1, pageSize: number = 10, searchTerm?: string): Promise<UserPublicProfileDto[]> => {
         const params = new URLSearchParams({
@@ -748,42 +755,35 @@ export const users = {
         if (searchTerm) {
             params.append('searchTerm', searchTerm);
         }
-        const response = await api.get(`/api/users?${params.toString()}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<UserPublicProfileDto[]>>(`/api/users?${params.toString()}`));
     },
     getUserById: async (id: number): Promise<UserPublicProfileDto> => {
-        const response = await api.get(`/api/users/${id}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<UserPublicProfileDto>>(`/api/users/${id}`));
     },
-    updateUserAdmin: async (id: number, user: UpdateUserAdminDto): Promise<void> => {
-        await api.patch(`/api/users/${id}`, user);
+    updateUserAdmin: async (id: number, user: UpdateUserAdminDto): Promise<UserPublicProfileDto> => {
+        return callApi(api.patch<ApiResponse<UserPublicProfileDto>>(`/api/users/${id}`, user));
     },
     getUserUploads: async (id: number): Promise<TorrentDto[]> => {
-        const response = await api.get(`/api/users/${id}/uploads`);
-        return response.data;
+        return callApi(api.get<ApiResponse<TorrentDto[]>>(`/api/users/${id}/uploads`));
     },
     getUserPeers: async (id: number): Promise<PeerDto[]> => {
-        const response = await api.get(`/api/users/${id}/peers`);
-        return response.data;
+        return callApi(api.get<ApiResponse<PeerDto[]>>(`/api/users/${id}/peers`));
     },
-    getUserBadges: async (userId: number): Promise<unknown> => {
-        const response = await api.get(`/api/users/${userId}/badges`);
-        return response.data;
+    getUserBadges: async (userId: number): Promise<BadgeDto[]> => {
+        return callApi(api.get<ApiResponse<BadgeDto[]>>(`/api/users/${userId}/badges`));
     },
 
-    getMyBadges: async (): Promise<unknown> => {
-        const response = await api.get('/api/users/me/badges');
-        return response.data;
+    getMyBadges: async (): Promise<BadgeDto[]> => {
+        return callApi(api.get<ApiResponse<BadgeDto[]>>('/api/users/me/badges'));
     },
-    generate2faSetup: async (): Promise<{ qrCodeUri: string, manualEntryKey: string }> => {
-        const response = await api.post('/api/users/me/2fa/generate-setup');
-        return response.data;
+    generate2faSetup: async (): Promise<TwoFactorSetupDto> => {
+        return callApi(api.post<ApiResponse<TwoFactorSetupDto>>('/api/users/me/2fa/generate-setup'));
     },
     switchToApp: async (data: TwoFactorVerificationRequestDto): Promise<void> => {
-        await api.post('/api/users/me/2fa/switch-to-app', data);
+        return callApi(api.post<ApiResponse<void>>('/api/users/me/2fa/switch-to-app', data));
     },
     switchToEmail: async (data: TwoFactorVerificationRequestDto): Promise<void> => {
-        await api.post('/api/users/me/2fa/switch-to-email', data);
+        return callApi(api.post<ApiResponse<void>>('/api/users/me/2fa/switch-to-email', data));
     },
 };
 
@@ -851,25 +851,22 @@ export const invites = {
 // Messages API Functions
 export const messages = {
     sendMessage: async (message: SendMessageRequestDto): Promise<void> => {
-        await api.post('/api/messages', message);
+        return callApi(api.post<ApiResponse<void>>('/api/messages', message));
     },
     getInboxMessages: async (): Promise<MessageDto[]> => {
-        const response = await api.get('/api/messages/inbox');
-        return response.data;
+        return callApi(api.get<ApiResponse<MessageDto[]>>('/api/messages/inbox'));
     },
     getSentMessages: async (): Promise<MessageDto[]> => {
-        const response = await api.get('/api/messages/sent');
-        return response.data;
+        return callApi(api.get<ApiResponse<MessageDto[]>>('/api/messages/sent'));
     },
     getMessageById: async (messageId: number): Promise<MessageDto> => {
-        const response = await api.get(`/api/messages/${messageId}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<MessageDto>>(`/api/messages/${messageId}`));
     },
     deleteMessage: async (messageId: number): Promise<void> => {
-        await api.delete(`/api/messages/${messageId}`);
+        return callApi(api.delete<ApiResponse<void>>(`/api/messages/${messageId}`));
     },
     markMessageAsRead: async (messageId: number): Promise<void> => {
-        await api.patch(`/api/messages/${messageId}/read`);
+        return callApi(api.patch<ApiResponse<void>>(`/api/messages/${messageId}/read`));
     },
 };
 
@@ -909,10 +906,9 @@ export const reports = {
 // Requests API Functions
 export const requests = {
     createRequest: async (request: CreateRequestDto): Promise<RequestDto> => {
-        const response = await api.post('/api/requests', request);
-        return response.data;
+        return callApi(api.post<ApiResponse<RequestDto>>('/api/requests', request));
     },
-    getRequests: async (page: number = 1, pageSize: number = 20, status?: string, sortBy?: string, sortOrder?: string): Promise<PaginatedResult<RequestDto>> => {
+    getRequests: async (page: number = 1, pageSize: number = 20, status?: string, sortBy?: string, sortOrder?: string): Promise<RequestDto[]> => {
         const params = new URLSearchParams({
             page: page.toString(),
             pageSize: pageSize.toString(),
@@ -920,32 +916,29 @@ export const requests = {
         if (status) params.append('status', status);
         if (sortBy) params.append('sortBy', sortBy);
         if (sortOrder) params.append('sortOrder', sortOrder);
-        const response = await api.get(`/api/requests?${params.toString()}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<RequestDto[]>>(`/api/requests?${params.toString()}`));
     },
     addBounty: async (requestId: number, amount: AddBountyRequestDto): Promise<void> => {
-        await api.patch(`/api/requests/${requestId}/bounty`, amount);
+        return callApi(api.patch<ApiResponse<void>>(`/api/requests/${requestId}/bounty`, amount));
     },
     getRequestById: async (id: number): Promise<RequestDto> => {
-        const response = await api.get(`/api/requests/${id}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<RequestDto>>(`/api/requests/${id}`));
     },
     fillRequest: async (requestId: number, fillData: FillRequestDto): Promise<void> => {
-        await api.patch(`/api/requests/${requestId}/fill`, fillData);
+        return callApi(api.patch<ApiResponse<void>>(`/api/requests/${requestId}/fill`, fillData));
     },
     confirm: async (requestId: number): Promise<void> => {
-        await api.post(`/api/requests/${requestId}/confirm`);
+        return callApi(api.post<ApiResponse<void>>(`/api/requests/${requestId}/confirm`));
     },
     reject: async (requestId: number, rejectData: RejectFulfillmentDto): Promise<void> => {
-        await api.post(`/api/requests/${requestId}/reject`, rejectData);
+        return callApi(api.post<ApiResponse<void>>(`/api/requests/${requestId}/reject`, rejectData));
     },
 };
 
 // Forum API Functions
 export const forum = {
     getCategories: async (): Promise<ForumCategoryDto[]> => {
-        const response = await api.get('/api/forum/categories');
-        return response.data;
+        return callApi(api.get<ApiResponse<ForumCategoryDto[]>>('/api/forum/categories'));
     },
     getTopics: async (categoryId: number, page: number = 1, pageSize: number = 20): Promise<PaginatedResult<ForumTopicDto>> => {
         const params = new URLSearchParams({
@@ -953,56 +946,51 @@ export const forum = {
             page: page.toString(),
             pageSize: pageSize.toString(),
         });
-        const response = await api.get(`/api/forum/topics?${params.toString()}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<PaginatedResult<ForumTopicDto>>>(`/api/forum/topics?${params.toString()}`));
     },
     getTopicById: async (topicId: number, page: number = 1, pageSize: number = 20): Promise<ForumTopicDetailDto> => {
         const params = new URLSearchParams({
             page: page.toString(),
             pageSize: pageSize.toString(),
         });
-        const response = await api.get(`/api/forum/topics/${topicId}?${params.toString()}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<ForumTopicDetailDto>>(`/api/forum/topics/${topicId}?${params.toString()}`));
     },
     getTopicPosts: async (topicId: number, page: number = 1, pageSize: number = 30): Promise<ForumPostListResponse> => {
         const params = new URLSearchParams({
             page: page.toString(),
             pageSize: pageSize.toString(),
         });
-        const response = await api.get(`/api/forum/topics/${topicId}/posts?${params.toString()}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<ForumPostListResponse>>(`/api/forum/topics/${topicId}/posts?${params.toString()}`));
     },
     createTopic: async (topicData: CreateForumTopicDto): Promise<ForumTopicDetailDto> => {
-        const response = await api.post('/api/forum/topics', topicData);
-        return response.data;
+        return callApi(api.post<ApiResponse<ForumTopicDetailDto>>('/api/forum/topics', topicData));
     },
     createPost: async (topicId: number, postData: CreateForumPostDto): Promise<ForumPostDto> => {
-        const response = await api.post(`/api/forum/topics/${topicId}/posts`, postData);
-        return response.data;
+        return callApi(api.post<ApiResponse<ForumPostDto>>(`/api/forum/topics/${topicId}/posts`, postData));
     },
     updateTopic: async (topicId: number, topicData: UpdateForumTopicDto): Promise<void> => {
-        await api.put(`/api/forum/topics/${topicId}`, topicData);
+        return callApi(api.put<ApiResponse<void>>(`/api/forum/topics/${topicId}`, topicData));
     },
     deleteTopic: async (topicId: number): Promise<void> => {
-        await api.delete(`/api/forum/topics/${topicId}`);
+        return callApi(api.delete<ApiResponse<void>>(`/api/forum/topics/${topicId}`));
     },
     updatePost: async (postId: number, postData: UpdateForumPostDto): Promise<void> => {
-        await api.put(`/api/forum/posts/${postId}`, postData);
+        return callApi(api.put<ApiResponse<void>>(`/api/forum/posts/${postId}`, postData));
     },
     deletePost: async (postId: number): Promise<void> => {
-        await api.delete(`/api/forum/posts/${postId}`);
+        return callApi(api.delete<ApiResponse<void>>(`/api/forum/posts/${postId}`));
     },
     lockTopic: async (topicId: number): Promise<void> => {
-        await api.patch(`/api/forum/topics/${topicId}/lock`);
+        return callApi(api.patch<ApiResponse<void>>(`/api/forum/topics/${topicId}/lock`));
     },
     unlockTopic: async (topicId: number): Promise<void> => {
-        await api.patch(`/api/forum/topics/${topicId}/unlock`);
+        return callApi(api.patch<ApiResponse<void>>(`/api/forum/topics/${topicId}/unlock`));
     },
     stickyTopic: async (topicId: number): Promise<void> => {
-        await api.patch(`/api/forum/topics/${topicId}/sticky`);
+        return callApi(api.patch<ApiResponse<void>>(`/api/forum/topics/${topicId}/sticky`));
     },
     unstickyTopic: async (topicId: number): Promise<void> => {
-        await api.patch(`/api/forum/topics/${topicId}/unsticky`);
+        return callApi(api.patch<ApiResponse<void>>(`/api/forum/topics/${topicId}/unsticky`));
     },
 };
 
@@ -1084,8 +1072,7 @@ export const store = {
 // Torrents API Functions
 export const torrents = {
     getCategories: async (): Promise<TorrentCategoryDto[]> => {
-        const response = await api.get('/api/torrents/categories');
-        return response.data;
+        return callApi(api.get<ApiResponse<TorrentCategoryDto[]>>('/api/torrents/categories'));
     },
     uploadTorrent: async (
         torrentFile: File,
@@ -1102,26 +1089,24 @@ export const torrents = {
             formData.append('ImdbId', imdbId);
         }
 
-        const response = await api.post<UploadTorrentResponseDto>('/api/torrents', formData, {
+        return callApi(api.post<ApiResponse<UploadTorrentResponseDto>>('/api/torrents', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
             onUploadProgress
-        });
-        return response.data;
+        }));
     },
     getTorrentById: async (id: number): Promise<TorrentDto> => {
-        const response = await api.get(`/api/torrents/${id}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<TorrentDto>>(`/api/torrents/${id}`));
     },
     deleteTorrent: async (id: number): Promise<void> => {
-        await api.delete(`/api/torrents/${id}`);
+        return callApi(api.delete<ApiResponse<void>>(`/api/torrents/${id}`));
     },
     setTorrentFree: async (torrentId: number, freeUntil: string): Promise<void> => {
-        await api.patch(`/api/torrents/${torrentId}/free`, JSON.stringify(freeUntil));
+        return callApi(api.patch<ApiResponse<void>>(`/api/torrents/${torrentId}/free`, JSON.stringify(freeUntil)));
     },
     setTorrentSticky: async (torrentId: number, status: SetStickyRequestDto): Promise<void> => {
-        await api.patch(`/api/torrents/${torrentId}/sticky`, status);
+        return callApi(api.patch<ApiResponse<void>>(`/api/torrents/${torrentId}/sticky`, status));
     },
     downloadTorrent: async (torrentId: number): Promise<Blob> => {
         const response = await api.get(`/api/torrents/${torrentId}/download`, {
@@ -1130,10 +1115,10 @@ export const torrents = {
         return response.data;
     },
     completeTorrentInfo: async (torrentId: number, info: CompleteInfoRequestDto): Promise<void> => {
-        await api.patch(`/api/torrents/${torrentId}/info`, info);
+        return callApi(api.patch<ApiResponse<void>>(`/api/torrents/${torrentId}/info`, info));
     },
     applyFreeleech: async (torrentId: number): Promise<void> => {
-        await api.patch(`/api/torrents/${torrentId}/freeleech`);
+        return callApi(api.patch<ApiResponse<void>>(`/api/torrents/${torrentId}/freeleech`));
     },
 };
 // ... and so on for all other API groups
@@ -1396,8 +1381,7 @@ export const admin = {
         if (searchTerm) {
             params.append('q', searchTerm);
         }
-        const response = await api.get(`/api/admin/users?${params.toString()}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<PaginatedResult<UserAdminProfileDto>>>(`/api/admin/users?${params.toString()}`));
     },
     updateRegistrationSettings: async (settings: UpdateRegistrationSettingsDto): Promise<void> => {
         await api.put('/api/admin/settings/registration', settings);
@@ -1407,26 +1391,22 @@ export const admin = {
         return response.data;
     },
     getSiteSettings: async (): Promise<SiteSettingsDto> => {
-        const response = await api.get('/api/admin/settings/site');
-        return response.data;
+        return callApi(api.get<ApiResponse<SiteSettingsDto>>('/api/admin/settings/site'));
     },
     updateSiteSettings: async (settings: SiteSettingsDto): Promise<void> => {
-        await api.put('/api/admin/settings/site', settings);
+        return callApi(api.put<ApiResponse<void>>('/api/admin/settings/site', settings));
     },
     getBannedClients: async (): Promise<BannedClientDto[]> => {
-        const response = await api.get('/api/admin/banned-clients');
-        return response.data;
+        return callApi(api.get<ApiResponse<BannedClientDto[]>>('/api/admin/banned-clients'));
     },
     addBannedClient: async (client: BannedClientDto): Promise<BannedClientDto> => {
-        const response = await api.post('/api/admin/banned-clients', client);
-        return response.data;
+        return callApi(api.post<ApiResponse<BannedClientDto>>('/api/admin/banned-clients', client));
     },
     deleteBannedClient: async (id: number): Promise<void> => {
-        await api.delete(`/api/admin/banned-clients/${id}`);
+        return callApi(api.delete<ApiResponse<void>>(`/api/admin/banned-clients/${id}`));
     },
     getDuplicateIps: async (): Promise<DuplicateIpUserDto[]> => {
-        const response = await api.get('/api/admin/duplicate-ips');
-        return response.data;
+        return callApi(api.get<ApiResponse<DuplicateIpUserDto[]>>('/api/admin/duplicate-ips'));
     },
     getSystemLogs: async (q?: string, level?: string, offset?: number, limit?: number): Promise<SystemLogDto[]> => {
         const params = new URLSearchParams();
@@ -1434,8 +1414,7 @@ export const admin = {
         if (level) params.append('level', level);
         if (offset) params.append('offset', offset.toString());
         if (limit) params.append('limit', limit.toString());
-        const response = await api.get(`/api/admin/logs/system?${params.toString()}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<SystemLogDto[]>>(`/api/admin/logs/system?${params.toString()}`));
     },
 };
 

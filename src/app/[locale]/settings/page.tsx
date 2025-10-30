@@ -22,7 +22,7 @@ function TwoFactorAuthSettings() {
 
     const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
     const [isDowngradeModalOpen, setIsDowngradeModalOpen] = useState(false);
-    const [setupInfo, setSetupInfo] = useState<{ qrCodeUri: string; manualEntryKey: string } | null>(null);
+    const [setupInfo, setSetupInfo] = useState<{ qrCodeImageUrl: string; manualEntryKey: string } | null>(null);
     const [verificationCode, setVerificationCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -106,7 +106,7 @@ function TwoFactorAuthSettings() {
                         <div className="space-y-4">
                             <p>{t('upgrade_modal_step1')}</p>
                             <div className="flex justify-center p-4 bg-white rounded-lg">
-                                <Image src={setupInfo.qrCodeUri} alt="QR Code" width={200} height={200} />
+                                <Image src={setupInfo.qrCodeImageUrl} alt="QR Code" width={200} height={200} />
                             </div>
                             <p>{t('upgrade_modal_step2')}</p>
                             <p className="font-mono bg-default-100 p-2 rounded">{setupInfo.manualEntryKey}</p>
