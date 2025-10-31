@@ -46,7 +46,8 @@ const AdminDashboard = () => {
                 ]);
                 setSiteStats(statsData);
                 setPendingReports(reportsData);
-                setCheatLogs(cheatLogsData);
+                // 确保 cheatLogsData 是数组
+                setCheatLogs(Array.isArray(cheatLogsData) ? cheatLogsData : []);
             } catch (error) {
                 console.error("Failed to fetch admin dashboard data:", error);
             } finally {

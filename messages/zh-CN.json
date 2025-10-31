@@ -33,7 +33,7 @@
         "none": "无",
         "author": "作者",
         "version": "版本"
-      },
+    },
     "register": {
         "avatar": "头像",
         "refresh_avatar": "不喜欢？换个新的！",
@@ -253,13 +253,13 @@
         "post_a_reply": "发表回复",
         "write_your_reply": "在此输入你的回复...",
         "submit_reply": "提交回复",
-        "submitting_reply": "Submitting...",
+        "submitting_reply": "提交中...",
         "error_posting_reply": "发表回复失败。",
         "category": "分区",
         "select_category": "-- 请选择一个分区 --",
         "content": "内容",
         "submit_topic": "发布主题",
-        "submitting": "Submitting...",
+        "submitting": "提交中...",
         "error_all_fields_required": "所有字段均为必填项。",
         "error_creating_topic": "创建主题失败。",
         "your_reply": "你的回复",
@@ -344,8 +344,8 @@
         "torrentInfo": "种子信息",
         "myUploads": "我发布的种子",
         "clientInfo": "当前客户端",
+        "client": "客户端",
         "ip": "IP地址",
-        "ip": "IP",
         "port": "端口",
         "lastReport": "最后汇报时间",
         "transfer_coins": "转账金币",
@@ -397,7 +397,10 @@
         "change_title_description": "设置您的个性化头衔",
         "custom_title": "自定义头衔",
         "title_updated_success": "头衔更新成功！",
-        "title_updated_error": "头衔更新失败"
+        "title_updated_error": "头衔更新失败",
+        "common": {
+            "cancel": "取消"
+        }
     },
     "invitesPage": {
         "title": "我的邀请",
@@ -443,6 +446,7 @@
             "reports": {
                 "title": "最近的待处理举报",
                 "torrent": "种子",
+                "reason": "原因",
                 "detectionType": "检测类型",
                 "reportedAt": "举报于",
                 "actions": "操作",
@@ -451,6 +455,7 @@
             "cheatLogs": {
                 "title": "最近的作弊日志",
                 "user": "用户",
+                "reason": "原因",
                 "detectionType": "检测类型",
                 "ip": "IP地址",
                 "date": "日期"
@@ -1068,5 +1073,9 @@
             "3": "严重",
             "4": "致命"
         }
+    },
+    "about": {
+        "title": "关于",
+        "description": "关于本站"
     }
 }

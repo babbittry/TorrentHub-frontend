@@ -30,7 +30,9 @@
         "next_step": "次へ",
         "previous_step": "前へ",
         "cancel": "キャンセル",
-        "none": "なし"
+        "none": "なし",
+        "author": "著者",
+        "version": "バージョン"
     },
     "register": {
         "avatar": "アバター",
@@ -196,14 +198,14 @@
         "reject_fulfillment": "履行を拒否",
         "confirmation_deadline_notice": "この履行を確認または拒否するのに72時間あります。何も操作しない場合、自動的に確認されます。",
         "reject_fulfillment_reason": "拒否の理由",
-        "reason": "理由",
         "rejection_reason_placeholder": "この履行を拒否する理由を記入してください。",
         "submit_rejection": "拒否を送信",
         "error_confirming": "履行の確認中にエラーが発生しました。",
         "error_rejecting": "履行の拒否中にエラーが発生しました。",
         "rejection_reason_required": "拒否の理由は必須です。",
         "rejection_reason": "拒否の理由",
-        "bounty_help_text": "このリクエストを作成するには{baseCost}コインかかります。追加の懸賞金を追加して、合計{totalCost}コインにすることができます。"
+        "bounty_help_text": "このリクエストを作成するには{baseCost}コインかかります。追加の懸賞金を追加して、合計{totalCost}コインにすることができます。",
+        "detectionType": "検出タイプ"
     },
     "messagesPage": {
         "title": "メッセージ",
@@ -389,7 +391,16 @@
         "downgrade_success": "メール認証への切り替えに成功しました！",
         "api_error": "エラーが発生しました。もう一度お試しください。",
         "credentials_settings": "ダウンロード認証情報",
-        "rss_settings": "RSS購読"
+        "rss_settings": "RSS購読",
+        "save_changes": "変更を保存",
+        "change_title_title": "カスタムタイトル",
+        "change_title_description": "パーソナライズされたタイトルを設定",
+        "custom_title": "カスタムタイトル",
+        "title_updated_success": "タイトルが正常に更新されました！",
+        "title_updated_error": "タイトルの更新に失敗しました",
+        "common": {
+            "cancel": "キャンセル"
+        }
     },
     "invitesPage": {
         "title": "私の招待",
@@ -415,27 +426,28 @@
             "logViewer": "ログビューア"
         },
         "bandwidthSettings": {
-            "title": "带宽设置",
-            "description": "配置上传和下载速度限制"
+            "title": "帯域幅設定",
+            "description": "アップロードとダウンロード速度制限の設定"
         },
         "dashboard": {
-            "title": "Admin Dashboard",
-            "loading": "Loading...",
+            "title": "管理者ダッシュボード",
+            "loading": "読み込み中...",
             "stats": {
-                "totalUsers": "Total Users",
-                "totalTorrents": "Total Torrents",
-                "totalSeeders": "Total Seeders",
-                "totalLeechers": "Total Leechers",
-                "pendingReports": "Pending Reports",
-                "cheatLogs": "Cheat Logs",
-                "siteSettings": "Site Settings",
+                "totalUsers": "総ユーザー数",
+                "totalTorrents": "総トレント数",
+                "totalSeeders": "総シーダー数",
+                "totalLeechers": "総リーチャー数",
+                "pendingReports": "未処理の報告",
+                "cheatLogs": "チートログ",
+                "siteSettings": "サイト設定",
                 "configure": "設定",
                 "bandwidthSettings": "帯域幅設定"
             },
             "reports": {
-                "title": "Recent Pending Reports",
-                "torrent": "TORRENT",
-                "reason": "REASON",
+                "title": "最近の未処理報告",
+                "torrent": "トレント",
+                "reason": "理由",
+                "detectionType": "検出タイプ",
                 "reportedAt": "報告日時",
                 "actions": "操作",
                 "process": "処理"
@@ -444,7 +456,8 @@
                 "title": "最近のチートログ",
                 "user": "ユーザー",
                 "reason": "理由",
-                "client": "クライアント",
+                "detectionType": "検出タイプ",
+                "ip": "IPアドレス",
                 "date": "日付"
             }
         },
@@ -460,7 +473,7 @@
                 "torrent": "トレント",
                 "reporter": "報告者",
                 "uploader": "アップローダー",
-                "reason": "理由",
+                "detectionType": "検出タイプ",
                 "details": "詳細",
                 "noDetails": "詳細はありません。",
                 "reportedAt": "報告日時",
@@ -472,149 +485,149 @@
             }
         },
         "addPoll": {
-            "title": "Poll Management",
-            "createNewPoll": "Create New Poll",
-            "questionLabel": "Question",
-            "questionPlaceholder": "What is your favorite color?",
+            "title": "投票管理",
+            "createNewPoll": "新しい投票を作成",
+            "questionLabel": "質問",
+            "questionPlaceholder": "好きな色は何ですか？",
             "expiresAtLabel": "有効期限",
-            "optionsLabel": "Options",
-            "optionPlaceholder": "Option {index}",
-            "addOptionButton": "Add Option",
-            "createPollButton": "Create Poll",
-            "existingPolls": "Existing Polls",
-            "loading": "Loading polls...",
+            "optionsLabel": "選択肢",
+            "optionPlaceholder": "選択肢 {index}",
+            "addOptionButton": "選択肢を追加",
+            "createPollButton": "投票を作成",
+            "existingPolls": "既存の投票",
+            "loading": "投票を読み込み中...",
             "table": {
-                "question": "QUESTION",
-                "totalVotes": "TOTAL VOTES",
-                "createdAt": "CREATED AT",
-                "actions": "ACTIONS"
+                "question": "質問",
+                "totalVotes": "総投票数",
+                "createdAt": "作成日時",
+                "actions": "操作"
             },
             "alert": {
-                "fillOut": "Please fill out the question and all options.",
-                "createFailed": "Failed to create poll.",
-                "deleteConfirm": "Are you sure you want to delete this poll?",
-                "deleteFailed": "Failed to delete poll."
+                "fillOut": "質問とすべての選択肢を入力してください。",
+                "createFailed": "投票の作成に失敗しました。",
+                "deleteConfirm": "この投票を削除してもよろしいですか？",
+                "deleteFailed": "投票の削除に失敗しました。"
             }
         },
         "announcementManagement": {
-            "title": "Announcement Management",
-            "createNew": "Create New Announcement",
-            "edit": "Edit Announcement",
+            "title": "お知らせ管理",
+            "createNew": "新しいお知らせを作成",
+            "edit": "お知らせを編集",
             "form": {
-                "titleLabel": "Title",
-                "contentLabel": "Content",
-                "sendToInbox": "Send to user inboxes",
-                "cancelButton": "Cancel",
-                "createButton": "Create",
-                "updateButton": "Update"
+                "titleLabel": "タイトル",
+                "contentLabel": "内容",
+                "sendToInbox": "ユーザーの受信トレイに送信",
+                "cancelButton": "キャンセル",
+                "createButton": "作成",
+                "updateButton": "更新"
             },
-            "existingAnnouncements": "Existing Announcements",
-            "loading": "Loading...",
+            "existingAnnouncements": "既存のお知らせ",
+            "loading": "読み込み中...",
             "table": {
-                "title": "TITLE",
-                "createdAt": "CREATED AT",
-                "actions": "ACTIONS"
+                "title": "タイトル",
+                "createdAt": "作成日時",
+                "actions": "操作"
             },
             "alert": {
-                "empty": "Title and content cannot be empty.",
-                "saveFailed": "Failed to save announcement.",
-                "deleteConfirm": "Are you sure you want to delete this announcement?",
-                "deleteFailed": "Failed to delete announcement."
+                "empty": "タイトルと内容は空にできません。",
+                "saveFailed": "お知らせの保存に失敗しました。",
+                "deleteConfirm": "このお知らせを削除してもよろしいですか？",
+                "deleteFailed": "お知らせの削除に失敗しました。"
             }
         },
         "siteSettings": {
-            "title": "Site Settings",
-            "loading": "Loading...",
-            "loadFailed": "Failed to load settings.",
-            "configuration": "Configuration",
-            "siteNameLabel": "Site Name",
-            "siteDescriptionLabel": "Site Description",
-            "registrationOpenLabel": "Registration Open",
-            "inviteOnlyLabel": "Invite Only",
-            "maintenanceModeLabel": "Maintenance Mode",
-            "saveButton": "Save Settings",
+            "title": "サイト設定",
+            "loading": "読み込み中...",
+            "loadFailed": "設定の読み込みに失敗しました。",
+            "configuration": "設定",
+            "siteNameLabel": "サイト名",
+            "siteDescriptionLabel": "サイトの説明",
+            "registrationOpenLabel": "登録を開放",
+            "inviteOnlyLabel": "招待のみ",
+            "maintenanceModeLabel": "メンテナンスモード",
+            "saveButton": "設定を保存",
             "alert": {
-                "updateSuccess": "Settings updated successfully!",
-                "updateFailed": "Failed to update settings."
+                "updateSuccess": "設定が正常に更新されました！",
+                "updateFailed": "設定の更新に失敗しました。"
             }
         },
         "bannedClients": {
-            "title": "Banned Client Management",
-            "addNew": "Add New Banned Client",
-            "peerIdPrefixLabel": "Peer ID Prefix",
-            "userAgentPatternLabel": "User-Agent Pattern",
-            "reasonLabel": "Reason",
-            "addButton": "Add Banned Client",
-            "existing": "Banned Clients",
-            "loading": "Loading...",
+            "title": "禁止クライアント管理",
+            "addNew": "新しい禁止クライアントを追加",
+            "peerIdPrefixLabel": "Peer ID プレフィックス",
+            "userAgentPatternLabel": "User-Agent パターン",
+            "reasonLabel": "理由",
+            "addButton": "禁止クライアントを追加",
+            "existing": "禁止クライアント",
+            "loading": "読み込み中...",
             "table": {
-                "peerIdPrefix": "PEER ID PREFIX",
-                "userAgentPattern": "USER-AGENT PATTERN",
-                "reason": "REASON",
-                "actions": "ACTIONS"
+                "peerIdPrefix": "PEER ID プレフィックス",
+                "userAgentPattern": "USER-AGENT パターン",
+                "detectionType": "検出タイプ",
+                "actions": "操作"
             },
             "alert": {
-                "addFailed": "Failed to add banned client.",
-                "deleteConfirm": "Are you sure you want to unban this client?",
-                "deleteFailed": "Failed to delete banned client.",
-                "prefixOrPattern": "Please provide a Peer ID Prefix or a User-Agent Pattern."
+                "addFailed": "禁止クライアントの追加に失敗しました。",
+                "deleteConfirm": "このクライアントの禁止を解除してもよろしいですか？",
+                "deleteFailed": "禁止クライアントの削除に失敗しました。",
+                "prefixOrPattern": "Peer ID プレフィックスまたは User-Agent パターンを入力してください。"
             }
         },
         "duplicateIps": {
-            "title": "Duplicate IP Management",
-            "cardTitle": "Users with Duplicate IPs",
-            "loading": "Loading...",
+            "title": "重複IP管理",
+            "cardTitle": "重複IPを持つユーザー",
+            "loading": "読み込み中...",
             "table": {
-                "ipAddress": "IP ADDRESS",
-                "users": "USERS"
+                "ipAddress": "IPアドレス",
+                "users": "ユーザー"
             }
         },
         "logViewer": {
-            "title": "Log Viewer",
-            "systemLogsTab": "System Logs",
-            "cheatLogsTab": "Cheat Logs",
-            "searchLabel": "Search",
-            "levelLabel": "Level",
-            "loading": "Loading...",
+            "title": "ログビューア",
+            "systemLogsTab": "システムログ",
+            "cheatLogsTab": "チートログ",
+            "searchLabel": "検索",
+            "levelLabel": "レベル",
+            "loading": "読み込み中...",
             "systemLogs": {
                 "table": {
-                    "level": "LEVEL",
-                    "timestamp": "TIMESTAMP",
-                    "message": "MESSAGE"
+                    "level": "レベル",
+                    "timestamp": "タイムスタンプ",
+                    "message": "メッセージ"
                 }
             },
             "cheatLogs": {
                 "table": {
-                    "user": "USER",
-                    "torrent": "TORRENT",
-                    "client": "CLIENT",
-                    "reason": "REASON",
-                    "date": "DATE"
+                    "user": "ユーザー",
+                    "torrent": "トレント",
+                    "ip": "IPアドレス",
+                    "detectionType": "検出タイプ",
+                    "date": "日付"
                 }
             }
         },
         "userManagement": {
-            "title": "User Management",
-            "searchLabel": "Search Users",
-            "loading": "Loading...",
+            "title": "ユーザー管理",
+            "searchLabel": "ユーザーを検索",
+            "loading": "読み込み中...",
             "table": {
-                "username": "USERNAME",
-                "role": "ROLE",
-                "createdAt": "CREATED AT",
-                "actions": "ACTIONS",
-                "email": "E-Mail"
+                "username": "ユーザー名",
+                "role": "役割",
+                "createdAt": "作成日時",
+                "actions": "操作",
+                "email": "メール"
             },
-            "editButton": "Edit",
+            "editButton": "編集",
             "modal": {
-                "title": "Edit User: {username}",
-                "roleLabel": "Role",
-                "bannedLabel": "Banned",
-                "banReasonLabel": "Ban Reason",
-                "cancelButton": "Cancel",
-                "saveButton": "Save Changes"
+                "title": "ユーザーを編集: {username}",
+                "roleLabel": "役割",
+                "bannedLabel": "禁止済み",
+                "banReasonLabel": "禁止理由",
+                "cancelButton": "キャンセル",
+                "saveButton": "変更を保存"
             },
             "alert": {
-                "updateFailed": "Failed to update user."
+                "updateFailed": "ユーザーの更新に失敗しました。"
             }
         }
     },
@@ -753,6 +766,24 @@
         "error_generic": "チップに失敗しました。後でもう一度お試しください。",
         "success_message": "チップに成功しました！"
     },
+    "richEditor": {
+        "toolbar": {
+            "bold": "太字",
+            "italic": "斜体",
+            "strikethrough": "取り消し線",
+            "heading": "見出し",
+            "quote": "引用",
+            "code": "コード",
+            "link": "リンク",
+            "image": "画像",
+            "unordered_list": "箇条書きリスト",
+            "ordered_list": "番号付きリスト",
+            "checklist": "チェックリスト"
+        },
+        "preview_mode": "プレビューモード",
+        "edit_mode": "編集モード",
+        "live_mode": "ライブモード"
+    },
     "reply": {
         "reply": "返信",
         "reply_to": "に返信",
@@ -823,20 +854,26 @@
     "credentialManagement": {
         "title": "ダウンロード認証情報管理",
         "description": "各トレントには独立したダウンロード認証情報があります。認証情報が漏洩した疑いがある場合、個別に取り消すことができます。",
-        "loadingCredentials": "認証情報を読み込み中...",
-        "noCredentials": "ダウンロード認証情報はまだありません",
-        "noCredentialsHint": "トレントをダウンロードして最初の認証情報を生成してください",
-        "stats": {
-            "total": "合計",
-            "active": "有効",
-            "revoked": "取り消し済み"
-        },
+        "loading": "読み込み中...",
+        "load_error": "認証情報の読み込みに失敗しました",
+        "no_credentials": "ダウンロード認証情報はまだありません",
+        "total_credentials": "合計 {count} 個の認証情報",
+        "active_credentials": "有効: {count}",
+        "revoked_credentials": "取り消し済み: {count}",
+        "revoke_button": "取り消す",
+        "revoke_all_button": "すべて取り消す",
+        "revoke_success": "認証情報を取り消しました",
+        "revoke_error": "認証情報の取り消しに失敗しました",
+        "revoke_all_success": "すべての認証情報を取り消しました",
+        "revoke_all_success_detail": "{count}個の認証情報を取り消しました（{torrentCount}個のトレントに影響）",
+        "revoke_all_error": "すべての認証情報の取り消しに失敗しました",
+        "revoke_all_reason": "ユーザーによる一括取り消し",
         "table": {
-            "torrent": "トレント",
-            "createdAt": "作成日時",
-            "status": "ステータス",
+            "torrent_name": "トレント名",
             "usage_stats": "使用統計",
             "last_used": "最終使用",
+            "created_at": "作成日時",
+            "status": "ステータス",
             "actions": "操作"
         },
         "active_indicator": "有効",
@@ -854,23 +891,26 @@
             "sort_upload": "アップロード",
             "sort_download": "ダウンロード",
             "showing": "{count}件表示中",
-            "no_results": "一致する認証情報が見つかりません"
+            "no_results": "一致する認証情報が見つかりません",
+            "showing_page": "{from}-{to}件を表示 / 全{total}件"
         },
         "status": {
             "active": "有効",
             "revoked": "{date}に取り消し"
         },
-        "actions": {
-            "revoke": "取り消す",
-            "revokeAll": "すべて取り消す",
-            "revokeAllConfirm": "すべてのダウンロード認証情報を取り消してもよろしいですか？この操作は元に戻せません！",
-            "revokeConfirm": "この認証情報を取り消してもよろしいですか？このトレントのアップロード/ダウンロードを続けることができなくなります。",
-            "revoking": "取り消し中...",
-            "revokeSuccess": "認証情報を取り消しました",
-            "revokeFailed": "認証情報の取り消しに失敗しました",
-            "revokeAllSuccess": "すべての認証情報を取り消しました",
-            "revokeAllSuccess_detail": "{count}個の認証情報を取り消しました（{torrentCount}個のトレントに影響）",
-            "revokeAllFailed": "すべての認証情報の取り消しに失敗しました"
+        "revoke_modal": {
+            "title": "認証情報の取り消しを確認",
+            "description": "この認証情報を取り消してもよろしいですか？",
+            "warning": "取り消し後、このトレントはアップロード/ダウンロードできなくなります。この操作は元に戻せません！",
+            "cancel": "キャンセル",
+            "confirm": "取り消しを確認"
+        },
+        "revoke_all_modal": {
+            "title": "すべての認証情報の取り消しを確認",
+            "description": "すべての{count}個の有効な認証情報を取り消してもよろしいですか？",
+            "warning": "これによりすべてのトレントがアップロード/ダウンロードできなくなります！この操作は元に戻せません！",
+            "cancel": "キャンセル",
+            "confirm": "すべて取り消しを確認"
         },
         "bulk": {
             "revoke_selected": "選択を取り消す",
@@ -888,92 +928,41 @@
             "csv_button": "CSVエクスポート",
             "json_button": "JSONエクスポート",
             "csv_success": "CSVファイルをエクスポートしました",
-            "json_success": "JSONファイルをエクスポートしました"
+            "json_success": "JSONファイルをエクスポートしました",
+            "error": "エクスポートに失敗しました"
         },
-        "edit_button": "編集",
-        "edit_success": "Tokenを更新しました",
-        "edit_error": "Tokenの更新に失敗しました",
-        "edit_modal": {
-            "title": "RSS Tokenを編集",
-            "name_label": "トークン名",
-            "name_placeholder": "例：qBittorrent購読",
-            "feed_type_label": "フィードタイプ",
-            "max_results_label": "最大結果数",
-            "expires_at_label": "有効期限",
-            "expires_at_description": "オプション、空白のままにすると期限なし",
-            "cancel": "キャンセル",
-            "confirm": "更新"
+        "pagination": {
+            "rows_per_page": "ページごとの行数"
         }
     },
     "rssFeedManagement": {
         "title": "RSS購読管理",
         "description": "異なるRSSリーダー用に独立したRSSトークンを作成できます。各トークンは異なる権限で設定できます。",
-        "createToken": "新しいトークンを作成",
-        "loadingTokens": "トークンを読み込み中...",
-        "noTokens": "RSSトークンはまだありません",
-        "noTokensHint": "最初のRSSトークンを作成して購読を開始してください",
-        "form": {
-            "name": "トークン名",
-            "namePlaceholder": "例：qBittorrent購読",
-            "nameHint": "このトークンを識別しやすくします",
-            "feedType": "フィードタイプ",
-            "feedTypes": {
-                "latest": "最新のトレント",
-                "category": "カテゴリフィルター",
-                "bookmarks": "マイブックマーク",
-                "custom": "カスタム"
-            },
-            "categoryFilter": "カテゴリフィルター",
-            "categoryFilterHint": "購読するカテゴリを選択",
-            "categories": {
-                "movie": "映画",
-                "tv": "TVシリーズ",
-                "anime": "アニメ",
-                "music": "音楽",
-                "game": "ゲーム",
-                "software": "ソフトウェア",
-                "other": "その他"
-            },
-            "maxResults": "最大結果数",
-            "maxResultsHint": "フィードあたりの最大アイテム数（10-100）",
-            "expiresAt": "有効期限",
-            "expiresAtHint": "オプション、空白のままにすると期限なし",
-            "creating": "作成中...",
-            "createSuccess": "トークンを作成しました",
-            "createFailed": "トークンの作成に失敗しました"
-        },
-        "table": {
-            "name": "名前",
-            "feedType": "タイプ",
-            "categories": "カテゴリ",
-            "maxResults": "最大結果数",
-            "status": "ステータス",
-            "usage": "使用状況",
-            "lastUsed": "最終使用",
-            "actions": "操作"
-        },
-        "status": {
-            "active": "有効",
-            "revoked": "取り消し済み",
-            "expired": "期限切れ"
-        },
-        "actions": {
-            "copyUrl": "URLをコピー",
-            "revoke": "取り消す",
-            "revokeAll": "すべて取り消す",
-            "revokeConfirm": "このトークンを取り消してもよろしいですか？",
-            "revokeAllConfirm": "すべてのRSSトークンを取り消してもよろしいですか？",
-            "revoking": "取り消し中...",
-            "urlCopied": "RSS URLをクリップボードにコピーしました",
-            "revokeSuccess": "トークンを取り消しました",
-            "revokeFailed": "トークンの取り消しに失敗しました",
-            "revokeAllSuccess": "すべてのトークンを取り消しました",
-            "revokeAllFailed": "すべてのトークンの取り消しに失敗しました"
-        },
-        "usage": {
-            "count": "{count}回",
-            "never": "未使用"
-        },
+        "loading": "読み込み中...",
+        "load_error": "トークンリストの読み込みに失敗しました",
+        "no_tokens": "RSSトークンはまだありません",
+        "total_tokens": "合計 {count} 個のトークン",
+        "active_tokens": "有効: {count}",
+        "create_button": "トークンを作成",
+        "edit_button": "編集",
+        "revoke_button": "取り消す",
+        "revoke_all_button": "すべてのトークンを取り消す",
+        "create_success": "トークンを作成しました",
+        "create_error": "トークンの作成に失敗しました",
+        "edit_success": "トークンを更新しました",
+        "edit_error": "トークンの更新に失敗しました",
+        "revoke_success": "トークンを取り消しました",
+        "revoke_error": "トークンの取り消しに失敗しました",
+        "revoke_all_success": "すべてのトークンを取り消しました",
+        "revoke_all_error": "すべてのトークンの取り消しに失敗しました",
+        "copy_success": "RSS URLをクリップボードにコピーしました",
+        "copy_error": "コピーに失敗しました",
+        "copy_url": "RSS URLをコピー",
+        "unnamed_token": "名前なしトークン",
+        "categories": "カテゴリ",
+        "used_count": "{count}回使用",
+        "last_used": "最終使用",
+        "never": "未使用",
         "details": {
             "usage_stats": "使用統計",
             "usage_count": "使用回数",
@@ -987,42 +976,106 @@
             "hours_ago": "{count}時間前",
             "days_ago": "{count}日前"
         },
-        "used_count": "{count}回使用",
-        "never": "未使用"
+        "table": {
+            "name": "名前",
+            "feed_type": "タイプ",
+            "usage": "使用状況",
+            "created_at": "作成日時",
+            "status": "ステータス",
+            "actions": "操作"
+        },
+        "status": {
+            "active": "有効",
+            "revoked": "取り消し済み",
+            "expired": "期限切れ"
+        },
+        "feed_types": {
+            "latest": "最新のトレント",
+            "category": "カテゴリ購読",
+            "bookmarks": "マイブックマーク",
+            "custom": "カスタム"
+        },
+        "create_modal": {
+            "title": "RSSトークンを作成",
+            "name_label": "トークン名",
+            "name_placeholder": "例：qBittorrent購読",
+            "feed_type_label": "フィードタイプ",
+            "max_results_label": "最大結果数",
+            "expires_at_label": "有効期限（オプション）",
+            "expires_at_description": "空白のままにすると期限なし",
+            "cancel": "キャンセル",
+            "confirm": "作成"
+        },
+        "edit_modal": {
+            "title": "RSS Tokenを編集",
+            "name_label": "トークン名",
+            "name_placeholder": "例：qBittorrent購読",
+            "feed_type_label": "フィードタイプ",
+            "max_results_label": "最大結果数",
+            "expires_at_label": "有効期限",
+            "expires_at_description": "オプション、空白のままにすると期限なし",
+            "cancel": "キャンセル",
+            "confirm": "更新"
+        },
+        "url_modal": {
+            "title": "RSS購読URL",
+            "description": "このURLをRSSリーダーに追加してください：",
+            "copy_button": "URLをコピー",
+            "close": "閉じる"
+        },
+        "revoke_modal": {
+            "title": "トークンの取り消しを確認",
+            "description": "このトークンを取り消してもよろしいですか？",
+            "warning": "取り消し後、このトークンは使用できなくなります。この操作は元に戻せません！",
+            "cancel": "キャンセル",
+            "confirm": "取り消しを確認"
+        },
+        "revoke_all_modal": {
+            "title": "すべてのトークンの取り消しを確認",
+            "description": "すべての{count}個の有効なトークンを取り消してもよろしいですか？",
+            "warning": "これによりすべてのRSS購読が失敗します！この操作は元に戻せません！",
+            "cancel": "キャンセル",
+            "confirm": "すべて取り消しを確認"
+        }
     },
     "cheatLogsPage": {
         "title": "不正行為ログ",
-        "description": "システムが検出した異常な動作の記録を表示",
-        "loadingLogs": "ログを読み込み中...",
-        "noLogs": "不正行為ログはありません",
+        "filters_title": "フィルター条件",
+        "user_id_label": "ユーザーID",
+        "user_id_placeholder": "ユーザーIDを入力",
+        "detection_type_label": "検出タイプ",
+        "detection_type_placeholder": "検出タイプを選択",
+        "all_types": "すべてのタイプ",
+        "search_button": "検索",
+        "reset_button": "リセット",
+        "logs_title": "不正行為ログ一覧",
+        "total_logs": "合計 {count} 件のログ",
+        "loading": "読み込み中...",
+        "no_logs": "不正行為ログはありません",
         "table": {
             "user": "ユーザー",
             "torrent": "トレント",
-            "ip": "IPアドレス",
-            "detectionType": "検出タイプ",
+            "detection_type": "検出タイプ",
+            "severity": "深刻度レベル",
             "details": "詳細",
-            "time": "時刻"
+            "ip_address": "IPアドレス",
+            "detected_at": "検出日時"
         },
-        "detectionTypes": {
-            "announceFrequency": "アナウンス頻度",
-            "multiLocation": "複数地点"
+        "types": {
+            "announce_frequency": "アナウンス頻度異常",
+            "announcefrequency": "アナウンス頻度異常",
+            "multi_location": "複数地点でのシード",
+            "multilocation": "複数地点でのシード"
         },
-        "filters": {
-            "userId": "ユーザーID",
-            "userIdPlaceholder": "ユーザーIDでフィルター",
-            "detectionType": "検出タイプ",
-            "allTypes": "すべてのタイプ",
-            "search": "検索"
-        },
-        "pagination": {
-            "previous": "前へ",
-            "next": "次へ",
-            "page": "ページ {current} / {total}"
+        "severity": {
+            "1": "軽微",
+            "2": "中程度",
+            "3": "深刻",
+            "4": "重大"
         }
     },
-    "homepage": {
-        "hero_title": "TorrentHubへようこそ",
-        "hero_subtitle": "モダンなプライベートトラッカープラットフォーム",
-        "users_count": "{count}+ 人のユーザー"
+    "about": {
+        "title": "概要",
+        "description": "このサイトについて"
     }
 }

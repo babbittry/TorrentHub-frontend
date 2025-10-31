@@ -33,7 +33,7 @@
         "none": "None",
         "author": "Author",
         "version": "Version"
-      },
+    },
     "register": {
         "avatar": "Avatar",
         "refresh_avatar": "Don't like? Give me a new one!",
@@ -198,7 +198,7 @@
         "reject_fulfillment": "Reject Fulfillment",
         "confirmation_deadline_notice": "You have 72 hours to confirm or reject this fulfillment. If you do not take any action, it will be automatically confirmed.",
         "reject_fulfillment_reason": "Reason for Rejection",
-        "reason": "Reason",
+        "detectionType": "Detection Type",
         "rejection_reason_placeholder": "Please provide a reason for rejecting this fulfillment.",
         "submit_rejection": "Submit Rejection",
         "error_confirming": "Error confirming fulfillment.",
@@ -391,7 +391,16 @@
         "downgrade_success": "Successfully switched back to Email Verification.",
         "api_error": "An error occurred. Please try again.",
         "credentials_settings": "Download Credentials",
-        "rss_settings": "RSS Subscriptions"
+        "rss_settings": "RSS Subscriptions",
+        "save_changes": "Save Changes",
+        "change_title_title": "Custom Title",
+        "change_title_description": "Set your personalized title",
+        "custom_title": "Custom Title",
+        "title_updated_success": "Title updated successfully!",
+        "title_updated_error": "Failed to update title",
+        "common": {
+            "cancel": "Cancel"
+        }
     },
     "invitesPage": {
         "title": "My Invites",
@@ -417,8 +426,8 @@
             "logViewer": "Log Viewer"
         },
         "bandwidthSettings": {
-            "title": "带宽设置",
-            "description": "配置上传和下载速度限制"
+            "title": "Bandwidth Settings",
+            "description": "Configure upload and download speed limits"
         },
         "dashboard": {
             "title": "Admin Dashboard",
@@ -438,6 +447,7 @@
                 "title": "Recent Pending Reports",
                 "torrent": "TORRENT",
                 "reason": "REASON",
+                "detectionType": "DETECTION TYPE",
                 "reportedAt": "REPORTED AT",
                 "actions": "ACTIONS",
                 "process": "Process"
@@ -446,7 +456,8 @@
                 "title": "Recent Cheat Logs",
                 "user": "USER",
                 "reason": "REASON",
-                "client": "CLIENT",
+                "detectionType": "DETECTION TYPE",
+                "ip": "IP ADDRESS",
                 "date": "DATE"
             }
         },
@@ -462,7 +473,7 @@
                 "torrent": "Torrent",
                 "reporter": "Reporter",
                 "uploader": "Uploader",
-                "reason": "Reason",
+                "detectionType": "Detection Type",
                 "details": "Details",
                 "noDetails": "No details provided.",
                 "reportedAt": "Reported At",
@@ -552,7 +563,7 @@
             "table": {
                 "peerIdPrefix": "PEER ID PREFIX",
                 "userAgentPattern": "USER-AGENT PATTERN",
-                "reason": "REASON",
+                "detectionType": "DETECTION TYPE",
                 "actions": "ACTIONS"
             },
             "alert": {
@@ -589,8 +600,8 @@
                 "table": {
                     "user": "USER",
                     "torrent": "TORRENT",
-                    "client": "CLIENT",
-                    "reason": "REASON",
+                    "ip": "IP ADDRESS",
+                    "detectionType": "DETECTION TYPE",
                     "date": "DATE"
                 }
             }
@@ -755,6 +766,24 @@
         "error_generic": "Tip failed. Please try again later.",
         "success_message": "Tip successful!"
     },
+    "richEditor": {
+        "toolbar": {
+            "bold": "Bold",
+            "italic": "Italic",
+            "strikethrough": "Strikethrough",
+            "heading": "Heading",
+            "quote": "Quote",
+            "code": "Code",
+            "link": "Link",
+            "image": "Image",
+            "unordered_list": "Unordered List",
+            "ordered_list": "Ordered List",
+            "checklist": "Checklist"
+        },
+        "preview_mode": "Preview Mode",
+        "edit_mode": "Edit Mode",
+        "live_mode": "Live Mode"
+    },
     "reply": {
         "reply": "Reply",
         "reply_to": "Reply to",
@@ -825,19 +854,25 @@
     "credentialManagement": {
         "title": "Download Credentials Management",
         "description": "Each torrent has an independent download credential. If you suspect a credential has been leaked, you can revoke it individually.",
-        "loadingCredentials": "Loading credentials...",
-        "noCredentials": "No download credentials yet",
-        "noCredentialsHint": "Download a torrent to generate your first credential",
-        "stats": {
-            "total": "Total",
-            "active": "Active",
-            "revoked": "Revoked"
-        },
+        "loading": "Loading...",
+        "load_error": "Failed to load credentials",
+        "no_credentials": "No download credentials yet",
+        "total_credentials": "Total {count} credentials",
+        "active_credentials": "Active: {count}",
+        "revoked_credentials": "Revoked: {count}",
+        "revoke_button": "Revoke",
+        "revoke_all_button": "Revoke All",
+        "revoke_success": "Credential revoked successfully",
+        "revoke_error": "Failed to revoke credential",
+        "revoke_all_success": "All credentials revoked successfully",
+        "revoke_all_success_detail": "Successfully revoked {count} credentials affecting {torrentCount} torrents",
+        "revoke_all_error": "Failed to revoke all credentials",
+        "revoke_all_reason": "Batch revocation by user",
         "table": {
-            "torrent": "Torrent",
+            "torrent_name": "Torrent Name",
             "usage_stats": "Usage Stats",
             "last_used": "Last Used",
-            "createdAt": "Created",
+            "created_at": "Created At",
             "status": "Status",
             "actions": "Actions"
         },
@@ -856,23 +891,26 @@
             "sort_upload": "Upload",
             "sort_download": "Download",
             "showing": "Showing {count}",
+            "showing_page": "Showing {from}-{to} / {total} total",
             "no_results": "No matching credentials found"
         },
         "status": {
             "active": "Active",
             "revoked": "Revoked on {date}"
         },
-        "actions": {
-            "revoke": "Revoke",
-            "revokeAll": "Revoke All",
-            "revokeAllConfirm": "Are you sure you want to revoke ALL download credentials? This action cannot be undone!",
-            "revokeConfirm": "Are you sure you want to revoke this credential? You won't be able to continue uploading/downloading this torrent.",
-            "revoking": "Revoking...",
-            "revokeSuccess": "Credential revoked successfully",
-            "revokeFailed": "Failed to revoke credential",
-            "revokeAllSuccess": "All credentials revoked successfully",
-            "revokeAllFailed": "Failed to revoke all credentials",
-            "revoke_all_success_detail": "Successfully revoked {count} credentials affecting {torrentCount} torrents"
+        "revoke_modal": {
+            "title": "Confirm Revoke Credential",
+            "description": "Are you sure you want to revoke this credential?",
+            "warning": "After revocation, this torrent will no longer be able to upload/download. This action cannot be undone!",
+            "cancel": "Cancel",
+            "confirm": "Confirm Revocation"
+        },
+        "revoke_all_modal": {
+            "title": "Confirm Revoke All Credentials",
+            "description": "Are you sure you want to revoke all {count} active credentials?",
+            "warning": "This will cause all torrents to be unable to continue uploading/downloading! This action cannot be undone!",
+            "cancel": "Cancel",
+            "confirm": "Confirm Revoke All"
         },
         "bulk": {
             "revoke_selected": "Revoke Selected",
@@ -890,92 +928,41 @@
             "csv_button": "Export CSV",
             "json_button": "Export JSON",
             "csv_success": "CSV file exported successfully",
-            "json_success": "JSON file exported successfully"
+            "json_success": "JSON file exported successfully",
+            "error": "Export failed"
+        },
+        "pagination": {
+            "rows_per_page": "Rows per page"
         }
     },
     "rssFeedManagement": {
         "title": "RSS Subscription Management",
         "description": "Create independent RSS tokens for different RSS readers. Each token can be configured with different permissions.",
-        "createToken": "Create New Token",
+        "loading": "Loading...",
+        "load_error": "Failed to load token list",
+        "no_tokens": "No RSS tokens yet",
+        "total_tokens": "Total {count} tokens",
+        "active_tokens": "Active: {count}",
+        "create_button": "Create Token",
         "edit_button": "Edit",
-        "loadingTokens": "Loading tokens...",
-        "noTokens": "No RSS tokens yet",
-        "noTokensHint": "Create your first RSS token to start subscribing",
-        "form": {
-            "name": "Token Name",
-            "namePlaceholder": "e.g., qBittorrent Subscription",
-            "nameHint": "Easy to identify this token",
-            "feedType": "Feed Type",
-            "feedTypes": {
-                "latest": "Latest Torrents",
-                "category": "Category Filter",
-                "bookmarks": "My Bookmarks",
-                "custom": "Custom"
-            },
-            "categoryFilter": "Category Filter",
-            "categoryFilterHint": "Select categories to subscribe to",
-            "categories": {
-                "movie": "Movie",
-                "tv": "TV Series",
-                "anime": "Anime",
-                "music": "Music",
-                "game": "Game",
-                "software": "Software",
-                "other": "Other"
-            },
-            "maxResults": "Max Results",
-            "maxResultsHint": "Maximum number of items per feed (10-100)",
-            "expiresAt": "Expiration Time",
-            "expiresAtHint": "Optional, leave empty for no expiration",
-            "creating": "Creating...",
-            "createSuccess": "Token created successfully",
-            "createFailed": "Failed to create token",
-            "edit_success": "Token updated successfully",
-            "edit_error": "Failed to update token"
-        },
-        "edit_modal": {
-            "title": "Edit RSS Token",
-            "name_label": "Token Name",
-            "name_placeholder": "e.g., qBittorrent Subscription",
-            "feed_type_label": "Feed Type",
-            "max_results_label": "Max Results",
-            "expires_at_label": "Expiration Time",
-            "expires_at_description": "Optional, leave empty for no expiration",
-            "cancel": "Cancel",
-            "confirm": "Update"
-        },
-        "table": {
-            "name": "Name",
-            "feedType": "Type",
-            "categories": "Categories",
-            "maxResults": "Max Results",
-            "status": "Status",
-            "usage": "Usage",
-            "lastUsed": "Last Used",
-            "actions": "Actions"
-        },
-        "status": {
-            "active": "Active",
-            "revoked": "Revoked",
-            "expired": "Expired"
-        },
-        "actions": {
-            "copyUrl": "Copy URL",
-            "revoke": "Revoke",
-            "revokeAll": "Revoke All",
-            "revokeConfirm": "Are you sure you want to revoke this token?",
-            "revokeAllConfirm": "Are you sure you want to revoke ALL RSS tokens?",
-            "revoking": "Revoking...",
-            "urlCopied": "RSS URL copied to clipboard",
-            "revokeSuccess": "Token revoked successfully",
-            "revokeFailed": "Failed to revoke token",
-            "revokeAllSuccess": "All tokens revoked successfully",
-            "revokeAllFailed": "Failed to revoke all tokens"
-        },
-        "usage": {
-            "count": "{count} times",
-            "never": "Never used"
-        },
+        "revoke_button": "Revoke",
+        "revoke_all_button": "Revoke All Tokens",
+        "create_success": "Token created successfully",
+        "create_error": "Failed to create token",
+        "edit_success": "Token updated successfully",
+        "edit_error": "Failed to update token",
+        "revoke_success": "Token revoked successfully",
+        "revoke_error": "Failed to revoke token",
+        "revoke_all_success": "All tokens revoked successfully",
+        "revoke_all_error": "Failed to revoke all tokens",
+        "copy_success": "RSS URL copied to clipboard",
+        "copy_error": "Failed to copy",
+        "copy_url": "Copy RSS URL",
+        "unnamed_token": "Unnamed Token",
+        "categories": "Categories",
+        "used_count": "Used {count} times",
+        "last_used": "Last Used",
+        "never": "Never used",
         "details": {
             "usage_stats": "Usage Statistics",
             "usage_count": "Usage Count",
@@ -988,41 +975,107 @@
             "minutes_ago": "{count} minutes ago",
             "hours_ago": "{count} hours ago",
             "days_ago": "{count} days ago"
+        },
+        "table": {
+            "name": "Name",
+            "feed_type": "Type",
+            "usage": "Usage",
+            "created_at": "Created At",
+            "status": "Status",
+            "actions": "Actions"
+        },
+        "status": {
+            "active": "Active",
+            "revoked": "Revoked",
+            "expired": "Expired"
+        },
+        "feed_types": {
+            "latest": "Latest Torrents",
+            "category": "Category Subscription",
+            "bookmarks": "My Bookmarks",
+            "custom": "Custom"
+        },
+        "create_modal": {
+            "title": "Create RSS Token",
+            "name_label": "Token Name",
+            "name_placeholder": "e.g., qBittorrent Subscription",
+            "feed_type_label": "Feed Type",
+            "max_results_label": "Max Results",
+            "expires_at_label": "Expiration Time (Optional)",
+            "expires_at_description": "Leave empty for no expiration",
+            "cancel": "Cancel",
+            "confirm": "Create"
+        },
+        "edit_modal": {
+            "title": "Edit RSS Token",
+            "name_label": "Token Name",
+            "name_placeholder": "e.g., qBittorrent Subscription",
+            "feed_type_label": "Feed Type",
+            "max_results_label": "Max Results",
+            "expires_at_label": "Expiration Time",
+            "expires_at_description": "Optional, leave empty for no expiration",
+            "cancel": "Cancel",
+            "confirm": "Update"
+        },
+        "url_modal": {
+            "title": "RSS Subscription URL",
+            "description": "Add this URL to your RSS reader:",
+            "copy_button": "Copy URL",
+            "close": "Close"
+        },
+        "revoke_modal": {
+            "title": "Confirm Revoke Token",
+            "description": "Are you sure you want to revoke this token?",
+            "warning": "After revocation, this token will no longer be usable. This action cannot be undone!",
+            "cancel": "Cancel",
+            "confirm": "Confirm Revocation"
+        },
+        "revoke_all_modal": {
+            "title": "Confirm Revoke All Tokens",
+            "description": "Are you sure you want to revoke all {count} active tokens?",
+            "warning": "This will cause all RSS subscriptions to fail! This action cannot be undone!",
+            "cancel": "Cancel",
+            "confirm": "Confirm Revoke All"
         }
     },
     "cheatLogsPage": {
         "title": "Cheat Logs",
-        "description": "View system-detected abnormal behavior records",
-        "loadingLogs": "Loading logs...",
-        "noLogs": "No cheat logs",
+        "filters_title": "Filter Conditions",
+        "user_id_label": "User ID",
+        "user_id_placeholder": "Enter user ID",
+        "detection_type_label": "Detection Type",
+        "detection_type_placeholder": "Select detection type",
+        "all_types": "All Types",
+        "search_button": "Search",
+        "reset_button": "Reset",
+        "logs_title": "Cheat Log List",
+        "total_logs": "Total {count} logs",
+        "loading": "Loading...",
+        "no_logs": "No cheat logs",
         "table": {
             "user": "User",
             "torrent": "Torrent",
-            "ip": "IP Address",
-            "detectionType": "Detection Type",
+            "detection_type": "Detection Type",
+            "severity": "Severity Level",
             "details": "Details",
-            "time": "Time"
+            "ip_address": "IP Address",
+            "detected_at": "Detected At"
         },
-        "detectionTypes": {
-            "announceFrequency": "Announce Frequency",
-            "multiLocation": "Multi-Location"
+        "types": {
+            "announce_frequency": "Announce Frequency Abnormal",
+            "announcefrequency": "Announce Frequency Abnormal",
+            "multi_location": "Multi-location Seeding",
+            "multilocation": "Multi-location Seeding"
         },
-        "filters": {
-            "userId": "User ID",
-            "userIdPlaceholder": "Filter by user ID",
-            "detectionType": "Detection Type",
-            "allTypes": "All Types",
-            "search": "Search"
-        },
-        "pagination": {
-            "previous": "Previous",
-            "next": "Next",
-            "page": "Page {current} of {total}"
+        "severity": {
+            "1": "Minor",
+            "2": "Moderate",
+            "3": "Severe",
+            "4": "Critical"
         }
     },
-    "homepage": {
-        "hero_title": "Welcome to TorrentHub",
-        "hero_subtitle": "A modern private tracker platform",
-        "users_count": "{count}+ users"
+    "about": {
+        "title": "About",
+        "description": "About This Site"
     }
 }
