@@ -22,12 +22,11 @@ const NewTopicPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isForbidden, setIsForbidden] = useState(false);
-    const t = useTranslations('forumPage');
-    const t_cat = useTranslations('forum_categories');
+    const t = useTranslations();
 
     const getCategoryName = useCallback((code: string) => {
-        return t_cat(code);
-    }, [t_cat]);
+        return t(`forum_categories.${code}`);
+    }, [t]);
 
     const categoryIdFromQuery = useMemo(() => searchParams.get('categoryId'), [searchParams]);
 
@@ -41,7 +40,7 @@ const NewTopicPage = () => {
                 }
             } catch (err) {
                 console.error(err);
-                setError(t('error_loading_categories'));
+                setError(t('forumPage.error_loading_categories'));
             }
         };
         fetchCategories();
@@ -58,7 +57,7 @@ const NewTopicPage = () => {
         if (selectedCategory && selectedCategory.code === 'Announcement') {
             if (!user || user.role !== UserRole.Administrator) {
                 setIsForbidden(true);
-                setError(t('error_permission_denied'));
+                setError(t('forumPage.error_permission_denied'));
             } else {
                 setIsForbidden(false);
                 setError(null);
@@ -74,7 +73,7 @@ const NewTopicPage = () => {
         if (isForbidden) return;
 
         if (!title.trim() || !content.trim() || !selectedCategoryId) {
-            setError(t('error_all_fields_required'));
+            setError(t('forumPage.error_all_fields_required'));
             return;
         }
         setError(null);
@@ -90,7 +89,7 @@ const NewTopicPage = () => {
             router.push(`/forums/topics/${newTopic.id}`);
         } catch (err) {
             console.error(err);
-            setError(t('error_creating_topic'));
+            setError(t('forumPage.error_creating_topic'));
         } finally {
             setIsSubmitting(false);
         }
@@ -100,14 +99,14 @@ const NewTopicPage = () => {
         <div className="container mx-auto p-4 sm:p-6">
             <Card className="max-w-2xl mx-auto">
                 <CardHeader>
-                    <h1 className="text-2xl font-bold">{t('new_topic')}</h1>
+                    <h1 className="text-2xl font-bold">{t('forumPage.new_topic')}</h1>
                 </CardHeader>
                 <CardBody>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <Select
-                            label={t('category')}
+                            label={t('forumPage.category')}
                             labelPlacement="outside"
-                            placeholder={t('select_category')}
+                            placeholder={t('forumPage.select_category')}
                             selectedKeys={selectedCategoryId ? [selectedCategoryId] : []}
                             onSelectionChange={(keys) => setSelectedCategoryId(Array.from(keys)[0] as string)}
                             isRequired
@@ -120,9 +119,9 @@ const NewTopicPage = () => {
                             ))}
                         </Select>
                         <CustomInput
-                            label={t('topic_title')}
+                            label={t('forumPage.topic_title')}
                             labelPlacement="outside"
-                            placeholder={t('title_placeholder')}
+                            placeholder={t('forumPage.title_placeholder')}
                             value={title}
                             onValueChange={setTitle}
                             isRequired
@@ -133,9 +132,9 @@ const NewTopicPage = () => {
                         <RichEditor
                             value={content}
                             onChange={setContent}
-                            label={t('content')}
+                            label={t('forumPage.content')}
                             labelPlacement="outside"
-                            placeholder={t('content_placeholder')}
+                            placeholder={t('forumPage.content_placeholder')}
                             isRequired
                             maxLength={10000}
                             isDisabled={isForbidden}
@@ -144,7 +143,7 @@ const NewTopicPage = () => {
                         {error && <p className="text-danger text-sm">{error}</p>}
                         <div className="flex justify-end">
                             <Button type="submit" color="primary" isLoading={isSubmitting} isDisabled={isForbidden}>
-                                {t('submit_topic')}
+                                {t('forumPage.submit_topic')}
                             </Button>
                         </div>
                     </form>

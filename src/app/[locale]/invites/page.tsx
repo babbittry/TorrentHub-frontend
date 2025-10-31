@@ -13,9 +13,7 @@ const InvitesPage = () => {
     const [invitesList, setInvitesList] = useState<InviteDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [, setError] = useState<string | null>(null);
-    const t = useTranslations('invitesPage');
-    const t_common = useTranslations('common');
-    const t_store = useTranslations('Store');
+    const t = useTranslations();
     const { refreshUser } = useAuth();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [invitePrice, setInvitePrice] = useState<number | null>(null);
@@ -26,11 +24,11 @@ const InvitesPage = () => {
             const data = await invites.getInvites();
             setInvitesList(data);
         } catch (err) {
-            setError((err as Error).message || t_common('error'));
+            setError((err as Error).message || t('common.error'));
         } finally {
             setIsLoading(false);
         }
-    }, [t_common]);
+    }, [t]);
 
     useEffect(() => {
         fetchInvites();
@@ -49,7 +47,7 @@ const InvitesPage = () => {
             await fetchInvites(); // Refresh the list
             onOpenChange(); // Close modal
         } catch (err) {
-            alert((err as Error).message || t_common('error'));
+            alert((err as Error).message || t('common.error'));
         }
     };
 
@@ -72,24 +70,24 @@ const InvitesPage = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-6">{t('title')}</h1>
+            <h1 className="text-3xl font-bold mb-6">{t('invitesPage.title')}</h1>
 
             <Card>
                 <CardHeader>
                     <Button onClick={onOpen} color="primary">
-                        {t('createNew')}
+                        {t('invitesPage.createNew')}
                     </Button>
                 </CardHeader>
                 <CardBody>
                     <Table aria-label="Invites list">
                         <TableHeader>
-                            <TableColumn key="id">{t('tableId')}</TableColumn>
-                            <TableColumn key="code">{t('tableCode')}</TableColumn>
-                            <TableColumn key="createdAt">{t('tableCreatedAt')}</TableColumn>
-                            <TableColumn key="expiresAt">{t('tableExpiresAt')}</TableColumn>
-                            <TableColumn key="usedByUsername">{t('tableUsedBy')}</TableColumn>
+                            <TableColumn key="id">{t('invitesPage.tableId')}</TableColumn>
+                            <TableColumn key="code">{t('invitesPage.tableCode')}</TableColumn>
+                            <TableColumn key="createdAt">{t('invitesPage.tableCreatedAt')}</TableColumn>
+                            <TableColumn key="expiresAt">{t('invitesPage.tableExpiresAt')}</TableColumn>
+                            <TableColumn key="usedByUsername">{t('invitesPage.tableUsedBy')}</TableColumn>
                         </TableHeader>
-                        <TableBody items={invitesList} isLoading={isLoading} emptyContent={t('noInvites')}>
+                        <TableBody items={invitesList} isLoading={isLoading} emptyContent={t('invitesPage.noInvites')}>
                             {(item) => (
                                 <TableRow key={item.id}>
                                     {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
@@ -104,20 +102,20 @@ const InvitesPage = () => {
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader>{t_store('confirmPurchase')}</ModalHeader>
+                            <ModalHeader>{t('invitesPage.purchaseInvite')}</ModalHeader>
                             <ModalBody>
                                 {invitePrice !== null ? (
-                                    <p>{t_store('price')}: {invitePrice}</p>
+                                    <p>{t('Store.price')}: {invitePrice}</p>
                                 ) : (
-                                    <p>{t_common('loading')}</p>
+                                    <p>{t('common.loading')}</p>
                                 )}
                             </ModalBody>
                             <ModalFooter>
                                 <Button variant="light" onPress={onClose}>
-                                    {t_store('cancel')}
+                                    {t('Store.cancel')}
                                 </Button>
                                 <Button color="primary" onPress={handlePurchaseConfirm} disabled={invitePrice === null}>
-                                    {t_store('confirm')}
+                                    {t('Store.confirm')}
                                 </Button>
                             </ModalFooter>
                         </>

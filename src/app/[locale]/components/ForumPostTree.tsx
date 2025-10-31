@@ -43,7 +43,7 @@ export default function ForumPostTree({
     isDeleting,
     onSubmitReply,
 }: ForumPostTreeProps) {
-    const t = useTranslations('reply');
+    const t = useTranslations();
     const locale = useLocale() as keyof typeof dateLocales;
     const [activeReplyId, setActiveReplyId] = useState<number | null>(null);
     const [expandedQuotes, setExpandedQuotes] = useState<Set<number>>(new Set());
@@ -132,7 +132,7 @@ export default function ForumPostTree({
                                         <div className="flex items-center gap-1.5 text-sm text-blue-600 dark:text-blue-400">
                                             <FontAwesomeIcon icon={faQuoteLeft} className="w-3 h-3" />
                                             <span>
-                                                {t('quote')} #{parentPost.floor} @{post.replyToUser.username}
+                                                {t('reply.quote')} #{parentPost.floor} @{post.replyToUser.username}
                                             </span>
                                         </div>
                                         {parentPost.content.length > 150 && (
@@ -140,7 +140,7 @@ export default function ForumPostTree({
                                                 onClick={() => toggleQuote(post.id)}
                                                 className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex-shrink-0"
                                             >
-                                                {isQuoteExpanded ? t('collapse') : t('expand')}
+                                                {isQuoteExpanded ? t('reply.collapse') : t('reply.expand')}
                                             </button>
                                         )}
                                     </div>
@@ -181,7 +181,7 @@ export default function ForumPostTree({
                                 className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
                             >
                                 <FontAwesomeIcon icon={faReply} className="w-3.5 h-3.5" />
-                                <span>{t('reply')}</span>
+                                <span>{t('reply.reply')}</span>
                             </button>
 
                             {canDelete && canDelete(post) && onDelete && (
@@ -191,7 +191,7 @@ export default function ForumPostTree({
                                     className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors disabled:opacity-50"
                                 >
                                     <FontAwesomeIcon icon={faTrash} className="w-3.5 h-3.5" />
-                                    <span>{isDeleting ? t('deleting') : t('delete')}</span>
+                                    <span>{isDeleting ? t('reply.deleting') : t('reply.delete')}</span>
                                 </button>
                             )}
                         </div>
@@ -220,7 +220,7 @@ export default function ForumPostTree({
         <div className="space-y-0">
             {sortedPosts.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                    {t('no_posts')}
+                    {t('reply.no_posts')}
                 </div>
             ) : (
                 <>
@@ -234,7 +234,7 @@ export default function ForumPostTree({
                                 disabled={isLoading}
                                 className="w-full py-3 px-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 rounded-md transition-colors font-medium text-gray-700 dark:text-gray-200"
                             >
-                                {isLoading ? t('loading') : t('load_more')}
+                                {isLoading ? t('reply.loading') : t('reply.load_more')}
                             </button>
                         </div>
                     )}

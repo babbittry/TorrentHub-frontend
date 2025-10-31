@@ -399,7 +399,8 @@
         "title_updated_success": "头衔更新成功！",
         "title_updated_error": "头衔更新失败",
         "common": {
-            "cancel": "取消"
+            "cancel": "取消",
+            "loading": "加载中..."
         }
     },
     "invitesPage": {
@@ -410,7 +411,8 @@
         "tableCreatedAt": "创建时间",
         "tableExpiresAt": "过期时间",
         "tableUsedBy": "受邀用户",
-        "noInvites": "没有找到邀请码。"
+        "noInvites": "没有找到邀请码。",
+        "purchaseInvite": "购买邀请名额"
     },
     "Admin": {
         "sidebar": {
@@ -474,6 +476,7 @@
                 "reporter": "举报人",
                 "uploader": "发布人",
                 "detectionType": "检测类型",
+                "reason": "原因",
                 "details": "详情",
                 "noDetails": "无详情",
                 "reportedAt": "举报于",
@@ -564,6 +567,7 @@
                 "peerIdPrefix": "PEER ID 前缀",
                 "userAgentPattern": "USER-AGENT 模式",
                 "detectionType": "检测类型",
+                "reason": "原因",
                 "actions": "操作"
             },
             "alert": {
@@ -602,6 +606,7 @@
                     "torrent": "种子",
                     "ip": "IP地址",
                     "detectionType": "检测类型",
+                    "details": "详情",
                     "date": "日期"
                 }
             }
@@ -791,6 +796,7 @@
         "show_replies": "显示回复",
         "hide_replies": "隐藏回复",
         "no_comments": "暂无评论",
+        "no_posts": "暂无帖子",
         "comment_required": "评论内容不能为空",
         "comment_too_long": "评论内容不能超过{{max}}字符",
         "write_comment": "写一条评论",

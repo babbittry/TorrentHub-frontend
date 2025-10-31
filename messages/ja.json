@@ -204,6 +204,7 @@
         "error_rejecting": "履行の拒否中にエラーが発生しました。",
         "rejection_reason_required": "拒否の理由は必須です。",
         "rejection_reason": "拒否の理由",
+        "reason": "理由",
         "bounty_help_text": "このリクエストを作成するには{baseCost}コインかかります。追加の懸賞金を追加して、合計{totalCost}コインにすることができます。",
         "detectionType": "検出タイプ"
     },
@@ -399,7 +400,8 @@
         "title_updated_success": "タイトルが正常に更新されました！",
         "title_updated_error": "タイトルの更新に失敗しました",
         "common": {
-            "cancel": "キャンセル"
+            "cancel": "キャンセル",
+            "loading": "読み込み中..."
         }
     },
     "invitesPage": {
@@ -410,7 +412,8 @@
         "tableCreatedAt": "作成日時",
         "tableExpiresAt": "有効期限",
         "tableUsedBy": "使用したユーザー",
-        "noInvites": "招待は見つかりませんでした。"
+        "noInvites": "招待は見つかりませんでした。",
+        "purchaseInvite": "招待枠を購入"
     },
     "Admin": {
         "sidebar": {
@@ -474,6 +477,7 @@
                 "reporter": "報告者",
                 "uploader": "アップローダー",
                 "detectionType": "検出タイプ",
+                "reason": "理由",
                 "details": "詳細",
                 "noDetails": "詳細はありません。",
                 "reportedAt": "報告日時",
@@ -564,6 +568,7 @@
                 "peerIdPrefix": "PEER ID プレフィックス",
                 "userAgentPattern": "USER-AGENT パターン",
                 "detectionType": "検出タイプ",
+                "reason": "理由",
                 "actions": "操作"
             },
             "alert": {
@@ -602,6 +607,7 @@
                     "torrent": "トレント",
                     "ip": "IPアドレス",
                     "detectionType": "検出タイプ",
+                    "details": "詳細",
                     "date": "日付"
                 }
             }
@@ -791,6 +797,7 @@
         "show_replies": "返信を表示",
         "hide_replies": "返信を非表示",
         "no_comments": "コメントはまだありません",
+        "no_posts": "まだ投稿がありません",
         "comment_required": "コメントは空にできません",
         "comment_too_long": "コメントは{{max}}文字を超えることはできません",
         "write_comment": "コメントを書く",

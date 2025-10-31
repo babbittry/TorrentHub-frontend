@@ -36,10 +36,7 @@ export default function TorrentsPage() {
     const [sortBy, setSortBy] = useState<string>("createdAt");
     const [sortOrder, setSortOrder] = useState<string>("desc");
     const [viewMode, setViewMode] = useState<ViewMode>(getInitialViewMode);
-    const t = useTranslations('torrentsPage');
-    const t_common = useTranslations('common');
-    const t_header = useTranslations('header');
-    const t_cats = useTranslations('categories');
+    const t = useTranslations();
 
     const fetchTorrents = useCallback(async () => {
         setLoading(true);
@@ -49,11 +46,11 @@ export default function TorrentsPage() {
             setTorrents(response.items || []);
             setTotalCount(response.totalItems || 0);
         } catch (err: unknown) {
-            setError((err as Error).message || t_common('error'));
+            setError((err as Error).message || t('common.error'));
         } finally {
             setLoading(false);
         }
-    }, [page, pageSize, category, searchTerm, sortBy, sortOrder, t_common]);
+    }, [page, pageSize, category, searchTerm, sortBy, sortOrder, t]);
 
     useEffect(() => {
         localStorage.setItem('torrentViewMode', viewMode);
@@ -77,18 +74,18 @@ export default function TorrentsPage() {
         fetchTorrents();
     };
 
-    const categoryOptions = Object.values(TorrentCategory).filter(v => isNaN(Number(v))).map(cat => ({ key: cat.toString(), value: cat.toString(), label: t_cats(cat as string) }));
+    const categoryOptions = Object.values(TorrentCategory).filter(v => isNaN(Number(v))).map(cat => ({ key: cat.toString(), value: cat.toString(), label: t("categories." + (cat as string)) }));
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-4xl font-extrabold text-primary mb-8 text-center drop-shadow-lg">{t('all_torrents')}</h1>
+            <h1 className="text-4xl font-extrabold text-primary mb-8 text-center drop-shadow-lg">{t('torrentsPage.all_torrents')}</h1>
 
             <Card className="mb-10 p-4" shadow="sm">
                 <CardBody>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                         <Input
-                            label={t_common('search')}
-                            placeholder={t_header('search_torrents')}
+                            label={t('common.search')}
+                            placeholder={t('header.search_torrents')}
                             value={searchTerm}
                             onValueChange={setSearchTerm}
                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -99,8 +96,8 @@ export default function TorrentsPage() {
                             labelPlacement="outside"
                         />
                         <Select
-                            label={t_common('category')}
-                            placeholder={t('all_torrents')}
+                            label={t('common.category')}
+                            placeholder={t('torrentsPage.all_torrents')}
                             selectedKeys={category ? [category] : []}
                             onSelectionChange={(keys: Selection) => {
                                 if (keys instanceof Set && keys.size > 0) {
@@ -113,7 +110,7 @@ export default function TorrentsPage() {
                             variant="bordered"
                             size="md"
                             labelPlacement="outside"
-                            items={[{ key: "", label: t('all_torrents') }, ...categoryOptions]}
+                            items={[{ key: "", label: t('torrentsPage.all_torrents') }, ...categoryOptions]}
                         >
                             {(item) => (
                                 <SelectItem key={item.key}>
@@ -122,7 +119,7 @@ export default function TorrentsPage() {
                             )}
                         </Select>
                         <Button onPress={handleSearch} color="primary" className="w-full md:w-auto" size="md">
-                            {t_common('search')}
+                            {t('common.search')}
                         </Button>
                         <div className="flex justify-end items-center lg:col-start-4">
                             <ButtonGroup>
@@ -142,11 +139,11 @@ export default function TorrentsPage() {
                 </CardBody>
             </Card>
 
-            {loading && <p className="text-center text-foreground text-lg">{t_common('loading')}</p>}
-            {error && <p className="text-center text-danger text-lg">{t_common('error')}: {error}</p>}
+            {loading && <p className="text-center text-foreground text-lg">{t('common.loading')}</p>}
+            {error && <p className="text-center text-danger text-lg">{t('common.error')}: {error}</p>}
 
             {!loading && !error && torrents.length === 0 && (
-                <p className="text-center text-default-500 text-lg opacity-80">{t('no_torrents_found')}</p>
+                <p className="text-center text-default-500 text-lg opacity-80">{t('torrentsPage.no_torrents_found')}</p>
             )}
 
             {!loading && !error && torrents.length > 0 && (
@@ -161,15 +158,15 @@ export default function TorrentsPage() {
                         <div className="space-y-3">
                             <Card className="p-3 shadow-sm">
                                 <div className="flex items-center">
-                                    <div className="flex-shrink-0 w-16 mr-4"></div>
-                                    <div className="flex-grow grid grid-cols-12 gap-4 items-center font-bold text-foreground">
-                                        <div className="col-span-4 cursor-pointer hover:text-primary" onClick={() => handleSort('name')}>{t_common('name')} {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                        <div className="col-span-2 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('createdAt')}>{t_common('date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('size')}>{t_common('size')} {sortBy === 'size' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('seeders')}>{t_common('seeders')} {sortBy === 'seeders' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('leechers')}>{t_common('leechers')} {sortBy === 'leechers' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('snatched')}>{t_common('snatched')} {sortBy === 'snatched' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
-                                        <div className="col-span-2 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('uploaderUsername')}>{t_common('uploader')} {sortBy === 'uploaderUsername' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                    <div className="shrink-0 w-16 mr-4"></div>
+                                    <div className="grow grid grid-cols-12 gap-4 items-center font-bold text-foreground">
+                                        <div className="col-span-4 cursor-pointer hover:text-primary" onClick={() => handleSort('name')}>{t('common.name')} {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-2 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('createdAt')}>{t('common.date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('size')}>{t('common.size')} {sortBy === 'size' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('seeders')}>{t('common.seeders')} {sortBy === 'seeders' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('leechers')}>{t('common.leechers')} {sortBy === 'leechers' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('snatched')}>{t('common.snatched')} {sortBy === 'snatched' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
+                                        <div className="col-span-2 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('uploaderUsername')}>{t('common.uploader')} {sortBy === 'uploaderUsername' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                                     </div>
                                 </div>
                             </Card>

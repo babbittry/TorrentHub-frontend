@@ -21,16 +21,14 @@ const CategoryPage = () => {
     const [page, setPage] = useState(1);
     const [pageSize] = useState(20);
     const [totalCount, setTotalCount] = useState(0);
-    const t = useTranslations('forumPage');
-    const t_cat = useTranslations('forum_categories');
-    const t_header = useTranslations('header');
+    const t = useTranslations();
 
     const getCategoryName = (code: string) => {
-        return t_cat(code);
+        return t(`forum_categories.${code}`);
     };
 
     const getCategoryDescription = (code: string) => {
-        return t_cat(`${code}_description`);
+        return t(`forum_categories.${code}_description`);
     };
 
     const fetchTopics = useCallback(async () => {
@@ -46,7 +44,7 @@ const CategoryPage = () => {
             setTopics(topicsData.items || []);
             setTotalCount(topicsData.totalItems || 0);
         } catch (err) {
-            setError(t('error_loading_topics'));
+            setError(t('forumPage.error_loading_topics'));
             console.error(err);
         } finally {
             setIsLoading(false);
@@ -60,28 +58,28 @@ const CategoryPage = () => {
     return (
         <div className="container mx-auto p-4 sm:p-6">
             <Breadcrumbs className="mb-4">
-                <BreadcrumbItem href="/forums">{t_header('forums')}</BreadcrumbItem>
+                <BreadcrumbItem href="/forums">{t('forumPage.title')}</BreadcrumbItem>
                 <BreadcrumbItem>{category ? getCategoryName(category.code) : '...'}</BreadcrumbItem>
             </Breadcrumbs>
             
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-4xl font-extrabold text-primary drop-shadow-lg">
-                        {category ? getCategoryName(category.code) : t('topics')}
+                        {category ? getCategoryName(category.code) : t('forumPage.topics')}
                     </h1>
                     {category && <p className="text-lg text-default-500 mt-1">{getCategoryDescription(category.code)}</p>}
                 </div>
                 <Button as={Link} href={`/forums/new-topic?categoryId=${categoryId}`} color="primary">
-                    {t('new_topic')}
+                    {t('forumPage.new_topic')}
                 </Button>
             </div>
 
             {isLoading ? (
-                <p className="text-center">{t('loading_topics')}</p>
+                <p className="text-center">{t('forumPage.loading_topics')}</p>
             ) : error ? (
                 <p className="text-center text-danger">{error}</p>
             ) : topics.length === 0 ? (
-                <p className="text-center">{t('no_topics_found')}</p>
+                <p className="text-center">{t('forumPage.no_topics_found')}</p>
             ) : (
                 <>
                     <div className="space-y-4">
@@ -93,16 +91,16 @@ const CategoryPage = () => {
                                             <Link href={`/forums/topics/${topic.id}`}>
                                                 <h3 className="text-lg font-semibold text-foreground hover:text-primary transition-colors">{topic.title}</h3>
                                             </Link>
-                                            <div className="text-sm text-default-500 flex items-center">{t('by')} <UserDisplay user={topic.author} /></div>
+                                            <div className="text-sm text-default-500 flex items-center">{t('forumPage.by')} <UserDisplay user={topic.author} /></div>
                                         </div>
                                         <div className="col-span-2 text-center text-sm text-default-500">
-                                            <p>{t('posts')}</p>
+                                            <p>{t('forumPage.posts')}</p>
                                             <p className="font-bold text-foreground">{topic.postCount}</p>
                                         </div>
                                         <div className="col-span-2 text-right text-sm text-default-500">
                                             {topic.lastPostTime && (
                                                 <>
-                                                    <p>{t('last_reply')}</p>
+                                                    <p>{t('forumPage.last_reply')}</p>
                                                     <p className="font-semibold text-foreground">{new Date(topic.lastPostTime).toLocaleString()}</p>
                                                 </>
                                             )}

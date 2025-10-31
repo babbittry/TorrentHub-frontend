@@ -23,13 +23,11 @@ const TopicDetailPage = () => {
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loadingMore, setLoadingMore] = useState<boolean>(false);
     const [replyTarget, setReplyTarget] = useState<{ parentId: number; user: ForumPostDto['author'] } | null>(null);
-    const t = useTranslations('forumPage');
-    const t_header = useTranslations('header');
-    const t_cat = useTranslations('forum_categories');
+    const t = useTranslations();
 
     const getCategoryName = useCallback((code: string) => {
-        return t_cat(code);
-    }, [t_cat]);
+        return t(`forum_categories.${code}`);
+    }, [t]);
 
     const fetchDetails = useCallback(async () => {
         if (!topicId) return;
@@ -48,7 +46,7 @@ const TopicDetailPage = () => {
             setHasMore(topicData.posts.page < topicData.posts.totalPages);
             setCurrentPage(topicData.posts.page);
         } catch (err) {
-            setError(t('error_loading_topic_details'));
+            setError(t('forumPage.error_loading_topic_details'));
             console.error(err);
         } finally {
             setIsLoading(false);
@@ -92,7 +90,7 @@ const TopicDetailPage = () => {
             setHasMore(response.page < response.totalPages);
             setCurrentPage(response.page);
         } catch (err) {
-            setError(t('error_loading_topic_details'));
+            setError(t('forumPage.error_loading_topic_details'));
             console.error(err);
         } finally {
             setLoadingMore(false);
@@ -109,7 +107,7 @@ const TopicDetailPage = () => {
             const newPost = await forum.createPost(topicId, postData);
             setPosts(prev => [...prev, newPost]);
         } catch (err) {
-            throw new Error(t('error_posting_reply'));
+            throw new Error(t('forumPage.error_posting_reply'));
         }
     };
 
@@ -124,7 +122,7 @@ const TopicDetailPage = () => {
             setPosts(prev => [...prev, newPost]);
             setReplyTarget(null);
         } catch (err) {
-            throw new Error(t('error_posting_reply'));
+            throw new Error(t('forumPage.error_posting_reply'));
         }
     };
 
@@ -133,7 +131,7 @@ const TopicDetailPage = () => {
             await forum.deletePost(postId);
             setPosts(prev => prev.filter(p => p.id !== postId));
         } catch (err) {
-            setError(t('error_loading_topic_details'));
+            setError(t('forumPage.error_loading_topic_details'));
             console.error(err);
         }
     };
@@ -143,7 +141,7 @@ const TopicDetailPage = () => {
     };
 
     if (isLoading) {
-        return <p className="text-center p-8">{t('loading_topic_details')}</p>;
+        return <p className="text-center p-8">{t('forumPage.loading_topic_details')}</p>;
     }
 
     if (error) {
@@ -151,13 +149,13 @@ const TopicDetailPage = () => {
     }
 
     if (!topic) {
-        return <p className="text-center p-8">{t('topic_not_found')}</p>;
+        return <p className="text-center p-8">{t('forumPage.topic_not_found')}</p>;
     }
 
     return (
         <div className="container mx-auto p-4 sm:p-6">
             <Breadcrumbs className="mb-4 text-foreground">
-                <BreadcrumbItem href="/forums">{t_header('forums')}</BreadcrumbItem>
+                <BreadcrumbItem href="/forums">{t('header.forums')}</BreadcrumbItem>
                 {categoryForBreadcrumb && (
                     <BreadcrumbItem href={`/forums/category/${categoryForBreadcrumb.id}`}>
                         {categoryForBreadcrumb.name}
@@ -185,7 +183,7 @@ const TopicDetailPage = () => {
                                 color="primary"
                                 variant="flat"
                             >
-                                {loadingMore ? t('loading') : t('load_more')}
+                                {loadingMore ? t('reply.loading') : t('reply.load_more')}
                             </Button>
                         </div>
                     )}
@@ -194,10 +192,10 @@ const TopicDetailPage = () => {
 
             {/* 编辑器 */}
             <div className="mt-8">
-                <h2 className="text-xl font-bold text-foreground mb-4">{t('post_a_reply')}</h2>
+                <h2 className="text-xl font-bold text-foreground mb-4">{t('forumPage.post_a_reply')}</h2>
                 <ReplyEditor
                     onSubmit={handleSubmitTopLevelPost}
-                    placeholder={t('write_reply_placeholder')}
+                    placeholder={t('forumPage.write_reply_placeholder')}
                 />
             </div>
         </div>
