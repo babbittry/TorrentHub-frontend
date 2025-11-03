@@ -425,7 +425,9 @@
             "userManagement": "用户管理",
             "siteSettings": "站点设置",
             "announcementManagement": "公告管理",
-            "logViewer": "日志查看"
+            "logViewer": "日志查看",
+            "systemLogs": "系统日志",
+            "cheatLogs": "作弊日志"
         },
         "bandwidthSettings": {
             "title": "带宽设置",
@@ -1058,15 +1060,6 @@
         "total_logs": "共 {count} 条日志",
         "loading": "加载中...",
         "no_logs": "暂无作弊日志",
-        "table": {
-            "user": "用户",
-            "torrent": "种子",
-            "detection_type": "检测类型",
-            "severity": "严重等级",
-            "details": "详情",
-            "ip_address": "IP地址",
-            "detected_at": "检测时间"
-        },
         "types": {
             "announce_frequency": "Announce频率异常",
             "announcefrequency": "Announce频率异常",
@@ -1078,7 +1071,36 @@
             "2": "中等",
             "3": "严重",
             "4": "致命"
-        }
+        },
+        "status": {
+            "pending": "待处理",
+            "processed": "已处理"
+        },
+        "table": {
+            "user": "用户",
+            "torrent": "种子",
+            "detection_type": "检测类型",
+            "severity": "严重等级",
+            "details": "详情",
+            "ip_address": "IP地址",
+            "detected_at": "检测时间",
+            "status": "状态",
+            "actions": "操作"
+        },
+        "process": "处理",
+        "view_details": "查看详情",
+        "unprocess": "取消处理",
+        "batch_process": "批量处理",
+        "process_log_title": "处理作弊日志",
+        "batch_process_title": "批量处理作弊日志",
+        "admin_notes_label": "管理员备注",
+        "admin_notes_placeholder": "输入您的处理意见...",
+        "cancel": "取消",
+        "confirm_process": "确认处理",
+        "process_success": "日志处理成功",
+        "process_error": "日志处理失败",
+        "unprocess_success": "已取消处理",
+        "unprocess_error": "取消处理失败"
     },
     "about": {
         "title": "关于",

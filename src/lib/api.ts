@@ -1297,6 +1297,11 @@ export interface CheatLogDto {
     details: string | null;            // 详细信息（整合了原 reason 的内容）
     ipAddress: string | null;
     timestamp: string; // ISO 8601 date-time
+    isProcessed: boolean;
+    processedAt: string | null;
+    processedByUserId: number | null;
+    processedByUsername: string | null;
+    adminNotes: string | null;
 }
 
 export interface CheatLogFilters {
@@ -1381,32 +1386,28 @@ export const admin = {
         if (searchTerm) {
             params.append('q', searchTerm);
         }
-        return callApi(api.get<ApiResponse<PaginatedResult<UserAdminProfileDto>>>(`/api/admin/users?${params.toString()}`));
+        return callApi(api.get<ApiResponse<PaginatedResult<UserAdminProfileDto>>>(`/api/Admin/users?${params.toString()}`));
     },
     updateRegistrationSettings: async (settings: UpdateRegistrationSettingsDto): Promise<void> => {
-        await api.put('/api/admin/settings/registration', settings);
-    },
-    getCheatLogs: async (): Promise<CheatLogDto[]> => {
-        const response = await api.get('/api/admin/logs/cheat');
-        return response.data;
+        await api.put('/api/Admin/settings/registration', settings);
     },
     getSiteSettings: async (): Promise<SiteSettingsDto> => {
-        return callApi(api.get<ApiResponse<SiteSettingsDto>>('/api/admin/settings/site'));
+        return callApi(api.get<ApiResponse<SiteSettingsDto>>('/api/Admin/settings/site'));
     },
     updateSiteSettings: async (settings: SiteSettingsDto): Promise<void> => {
-        return callApi(api.put<ApiResponse<void>>('/api/admin/settings/site', settings));
+        return callApi(api.put<ApiResponse<void>>('/api/Admin/settings/site', settings));
     },
     getBannedClients: async (): Promise<BannedClientDto[]> => {
-        return callApi(api.get<ApiResponse<BannedClientDto[]>>('/api/admin/banned-clients'));
+        return callApi(api.get<ApiResponse<BannedClientDto[]>>('/api/Admin/banned-clients'));
     },
     addBannedClient: async (client: BannedClientDto): Promise<BannedClientDto> => {
-        return callApi(api.post<ApiResponse<BannedClientDto>>('/api/admin/banned-clients', client));
+        return callApi(api.post<ApiResponse<BannedClientDto>>('/api/Admin/banned-clients', client));
     },
     deleteBannedClient: async (id: number): Promise<void> => {
-        return callApi(api.delete<ApiResponse<void>>(`/api/admin/banned-clients/${id}`));
+        return callApi(api.delete<ApiResponse<void>>(`/api/Admin/banned-clients/${id}`));
     },
     getDuplicateIps: async (): Promise<DuplicateIpUserDto[]> => {
-        return callApi(api.get<ApiResponse<DuplicateIpUserDto[]>>('/api/admin/duplicate-ips'));
+        return callApi(api.get<ApiResponse<DuplicateIpUserDto[]>>('/api/Admin/duplicate-ips'));
     },
     getSystemLogs: async (q?: string, level?: string, offset?: number, limit?: number): Promise<SystemLogDto[]> => {
         const params = new URLSearchParams();
@@ -1414,7 +1415,7 @@ export const admin = {
         if (level) params.append('level', level);
         if (offset) params.append('offset', offset.toString());
         if (limit) params.append('limit', limit.toString());
-        return callApi(api.get<ApiResponse<SystemLogDto[]>>(`/api/admin/logs/system?${params.toString()}`));
+        return callApi(api.get<ApiResponse<SystemLogDto[]>>(`/api/Admin/logs/system?${params.toString()}`));
     },
 };
 
@@ -1682,7 +1683,7 @@ export const cheatLogs = {
             params.append('detectionType', filters.detectionType.toString());
         }
 
-        return callApi(api.get<ApiResponse<PaginatedResult<CheatLogDto>>>(`/api/admin/logs/cheat?${params.toString()}`));
+        return callApi(api.get<ApiResponse<PaginatedResult<CheatLogDto>>>(`/api/Admin/logs/cheat?${params.toString()}`));
     },
 
     /**
@@ -1691,7 +1692,7 @@ export const cheatLogs = {
      * @param request 处理请求
      */
     processLog: async (id: number, request: ProcessCheatLogRequest): Promise<CheatLogDto> => {
-        return callApi(api.post<ApiResponse<CheatLogDto>>(`/api/admin/logs/cheat/${id}/process`, request));
+        return callApi(api.post<ApiResponse<CheatLogDto>>(`/api/Admin/logs/cheat/${id}/process`, request));
     },
 
     /**
@@ -1699,7 +1700,7 @@ export const cheatLogs = {
      * @param request 批量处理请求
      */
     processBatch: async (request: BatchProcessCheatLogsRequest): Promise<BatchProcessResponse> => {
-        return callApi(api.post<ApiResponse<BatchProcessResponse>>('/api/admin/logs/cheat/process-batch', request));
+        return callApi(api.post<ApiResponse<BatchProcessResponse>>('/api/Admin/logs/cheat/process-batch', request));
     },
 
     /**
@@ -1707,6 +1708,6 @@ export const cheatLogs = {
      * @param id 日志ID
      */
     unprocessLog: async (id: number): Promise<void> => {
-        return callApi(api.post<ApiResponse<void>>(`/api/admin/logs/cheat/${id}/unprocess`));
+        return callApi(api.post<ApiResponse<void>>(`/api/Admin/logs/cheat/${id}/unprocess`));
     },
 };

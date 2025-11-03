@@ -11,6 +11,11 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from 
 import { Chip } from "@heroui/chip";
 import { Pagination } from "@heroui/pagination";
 import { Link } from '@/i18n/navigation';
+import { Button } from '@heroui/button';
+import { Checkbox } from '@heroui/checkbox';
+import { Modal, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@heroui/modal';
+import { Textarea } from '@heroui/input';
+import { addToast } from '@heroui/toast';
 
 export default function CheatLogsPage() {
     const t = useTranslations('cheatLogsPage');
@@ -25,8 +30,16 @@ export default function CheatLogsPage() {
     const [userId, setUserId] = useState('');
     const [detectionType, setDetectionType] = useState<CheatDetectionType | ''>('');
 
+    // 处理状态
+    const [selectedLog, setSelectedLog] = useState<CheatLogDto | null>(null);
+    const [selectedLogIds, setSelectedLogIds] = useState<Set<number>>(new Set());
+    const [processingNotes, setProcessingNotes] = useState('');
+    const { isOpen: isProcessModalOpen, onOpen: onProcessModalOpen, onClose: onProcessModalClose } = useDisclosure();
+
     const loadLogs = async () => {
         setIsLoading(true);
+        // 在重新加载时清除选择
+        setSelectedLogIds(new Set());
         try {
             const filters: CheatLogFilters = {
                 page,
@@ -64,9 +77,58 @@ export default function CheatLogsPage() {
         setUserId('');
         setDetectionType('');
         setPage(1);
+        // 注意：useEffect会因为page改变而自动调用loadLogs
     };
 
-    const formatDate = (dateString: string) => {
+    const handleProcessClick = (log: CheatLogDto) => {
+        setSelectedLog(log);
+        setProcessingNotes(log.adminNotes || '');
+        onProcessModalOpen();
+    };
+
+    const handleConfirmProcess = async () => {
+        if (!selectedLog) return;
+        try {
+            await cheatLogs.processLog(selectedLog.id, { notes: processingNotes });
+            addToast({ title: t('process_success'), color: 'success' });
+            onProcessModalClose();
+            loadLogs();
+        } catch (error) {
+            addToast({ title: t('process_error'), description: (error as Error).message, color: 'danger' });
+        }
+    };
+    
+    const handleUnprocessClick = async (logId: number) => {
+        try {
+            await cheatLogs.unprocessLog(logId);
+            addToast({ title: t('unprocess_success'), color: 'success' });
+            loadLogs();
+        } catch (error) {
+            addToast({ title: t('unprocess_error'), description: (error as Error).message, color: 'danger' });
+        }
+    };
+
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            const ids = logs.map(log => log.id);
+            setSelectedLogIds(new Set(ids));
+        } else {
+            setSelectedLogIds(new Set());
+        }
+    };
+
+    const handleSelectLog = (logId: number, checked: boolean) => {
+        const newSelection = new Set(selectedLogIds);
+        if (checked) {
+            newSelection.add(logId);
+        } else {
+            newSelection.delete(logId);
+        }
+        setSelectedLogIds(newSelection);
+    };
+
+    const formatDate = (dateString: string | null) => {
+        if (!dateString) return 'N/A';
         return new Date(dateString).toLocaleString();
     };
 
@@ -169,6 +231,18 @@ export default function CheatLogsPage() {
                             {t('total_logs', { count: totalItems })}
                         </p>
                     </div>
+                    <Button
+                        color="primary"
+                        variant="flat"
+                        isDisabled={selectedLogIds.size === 0}
+                        onPress={() => {
+                            setSelectedLog(null); // 表示是批量操作
+                            setProcessingNotes('');
+                            onProcessModalOpen();
+                        }}
+                    >
+                        {t('batch_process')} ({selectedLogIds.size})
+                    </Button>
                 </CardHeader>
                 <CardBody>
                     {isLoading ? (
@@ -179,6 +253,12 @@ export default function CheatLogsPage() {
                         <>
                             <Table aria-label="Cheat logs table">
                                 <TableHeader>
+                                    <TableColumn width={50}>
+                                        <Checkbox
+                                            isSelected={selectedLogIds.size > 0 && selectedLogIds.size === logs.length}
+                                            onValueChange={handleSelectAll}
+                                        />
+                                    </TableColumn>
                                     <TableColumn>{t('table.user')}</TableColumn>
                                     <TableColumn>{t('table.torrent')}</TableColumn>
                                     <TableColumn>{t('table.detection_type')}</TableColumn>
@@ -186,12 +266,20 @@ export default function CheatLogsPage() {
                                     <TableColumn>{t('table.details')}</TableColumn>
                                     <TableColumn>{t('table.ip_address')}</TableColumn>
                                     <TableColumn>{t('table.detected_at')}</TableColumn>
+                                    <TableColumn>{t('table.status')}</TableColumn>
+                                    <TableColumn>{t('table.actions')}</TableColumn>
                                 </TableHeader>
                                 <TableBody>
                                     {logs.map((log) => (
                                         <TableRow key={log.id}>
                                             <TableCell>
-                                                <Link 
+                                                <Checkbox
+                                                    isSelected={selectedLogIds.has(log.id)}
+                                                    onValueChange={(checked) => handleSelectLog(log.id, checked)}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Link
                                                     href={`/users/${log.userId}`}
                                                     className="text-primary hover:underline"
                                                 >
@@ -236,6 +324,25 @@ export default function CheatLogsPage() {
                                                 <span className="font-mono text-sm">{log.ipAddress}</span>
                                             </TableCell>
                                             <TableCell>{formatDate(log.timestamp)}</TableCell>
+                                            <TableCell>
+                                                {log.isProcessed ? (
+                                                    <Chip color="success" size="sm">{t('status.processed')}</Chip>
+                                                ) : (
+                                                    <Chip color="default" size="sm">{t('status.pending')}</Chip>
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex gap-2">
+                                                    <Button size="sm" variant="flat" onPress={() => handleProcessClick(log)}>
+                                                        {log.isProcessed ? t('view_details') : t('process')}
+                                                    </Button>
+                                                    {log.isProcessed && (
+                                                         <Button size="sm" variant="flat" color="warning" onPress={() => handleUnprocessClick(log.id)}>
+                                                            {t('unprocess')}
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -255,6 +362,33 @@ export default function CheatLogsPage() {
                     )}
                 </CardBody>
             </Card>
+
+            {/* 处理日志模态框 */}
+            <Modal isOpen={isProcessModalOpen} onClose={onProcessModalClose}>
+                <ModalHeader>{selectedLog ? t('process_log_title') : t('batch_process_title')}</ModalHeader>
+                <ModalBody>
+                    {selectedLog && (
+                        <div className="text-sm mb-4">
+                            <p><strong>{t('table.user')}:</strong> {selectedLog.userName}</p>
+                            <p><strong>{t('table.detection_type')}:</strong> {t(`types.${getDetectionTypeName(selectedLog.detectionType)}`)}</p>
+                        </div>
+                    )}
+                    <Textarea
+                        label={t('admin_notes_label')}
+                        placeholder={t('admin_notes_placeholder')}
+                        value={processingNotes}
+                        onValueChange={setProcessingNotes}
+                    />
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant="ghost" onPress={onProcessModalClose}>
+                        {t('cancel')}
+                    </Button>
+                    <Button color="primary" onPress={handleConfirmProcess}>
+                        {t('confirm_process')}
+                    </Button>
+                </ModalFooter>
+            </Modal>
         </div>
     );
 }

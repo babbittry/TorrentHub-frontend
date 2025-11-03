@@ -426,7 +426,9 @@
             "userManagement": "Gestion des utilisateurs",
             "siteSettings": "Paramètres du site",
             "announcementManagement": "Gestion des annonces",
-            "logViewer": "Visionneur de logs"
+            "logViewer": "Visionneur de logs",
+            "systemLogs": "Journaux Système",
+            "cheatLogs": "Journaux de Triche"
         },
         "bandwidthSettings": {
             "title": "带宽设置",
@@ -1059,15 +1061,6 @@
         "total_logs": "Total de {count} journaux",
         "loading": "Chargement...",
         "no_logs": "Aucun journal de triche",
-        "table": {
-            "user": "Utilisateur",
-            "torrent": "Torrent",
-            "detection_type": "Type de Détection",
-            "severity": "Niveau de Gravité",
-            "details": "Détails",
-            "ip_address": "Adresse IP",
-            "detected_at": "Détecté le"
-        },
         "types": {
             "announce_frequency": "Fréquence d'annonce anormale",
             "announcefrequency": "Fréquence d'annonce anormale",
@@ -1079,7 +1072,36 @@
             "2": "Modéré",
             "3": "Grave",
             "4": "Critique"
-        }
+        },
+        "status": {
+            "pending": "En attente",
+            "processed": "Traité"
+        },
+        "table": {
+            "user": "Utilisateur",
+            "torrent": "Torrent",
+            "detection_type": "Type de Détection",
+            "severity": "Niveau de Gravité",
+            "details": "Détails",
+            "ip_address": "Adresse IP",
+            "detected_at": "Détecté le",
+            "status": "Statut",
+            "actions": "Actions"
+        },
+        "process": "Traiter",
+        "view_details": "Voir les détails",
+        "unprocess": "Annuler le traitement",
+        "batch_process": "Traitement par lot",
+        "process_log_title": "Traiter le journal de triche",
+        "batch_process_title": "Traiter les journaux de triche par lot",
+        "admin_notes_label": "Notes de l'administrateur",
+        "admin_notes_placeholder": "Entrez vos notes de traitement...",
+        "cancel": "Annuler",
+        "confirm_process": "Confirmer le traitement",
+        "process_success": "Journal traité avec succès",
+        "process_error": "Échec du traitement du journal",
+        "unprocess_success": "Traitement du journal annulé avec succès",
+        "unprocess_error": "Échec de l'annulation du traitement du journal"
     },
     "about": {
         "title": "À propos",

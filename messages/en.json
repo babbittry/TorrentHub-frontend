@@ -426,7 +426,9 @@
             "userManagement": "User Management",
             "siteSettings": "Site Settings",
             "announcementManagement": "Announcement Management",
-            "logViewer": "Log Viewer"
+            "logViewer": "Log Viewer",
+            "systemLogs": "System Logs",
+            "cheatLogs": "Cheat Logs"
         },
         "bandwidthSettings": {
             "title": "Bandwidth Settings",
@@ -1059,15 +1061,6 @@
         "total_logs": "Total {count} logs",
         "loading": "Loading...",
         "no_logs": "No cheat logs",
-        "table": {
-            "user": "User",
-            "torrent": "Torrent",
-            "detection_type": "Detection Type",
-            "severity": "Severity Level",
-            "details": "Details",
-            "ip_address": "IP Address",
-            "detected_at": "Detected At"
-        },
         "types": {
             "announce_frequency": "Announce Frequency Abnormal",
             "announcefrequency": "Announce Frequency Abnormal",
@@ -1079,7 +1072,36 @@
             "2": "Moderate",
             "3": "Severe",
             "4": "Critical"
-        }
+        },
+        "status": {
+            "pending": "Pending",
+            "processed": "Processed"
+        },
+        "table": {
+            "user": "User",
+            "torrent": "Torrent",
+            "detection_type": "Detection Type",
+            "severity": "Severity Level",
+            "details": "Details",
+            "ip_address": "IP Address",
+            "detected_at": "Detected At",
+            "status": "Status",
+            "actions": "Actions"
+        },
+        "process": "Process",
+        "view_details": "View Details",
+        "unprocess": "Unprocess",
+        "batch_process": "Batch Process",
+        "process_log_title": "Process Cheat Log",
+        "batch_process_title": "Batch Process Cheat Logs",
+        "admin_notes_label": "Admin Notes",
+        "admin_notes_placeholder": "Enter your processing notes...",
+        "cancel": "Cancel",
+        "confirm_process": "Confirm Process",
+        "process_success": "Log processed successfully",
+        "process_error": "Failed to process log",
+        "unprocess_success": "Log unprocessed successfully",
+        "unprocess_error": "Failed to unprocess log"
     },
     "about": {
         "title": "About",

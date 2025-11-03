@@ -388,7 +388,13 @@ export default function RssFeedManagement() {
             </CardBody>
 
             {/* 创建Token模态框 */}
-            <Modal isOpen={isCreateModalOpen} onClose={onCreateModalClose} size="2xl">
+            <Modal
+                isOpen={isCreateModalOpen}
+                onClose={onCreateModalClose}
+                size="2xl"
+                scrollBehavior="inside"
+                placement="center"
+            >
                 <ModalHeader>{t('create_modal.title')}</ModalHeader>
                 <ModalBody>
                     <div className="space-y-4">
@@ -439,7 +445,13 @@ export default function RssFeedManagement() {
             </Modal>
 
             {/* 编辑Token模态框 */}
-            <Modal isOpen={isEditModalOpen} onClose={onEditModalClose} size="2xl">
+            <Modal
+                isOpen={isEditModalOpen}
+                onClose={onEditModalClose}
+                size="2xl"
+                scrollBehavior="inside"
+                placement="center"
+            >
                 <ModalHeader>{t('edit_modal.title')}</ModalHeader>
                 <ModalBody>
                     <div className="space-y-4">
@@ -490,7 +502,13 @@ export default function RssFeedManagement() {
             </Modal>
 
             {/* 显示RSS URL模态框 */}
-            <Modal isOpen={isUrlModalOpen} onClose={onUrlModalClose} size="2xl">
+            <Modal
+                isOpen={isUrlModalOpen}
+                onClose={onUrlModalClose}
+                size="2xl"
+                scrollBehavior="inside"
+                placement="center"
+            >
                 <ModalHeader>{t('url_modal.title')}</ModalHeader>
                 <ModalBody>
                     <p className="mb-4">{t('url_modal.description')}</p>
@@ -514,7 +532,12 @@ export default function RssFeedManagement() {
             </Modal>
 
             {/* 撤销单个Token确认模态框 */}
-            <Modal isOpen={isRevokeModalOpen} onClose={onRevokeModalClose}>
+            <Modal
+                isOpen={isRevokeModalOpen}
+                onClose={onRevokeModalClose}
+                scrollBehavior="inside"
+                placement="center"
+            >
                 <ModalHeader>{t('revoke_modal.title')}</ModalHeader>
                 <ModalBody>
                     <p>{t('revoke_modal.description')}</p>
@@ -534,7 +557,12 @@ export default function RssFeedManagement() {
             </Modal>
 
             {/* 撤销所有Tokens确认模态框 */}
-            <Modal isOpen={isRevokeAllModalOpen} onClose={onRevokeAllModalClose}>
+            <Modal
+                isOpen={isRevokeAllModalOpen}
+                onClose={onRevokeAllModalClose}
+                scrollBehavior="inside"
+                placement="center"
+            >
                 <ModalHeader>{t('revoke_all_modal.title')}</ModalHeader>
                 <ModalBody>
                     <p>{t('revoke_all_modal.description', { count: activeCount })}</p>

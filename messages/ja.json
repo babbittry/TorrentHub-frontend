@@ -426,7 +426,9 @@
             "userManagement": "ユーザー管理",
             "siteSettings": "サイト設定",
             "announcementManagement": "お知らせ管理",
-            "logViewer": "ログビューア"
+            "logViewer": "ログビューア",
+            "systemLogs": "システムログ",
+            "cheatLogs": "不正行為ログ"
         },
         "bandwidthSettings": {
             "title": "帯域幅設定",
@@ -1059,15 +1061,6 @@
         "total_logs": "合計 {count} 件のログ",
         "loading": "読み込み中...",
         "no_logs": "不正行為ログはありません",
-        "table": {
-            "user": "ユーザー",
-            "torrent": "トレント",
-            "detection_type": "検出タイプ",
-            "severity": "深刻度レベル",
-            "details": "詳細",
-            "ip_address": "IPアドレス",
-            "detected_at": "検出日時"
-        },
         "types": {
             "announce_frequency": "アナウンス頻度異常",
             "announcefrequency": "アナウンス頻度異常",
@@ -1079,7 +1072,36 @@
             "2": "中程度",
             "3": "深刻",
             "4": "重大"
-        }
+        },
+        "status": {
+            "pending": "未処理",
+            "processed": "処理済み"
+        },
+        "table": {
+            "user": "ユーザー",
+            "torrent": "トレント",
+            "detection_type": "検出タイプ",
+            "severity": "深刻度レベル",
+            "details": "詳細",
+            "ip_address": "IPアドレス",
+            "detected_at": "検出日時",
+            "status": "ステータス",
+            "actions": "操作"
+        },
+        "process": "処理",
+        "view_details": "詳細を表示",
+        "unprocess": "処理を取り消す",
+        "batch_process": "一括処理",
+        "process_log_title": "不正行為ログを処理",
+        "batch_process_title": "不正行為ログを一括処理",
+        "admin_notes_label": "管理者メモ",
+        "admin_notes_placeholder": "処理に関するメモを入力...",
+        "cancel": "キャンセル",
+        "confirm_process": "処理を確定",
+        "process_success": "ログの処理に成功しました",
+        "process_error": "ログの処理に失敗しました",
+        "unprocess_success": "ログの処理を取り消しました",
+        "unprocess_error": "ログの処理の取り消しに失敗しました"
     },
     "about": {
         "title": "概要",

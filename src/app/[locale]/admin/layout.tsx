@@ -60,8 +60,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             icon: faBullhorn,
         },
         {
-            name: t('logViewer'),
+            name: t('systemLogs'),
             href: '/admin/log-viewer',
+            icon: faFileAlt,
+        },
+        {
+            name: t('cheatLogs'),
+            href: '/admin/cheat-logs',
             icon: faFileAlt,
         },
     ];
