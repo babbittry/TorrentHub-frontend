@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { stats, reports, admin, SiteStatsDto, ReportDto, CheatLogDto } from '../../../../lib/api';
+import { stats, reports, cheatLogs as cheatLogsApi, SiteStatsDto, ReportDto, CheatLogDto } from '../../../../lib/api';
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -39,15 +39,15 @@ const AdminDashboard = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const [statsData, reportsData, cheatLogsData] = await Promise.all([
+                const [statsData, reportsData, cheatLogsResult] = await Promise.all([
                     stats.getStats(),
                     reports.getPendingReports(),
-                    admin.getCheatLogs()
+                    cheatLogsApi.getLogs({ page: 1, pageSize: 10 })
                 ]);
                 setSiteStats(statsData);
                 setPendingReports(reportsData);
-                // 确保 cheatLogsData 是数组
-                setCheatLogs(Array.isArray(cheatLogsData) ? cheatLogsData : []);
+                // cheatLogsResult 是分页结果,需要提取 items 数组
+                setCheatLogs(cheatLogsResult.items || []);
             } catch (error) {
                 console.error("Failed to fetch admin dashboard data:", error);
             } finally {

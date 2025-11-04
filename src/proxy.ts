@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server';
 
 const nextIntlMiddleware = createMiddleware(routing);
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     // First, let next-intl handle the request. This is crucial for locale
     // detection and for handling the root path (`/`) correctly.
     const response = nextIntlMiddleware(request);
@@ -20,19 +20,15 @@ export async function middleware(request: NextRequest) {
     const refreshToken = request.cookies.get('refreshToken')?.value;
     const { pathname } = request.nextUrl;
 
-    console.log(`[Middleware] Request Path: ${pathname}, RefreshToken: ${refreshToken ? 'Present' : 'Not Present'}`);
-
     const publicPaths = ['/login', '/register', '/rules'];
 
     // Extract the path without the locale prefix (e.g., /en/torrents -> /torrents)
     const pathWithoutLocale = pathname.replace(/^\/[a-zA-Z]{2,5}(-[a-zA-Z]{2,5})?/, '') || '/';
     const isPublicPath = publicPaths.some(p => pathWithoutLocale === p || pathWithoutLocale.startsWith(`${p}/`));
 
-    console.log(`[Middleware] Path Without Locale: ${pathWithoutLocale}, Is Public Path: ${isPublicPath}`);
-
     // If the user is not authenticated and is trying to access a protected page...
     if (!refreshToken && !isPublicPath) {
-        console.log(`[Middleware] User not authenticated and path is protected. Redirecting to login.`);
+        console.log(`[Proxy] Redirect to login: ${pathWithoutLocale}`);
         // ...redirect them to the localized login page.
         const locale = pathname.split('/')[1] || 'en'; // Extract locale from path@
         return NextResponse.redirect(new URL(`/${locale}/login`, request.url), { status: 303, headers: { 'Cache-Control': 'no-store' } });
@@ -40,13 +36,12 @@ export async function middleware(request: NextRequest) {
 
     // If the user is authenticated and tries to visit login or register...
     if (refreshToken && (pathWithoutLocale === '/login' || pathWithoutLocale === '/register')) {
-        console.log(`[Middleware] User authenticated and trying to access login/register. Redirecting to home.`);
+        console.log(`[Proxy] Redirect to home: ${pathWithoutLocale}`);
         // ...redirect them to the localized home page.
         const locale = pathname.split('/')[1] || 'en';
         return NextResponse.redirect(new URL(`/${locale}/`, request.url));
     }
 
-    console.log(`[Middleware] No redirect needed. Proceeding.`);
     // If no auth-related redirect is needed, return the response from next-intl.
     return response;
 }
