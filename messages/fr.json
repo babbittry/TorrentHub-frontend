@@ -808,6 +808,8 @@
         "cancel": "Annuler",
         "delete": "Supprimer",
         "deleting": "Suppression...",
+        "delete_failed": "Échec de la suppression",
+        "confirm_delete": "Êtes-vous sûr de vouloir supprimer ce commentaire ?",
         "load_more": "Charger plus",
         "loading": "Chargement...",
         "submitting": "Soumission...",
@@ -815,7 +817,14 @@
         "quote": "Citation",
         "expand": "Développer",
         "collapse": "Réduire",
-        "tip": "Pourboire"
+        "tip": "Pourboire",
+        "edit": "Modifier",
+        "editing": "Modification...",
+        "save": "Enregistrer",
+        "edit_failed": "Échec de la modification",
+        "edited": "Modifié",
+        "comments": "Commentaires",
+        "add_comment": "Ajouter un commentaire"
     },
     "torrentUpload": {
         "title": "Télécharger un Torrent",

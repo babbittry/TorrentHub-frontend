@@ -310,6 +310,35 @@ export interface CommentDto {
     reactions?: CommentReactionsDto; // 新增：表情回应数据
 }
 
+// DTOs for Request Comment related operations
+export interface RequestCommentDto {
+    id: number;
+    text: string;
+    requestId: number;
+    user?: UserDisplayDto;
+    createdAt: string; // date-time
+    editedAt?: string | null; // date-time
+    floor: number;
+    parentCommentId?: number | null;
+    replyToUser?: UserDisplayDto | null;
+    depth: number;
+    replyCount: number;
+    reactions?: CommentReactionsDto;
+}
+
+export interface RequestCommentListResponse {
+    items: RequestCommentDto[];
+    hasMore: boolean;
+    totalCount: number;
+    loadedCount: number;
+}
+
+export interface CreateRequestCommentDto {
+    text: string;
+    parentCommentId?: number | null;
+    replyToUserId?: number | null;
+}
+
 export interface CommentListResponse {
     items: CommentDto[];
     hasMore: boolean;
@@ -657,6 +686,7 @@ export interface TipCoinsRequestDto {
 export const COMMENT_TYPE = {
     TORRENT_COMMENT: 'TorrentComment',
     FORUM_POST: 'ForumPost',
+    REQUEST_COMMENT: 'RequestComment',
 } as const;
 
 export type CommentType = typeof COMMENT_TYPE[keyof typeof COMMENT_TYPE];
@@ -826,6 +856,28 @@ export const comments = {
             limit: limit.toString(),
         });
         const response = await api.get(`/api/torrents/${torrentId}/comments?${params.toString()}`);
+        return response.data;
+    },
+    updateComment: async (id: number, comment: UpdateCommentRequestDto): Promise<void> => {
+        await api.put(`/api/comments/${id}`, comment);
+    },
+    deleteComment: async (id: number): Promise<void> => {
+        await api.delete(`/api/comments/${id}`);
+    },
+};
+
+// Request Comments API Functions
+export const requestComments = {
+    createComment: async (requestId: number, comment: CreateRequestCommentDto): Promise<RequestCommentDto> => {
+        const response = await api.post(`/api/requests/${requestId}/comments`, comment);
+        return response.data;
+    },
+    getComments: async (requestId: number, afterFloor: number = 0, limit: number = 30): Promise<RequestCommentListResponse> => {
+        const params = new URLSearchParams({
+            afterFloor: afterFloor.toString(),
+            limit: limit.toString(),
+        });
+        const response = await api.get(`/api/requests/${requestId}/comments?${params.toString()}`);
         return response.data;
     },
     updateComment: async (id: number, comment: UpdateCommentRequestDto): Promise<void> => {

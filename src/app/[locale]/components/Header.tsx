@@ -62,9 +62,9 @@ export default function Header() {
                     {!isClient ? (
                         <div style={{ width: 128, height: 32 }} /> // Placeholder with size
                     ) : resolvedTheme === 'light' ? (
-                        <Image src="/logo-black.png" alt="Logo" width={128} height={32} />
+                        <Image src="/logo-white.png" alt="Logo" width={128} height={32} />
                     ) : (
-                        <Image src="/logo-white.png" alt="Logo" width={115} height={32} />
+                        <Image src="/logo-black.png" alt="Logo" width={115} height={32} />
                     )}
                 </Link>
                 <ul className="flex space-x-6">

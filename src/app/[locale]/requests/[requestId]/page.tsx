@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { requests, RequestDto, RequestStatus } from '@/lib/api';
+import { requests, RequestDto, RequestStatus, requestComments, RequestCommentDto, CreateRequestCommentDto, UserDisplayDto, UserRole } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
@@ -13,6 +13,8 @@ import { Chip } from "@heroui/chip";
 import { useAuth } from '@/context/AuthContext';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@heroui/modal";
 import UserDisplay from '@/app/[locale]/components/UserDisplay';
+import RequestCommentTree from '@/app/[locale]/components/RequestCommentTree';
+import ReplyEditor from '@/app/[locale]/components/ReplyEditor';
 
 const RequestDetailPage = () => {
     const params = useParams();
@@ -29,6 +31,15 @@ const RequestDetailPage = () => {
     const [bountyAmount, setBountyAmount] = useState('');
     const [torrentId, setTorrentId] = useState('');
 
+    // 评论相关状态
+    const [comments, setComments] = useState<RequestCommentDto[]>([]);
+    const [commentsLoading, setCommentsLoading] = useState(false);
+    const [hasMoreComments, setHasMoreComments] = useState(false);
+    const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+    const [isDeletingComment, setIsDeletingComment] = useState(false);
+    const [isEditingComment, setIsEditingComment] = useState(false);
+    const [replyTarget, setReplyTarget] = useState<{ parentId: number; user: UserDisplayDto } | null>(null);
+
     const fetchRequestDetails = useCallback(async () => {
         if (!requestId) return;
         try {
@@ -44,9 +55,125 @@ const RequestDetailPage = () => {
         }
     }, [requestId, t]);
 
+    // 获取评论列表
+    const fetchComments = useCallback(async (afterFloor: number = 0) => {
+        if (!requestId) return;
+        try {
+            setCommentsLoading(true);
+            const data = await requestComments.getComments(requestId, afterFloor, 30);
+            
+            if (afterFloor === 0) {
+                setComments(data.items);
+            } else {
+                setComments(prev => [...prev, ...data.items]);
+            }
+            setHasMoreComments(data.hasMore);
+        } catch (err) {
+            console.error('Error fetching comments:', err);
+        } finally {
+            setCommentsLoading(false);
+        }
+    }, [requestId]);
+
     useEffect(() => {
         fetchRequestDetails();
-    }, [fetchRequestDetails]);
+        fetchComments();
+    }, [fetchRequestDetails, fetchComments]);
+
+    // 加载更多评论
+    const handleLoadMoreComments = () => {
+        if (comments.length > 0) {
+            const lastFloor = Math.max(...comments.map(c => c.floor));
+            fetchComments(lastFloor);
+        }
+    };
+
+    // 提交新评论（顶层）
+    const handleSubmitTopLevelComment = async (data: CreateRequestCommentDto) => {
+        try {
+            setIsSubmittingComment(true);
+            await requestComments.createComment(requestId, data);
+            await fetchComments(0); // 重新加载评论列表
+        } catch (err) {
+            console.error('Error submitting comment:', err);
+            alert(t('reply.submit_failed'));
+        } finally {
+            setIsSubmittingComment(false);
+        }
+    };
+
+    // 提交回复评论
+    const handleSubmitReply = async (data: CreateRequestCommentDto) => {
+        try {
+            setIsSubmittingComment(true);
+            await requestComments.createComment(requestId, data);
+            await fetchComments(0); // 重新加载评论列表
+        } catch (err) {
+            console.error('Error submitting reply:', err);
+            alert(t('reply.submit_failed'));
+        } finally {
+            setIsSubmittingComment(false);
+        }
+    };
+
+    // 编辑评论
+    const handleEditComment = async (commentId: number, newContent: string) => {
+        try {
+            setIsEditingComment(true);
+            await requestComments.updateComment(commentId, { content: newContent });
+            await fetchComments(0); // 重新加载评论列表
+        } catch (err) {
+            console.error('Error editing comment:', err);
+            alert(t('reply.edit_failed'));
+            throw err; // 重新抛出错误以便组件处理
+        } finally {
+            setIsEditingComment(false);
+        }
+    };
+
+    // 删除评论
+    const handleDeleteComment = async (commentId: number) => {
+        if (!confirm(t('reply.confirm_delete'))) return;
+        
+        try {
+            setIsDeletingComment(true);
+            await requestComments.deleteComment(commentId);
+            await fetchComments(0); // 重新加载评论列表
+        } catch (err) {
+            console.error('Error deleting comment:', err);
+            alert(t('reply.delete_failed'));
+        } finally {
+            setIsDeletingComment(false);
+        }
+    };
+
+    // 检查是否可以编辑/删除评论（根据API文档的权限规则）
+    const canEditOrDeleteComment = (comment: RequestCommentDto): boolean => {
+        if (!user) return false;
+        
+        // 管理员可以编辑/删除任何评论
+        if (user.role === UserRole.Administrator || user.role === UserRole.Moderator) {
+            return true;
+        }
+        
+        // 作者只能编辑/删除自己的、无回复的、15分钟内的评论
+        if (comment.user?.id === user.id) {
+            if (comment.replyCount > 0) return false;
+            
+            const createdAt = new Date(comment.createdAt);
+            const now = new Date();
+            const minutesElapsed = (now.getTime() - createdAt.getTime()) / 1000 / 60;
+            
+            return minutesElapsed <= 15; // 15分钟时间窗口
+        }
+        
+        return false;
+    };
+
+    // 处理回复按钮点击
+    const handleReply = (parentId: number, replyToUser: UserDisplayDto) => {
+        setReplyTarget({ parentId, user: replyToUser });
+    };
 
     const handleAddBounty = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -246,6 +373,43 @@ const RequestDetailPage = () => {
                     )}
                 </ModalContent>
             </Modal>
+
+            {/* 评论区 */}
+            <Card>
+                <CardHeader>
+                    <h2 className="text-2xl font-semibold">{t('reply.comments')}</h2>
+                </CardHeader>
+                <Divider />
+                <CardBody className="space-y-6">
+                    {/* 顶层评论输入框 */}
+                    {user && (
+                        <div className="pb-4 border-b border-default-200">
+                            <h3 className="text-lg font-medium mb-3">{t('reply.add_comment')}</h3>
+                            <ReplyEditor
+                                onSubmit={handleSubmitTopLevelComment}
+                                maxLength={500}
+                                isSubmitting={isSubmittingComment}
+                            />
+                        </div>
+                    )}
+
+                    {/* 评论树 */}
+                    <RequestCommentTree
+                        comments={comments}
+                        onReply={handleReply}
+                        onLoadMore={handleLoadMoreComments}
+                        hasMore={hasMoreComments}
+                        isLoading={commentsLoading}
+                        canEdit={canEditOrDeleteComment}
+                        canDelete={canEditOrDeleteComment}
+                        onEdit={handleEditComment}
+                        onDelete={handleDeleteComment}
+                        isEditing={isEditingComment}
+                        isDeleting={isDeletingComment}
+                        onSubmitReply={handleSubmitReply}
+                    />
+                </CardBody>
+            </Card>
         </div>
     );
 };

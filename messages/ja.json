@@ -808,6 +808,8 @@
         "cancel": "キャンセル",
         "delete": "削除",
         "deleting": "削除中...",
+        "delete_failed": "削除に失敗しました",
+        "confirm_delete": "このコメントを削除してもよろしいですか？",
         "load_more": "さらに読む",
         "loading": "読み込み中...",
         "submitting": "送信中...",
@@ -815,7 +817,14 @@
         "quote": "引用",
         "expand": "展開",
         "collapse": "折りたたむ",
-        "tip": "チップ"
+        "tip": "チップ",
+        "edit": "編集",
+        "editing": "編集中...",
+        "save": "保存",
+        "edit_failed": "編集に失敗しました",
+        "edited": "編集済み",
+        "comments": "コメント",
+        "add_comment": "コメントを追加"
     },
     "torrentUpload": {
         "title": "トレントをアップロード",
