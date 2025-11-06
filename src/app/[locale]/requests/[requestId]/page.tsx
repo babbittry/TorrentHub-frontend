@@ -381,18 +381,6 @@ const RequestDetailPage = () => {
                 </CardHeader>
                 <Divider />
                 <CardBody className="space-y-6">
-                    {/* 顶层评论输入框 */}
-                    {user && (
-                        <div className="pb-4 border-b border-default-200">
-                            <h3 className="text-lg font-medium mb-3">{t('reply.add_comment')}</h3>
-                            <ReplyEditor
-                                onSubmit={handleSubmitTopLevelComment}
-                                maxLength={500}
-                                isSubmitting={isSubmittingComment}
-                            />
-                        </div>
-                    )}
-
                     {/* 评论树 */}
                     <RequestCommentTree
                         comments={comments}
@@ -408,6 +396,18 @@ const RequestDetailPage = () => {
                         isDeleting={isDeletingComment}
                         onSubmitReply={handleSubmitReply}
                     />
+
+                    {/* 顶层评论输入框 */}
+                    {user && (
+                        <div className="pt-4 border-t border-default-200">
+                            <h3 className="text-lg font-medium mb-3">{t('reply.add_comment')}</h3>
+                            <ReplyEditor
+                                onSubmit={handleSubmitTopLevelComment}
+                                maxLength={500}
+                                isSubmitting={isSubmittingComment}
+                            />
+                        </div>
+                    )}
                 </CardBody>
             </Card>
         </div>
