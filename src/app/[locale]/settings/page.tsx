@@ -5,14 +5,13 @@ import { useTranslations } from 'next-intl';
 import { users, API_BASE_URL } from '@/lib/api';
 import type { ChangePasswordDto } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Input } from "@heroui/input";
-import { Button } from "@heroui/button";
-import { Tabs, Tab } from "@heroui/tabs";
-import { Avatar } from "@heroui/avatar";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
-import { Image } from '@heroui/image';
-import { addToast } from '@heroui/toast';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FormField } from "@/components/ui/form-field";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 import CredentialManagement from './CredentialManagement';
 import RssFeedManagement from './RssFeedManagement';
 
@@ -33,7 +32,7 @@ function TwoFactorAuthSettings() {
             setSetupInfo(data);
             setIsUpgradeModalOpen(true);
         } catch (error) {
-            addToast({ title: t('api_error'), color: 'danger' });
+            toast.error(t('api_error'));
         } finally {
             setIsLoading(false);
         }
@@ -44,11 +43,11 @@ function TwoFactorAuthSettings() {
         try {
             await users.switchToApp({ code: verificationCode });
             await refreshUser();
-            addToast({ title: t('upgrade_success'), color: 'success' });
+            toast.success(t('upgrade_success'));
             setIsUpgradeModalOpen(false);
             setVerificationCode('');
         } catch (error) {
-            addToast({ title: t('api_error'), color: 'danger' });
+            toast.error(t('api_error'));
         } finally {
             setIsLoading(false);
         }
@@ -59,11 +58,11 @@ function TwoFactorAuthSettings() {
         try {
             await users.switchToEmail({ code: verificationCode });
             await refreshUser();
-            addToast({ title: t('downgrade_success'), color: 'success' });
+            toast.success(t('downgrade_success'));
             setIsDowngradeModalOpen(false);
             setVerificationCode('');
         } catch (error) {
-            addToast({ title: t('api_error'), color: 'danger' });
+            toast.error(t('api_error'));
         } finally {
             setIsLoading(false);
         }
@@ -75,78 +74,82 @@ function TwoFactorAuthSettings() {
 
     return (
         <Card className="mt-6">
-            <CardHeader className="flex flex-col items-start gap-1">
-                <h2 className="text-xl font-semibold">{t('two_factor_auth_title')}</h2>
+            <CardHeader>
+                <CardTitle>{t('two_factor_auth_title')}</CardTitle>
             </CardHeader>
-            <CardBody>
+            <CardContent>
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="text-sm text-default-500">{t('current_2fa_method')}</p>
+                        <p className="text-sm text-muted-foreground">{t('current_2fa_method')}</p>
                         <p className="font-semibold">
                             {user.twoFactorMethod === 'AuthenticatorApp' ? t('method_app') : t('method_email')}
                         </p>
                     </div>
                     {user.twoFactorMethod === 'AuthenticatorApp' ? (
-                        <Button color="warning" onPress={() => setIsDowngradeModalOpen(true)}>
+                        <Button variant="outline" onClick={() => setIsDowngradeModalOpen(true)}>
                             {t('downgrade_to_email_button')}
                         </Button>
                     ) : (
-                        <Button color="primary" onPress={handleUpgradeClick} isLoading={isLoading}>
+                        <Button onClick={handleUpgradeClick} disabled={isLoading}>
                             {t('upgrade_to_app_button')}
                         </Button>
                     )}
                 </div>
-            </CardBody>
+            </CardContent>
 
             {/* Upgrade Modal */}
-            <Modal isOpen={isUpgradeModalOpen} onOpenChange={setIsUpgradeModalOpen}>
-                <ModalHeader>{t('upgrade_modal_title')}</ModalHeader>
-                <ModalBody>
+            <Dialog open={isUpgradeModalOpen} onOpenChange={setIsUpgradeModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{t('upgrade_modal_title')}</DialogTitle>
+                    </DialogHeader>
                     {setupInfo && (
                         <div className="space-y-4">
                             <p>{t('upgrade_modal_step1')}</p>
                             <div className="flex justify-center p-4 bg-white rounded-lg">
-                                <Image src={setupInfo.qrCodeImageUrl} alt="QR Code" width={200} height={200} />
+                                <img src={setupInfo.qrCodeImageUrl} alt="QR Code" width={200} height={200} />
                             </div>
                             <p>{t('upgrade_modal_step2')}</p>
-                            <p className="font-mono bg-default-100 p-2 rounded">{setupInfo.manualEntryKey}</p>
+                            <p className="font-mono bg-secondary p-2 rounded">{setupInfo.manualEntryKey}</p>
                             <p className="pt-4">{t('upgrade_modal_step3')}</p>
-                            <Input
+                            <FormField
                                 label={t('verification_code')}
                                 value={verificationCode}
-                                onValueChange={setVerificationCode}
+                                onChange={(e) => setVerificationCode(e.target.value)}
                                 maxLength={6}
                             />
                         </div>
                     )}
-                </ModalBody>
-                <ModalFooter>
-                    <Button variant="ghost" onPress={() => setIsUpgradeModalOpen(false)}>{t('common.cancel')}</Button>
-                    <Button color="primary" onPress={handleVerifyAndEnable} isLoading={isLoading}>
-                        {t('verify_and_enable')}
-                    </Button>
-                </ModalFooter>
-            </Modal>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setIsUpgradeModalOpen(false)}>{t('common.cancel')}</Button>
+                        <Button onClick={handleVerifyAndEnable} disabled={isLoading}>
+                            {t('verify_and_enable')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* Downgrade Modal */}
-            <Modal isOpen={isDowngradeModalOpen} onOpenChange={setIsDowngradeModalOpen}>
-                <ModalHeader>{t('downgrade_modal_title')}</ModalHeader>
-                <ModalBody>
+            <Dialog open={isDowngradeModalOpen} onOpenChange={setIsDowngradeModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{t('downgrade_modal_title')}</DialogTitle>
+                    </DialogHeader>
                     <p>{t('downgrade_modal_prompt')}</p>
-                    <Input
+                    <FormField
                         label={t('verification_code')}
                         value={verificationCode}
-                        onValueChange={setVerificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value)}
                         maxLength={6}
                     />
-                </ModalBody>
-                <ModalFooter>
-                    <Button variant="ghost" onPress={() => setIsDowngradeModalOpen(false)}>{t('common.cancel')}</Button>
-                    <Button color="danger" onPress={handleConfirmDowngrade} isLoading={isLoading}>
-                        {t('confirm_downgrade')}
-                    </Button>
-                </ModalFooter>
-            </Modal>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setIsDowngradeModalOpen(false)}>{t('common.cancel')}</Button>
+                        <Button variant="destructive" onClick={handleConfirmDowngrade} disabled={isLoading}>
+                            {t('confirm_downgrade')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </Card>
     );
 }
@@ -265,16 +268,25 @@ export default function SettingsPage() {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-6">{t('title')}</h1>
-            <Tabs aria-label="Settings tabs">
-                <Tab key="personal" title={t('personal_settings')}>
+            <Tabs defaultValue="personal">
+                <TabsList>
+                    <TabsTrigger value="personal">{t('personal_settings')}</TabsTrigger>
+                    <TabsTrigger value="security">{t('security_settings')}</TabsTrigger>
+                    <TabsTrigger value="credentials">{t('credentials_settings')}</TabsTrigger>
+                    <TabsTrigger value="rss">{t('rss_settings')}</TabsTrigger>
+                </TabsList>
+                <TabsContent value="personal">
                     <Card>
-                        <CardHeader className="flex flex-col items-start gap-1">
-                            <h2 className="text-xl font-semibold">{t('change_avatar_title')}</h2>
-                            <p className="text-sm text-default-500">{t('change_avatar_description')}</p>
+                        <CardHeader>
+                            <CardTitle>{t('change_avatar_title')}</CardTitle>
+                            <p className="text-sm text-muted-foreground">{t('change_avatar_description')}</p>
                         </CardHeader>
-                        <CardBody>
+                        <CardContent>
                             <form onSubmit={handleChangeAvatar} className="space-y-4">
-                                <Avatar src={avatarPreview || currentUserAvatar || undefined} className="w-24 h-24 text-large" />
+                                <Avatar className="w-24 h-24">
+                                    <AvatarImage src={avatarPreview || currentUserAvatar || undefined} />
+                                    <AvatarFallback>{user?.userName[0]}</AvatarFallback>
+                                </Avatar>
                                 <input
                                     type="file"
                                     ref={fileInputRef}
@@ -282,104 +294,96 @@ export default function SettingsPage() {
                                     accept="image/*"
                                     className="hidden"
                                 />
-                                <Button onPress={() => fileInputRef.current?.click()}>
+                                <Button type="button" onClick={() => fileInputRef.current?.click()}>
                                     {t('select_avatar_file')}
                                 </Button>
-                                {avatarMessage && <p className={avatarMessageType === 'success' ? 'text-success' : 'text-danger'}>{avatarMessage}</p>}
+                                {avatarMessage && <p className={avatarMessageType === 'success' ? 'text-green-600' : 'text-destructive'}>{avatarMessage}</p>}
                                 <div className="flex justify-end">
                                     <Button
                                         type="submit"
-                                        color="primary"
-                                        isDisabled={!selectedAvatarFile}
-                                        isLoading={isUploadingAvatar}
+                                        disabled={!selectedAvatarFile || isUploadingAvatar}
                                     >
                                         {t('upload_avatar')}
                                     </Button>
                                 </div>
                             </form>
-                        </CardBody>
+                        </CardContent>
                     </Card>
                      <Card className="mt-6">
-                        <CardHeader className="flex flex-col items-start gap-1">
-                            <h2 className="text-xl font-semibold">{t('change_title_title')}</h2>
-                            <p className="text-sm text-default-500">{t('change_title_description')}</p>
+                        <CardHeader>
+                            <CardTitle>{t('change_title_title')}</CardTitle>
+                            <p className="text-sm text-muted-foreground">{t('change_title_description')}</p>
                         </CardHeader>
-                        <CardBody>
+                        <CardContent>
                             <form onSubmit={handleUpdateTitle} className="space-y-4">
-                                <Input
+                                <FormField
                                     label={t('custom_title')}
                                     value={userTitle}
-                                    onValueChange={setUserTitle}
+                                    onChange={(e) => setUserTitle(e.target.value)}
                                     maxLength={50}
-                                    classNames={inputClassNames}
                                 />
-                                {titleMessage && <p className={titleMessageType === 'success' ? 'text-success' : 'text-danger'}>{titleMessage}</p>}
+                                {titleMessage && <p className={titleMessageType === 'success' ? 'text-green-600' : 'text-destructive'}>{titleMessage}</p>}
                                 <div className="flex justify-end">
                                     <Button
                                         type="submit"
-                                        color="primary"
-                                        isLoading={isUpdatingTitle}
+                                        disabled={isUpdatingTitle}
                                     >
                                         {t('save_changes')}
                                     </Button>
                                 </div>
                             </form>
-                        </CardBody>
+                        </CardContent>
                     </Card>
-                </Tab>
-                <Tab key="security" title={t('security_settings')}>
+                </TabsContent>
+                <TabsContent value="security">
                     <Card>
-                        <CardHeader className="flex flex-col items-start gap-1">
-                            <h2 className="text-xl font-semibold">{t('change_password_title')}</h2>
-                            <p className="text-sm text-default-500">{t('change_password_description')}</p>
+                        <CardHeader>
+                            <CardTitle>{t('change_password_title')}</CardTitle>
+                            <p className="text-sm text-muted-foreground">{t('change_password_description')}</p>
                         </CardHeader>
-                        <CardBody>
+                        <CardContent>
                             <form onSubmit={handleChangePassword} className="space-y-4">
-                                <Input
+                                <FormField
                                     label={t('current_password')}
                                     type="password"
                                     value={currentPassword}
-                                    onValueChange={setCurrentPassword}
-                                    isRequired
-                                    classNames={inputClassNames}
+                                    onChange={(e) => setCurrentPassword(e.target.value)}
+                                    required
                                 />
-                                <Input
+                                <FormField
                                     label={t('new_password')}
                                     type="password"
                                     value={newPassword}
-                                    onValueChange={setNewPassword}
-                                    isRequired
-                                    classNames={inputClassNames}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    required
                                 />
-                                <Input
+                                <FormField
                                     label={t('confirm_new_password')}
                                     type="password"
                                     value={confirmNewPassword}
-                                    onValueChange={setConfirmNewPassword}
-                                    isRequired
-                                    classNames={inputClassNames}
+                                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                                    required
                                 />
-                                {passwordMessage && <p className={passwordMessageType === 'success' ? 'text-success' : 'text-danger'}>{passwordMessage}</p>}
+                                {passwordMessage && <p className={passwordMessageType === 'success' ? 'text-green-600' : 'text-destructive'}>{passwordMessage}</p>}
                                 <div className="flex justify-end">
                                     <Button
                                         type="submit"
-                                        color="primary"
-                                        isLoading={isChangingPassword}
+                                        disabled={isChangingPassword}
                                     >
                                         {t('change_password_button')}
                                     </Button>
                                 </div>
                             </form>
-                        </CardBody>
+                        </CardContent>
                     </Card>
                     <TwoFactorAuthSettings />
-                </Tab>
-                <Tab key="credentials" title={t('credentials_settings')}>
+                </TabsContent>
+                <TabsContent value="credentials">
                     <CredentialManagement />
-                </Tab>
-                <Tab key="rss" title={t('rss_settings')}>
+                </TabsContent>
+                <TabsContent value="rss">
                     <RssFeedManagement />
-                </Tab>
+                </TabsContent>
             </Tabs>
         </div>
     );

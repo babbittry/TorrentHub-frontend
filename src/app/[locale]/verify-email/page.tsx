@@ -5,8 +5,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { auth } from '@/lib/api';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { Card, CardBody, CardHeader } from '@heroui/card';
-import { Button } from '@heroui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 function VerifyEmailComponent() {
     const searchParams = useSearchParams();
@@ -44,8 +44,8 @@ function VerifyEmailComponent() {
             case 'success':
                 return (
                     <div className="text-center">
-                        <p className="text-success text-lg mb-4">{t('verifyEmail.success')}</p>
-                        <Button color="primary" onPress={() => router.push('/login')}>
+                        <p className="text-green-600 text-lg mb-4">{t('verifyEmail.success')}</p>
+                        <Button onClick={() => router.push('/login')}>
                             {t('verifyEmail.back_to_login')}
                         </Button>
                     </div>
@@ -53,8 +53,8 @@ function VerifyEmailComponent() {
             case 'failed':
                 return (
                     <div className="text-center">
-                        <p className="text-danger text-lg mb-4">{error || t('verifyEmail.failed')}</p>
-                        <Button color="primary" onPress={() => router.push('/login')}>
+                        <p className="text-destructive text-lg mb-4">{error || t('verifyEmail.failed')}</p>
+                        <Button onClick={() => router.push('/login')}>
                             {t('verifyEmail.back_to_login')}
                         </Button>
                     </div>
@@ -68,11 +68,11 @@ function VerifyEmailComponent() {
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
             <Card className="w-full max-w-md p-4">
                 <CardHeader className="flex flex-col items-center pb-4">
-                    <h1 className="text-3xl font-bold">{t('verifyEmail.title')}</h1>
+                    <CardTitle className="text-3xl font-bold">{t('verifyEmail.title')}</CardTitle>
                 </CardHeader>
-                <CardBody className="gap-6 flex justify-center">
+                <CardContent className="gap-6 flex justify-center">
                     {renderContent()}
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );

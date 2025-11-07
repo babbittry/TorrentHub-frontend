@@ -5,12 +5,13 @@ import { torrentListing, TorrentDto, TorrentCategory } from "@/lib/api";
 import { useTranslations } from 'next-intl';
 import TorrentCard from "./components/TorrentCard";
 import TorrentListItem from "./components/TorrentListItem";
-import { Input } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
-import { Selection } from "@react-types/shared";
-import { Button, ButtonGroup } from "@heroui/button";
-import { Card, CardBody, CardFooter } from "@heroui/card";
-import { Pagination } from "@heroui/pagination";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { FormField } from "@/components/ui/form-field";
+import { Grid, List } from "lucide-react";
 
 type ViewMode = 'grid' | 'list';
 
@@ -21,7 +22,7 @@ const getInitialViewMode = (): ViewMode => {
             return savedViewMode;
         }
     }
-    return 'grid'; // Default value
+    return 'grid';
 };
 
 export default function TorrentsPage() {
@@ -76,74 +77,66 @@ export default function TorrentsPage() {
 
     const categoryOptions = Object.values(TorrentCategory).filter(v => isNaN(Number(v))).map(cat => ({ key: cat.toString(), value: cat.toString(), label: t("categories." + (cat as string)) }));
 
+    const totalPages = Math.ceil(totalCount / pageSize);
+
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-4xl font-extrabold text-primary mb-8 text-center drop-shadow-lg">{t('torrentsPage.all_torrents')}</h1>
+            <h1 className="text-4xl font-extrabold mb-8 text-center">{t('torrentsPage.all_torrents')}</h1>
 
-            <Card className="mb-10 p-4" shadow="sm">
-                <CardBody>
+            <Card className="mb-10">
+                <CardContent className="pt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                        <Input
+                        <FormField
                             label={t('common.search')}
                             placeholder={t('header.search_torrents')}
                             value={searchTerm}
-                            onValueChange={setSearchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                            isClearable
-                            onClear={() => setSearchTerm('')}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
                         />
-                        <Select
-                            label={t('common.category')}
-                            placeholder={t('torrentsPage.all_torrents')}
-                            selectedKeys={category ? [category] : []}
-                            onSelectionChange={(keys: Selection) => {
-                                if (keys instanceof Set && keys.size > 0) {
-                                    const selectedKey = Array.from(keys)[0];
-                                    setCategory(selectedKey.toString());
-                                } else {
-                                    setCategory("");
-                                }
-                            }}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            items={[{ key: "", label: t('torrentsPage.all_torrents') }, ...categoryOptions]}
-                        >
-                            {(item) => (
-                                <SelectItem key={item.key}>
-                                    {item.label}
-                                </SelectItem>
-                            )}
-                        </Select>
-                        <Button onPress={handleSearch} color="primary" className="w-full md:w-auto" size="md">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">{t('common.category')}</label>
+                            <Select value={category || "all"} onValueChange={(val) => setCategory(val === "all" ? "" : val)}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t('torrentsPage.all_torrents')} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">{t('torrentsPage.all_torrents')}</SelectItem>
+                                    {categoryOptions.map(item => (
+                                        <SelectItem key={item.key} value={item.value}>
+                                            {item.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Button onClick={handleSearch} className="w-full md:w-auto">
                             {t('common.search')}
                         </Button>
-                        <div className="flex justify-end items-center lg:col-start-4">
-                            <ButtonGroup>
-                                <Button isIconOnly onPress={() => setViewMode('grid')} variant={viewMode === 'grid' ? 'solid' : 'ghost'} color="primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                                    </svg>
-                                </Button>
-                                <Button isIconOnly onPress={() => setViewMode('list')} variant={viewMode === 'list' ? 'solid' : 'ghost'} color="primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                                    </svg>
-                                </Button>
-                            </ButtonGroup>
+                        <div className="flex justify-end items-center lg:col-start-4 gap-2">
+                            <Button
+                                size="icon"
+                                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                                onClick={() => setViewMode('grid')}
+                            >
+                                <Grid className="h-5 w-5" />
+                            </Button>
+                            <Button
+                                size="icon"
+                                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                                onClick={() => setViewMode('list')}
+                            >
+                                <List className="h-5 w-5" />
+                            </Button>
                         </div>
                     </div>
-                </CardBody>
+                </CardContent>
             </Card>
 
-            {loading && <p className="text-center text-foreground text-lg">{t('common.loading')}</p>}
-            {error && <p className="text-center text-danger text-lg">{t('common.error')}: {error}</p>}
+            {loading && <p className="text-center text-lg">{t('common.loading')}</p>}
+            {error && <p className="text-center text-destructive text-lg">{t('common.error')}: {error}</p>}
 
             {!loading && !error && torrents.length === 0 && (
-                <p className="text-center text-default-500 text-lg opacity-80">{t('torrentsPage.no_torrents_found')}</p>
+                <p className="text-center text-muted-foreground text-lg">{t('torrentsPage.no_torrents_found')}</p>
             )}
 
             {!loading && !error && torrents.length > 0 && (
@@ -156,10 +149,10 @@ export default function TorrentsPage() {
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            <Card className="p-3 shadow-sm">
+                            <Card className="p-3">
                                 <div className="flex items-center">
                                     <div className="shrink-0 w-16 mr-4"></div>
-                                    <div className="grow grid grid-cols-12 gap-4 items-center font-bold text-foreground">
+                                    <div className="grow grid grid-cols-12 gap-4 items-center font-bold">
                                         <div className="col-span-4 cursor-pointer hover:text-primary" onClick={() => handleSort('name')}>{t('common.name')} {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                                         <div className="col-span-2 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('createdAt')}>{t('common.date')} {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
                                         <div className="col-span-1 text-center cursor-pointer hover:text-primary" onClick={() => handleSort('size')}>{t('common.size')} {sortBy === 'size' && (sortOrder === 'asc' ? '↑' : '↓')}</div>
@@ -175,13 +168,42 @@ export default function TorrentsPage() {
                             ))}
                         </div>
                     )}
-                    <Card>
-                        <CardFooter>
-                            <Pagination
-                                total={Math.ceil(totalCount / pageSize)}
-                                page={page}
-                                onChange={setPage}
-                            />
+                    <Card className="mt-6">
+                        <CardFooter className="justify-center pt-6">
+                            <Pagination>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious
+                                            href="#"
+                                            onClick={(e) => { e.preventDefault(); if (page > 1) setPage(p => p - 1); }}
+                                            aria-disabled={page === 1}
+                                            className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                                        />
+                                    </PaginationItem>
+                                    {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                                        const pageNumber = i + 1;
+                                        return (
+                                            <PaginationItem key={pageNumber}>
+                                                <PaginationLink
+                                                    href="#"
+                                                    onClick={(e) => { e.preventDefault(); setPage(pageNumber); }}
+                                                    isActive={page === pageNumber}
+                                                >
+                                                    {pageNumber}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        );
+                                    })}
+                                    <PaginationItem>
+                                        <PaginationNext
+                                            href="#"
+                                            onClick={(e) => { e.preventDefault(); if (page < totalPages) setPage(p => p + 1); }}
+                                            aria-disabled={page === totalPages}
+                                            className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+                                        />
+                                    </PaginationItem>
+                                </PaginationContent>
+                            </Pagination>
                         </CardFooter>
                     </Card>
                 </>

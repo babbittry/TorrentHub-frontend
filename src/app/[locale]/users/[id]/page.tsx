@@ -5,12 +5,12 @@ import { users as apiUsers, UserPublicProfileDto, TorrentDto, PeerDto, API_BASE_
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Card, CardBody } from "@heroui/card";
-import { User } from "@heroui/user";
-import { Tabs, Tab } from "@heroui/tabs";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Link } from '@/i18n/navigation';
-import { Button } from '@heroui/button';
+import { Button } from '@/components/ui/button';
 import TransferModal from '@/app/[locale]/components/TransferModal';
 
 
@@ -89,28 +89,29 @@ const UserProfilePage = () => {
     return (
         <div className="container mx-auto p-4 space-y-6">
             <Card>
-                <CardBody>
+                <CardContent className="pt-6">
                     <div className="flex flex-col md:flex-row items-center gap-6">
-                        <User
-                            name={profile.userName}
-                            description={t(`stats.userRoles.${profile.role}`)}
-                            avatarProps={{
-                                src: profile.avatar ? `${API_BASE_URL}${profile.avatar}` : undefined,
-                                size: "lg",
-                                className: "w-24 h-24 text-large"
-                            }}
-                        />
+                        <div className="flex flex-col items-center gap-2">
+                            <Avatar className="w-24 h-24">
+                                <AvatarImage src={profile.avatar ? `${API_BASE_URL}${profile.avatar}` : undefined} />
+                                <AvatarFallback>{profile.userName[0]}</AvatarFallback>
+                            </Avatar>
+                            <div className="text-center">
+                                <p className="font-semibold">{profile.userName}</p>
+                                <p className="text-sm text-muted-foreground">{t(`stats.userRoles.${profile.role}`)}</p>
+                            </div>
+                        </div>
                         <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 flex-1">
-                            <div className="text-center"><p className="text-sm text-default-500">{t('userProfile.coins')}</p><p className="text-xl font-bold">{profile.coins}</p></div>
-                            <div className="text-center"><p className="text-sm text-default-500">{t('userProfile.registrationTime')}</p><p className="text-xl font-bold">{isClient ? new Date(profile.createdAt).toLocaleDateString() : '...'}</p></div>
+                            <div className="text-center"><p className="text-sm text-muted-foreground">{t('userProfile.coins')}</p><p className="text-xl font-bold">{profile.coins}</p></div>
+                            <div className="text-center"><p className="text-sm text-muted-foreground">{t('userProfile.registrationTime')}</p><p className="text-xl font-bold">{isClient ? new Date(profile.createdAt).toLocaleDateString() : '...'}</p></div>
                         </div>
                     </div>
                     {!isOwnProfile && (
-                        <Button onClick={() => setIsTransferModalOpen(true)}>
+                        <Button onClick={() => setIsTransferModalOpen(true)} className="mt-4">
                             {t('userProfile.transfer_coins')}
                         </Button>
                     )}
-                </CardBody>
+                </CardContent>
             </Card>
 
             {isClient && profile && (
@@ -122,63 +123,84 @@ const UserProfilePage = () => {
                 />
             )}
 
-            <Tabs aria-label="User profile details">
-                <Tab key="stats" title={t('userProfile.personalStats')}>
+            <Tabs defaultValue="stats">
+                <TabsList>
+                    <TabsTrigger value="stats">{t('userProfile.personalStats')}</TabsTrigger>
+                    <TabsTrigger value="uploads">{t('userProfile.myUploads')}</TabsTrigger>
+                    <TabsTrigger value="peers">{t('userProfile.clientInfo')}</TabsTrigger>
+                </TabsList>
+                <TabsContent value="stats">
                     <Card>
-                        <CardBody>
+                        <CardContent className="pt-6">
                             <dl className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 {statsItems.map(item => (
-                                    <div key={item.label} className="p-2 rounded-lg bg-content2">
-                                        <dt className="text-sm text-default-500">{item.label}</dt>
+                                    <div key={item.label} className="p-2 rounded-lg bg-secondary">
+                                        <dt className="text-sm text-muted-foreground">{item.label}</dt>
                                         <dd className="font-semibold text-lg">{item.value}</dd>
                                     </div>
                                 ))}
                             </dl>
-                        </CardBody>
+                        </CardContent>
                     </Card>
-                </Tab>
-                <Tab key="uploads" title={t('userProfile.myUploads')}>
+                </TabsContent>
+                <TabsContent value="uploads">
                     <Card>
-                        <CardBody>
-                            <Table aria-label="User uploads">
+                        <CardContent className="pt-6">
+                            <Table>
                                 <TableHeader>
-                                    <TableColumn key="name">{t('common.name')}</TableColumn>
-                                    <TableColumn key="size">{t('common.size')}</TableColumn>
+                                    <TableRow>
+                                        <TableHead>{t('common.name')}</TableHead>
+                                        <TableHead>{t('common.size')}</TableHead>
+                                    </TableRow>
                                 </TableHeader>
-                                <TableBody items={uploads} emptyContent={t('common.no_data')}>
-                                    {(item) => (
-                                        <TableRow key={item.id}>
-                                            <TableCell><Link href={`/torrents/${item.id}`} className="text-primary hover:underline">{item.name}</Link></TableCell>
-                                            <TableCell>{formatBytes(item.size)}</TableCell>
+                                <TableBody>
+                                    {uploads.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={2} className="text-center">{t('common.no_data')}</TableCell>
                                         </TableRow>
+                                    ) : (
+                                        uploads.map((item) => (
+                                            <TableRow key={item.id}>
+                                                <TableCell><Link href={`/torrents/${item.id}`} className="text-primary hover:underline">{item.name}</Link></TableCell>
+                                                <TableCell>{formatBytes(item.size)}</TableCell>
+                                            </TableRow>
+                                        ))
                                     )}
                                 </TableBody>
                             </Table>
-                        </CardBody>
+                        </CardContent>
                     </Card>
-                </Tab>
-                <Tab key="peers" title={t('userProfile.clientInfo')}>
+                </TabsContent>
+                <TabsContent value="peers">
                     <Card>
-                        <CardBody>
-                            <Table aria-label="User active peers">
+                        <CardContent className="pt-6">
+                            <Table>
                                 <TableHeader>
-                                    <TableColumn key="torrentName">{t('common.name')}</TableColumn>
-                                    <TableColumn key="userAgent">{t('userProfile.client')}</TableColumn>
-                                    <TableColumn key="lastAnnounceAt">{t('userProfile.lastReport')}</TableColumn>
+                                    <TableRow>
+                                        <TableHead>{t('common.name')}</TableHead>
+                                        <TableHead>{t('userProfile.client')}</TableHead>
+                                        <TableHead>{t('userProfile.lastReport')}</TableHead>
+                                    </TableRow>
                                 </TableHeader>
-                                <TableBody items={peers} emptyContent={t('common.no_data')}>
-                                    {(item) => (
-                                        <TableRow key={item.torrentId}>
-                                            <TableCell>{item.torrentName}</TableCell>
-                                            <TableCell>{item.userAgent}</TableCell>
-                                            <TableCell>{isClient ? new Date(item.lastAnnounceAt).toLocaleString() : '...'}</TableCell>
+                                <TableBody>
+                                    {peers.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={3} className="text-center">{t('common.no_data')}</TableCell>
                                         </TableRow>
+                                    ) : (
+                                        peers.map((item) => (
+                                            <TableRow key={item.torrentId}>
+                                                <TableCell>{item.torrentName}</TableCell>
+                                                <TableCell>{item.userAgent}</TableCell>
+                                                <TableCell>{isClient ? new Date(item.lastAnnounceAt).toLocaleString() : '...'}</TableCell>
+                                            </TableRow>
+                                        ))
                                     )}
                                 </TableBody>
                             </Table>
-                        </CardBody>
+                        </CardContent>
                     </Card>
-                </Tab>
+                </TabsContent>
             </Tabs>
         </div>
     );

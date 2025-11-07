@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
-import { Button } from '@heroui/button';
-import { Input } from '@heroui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { coins, TipCoinsRequestDto } from '@/lib/api';
 import { AxiosError } from 'axios';
+import { FormField } from '@/components/ui/form-field';
 
 interface TipModalProps {
     isOpen: boolean;
@@ -49,9 +49,7 @@ const TipModal: React.FC<TipModalProps> = ({ isOpen, onClose, recipientId, recip
             }, 2000);
         } catch (err) {
             if (err instanceof AxiosError && err.response?.data?.message) {
-                // 提取后端返回的错误键
                 const errorKey = err.response.data.message;
-                // 尝试翻译错误键，如果不存在则使用通用错误消息
                 const translatedError = t(errorKey, { defaultValue: t('TipModal.error_generic') });
                 setError(translatedError);
             } else {
@@ -63,31 +61,33 @@ const TipModal: React.FC<TipModalProps> = ({ isOpen, onClose, recipientId, recip
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalContent>
-                <ModalHeader>{t('TipModal.title', { username: recipientName })}</ModalHeader>
-                <ModalBody>
-                    {error && <p className="text-danger text-sm mb-4">{error}</p>}
-                    {success && <p className="text-success text-sm mb-4">{success}</p>}
-                    <Input
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{t('TipModal.title', { username: recipientName })}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                    {error && <p className="text-destructive text-sm">{error}</p>}
+                    {success && <p className="text-green-600 text-sm">{success}</p>}
+                    <FormField
                         type="number"
                         label={t('TipModal.amount_label')}
                         placeholder={t('TipModal.amount_placeholder')}
                         value={amount}
-                        onValueChange={setAmount}
-                        isRequired
+                        onChange={(e) => setAmount(e.target.value)}
+                        required
                     />
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="secondary" onClick={onClose}>
+                </div>
+                <DialogFooter>
+                    <Button variant="secondary" onClick={onClose}>
                         {t('common.cancel')}
                     </Button>
-                    <Button color="primary" onClick={handleSubmit} isLoading={isSubmitting}>
-                        {t('TipModal.submit_button')}
+                    <Button onClick={handleSubmit} disabled={isSubmitting}>
+                        {isSubmitting ? t('common.loading') : t('TipModal.submit_button')}
                     </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 

@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
-import { Button } from '@heroui/button';
-import { Input, Textarea } from '@heroui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { useTranslations } from 'next-intl';
 import { coins } from '@/lib/api';
 import { AxiosError } from 'axios';
+import { FormField } from '@/components/ui/form-field';
 
 interface TransferModalProps {
     isOpen: boolean;
@@ -62,38 +63,42 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose, recipien
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalContent>
-                <ModalHeader>{t('TransferModal.title', { username: recipientName })}</ModalHeader>
-                <ModalBody>
-                    {error && <p className="text-danger text-sm mb-4">{error}</p>}
-                    {success && <p className="text-success text-sm mb-4">{success}</p>}
-                    <Input
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{t('TransferModal.title', { username: recipientName })}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                    {error && <p className="text-destructive text-sm">{error}</p>}
+                    {success && <p className="text-green-600 text-sm">{success}</p>}
+                    <FormField
                         type="number"
                         label={t('TransferModal.amount_label')}
                         placeholder={t('TransferModal.amount_placeholder')}
                         value={amount}
-                        onValueChange={setAmount}
-                        isRequired
+                        onChange={(e) => setAmount(e.target.value)}
+                        required
                     />
-                    <Textarea
-                        label={t('TransferModal.notes_label')}
-                        placeholder={t('TransferModal.notes_placeholder')}
-                        value={notes}
-                        onValueChange={setNotes}
-                        maxLength={200}
-                    />
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="secondary" onClick={onClose}>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">{t('TransferModal.notes_label')}</label>
+                        <Textarea
+                            placeholder={t('TransferModal.notes_placeholder')}
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                            maxLength={200}
+                        />
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button variant="secondary" onClick={onClose}>
                         {t('common.cancel')}
                     </Button>
-                    <Button color="primary" onClick={handleSubmit} isLoading={isSubmitting}>
-                        {t('TransferModal.submit_button')}
+                    <Button onClick={handleSubmit} disabled={isSubmitting}>
+                        {isSubmitting ? t('common.loading') : t('TransferModal.submit_button')}
                     </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 

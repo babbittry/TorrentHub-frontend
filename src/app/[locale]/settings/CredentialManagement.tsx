@@ -4,16 +4,17 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { credential } from '@/lib/api';
 import type { CredentialDto, PaginatedResult } from '@/lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Button } from "@heroui/button";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
-import { Chip } from "@heroui/chip";
-import { Checkbox } from "@heroui/checkbox";
-import { Modal, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@heroui/modal';
-import { Input } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
-import { Pagination } from "@heroui/pagination";
-import { addToast } from '@heroui/toast';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 
 type StatusFilter = 'all' | 'active' | 'revoked';
@@ -25,12 +26,12 @@ export default function CredentialManagement() {
     const [credentials, setCredentials] = useState<CredentialDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [revokeTarget, setRevokeTarget] = useState<CredentialDto | null>(null);
-    const { isOpen: isRevokeModalOpen, onOpen: onRevokeModalOpen, onClose: onRevokeModalClose } = useDisclosure();
-    const { isOpen: isRevokeAllModalOpen, onOpen: onRevokeAllModalOpen, onClose: onRevokeAllModalClose } = useDisclosure();
+    const [isRevokeModalOpen, setIsRevokeModalOpen] = useState(false);
+    const [isRevokeAllModalOpen, setIsRevokeAllModalOpen] = useState(false);
     
     // 批量操作状态
     const [selectedCredentials, setSelectedCredentials] = useState<Set<string>>(new Set());
-    const { isOpen: isRevokeBatchModalOpen, onOpen: onRevokeBatchModalOpen, onClose: onRevokeBatchModalClose } = useDisclosure();
+    const [isRevokeBatchModalOpen, setIsRevokeBatchModalOpen] = useState(false);
     
     // 搜索和筛选状态
     const [searchQuery, setSearchQuery] = useState('');
@@ -67,10 +68,8 @@ export default function CredentialManagement() {
             setTotalItems(result.totalItems);
             setTotalPages(result.totalPages);
         } catch (error) {
-            addToast({
-                title: t('load_error'),
-                description: (error as Error).message,
-                color: 'danger'
+            toast.error(t('load_error'), {
+                description: (error as Error).message
             });
         } finally {
             setIsLoading(false);
@@ -90,7 +89,7 @@ export default function CredentialManagement() {
 
     const handleRevokeClick = (cred: CredentialDto) => {
         setRevokeTarget(cred);
-        onRevokeModalOpen();
+        setIsRevokeModalOpen(true);
     };
 
     const handleConfirmRevoke = async () => {
@@ -98,43 +97,33 @@ export default function CredentialManagement() {
 
         try {
             await credential.revoke(revokeTarget.credential);
-            addToast({ 
-                title: t('revoke_success'),
-                color: 'success' 
-            });
+            toast.success(t('revoke_success'));
             await loadCredentials();
-            onRevokeModalClose();
+            setIsRevokeModalOpen(false);
         } catch (error) {
-            addToast({ 
-                title: t('revoke_error'),
-                description: (error as Error).message,
-                color: 'danger' 
+            toast.error(t('revoke_error'), {
+                description: (error as Error).message
             });
         }
     };
 
     const handleRevokeAllClick = () => {
-        onRevokeAllModalOpen();
+        setIsRevokeAllModalOpen(true);
     };
 
     const handleConfirmRevokeAll = async () => {
         try {
             // 使用服务器端批量撤销API（原子操作）
             const result = await credential.revokeAll(t('revoke_all_reason'));
-            addToast({
-                title: t('revoke_all_success_detail', {
-                    count: result.revokedCount,
-                    torrentCount: result.affectedTorrentIds.length
-                }),
-                color: 'success'
-            });
+            toast.success(t('revoke_all_success_detail', {
+                count: result.revokedCount,
+                torrentCount: result.affectedTorrentIds.length
+            }));
             await loadCredentials();
-            onRevokeAllModalClose();
+            setIsRevokeAllModalOpen(false);
         } catch (error) {
-            addToast({
-                title: t('revoke_all_error'),
-                description: (error as Error).message,
-                color: 'danger'
+            toast.error(t('revoke_all_error'), {
+                description: (error as Error).message
             });
         }
     };
@@ -164,28 +153,23 @@ export default function CredentialManagement() {
     // 批量撤销处理
     const handleRevokeBatchClick = () => {
         if (selectedCredentials.size === 0) return;
-        onRevokeBatchModalOpen();
+        setIsRevokeBatchModalOpen(true);
     };
 
     const handleConfirmRevokeBatch = async () => {
         try {
             const credentialUuids = Array.from(selectedCredentials);
             const result = await credential.revokeBatch(credentialUuids, t('bulk.revoke_reason'));
-            addToast({
-                title: t('bulk.revoke_success_detail', {
-                    count: result.revokedCount,
-                    torrentCount: result.affectedTorrentIds.length
-                }),
-                color: 'success'
-            });
+            toast.success(t('bulk.revoke_success_detail', {
+                count: result.revokedCount,
+                torrentCount: result.affectedTorrentIds.length
+            }));
             setSelectedCredentials(new Set());
             await loadCredentials();
-            onRevokeBatchModalClose();
+            setIsRevokeBatchModalOpen(false);
         } catch (error) {
-            addToast({
-                title: t('bulk.revoke_error'),
-                description: (error as Error).message,
-                color: 'danger'
+            toast.error(t('bulk.revoke_error'), {
+                description: (error as Error).message
             });
         }
     };
@@ -216,10 +200,8 @@ export default function CredentialManagement() {
                 exportToJSON(result.items);
             }
         } catch (error) {
-            addToast({
-                title: t('export.error'),
-                description: (error as Error).message,
-                color: 'danger'
+            toast.error(t('export.error'), {
+                description: (error as Error).message
             });
         } finally {
             setIsLoading(false);
@@ -268,10 +250,7 @@ export default function CredentialManagement() {
         link.click();
         document.body.removeChild(link);
         
-        addToast({
-            title: t('export.csv_success'),
-            color: 'success'
-        });
+        toast.success(t('export.csv_success'));
     };
 
     const exportToJSON = (data: CredentialDto[]) => {
@@ -303,10 +282,7 @@ export default function CredentialManagement() {
         link.click();
         document.body.removeChild(link);
         
-        addToast({
-            title: t('export.json_success'),
-            color: 'success'
-        });
+        toast.success(t('export.json_success'));
     };
 
     const formatDate = (dateString: string) => {
@@ -345,54 +321,46 @@ export default function CredentialManagement() {
 
     return (
         <Card>
-            <CardHeader className="flex flex-col items-start gap-4">
+            <CardHeader>
                 <div className="flex justify-between items-center w-full">
                     <div>
-                        <h2 className="text-xl font-semibold">{t('title')}</h2>
-                        <p className="text-sm text-default-500 mt-1">{t('description')}</p>
+                        <CardTitle>{t('title')}</CardTitle>
+                        <p className="text-sm text-muted-foreground mt-1">{t('description')}</p>
                     </div>
                     <div className="flex gap-2">
                         {/* 导出按钮 */}
                         <Button
-                            color="primary"
-                            variant="flat"
-                            onPress={() => handleExport('csv')}
-                            isDisabled={totalItems === 0}
-                            startContent={
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                            }
+                            variant="outline"
+                            onClick={() => handleExport('csv')}
+                            disabled={totalItems === 0}
                         >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
                             {t('export.csv_button')}
                         </Button>
                         <Button
-                            color="primary"
-                            variant="flat"
-                            onPress={() => handleExport('json')}
-                            isDisabled={totalItems === 0}
-                            startContent={
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                            }
+                            variant="outline"
+                            onClick={() => handleExport('json')}
+                            disabled={totalItems === 0}
                         >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
                             {t('export.json_button')}
                         </Button>
                         {/* 批量撤销按钮 */}
                         <Button
-                            color="warning"
-                            variant="flat"
-                            onPress={handleRevokeBatchClick}
-                            isDisabled={selectedCredentials.size === 0}
+                            variant="outline"
+                            onClick={handleRevokeBatchClick}
+                            disabled={selectedCredentials.size === 0}
                         >
                             {t('bulk.revoke_selected')} ({selectedCredentials.size})
                         </Button>
                         <Button
-                            color="danger"
-                            variant="flat"
-                            onPress={handleRevokeAllClick}
-                            isDisabled={activeCount === 0}
+                            variant="destructive"
+                            onClick={handleRevokeAllClick}
+                            disabled={activeCount === 0}
                         >
                             {t('revoke_all_button')}
                         </Button>
@@ -401,53 +369,50 @@ export default function CredentialManagement() {
                 
                 {/* 搜索和筛选控件 */}
                 <div className="w-full flex flex-col md:flex-row gap-3">
-                    <Input
-                        placeholder={t('filters.search_placeholder')}
-                        value={searchQuery}
-                        onValueChange={setSearchQuery}
-                        className="md:w-1/3"
-                        isClearable
-                        startContent={
-                            <svg className="w-4 h-4 text-default-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        }
-                    />
+                    <div className="md:w-1/3 relative">
+                        <svg className="w-4 h-4 text-muted-foreground absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <Input
+                            placeholder={t('filters.search_placeholder')}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-10"
+                        />
+                    </div>
                     
-                    <Select
-                        label={t('filters.status_label')}
-                        selectedKeys={[statusFilter]}
-                        onSelectionChange={(keys) => {
-                            const selected = Array.from(keys)[0] as StatusFilter;
-                            setStatusFilter(selected);
-                        }}
-                        className="md:w-1/6"
-                    >
-                        <SelectItem key="all">{t('filters.status_all')}</SelectItem>
-                        <SelectItem key="active">{t('filters.status_active')}</SelectItem>
-                        <SelectItem key="revoked">{t('filters.status_revoked')}</SelectItem>
-                    </Select>
+                    <div className="md:w-1/6">
+                        <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val as StatusFilter)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder={t('filters.status_label')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">{t('filters.status_all')}</SelectItem>
+                                <SelectItem value="active">{t('filters.status_active')}</SelectItem>
+                                <SelectItem value="revoked">{t('filters.status_revoked')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                     
-                    <Select
-                        label={t('filters.sort_by_label')}
-                        selectedKeys={[sortBy]}
-                        onSelectionChange={(keys) => {
-                            const selected = Array.from(keys)[0] as SortOption;
-                            setSortBy(selected);
-                        }}
-                        className="md:w-1/6"
-                    >
-                        <SelectItem key="createdAt">{t('filters.sort_created_at')}</SelectItem>
-                        <SelectItem key="lastUsedAt">{t('filters.sort_last_used')}</SelectItem>
-                        <SelectItem key="uploadBytes">{t('filters.sort_upload')}</SelectItem>
-                        <SelectItem key="downloadBytes">{t('filters.sort_download')}</SelectItem>
-                    </Select>
+                    <div className="md:w-1/6">
+                        <Select value={sortBy} onValueChange={(val) => setSortBy(val as SortOption)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder={t('filters.sort_by_label')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="createdAt">{t('filters.sort_created_at')}</SelectItem>
+                                <SelectItem value="lastUsedAt">{t('filters.sort_last_used')}</SelectItem>
+                                <SelectItem value="uploadBytes">{t('filters.sort_upload')}</SelectItem>
+                                <SelectItem value="downloadBytes">{t('filters.sort_download')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                     
                     <Button
-                        isIconOnly
-                        variant="flat"
-                        onPress={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                        className="md:mt-6"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                        className="md:mt-0"
                     >
                         {sortOrder === 'asc' ? '↑' : '↓'}
                     </Button>
@@ -464,7 +429,7 @@ export default function CredentialManagement() {
                     </span>
                 </div>
             </CardHeader>
-            <CardBody>
+            <CardContent>
                 {isLoading ? (
                     <p className="text-center py-8">{t('loading')}</p>
                 ) : totalItems === 0 ? (
@@ -473,32 +438,32 @@ export default function CredentialManagement() {
                     <p className="text-center py-8 text-default-500">{t('filters.no_results')}</p>
                 ) : (
                     <>
-                    <Table aria-label="Credentials table">
+                    <Table>
                         <TableHeader>
-                            <TableColumn width={50}>
-                                {/* 全选复选框 */}
-                                <Checkbox
-                                    isSelected={allActiveSelected}
-                                    onValueChange={handleSelectAll}
-                                    isDisabled={activeCredentialsInView.length === 0}
-                                />
-                            </TableColumn>
-                            <TableColumn>{t('table.torrent_name')}</TableColumn>
-                            <TableColumn>{t('table.usage_stats')}</TableColumn>
-                            <TableColumn>{t('table.last_used')}</TableColumn>
-                            <TableColumn>{t('table.created_at')}</TableColumn>
-                            <TableColumn>{t('table.status')}</TableColumn>
-                            <TableColumn>{t('table.actions')}</TableColumn>
+                            <TableRow>
+                                <TableHead className="w-12">
+                                    <Checkbox
+                                        checked={allActiveSelected}
+                                        onCheckedChange={handleSelectAll}
+                                        disabled={activeCredentialsInView.length === 0}
+                                    />
+                                </TableHead>
+                                <TableHead>{t('table.torrent_name')}</TableHead>
+                                <TableHead>{t('table.usage_stats')}</TableHead>
+                                <TableHead>{t('table.last_used')}</TableHead>
+                                <TableHead>{t('table.created_at')}</TableHead>
+                                <TableHead>{t('table.status')}</TableHead>
+                                <TableHead>{t('table.actions')}</TableHead>
+                            </TableRow>
                         </TableHeader>
                         <TableBody>
                             {credentials.map((cred) => (
                                 <TableRow key={cred.id}>
                                     <TableCell>
-                                        {/* 单个复选框 */}
                                         <Checkbox
-                                            isSelected={selectedCredentials.has(cred.credential)}
-                                            onValueChange={(checked) => handleSelectCredential(cred.credential, checked)}
-                                            isDisabled={cred.isRevoked}
+                                            checked={selectedCredentials.has(cred.credential)}
+                                            onCheckedChange={(checked) => handleSelectCredential(cred.credential, checked === true)}
+                                            disabled={cred.isRevoked}
                                         />
                                     </TableCell>
                                     <TableCell>
@@ -510,9 +475,9 @@ export default function CredentialManagement() {
                                                 {cred.torrentName}
                                             </Link>
                                             {isCredentialActive(cred) && (
-                                                <Chip size="sm" color="success" variant="dot">
+                                                <Badge variant="outline" className="text-green-600 border-green-600 ml-2">
                                                     {t('active_indicator')}
-                                                </Chip>
+                                                </Badge>
                                             )}
                                         </div>
                                     </TableCell>
@@ -546,22 +511,21 @@ export default function CredentialManagement() {
                                     </TableCell>
                                     <TableCell>
                                         {cred.isRevoked ? (
-                                            <Chip color="danger" size="sm">
+                                            <Badge variant="destructive">
                                                 {t('status.revoked')}
-                                            </Chip>
+                                            </Badge>
                                         ) : (
-                                            <Chip color="success" size="sm">
+                                            <Badge variant="outline" className="text-green-600 border-green-600">
                                                 {t('status.active')}
-                                            </Chip>
+                                            </Badge>
                                         )}
                                     </TableCell>
                                     <TableCell>
                                         {!cred.isRevoked && (
                                             <Button
                                                 size="sm"
-                                                color="danger"
-                                                variant="flat"
-                                                onPress={() => handleRevokeClick(cred)}
+                                                variant="destructive"
+                                                onClick={() => handleRevokeClick(cred)}
                                             >
                                                 {t('revoke_button')}
                                             </Button>
@@ -575,90 +539,116 @@ export default function CredentialManagement() {
                     {/* 分页控件 */}
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 px-2">
                         <div className="flex items-center gap-2">
-                            <span className="text-small text-default-400">
+                            <span className="text-sm text-muted-foreground">
                                 {t('pagination.rows_per_page')}:
                             </span>
-                            <Select
-                                size="sm"
-                                selectedKeys={[pageSize.toString()]}
-                                onChange={(e) => {
-                                    setPageSize(parseInt(e.target.value));
-                                    setCurrentPage(1);
-                                }}
-                                className="w-20"
-                            >
-                                <SelectItem key="10">10</SelectItem>
-                                <SelectItem key="20">20</SelectItem>
-                                <SelectItem key="50">50</SelectItem>
-                                <SelectItem key="100">100</SelectItem>
+                            <Select value={pageSize.toString()} onValueChange={(val) => {
+                                setPageSize(parseInt(val));
+                                setCurrentPage(1);
+                            }}>
+                                <SelectTrigger className="w-20">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="10">10</SelectItem>
+                                    <SelectItem value="20">20</SelectItem>
+                                    <SelectItem value="50">50</SelectItem>
+                                    <SelectItem value="100">100</SelectItem>
+                                </SelectContent>
                             </Select>
                         </div>
                         
-                        <Pagination
-                            total={totalPages}
-                            page={currentPage}
-                            onChange={setCurrentPage}
-                            showControls
-                            size="sm"
-                        />
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious
+                                        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                                    />
+                                </PaginationItem>
+                                {[...Array(totalPages)].map((_, i) => (
+                                    <PaginationItem key={i + 1}>
+                                        <PaginationLink
+                                            onClick={() => setCurrentPage(i + 1)}
+                                            isActive={currentPage === i + 1}
+                                            className="cursor-pointer"
+                                        >
+                                            {i + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                ))}
+                                <PaginationItem>
+                                    <PaginationNext
+                                        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
                     </div>
                     </>
                 )}
-            </CardBody>
+            </CardContent>
 
             {/* 单个撤销确认模态框 */}
-            <Modal isOpen={isRevokeModalOpen} onClose={onRevokeModalClose}>
-                <ModalHeader>{t('revoke_modal.title')}</ModalHeader>
-                <ModalBody>
+            <Dialog open={isRevokeModalOpen} onOpenChange={setIsRevokeModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{t('revoke_modal.title')}</DialogTitle>
+                    </DialogHeader>
                     <p>{t('revoke_modal.description')}</p>
                     {revokeTarget && (
                         <p className="mt-2 font-semibold">{revokeTarget.torrentName}</p>
                     )}
-                    <p className="mt-2 text-warning text-sm">{t('revoke_modal.warning')}</p>
-                </ModalBody>
-                <ModalFooter>
-                    <Button variant="ghost" onPress={onRevokeModalClose}>
-                        {t('revoke_modal.cancel')}
-                    </Button>
-                    <Button color="danger" onPress={handleConfirmRevoke}>
-                        {t('revoke_modal.confirm')}
-                    </Button>
-                </ModalFooter>
-            </Modal>
+                    <p className="mt-2 text-yellow-600 text-sm">{t('revoke_modal.warning')}</p>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setIsRevokeModalOpen(false)}>
+                            {t('revoke_modal.cancel')}
+                        </Button>
+                        <Button variant="destructive" onClick={handleConfirmRevoke}>
+                            {t('revoke_modal.confirm')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* 批量撤销确认模态框 */}
-            <Modal isOpen={isRevokeAllModalOpen} onClose={onRevokeAllModalClose}>
-                <ModalHeader>{t('revoke_all_modal.title')}</ModalHeader>
-                <ModalBody>
+            <Dialog open={isRevokeAllModalOpen} onOpenChange={setIsRevokeAllModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{t('revoke_all_modal.title')}</DialogTitle>
+                    </DialogHeader>
                     <p>{t('revoke_all_modal.description', { count: activeCount })}</p>
-                    <p className="mt-2 text-danger text-sm font-semibold">{t('revoke_all_modal.warning')}</p>
-                </ModalBody>
-                <ModalFooter>
-                    <Button variant="ghost" onPress={onRevokeAllModalClose}>
-                        {t('revoke_all_modal.cancel')}
-                    </Button>
-                    <Button color="danger" onPress={handleConfirmRevokeAll}>
-                        {t('revoke_all_modal.confirm')}
-                    </Button>
-                </ModalFooter>
-            </Modal>
+                    <p className="mt-2 text-destructive text-sm font-semibold">{t('revoke_all_modal.warning')}</p>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setIsRevokeAllModalOpen(false)}>
+                            {t('revoke_all_modal.cancel')}
+                        </Button>
+                        <Button variant="destructive" onClick={handleConfirmRevokeAll}>
+                            {t('revoke_all_modal.confirm')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* 批量撤销选中凭证的确认模态框 */}
-            <Modal isOpen={isRevokeBatchModalOpen} onClose={onRevokeBatchModalClose}>
-                <ModalHeader>{t('bulk.modal_title')}</ModalHeader>
-                <ModalBody>
+            <Dialog open={isRevokeBatchModalOpen} onOpenChange={setIsRevokeBatchModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{t('bulk.modal_title')}</DialogTitle>
+                    </DialogHeader>
                     <p>{t('bulk.modal_description', { count: selectedCredentials.size })}</p>
-                    <p className="mt-2 text-warning text-sm">{t('bulk.modal_warning')}</p>
-                </ModalBody>
-                <ModalFooter>
-                    <Button variant="ghost" onPress={onRevokeBatchModalClose}>
-                        {t('bulk.modal_cancel')}
-                    </Button>
-                    <Button color="warning" onPress={handleConfirmRevokeBatch}>
-                        {t('bulk.modal_confirm')}
-                    </Button>
-                </ModalFooter>
-            </Modal>
+                    <p className="mt-2 text-yellow-600 text-sm">{t('bulk.modal_warning')}</p>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setIsRevokeBatchModalOpen(false)}>
+                            {t('bulk.modal_cancel')}
+                        </Button>
+                        <Button variant="outline" onClick={handleConfirmRevokeBatch}>
+                            {t('bulk.modal_confirm')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </Card>
     );
 }

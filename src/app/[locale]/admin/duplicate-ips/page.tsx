@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { admin, DuplicateIpUserDto } from '../../../../lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
@@ -31,18 +31,22 @@ const DuplicateIpsPage = () => {
             <h1 className="text-3xl font-bold mb-6">{t('duplicateIps.title')}</h1>
 
             <Card>
-                <CardHeader>{t('duplicateIps.cardTitle')}</CardHeader>
-                <CardBody>
+                <CardHeader>
+                    <CardTitle>{t('duplicateIps.cardTitle')}</CardTitle>
+                </CardHeader>
+                <CardContent>
                     {loading ? (
                         <p>{t('duplicateIps.loading')}</p>
                     ) : (
-                        <Table aria-label={t('duplicateIps.cardTitle')}>
+                        <Table>
                             <TableHeader>
-                                <TableColumn>{t('duplicateIps.table.ipAddress')}</TableColumn>
-                                <TableColumn>{t('duplicateIps.table.users')}</TableColumn>
+                                <TableRow>
+                                    <TableHead>{t('duplicateIps.table.ipAddress')}</TableHead>
+                                    <TableHead>{t('duplicateIps.table.users')}</TableHead>
+                                </TableRow>
                             </TableHeader>
-                            <TableBody items={duplicateIps}>
-                                {(item) => (
+                            <TableBody>
+                                {duplicateIps.map((item) => (
                                     <TableRow key={item.ip}>
                                         <TableCell>{item.ip}</TableCell>
                                         <TableCell>
@@ -55,11 +59,11 @@ const DuplicateIpsPage = () => {
                                             </div>
                                         </TableCell>
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
                     )}
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );

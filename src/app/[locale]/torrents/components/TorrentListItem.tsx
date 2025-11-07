@@ -3,8 +3,7 @@
 import { Link } from '@/i18n/navigation';
 import type { TorrentDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
-import { Chip } from "@heroui/chip";
-import { Image } from "@heroui/image";
+import { Badge } from "@/components/ui/badge";
 import UserDisplay from '../../components/UserDisplay';
 
 interface TorrentListItemProps {
@@ -28,46 +27,45 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
     };
 
     return (
-        <Link href={`/torrents/${torrent.id}`} className="block group">
-            <div className="flex items-center bg-content1 p-3 rounded-lg shadow-sm hover:bg-content2 transition-all duration-200 border-2 border-transparent hover:border-primary">
+        <div className="block group">
+            <div className="flex items-center bg-card p-3 rounded-lg shadow-sm hover:bg-secondary transition-all duration-200 border-2 border-transparent hover:border-primary">
                 <div className="flex-shrink-0 w-16 h-24 relative mr-4">
-                    <Image
+                    <img
                         src={posterUrl}
                         alt={torrent.name}
-                        radius="sm"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-sm"
                     />
                 </div>
                 <div className="flex-grow grid grid-cols-12 gap-4 items-center">
                     <div className="col-span-4">
-                        <div className="font-bold text-md text-foreground group-hover:text-primary transition-colors truncate">
+                        <Link href={`/torrents/${torrent.id}`} className="font-bold text-md text-foreground group-hover:text-primary transition-colors truncate hover:underline">
                             {torrent.name}
-                        </div>
+                        </Link>
                         <div className="flex flex-wrap gap-2 mt-1.5">
-                            <Chip size="sm" variant="flat">{torrent.year}</Chip>
-                            {torrent.isFree && <Chip size="sm" color="success" variant="flat">{t_common('free')}</Chip>}
+                            <Badge variant="secondary">{torrent.year}</Badge>
+                            {torrent.isFree && <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700">{t_common('free')}</Badge>}
                         </div>
                     </div>
-                    <div className="col-span-2 text-center text-sm text-default-500">
+                    <div className="col-span-2 text-center text-sm text-muted-foreground">
                         <span>{new Date(torrent.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <div className="col-span-1 text-center text-sm text-default-500">
+                    <div className="col-span-1 text-center text-sm text-muted-foreground">
                         <span>{formatBytes(torrent.size)}</span>
                     </div>
-                    <div className="col-span-1 text-center text-sm text-success font-medium">
+                    <div className="col-span-1 text-center text-sm text-green-600 font-medium">
                         {torrent.seeders}
                     </div>
-                    <div className="col-span-1 text-center text-sm text-danger font-medium">
+                    <div className="col-span-1 text-center text-sm text-destructive font-medium">
                         {torrent.leechers}
                     </div>
-                    <div className="col-span-1 text-center text-sm text-default-500 font-medium">
+                    <div className="col-span-1 text-center text-sm text-muted-foreground font-medium">
                         {torrent.snatched}
                     </div>
-                    <div className="col-span-2 text-center text-sm text-default-500">
+                    <div className="col-span-2 text-center text-sm text-muted-foreground">
                         <UserDisplay user={torrent.uploader} />
                     </div>
                 </div>
             </div>
-        </Link>
+        </div>
     );
 }

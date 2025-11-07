@@ -1,6 +1,5 @@
 "use client";
 
-import { useDisclosure } from "@heroui/react";
 import { useState, createContext, useContext, ReactNode } from "react";
 import { StoreItemDto } from "@/lib/api";
 import { GenericPurchaseModal } from "./GenericPurchaseModal";
@@ -25,11 +24,11 @@ interface PurchaseFlowProviderProps {
 
 export const PurchaseFlowProvider = ({ children }: PurchaseFlowProviderProps) => {
     const [selectedItem, setSelectedItem] = useState<StoreItemDto | null>(null);
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const [isOpen, setIsOpen] = useState(false);
 
     const openPurchaseFlow = (item: StoreItemDto) => {
         setSelectedItem(item);
-        onOpen();
+        setIsOpen(true);
     };
 
     return (
@@ -37,7 +36,7 @@ export const PurchaseFlowProvider = ({ children }: PurchaseFlowProviderProps) =>
             {children}
             <GenericPurchaseModal
                 isOpen={isOpen}
-                onOpenChange={onOpenChange}
+                onOpenChange={() => setIsOpen(false)}
                 item={selectedItem}
             />
         </PurchaseFlowContext.Provider>

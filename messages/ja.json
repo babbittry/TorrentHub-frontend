@@ -629,6 +629,7 @@
             "modal": {
                 "title": "ユーザーを編集: {username}",
                 "roleLabel": "役割",
+                "selectRole": "役割を選択",
                 "bannedLabel": "禁止済み",
                 "banReasonLabel": "禁止理由",
                 "cancelButton": "キャンセル",

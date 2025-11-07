@@ -1,15 +1,17 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { forum, ForumTopicDetailDto, CreateForumPostDto, ForumCategoryDto, ForumPostDto, CommentDto } from '@/lib/api';
+import { forum, ForumTopicDetailDto, CreateForumPostDto, ForumCategoryDto, ForumPostDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
-import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
-import { Button } from "@heroui/button";
-import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import UserDisplay from '@/app/[locale]/components/UserDisplay';
 import ForumPostTree from '@/app/[locale]/components/ForumPostTree';
 import ReplyEditor from '@/app/[locale]/components/ReplyEditor';
+import { toast } from 'sonner';
+import { Link } from '@/i18n/navigation';
 
 const TopicDetailPage = () => {
     const params = useParams();
@@ -40,7 +42,6 @@ const TopicDetailPage = () => {
             setTopic(topicData);
             setCategories(categoriesData);
             
-            // Extract posts from topic response
             const postsList = topicData.posts?.items || [];
             setPosts(postsList);
             setHasMore(topicData.posts.page < topicData.posts.totalPages);
@@ -59,22 +60,13 @@ const TopicDetailPage = () => {
 
     const categoryForBreadcrumb = useMemo(() => {
         if (!topic) return null;
-
         const foundCategory = categories.find(cat => cat.id === topic.categoryId);
         if (foundCategory) {
-            return {
-                id: foundCategory.id,
-                name: getCategoryName(foundCategory.code)
-            };
+            return { id: foundCategory.id, name: getCategoryName(foundCategory.code) };
         }
-
         if (topic.categoryName) {
-            return {
-                id: topic.categoryId,
-                name: topic.categoryName
-            };
+            return { id: topic.categoryId, name: topic.categoryName };
         }
-
         return null;
     }, [topic, categories, getCategoryName]);
 
@@ -90,7 +82,7 @@ const TopicDetailPage = () => {
             setHasMore(response.page < response.totalPages);
             setCurrentPage(response.page);
         } catch (err) {
-            setError(t('forumPage.error_loading_topic_details'));
+            toast.error(t('forumPage.error_loading_topic_details'));
             console.error(err);
         } finally {
             setLoadingMore(false);
@@ -106,8 +98,10 @@ const TopicDetailPage = () => {
             };
             const newPost = await forum.createPost(topicId, postData);
             setPosts(prev => [...prev, newPost]);
+            toast.success(t('forumPage.success_posting_reply'));
         } catch (err) {
-            throw new Error(t('forumPage.error_posting_reply'));
+            toast.error(t('forumPage.error_posting_reply'));
+            throw err;
         }
     };
 
@@ -121,8 +115,10 @@ const TopicDetailPage = () => {
             const newPost = await forum.createPost(topicId, postData);
             setPosts(prev => [...prev, newPost]);
             setReplyTarget(null);
+            toast.success(t('forumPage.success_posting_reply'));
         } catch (err) {
-            throw new Error(t('forumPage.error_posting_reply'));
+            toast.error(t('forumPage.error_posting_reply'));
+            throw err;
         }
     };
 
@@ -130,8 +126,9 @@ const TopicDetailPage = () => {
         try {
             await forum.deletePost(postId);
             setPosts(prev => prev.filter(p => p.id !== postId));
+            toast.success(t('forumPage.success_deleting_post'));
         } catch (err) {
-            setError(t('forumPage.error_loading_topic_details'));
+            toast.error(t('forumPage.error_deleting_post'));
             console.error(err);
         }
     };
@@ -145,7 +142,7 @@ const TopicDetailPage = () => {
     }
 
     if (error) {
-        return <p className="text-center text-danger p-8">{error}</p>;
+        return <p className="text-center text-destructive p-8">{error}</p>;
     }
 
     if (!topic) {
@@ -154,20 +151,36 @@ const TopicDetailPage = () => {
 
     return (
         <div className="container mx-auto p-4 sm:p-6">
-            <Breadcrumbs className="mb-4 text-foreground">
-                <BreadcrumbItem href="/forums">{t('header.forums')}</BreadcrumbItem>
-                {categoryForBreadcrumb && (
-                    <BreadcrumbItem href={`/forums/category/${categoryForBreadcrumb.id}`}>
-                        {categoryForBreadcrumb.name}
+            <Breadcrumb className="mb-4">
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink asChild>
+                            <Link href="/forums">{t('header.forums')}</Link>
+                        </BreadcrumbLink>
                     </BreadcrumbItem>
-                )}
-                <BreadcrumbItem>{topic.title}</BreadcrumbItem>
-            </Breadcrumbs>
+                    {categoryForBreadcrumb && (
+                        <>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink asChild>
+                                    <Link href={`/forums/category/${categoryForBreadcrumb.id}`}>
+                                        {categoryForBreadcrumb.name}
+                                    </Link>
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                        </>
+                    )}
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <span>{topic.title}</span>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
 
             <h1 className="text-3xl font-bold text-foreground mb-6">{topic.title}</h1>
 
             <Card className="mt-8">
-                <CardBody>
+                <CardContent className="p-4">
                     <ForumPostTree
                         posts={posts}
                         onReply={handleReplyClick}
@@ -180,17 +193,15 @@ const TopicDetailPage = () => {
                             <Button
                                 onClick={handleLoadMore}
                                 disabled={loadingMore}
-                                color="primary"
-                                variant="flat"
+                                variant="outline"
                             >
                                 {loadingMore ? t('reply.loading') : t('reply.load_more')}
                             </Button>
                         </div>
                     )}
-                </CardBody>
+                </CardContent>
             </Card>
 
-            {/* 编辑器 */}
             <div className="mt-8">
                 <h2 className="text-xl font-bold text-foreground mb-4">{t('forumPage.post_a_reply')}</h2>
                 <ReplyEditor

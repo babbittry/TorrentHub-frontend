@@ -1,13 +1,14 @@
-"use client";
+'use client';
 import React, { useEffect, useState } from 'react';
 import { polls, PollDto, CreatePollDto } from '@/lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
-import { CustomInput } from '../../components/CustomInputs';
-import { Button } from "@heroui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "@/components/ui/table";
+import { FormField } from '@/components/ui/form-field';
+import { Button } from "@/components/ui/button";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 
 const AddPollPage = () => {
     const t = useTranslations('Admin');
@@ -24,6 +25,7 @@ const AddPollPage = () => {
             setExistingPolls(pollsData);
         } catch (error) {
             console.error("Failed to fetch polls:", error);
+            toast.error(t('addPoll.alert.fetchFailed'));
         } finally {
             setLoading(false);
         }
@@ -34,12 +36,20 @@ const AddPollPage = () => {
     }, []);
 
     const handleAddOption = () => {
-        setOptions([...options, '']);
+        if (options.length < 10) { // Limit options to 10
+            setOptions([...options, '']);
+        } else {
+            toast.warning(t('addPoll.alert.maxOptions'));
+        }
     };
 
     const handleRemoveOption = (index: number) => {
-        const newOptions = options.filter((_, i) => i !== index);
-        setOptions(newOptions);
+        if (options.length > 2) { // Keep at least 2 options
+            const newOptions = options.filter((_, i) => i !== index);
+            setOptions(newOptions);
+        } else {
+            toast.warning(t('addPoll.alert.minOptions'));
+        }
     };
 
     const handleOptionChange = (index: number, value: string) => {
@@ -51,7 +61,7 @@ const AddPollPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!question.trim() || options.some(o => !o.trim())) {
-            alert(t('addPoll.alert.fillOut'));
+            toast.error(t('addPoll.alert.fillOut'));
             return;
         }
         const pollData: CreatePollDto = {
@@ -61,13 +71,14 @@ const AddPollPage = () => {
         };
         try {
             await polls.createPoll(pollData);
+            toast.success(t('addPoll.alert.createSuccess'));
             setQuestion('');
             setOptions(['', '']);
             setExpiresAt('');
             fetchPolls(); // Refresh the list of polls
         } catch (error) {
             console.error("Failed to create poll:", error);
-            alert(t('addPoll.alert.createFailed'));
+            toast.error(t('addPoll.alert.createFailed'));
         }
     };
 
@@ -75,10 +86,11 @@ const AddPollPage = () => {
         if (window.confirm(t('addPoll.alert.deleteConfirm'))) {
             try {
                 await polls.deletePoll(id);
+                toast.success(t('addPoll.alert.deleteSuccess'));
                 fetchPolls(); // Refresh the list
             } catch (error) {
                 console.error('Failed to delete poll:', error);
-                alert(t('addPoll.alert.deleteFailed'));
+                toast.error(t('addPoll.alert.deleteFailed'));
             }
         }
     };
@@ -88,91 +100,94 @@ const AddPollPage = () => {
             <h1 className="text-3xl font-bold mb-6">{t('addPoll.title')}</h1>
 
             <Card>
-                <CardHeader>{t('addPoll.createNewPoll')}</CardHeader>
-                <CardBody>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label htmlFor="question" className="block text-sm font-medium text-gray-700">{t('addPoll.questionLabel')}</label>
-                            <CustomInput
-                                id="question"
-                                type="text"
-                                value={question}
-                                onChange={(e) => setQuestion(e.target.value)}
-                                placeholder={t('addPoll.questionPlaceholder')}
-                                fullWidth
-                                maxLength={255}
-                            />
-                        </div>
+                <CardHeader>
+                    <CardTitle>{t('addPoll.createNewPoll')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <FormField
+                            id="question"
+                            label={t('addPoll.questionLabel')}
+                            type="text"
+                            value={question}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuestion(e.target.value)}
+                            placeholder={t('addPoll.questionPlaceholder')}
+                            maxLength={255}
+                            required
+                        />
+
+                        <FormField
+                            id="expiresAt"
+                            label={t('addPoll.expiresAtLabel')}
+                            type="datetime-local"
+                            value={expiresAt}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setExpiresAt(e.target.value)}
+                        />
 
                         <div>
-                            <label htmlFor="expiresAt" className="block text-sm font-medium text-gray-700">{t('addPoll.expiresAtLabel')}</label>
-                            <CustomInput
-                                id="expiresAt"
-                                type="datetime-local"
-                                value={expiresAt}
-                                onChange={(e) => setExpiresAt(e.target.value)}
-                                fullWidth
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('addPoll.optionsLabel')}</label>
+                            <label className="block text-sm font-medium mb-2">{t('addPoll.optionsLabel')}</label>
                             {options.map((option, index) => (
                                 <div key={index} className="flex items-center space-x-2 mb-2">
-                                    <CustomInput
+                                    <FormField
+                                        id={`option-${index}`}
                                         type="text"
                                         value={option}
-                                        onChange={(e) => handleOptionChange(index, e.target.value)}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleOptionChange(index, e.target.value)}
                                         placeholder={t('addPoll.optionPlaceholder', { index: index + 1 })}
-                                        fullWidth
                                         maxLength={255}
+                                        containerClassName="flex-grow"
                                     />
-                                    <Button isIconOnly onClick={() => handleRemoveOption(index)} color="danger" variant="flat">
+                                    <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveOption(index)}>
                                         <FontAwesomeIcon icon={faTrash} />
                                     </Button>
                                 </div>
                             ))}
-                            <Button onClick={handleAddOption} startContent={<FontAwesomeIcon icon={faPlus} />}>
+                            <Button type="button" variant="outline" onClick={handleAddOption}>
+                                <FontAwesomeIcon icon={faPlus} className="mr-2" />
                                 {t('addPoll.addOptionButton')}
                             </Button>
                         </div>
-                        <Button type="submit" color="primary">
+                        <Button type="submit">
                             {t('addPoll.createPollButton')}
                         </Button>
                     </form>
-                </CardBody>
+                </CardContent>
             </Card>
 
             <Card>
-                <CardHeader>{t('addPoll.existingPolls')}</CardHeader>
-                <CardBody>
+                <CardHeader>
+                    <CardTitle>{t('addPoll.existingPolls')}</CardTitle>
+                </CardHeader>
+                <CardContent>
                     {loading ? (
                         <p>{t('addPoll.loading')}</p>
                     ) : (
-                        <Table aria-label={t('addPoll.existingPolls')}>
+                        <Table>
                             <TableHeader>
-                                <TableColumn>{t('addPoll.table.question')}</TableColumn>
-                                <TableColumn>{t('addPoll.table.totalVotes')}</TableColumn>
-                                <TableColumn>{t('addPoll.table.createdAt')}</TableColumn>
-                                <TableColumn>{t('addPoll.table.actions')}</TableColumn>
+                                <TableRow>
+                                    <TableHead>{t('addPoll.table.question')}</TableHead>
+                                    <TableHead>{t('addPoll.table.totalVotes')}</TableHead>
+                                    <TableHead>{t('addPoll.table.createdAt')}</TableHead>
+                                    <TableHead className="text-right">{t('addPoll.table.actions')}</TableHead>
+                                </TableRow>
                             </TableHeader>
-                            <TableBody items={existingPolls}>
-                                {(item) => (
+                            <TableBody>
+                                {existingPolls.map((item) => (
                                     <TableRow key={item.id}>
-                                        <TableCell>{item.question}</TableCell>
+                                        <TableCell className="font-medium">{item.question}</TableCell>
                                         <TableCell>{item.totalVotes}</TableCell>
                                         <TableCell>{new Date(item.createdAt).toLocaleString()}</TableCell>
-                                        <TableCell>
-                                            <Button isIconOnly onClick={() => handleDeletePoll(item.id)} color="danger" variant="light">
-                                                <FontAwesomeIcon icon={faTrash} />
+                                        <TableCell className="text-right">
+                                            <Button variant="ghost" size="icon" onClick={() => handleDeletePoll(item.id)}>
+                                                <FontAwesomeIcon icon={faTrash} className="text-destructive" />
                                             </Button>
                                         </TableCell>
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
                     )}
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );

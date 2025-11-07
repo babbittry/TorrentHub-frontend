@@ -1,14 +1,7 @@
 "use client";
 
-import { Button } from "@heroui/react";
-import {
-    Table,
-    TableHeader,
-    TableBody,
-    TableColumn,
-    TableRow,
-    TableCell
-} from "@heroui/table";
+import { Button } from "@/components/ui/button";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { store, StoreItemDto } from "@/lib/api";
 import { useTranslations } from "next-intl";
@@ -32,13 +25,15 @@ const StoreContent = () => {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
-            <Table aria-label="Store items table">
+            <Table>
                 <TableHeader>
-                    <TableColumn>ID</TableColumn>
-                    <TableColumn>{t("name")}</TableColumn>
-                    <TableColumn>{t("description")}</TableColumn>
-                    <TableColumn>{t("price")}</TableColumn>
-                    <TableColumn>{t("actions")}</TableColumn>
+                    <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>{t("name")}</TableHead>
+                        <TableHead>{t("description")}</TableHead>
+                        <TableHead>{t("price")}</TableHead>
+                        <TableHead>{t("actions")}</TableHead>
+                    </TableRow>
                 </TableHeader>
                 <TableBody>
                     {items.map((item) => (
@@ -48,7 +43,7 @@ const StoreContent = () => {
                             <TableCell>{t(item.descriptionKey)}</TableCell>
                             <TableCell>{item.price}</TableCell>
                             <TableCell>
-                                <Button color="primary" onClick={() => handlePurchaseClick(item)} disabled={!item.isAvailable}>
+                                <Button onClick={() => handlePurchaseClick(item)} disabled={!item.isAvailable}>
                                     {t("purchase")}
                                 </Button>
                             </TableCell>

@@ -1,10 +1,9 @@
 "use client";
 
-import { HeroUIProvider } from '@heroui/react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import api, { auth as authApi } from '@/lib/api'; // Import authApi
 import { useEffect } from 'react';
-import { ToastProvider } from "@heroui/toast";
+import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 let isRefreshing = false;
@@ -89,14 +88,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
             storageKey="torrenthub-theme"
             disableTransitionOnChange={false}
         >
-            <HeroUIProvider>
-                <ToastProvider />
-                <AuthProvider>
-                    <AppWithInterceptors>
-                        {children}
-                    </AppWithInterceptors>
-                </AuthProvider>
-            </HeroUIProvider>
+            <AuthProvider>
+                <AppWithInterceptors>
+                    {children}
+                </AppWithInterceptors>
+                <Toaster />
+            </AuthProvider>
         </NextThemesProvider>
     )
 }

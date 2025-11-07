@@ -5,10 +5,10 @@ import { auth } from "@/lib/api";
 import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslations } from 'next-intl';
-import { Button } from "@heroui/button";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
-import { Input } from "@heroui/input";
-import { addToast } from "@heroui/toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 export default function Login2faPage() {
     const [code, setCode] = useState<string>("");
@@ -52,15 +52,9 @@ export default function Login2faPage() {
         if (!usernameFor2fa) return;
         try {
             await auth.sendEmailCode({ userName: usernameFor2fa });
-            addToast({
-                title: t('login2fa.email_sent'),
-                color: 'success'
-            })
+            toast.success(t('login2fa.email_sent'));
         } catch (err) {
-            addToast({
-                title: t('login2fa.error_sending_email'),
-                color: 'danger'
-            })
+            toast.error(t('login2fa.error_sending_email'));
         }
     };
     
@@ -74,31 +68,28 @@ export default function Login2faPage() {
             <Card className="w-full max-w-md p-4">
                 <form onSubmit={handleSubmit}>
                     <CardHeader className="flex flex-col items-center pb-4">
-                        <h1 className="text-3xl font-bold">{t('login2fa.title')}</h1>
+                        <CardTitle>{t('login2fa.title')}</CardTitle>
                     </CardHeader>
-                    <CardBody className="gap-6">
-                         <p className="text-center text-sm text-default-500">{t('login2fa.enter_code')}</p>
+                    <CardContent className="gap-6 space-y-4">
+                         <p className="text-center text-sm text-muted-foreground">{t('login2fa.enter_code')}</p>
                         <Input
-                            isRequired
-                            label={t('login2fa.code_placeholder')}
+                            required
                             placeholder="123456"
                             value={code}
-                            onValueChange={setCode}
-                            size="lg"
-                            labelPlacement="outside"
+                            onChange={(e) => setCode(e.target.value)}
                             maxLength={6}
                         />
-                        {error && <p className="text-danger text-center text-sm font-medium">{error}</p>}
-                        <Button type="submit" color="primary" className="w-full font-bold text-lg" size="lg" isLoading={isLoading}>
-                            {t('login2fa.submit_button')}
+                        {error && <p className="text-destructive text-center text-sm font-medium">{error}</p>}
+                        <Button type="submit" className="w-full font-bold text-lg" disabled={isLoading}>
+                            {isLoading ? t('common.loading') : t('login2fa.submit_button')}
                         </Button>
-                    </CardBody>
+                    </CardContent>
                 </form>
-                <CardFooter className="pt-4 flex-col items-center gap-2">
-                    <p className="text-center text-default-500 text-sm">
+                <CardFooter className="pt-4 flex flex-col items-center gap-2">
+                    <p className="text-center text-muted-foreground text-sm">
                         {t('login2fa.no_app_code')}
                     </p>
-                    <Button variant="ghost" color="primary" onPress={handleSendEmailCode}>
+                    <Button variant="ghost" onClick={handleSendEmailCode}>
                         {t('login2fa.use_email')}
                     </Button>
                 </CardFooter>

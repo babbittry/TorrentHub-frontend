@@ -4,12 +4,14 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { forum, ForumCategoryDto, CreateForumTopicDto, UserRole } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@heroui/button';
-import { CustomInput } from '../../components/CustomInputs';
-import { Select, SelectItem } from '@heroui/select';
-import { Card, CardBody, CardHeader } from '@heroui/card';
+import { Button } from '@/components/ui/button';
+import { FormField } from '@/components/ui/form-field';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 import RichEditor from '../../components/RichEditor';
+import { toast } from 'sonner';
+import { Label } from '@/components/ui/label';
 
 const NewTopicPage = () => {
     const router = useRouter();
@@ -20,7 +22,6 @@ const NewTopicPage = () => {
     const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
     const [categories, setCategories] = useState<ForumCategoryDto[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [isForbidden, setIsForbidden] = useState(false);
     const t = useTranslations();
 
@@ -40,7 +41,7 @@ const NewTopicPage = () => {
                 }
             } catch (err) {
                 console.error(err);
-                setError(t('forumPage.error_loading_categories'));
+                toast.error(t('forumPage.error_loading_categories'));
             }
         };
         fetchCategories();
@@ -57,14 +58,12 @@ const NewTopicPage = () => {
         if (selectedCategory && selectedCategory.code === 'Announcement') {
             if (!user || user.role !== UserRole.Administrator) {
                 setIsForbidden(true);
-                setError(t('forumPage.error_permission_denied'));
+                toast.error(t('forumPage.error_permission_denied'));
             } else {
                 setIsForbidden(false);
-                setError(null);
             }
         } else {
             setIsForbidden(false);
-            setError(null);
         }
     }, [selectedCategoryId, categories, user, t]);
 
@@ -73,10 +72,9 @@ const NewTopicPage = () => {
         if (isForbidden) return;
 
         if (!title.trim() || !content.trim() || !selectedCategoryId) {
-            setError(t('forumPage.error_all_fields_required'));
+            toast.error(t('forumPage.error_all_fields_required'));
             return;
         }
-        setError(null);
         setIsSubmitting(true);
 
         try {
@@ -86,10 +84,11 @@ const NewTopicPage = () => {
                 categoryId: Number(selectedCategoryId),
             };
             const newTopic = await forum.createTopic(topicData);
+            toast.success(t('forumPage.success_creating_topic'));
             router.push(`/forums/topics/${newTopic.id}`);
         } catch (err) {
             console.error(err);
-            setError(t('forumPage.error_creating_topic'));
+            toast.error(t('forumPage.error_creating_topic'));
         } finally {
             setIsSubmitting(false);
         }
@@ -99,55 +98,59 @@ const NewTopicPage = () => {
         <div className="container mx-auto p-4 sm:p-6">
             <Card className="max-w-2xl mx-auto">
                 <CardHeader>
-                    <h1 className="text-2xl font-bold">{t('forumPage.new_topic')}</h1>
+                    <CardTitle className="text-2xl">{t('forumPage.new_topic')}</CardTitle>
                 </CardHeader>
-                <CardBody>
+                <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <Select
-                            label={t('forumPage.category')}
-                            labelPlacement="outside"
-                            placeholder={t('forumPage.select_category')}
-                            selectedKeys={selectedCategoryId ? [selectedCategoryId] : []}
-                            onSelectionChange={(keys) => setSelectedCategoryId(Array.from(keys)[0] as string)}
-                            isRequired
-                            isDisabled={!!categoryIdFromQuery || isForbidden}
-                        >
-                            {categories.map((cat) => (
-                                <SelectItem key={cat.id.toString()}>
-                                    {getCategoryName(cat.code)}
-                                </SelectItem>
-                            ))}
-                        </Select>
-                        <CustomInput
+                        <div className="space-y-2">
+                            <Label>{t('forumPage.category')}</Label>
+                            <Select
+                                value={selectedCategoryId}
+                                onValueChange={setSelectedCategoryId}
+                                required
+                                disabled={!!categoryIdFromQuery || isForbidden}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t('forumPage.select_category')} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {categories.map((cat) => (
+                                        <SelectItem key={cat.id.toString()} value={cat.id.toString()}>
+                                            {getCategoryName(cat.code)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <FormField
                             label={t('forumPage.topic_title')}
-                            labelPlacement="outside"
                             placeholder={t('forumPage.title_placeholder')}
                             value={title}
-                            onValueChange={setTitle}
-                            isRequired
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
                             maxLength={100}
-                            isDisabled={isForbidden}
-                            description={`${title.length} / 100`}
+                            disabled={isForbidden}
                         />
+                        <p className="text-sm text-muted-foreground text-right">{`${title.length} / 100`}</p>
+                        
                         <RichEditor
                             value={content}
                             onChange={setContent}
                             label={t('forumPage.content')}
-                            labelPlacement="outside"
                             placeholder={t('forumPage.content_placeholder')}
                             isRequired
                             maxLength={10000}
                             isDisabled={isForbidden}
                             height={400}
                         />
-                        {error && <p className="text-danger text-sm">{error}</p>}
+                        
                         <div className="flex justify-end">
-                            <Button type="submit" color="primary" isLoading={isSubmitting} isDisabled={isForbidden}>
-                                {t('forumPage.submit_topic')}
+                            <Button type="submit" disabled={isSubmitting || isForbidden}>
+                                {isSubmitting ? t('common.loading') : t('forumPage.submit_topic')}
                             </Button>
                         </div>
                     </form>
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );

@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { announcements, AnnouncementDto, CreateAnnouncementRequestDto, UpdateAnnouncementDto } from '../../../../lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
-import { CustomInput, CustomTextarea } from '../../components/CustomInputs';
-import { Button } from "@heroui/button";
-import { Checkbox } from "@heroui/checkbox";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useTranslations } from 'next-intl';
@@ -101,71 +103,77 @@ const AnnouncementManagementPage = () => {
 
             {(isCreatingNew || editingAnnouncement) && (
                 <Card>
-                    <CardHeader>{isCreatingNew ? t('announcementManagement.createNew') : t('announcementManagement.edit')}</CardHeader>
-                    <CardBody>
+                    <CardHeader>
+                        <CardTitle>{isCreatingNew ? t('announcementManagement.createNew') : t('announcementManagement.edit')}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label htmlFor="title">{t('announcementManagement.form.titleLabel')}</label>
-                                <CustomInput id="title" type="text" value={title} onChange={e => setTitle(e.target.value)} fullWidth maxLength={100} />
+                            <div className="space-y-2">
+                                <Label htmlFor="title">{t('announcementManagement.form.titleLabel')}</Label>
+                                <Input id="title" type="text" value={title} onChange={e => setTitle(e.target.value)} maxLength={100} />
                             </div>
-                            <div>
-                                <label htmlFor="content">{t('announcementManagement.form.contentLabel')}</label>
-                                <CustomTextarea id="content" value={content} onChange={e => setContent(e.target.value)} fullWidth maxLength={500} />
+                            <div className="space-y-2">
+                                <Label htmlFor="content">{t('announcementManagement.form.contentLabel')}</Label>
+                                <Textarea id="content" value={content} onChange={e => setContent(e.target.value)} maxLength={500} />
                             </div>
                             {isCreatingNew && (
-                                <div>
-                                    <Checkbox isSelected={sendToInbox} onValueChange={setSendToInbox}>
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox id="sendToInbox" checked={sendToInbox} onCheckedChange={(checked) => setSendToInbox(checked === true)} />
+                                    <Label htmlFor="sendToInbox" className="cursor-pointer">
                                         {t('announcementManagement.form.sendToInbox')}
-                                    </Checkbox>
+                                    </Label>
                                 </div>
                             )}
                             <div className="flex justify-end space-x-2">
-                                <Button onClick={handleCancel} variant="flat">{t('announcementManagement.form.cancelButton')}</Button>
-                                <Button type="submit" color="primary">{isCreatingNew ? t('announcementManagement.form.createButton') : t('announcementManagement.form.updateButton')}</Button>
+                                <Button type="button" onClick={handleCancel} variant="outline">{t('announcementManagement.form.cancelButton')}</Button>
+                                <Button type="submit">{isCreatingNew ? t('announcementManagement.form.createButton') : t('announcementManagement.form.updateButton')}</Button>
                             </div>
                         </form>
-                    </CardBody>
+                    </CardContent>
                 </Card>
             )}
 
             <Card>
                 <CardHeader className="flex justify-between items-center">
-                    <span>{t('announcementManagement.existingAnnouncements')}</span>
+                    <CardTitle>{t('announcementManagement.existingAnnouncements')}</CardTitle>
                     {!isCreatingNew && !editingAnnouncement && (
-                         <Button onClick={handleCreateNew} color="primary" startContent={<FontAwesomeIcon icon={faPlus} />}>
+                        <Button onClick={handleCreateNew}>
+                            <FontAwesomeIcon icon={faPlus} className="mr-2" />
                             {t('announcementManagement.createNew')}
                         </Button>
                     )}
                 </CardHeader>
-                <CardBody>
+                <CardContent>
                     {loading ? (
                         <p>{t('announcementManagement.loading')}</p>
                     ) : (
-                        <Table aria-label={t('announcementManagement.existingAnnouncements')}>
+                        <Table>
                             <TableHeader>
-                                <TableColumn>{t('announcementManagement.table.title')}</TableColumn>
-                                <TableColumn>{t('announcementManagement.table.createdAt')}</TableColumn>
-                                <TableColumn>{t('announcementManagement.table.actions')}</TableColumn>
+                                <TableRow>
+                                    <TableHead>{t('announcementManagement.table.title')}</TableHead>
+                                    <TableHead>{t('announcementManagement.table.createdAt')}</TableHead>
+                                    <TableHead>{t('announcementManagement.table.actions')}</TableHead>
+                                </TableRow>
                             </TableHeader>
-                            <TableBody items={allAnnouncements}>
-                                {(item) => (
+                            <TableBody>
+                                {allAnnouncements.map((item) => (
                                     <TableRow key={item.id}>
                                         <TableCell>{item.title}</TableCell>
                                         <TableCell>{new Date(item.createdAt).toLocaleString()}</TableCell>
                                         <TableCell className="flex space-x-2">
-                                            <Button isIconOnly onClick={() => handleEdit(item)} color="default" variant="light">
+                                            <Button size="icon" onClick={() => handleEdit(item)} variant="ghost">
                                                 <FontAwesomeIcon icon={faEdit} />
                                             </Button>
-                                            <Button isIconOnly onClick={() => handleDelete(item.id)} color="danger" variant="light">
-                                                <FontAwesomeIcon icon={faTrash} />
+                                            <Button size="icon" onClick={() => handleDelete(item.id)} variant="ghost">
+                                                <FontAwesomeIcon icon={faTrash} className="text-red-600" />
                                             </Button>
                                         </TableCell>
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
                     )}
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );

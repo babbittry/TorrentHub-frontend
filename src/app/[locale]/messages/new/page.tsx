@@ -5,12 +5,15 @@ import { useRouter } from 'next/navigation';
 import { messages, users, SendMessageRequestDto, UserPublicProfileDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useDebounce } from '@uidotdev/usehooks';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
-import { Input } from "@heroui/input";
-import { Textarea } from "@heroui/input";
-import { Button } from "@heroui/button";
-import { Avatar } from "@heroui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { FormField } from '@/components/ui/form-field';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
+import { Label } from '@/components/ui/label';
 
 const NewMessagePage = () => {
     const router = useRouter();
@@ -20,17 +23,17 @@ const NewMessagePage = () => {
     const [searchResults, setSearchResults] = useState<UserPublicProfileDto[]>([]);
     const [selectedUser, setSelectedUser] = useState<UserPublicProfileDto | null>(null);
     const [isSearching, setIsSearching] = useState(false);
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     const [subject, setSubject] = useState('');
     const [content, setContent] = useState('');
-    const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
     useEffect(() => {
         const searchUsers = async () => {
-            if (debouncedSearchTerm && !selectedUser) {
+            if (debouncedSearchTerm) {
                 setIsSearching(true);
                 try {
                     const results = await users.getUsers(1, 10, debouncedSearchTerm);
@@ -45,32 +48,27 @@ const NewMessagePage = () => {
             }
         };
         searchUsers();
-    }, [debouncedSearchTerm, selectedUser]);
+    }, [debouncedSearchTerm]);
 
-    const handleSelectionChange = (key: React.Key | null) => {
-        const userId = Number(key);
-        const user = searchResults.find(u => u.id === userId);
-        if (user) {
-            setSelectedUser(user);
-            setSearchTerm(user.userName);
-        }
+    const handleSelectUser = (user: UserPublicProfileDto) => {
+        setSelectedUser(user);
+        setSearchTerm(user.userName);
+        setIsPopoverOpen(false);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!selectedUser) {
-            setError(t('error_recipient_not_selected'));
+            toast.error(t('error_recipient_not_selected'));
+            return;
+        }
+
+        if (!subject.trim() || !content.trim()) {
+            toast.error(t('error_all_fields_required'));
             return;
         }
 
         setIsSubmitting(true);
-        setError(null);
-
-        if (!subject.trim() || !content.trim()) {
-            setError(t('error_all_fields_required'));
-            setIsSubmitting(false);
-            return;
-        }
 
         const messageData: SendMessageRequestDto = {
             receiverId: selectedUser.id,
@@ -80,9 +78,10 @@ const NewMessagePage = () => {
 
         try {
             await messages.sendMessage(messageData);
+            toast.success(t('success_sending_message'));
             router.push('/messages');
         } catch (err) {
-            setError(t('error_sending_message'));
+            toast.error(t('error_sending_message'));
             console.error(err);
             setIsSubmitting(false);
         }
@@ -93,66 +92,90 @@ const NewMessagePage = () => {
             <div className="max-w-4xl mx-auto">
                 <Card>
                     <CardHeader>
-                        <h1 className="text-2xl font-bold">{t('compose')}</h1>
+                        <CardTitle className="text-2xl">{t('compose')}</CardTitle>
                     </CardHeader>
-                    <CardBody>
+                    <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-6">
-                            <Autocomplete
-                                isRequired
-                                label={t('recipient')}
-                                placeholder={t('search_recipient_placeholder')}
-                                items={searchResults}
-                                inputValue={searchTerm}
-                                onInputChange={(value) => {
-                                    setSearchTerm(value);
-                                    if (selectedUser) setSelectedUser(null); // Clear selection on new typing
-                                }}
-                                onSelectionChange={handleSelectionChange}
-                                isLoading={isSearching}
-                                allowsCustomValue={true} // Allow user to type freely
-                            >
-                                {(item) => (
-                                    <AutocompleteItem key={item.id} textValue={item.userName}>
-                                        <div className="flex gap-2 items-center">
-                                            <Avatar alt={item.userName} className="flex-shrink-0" size="sm" />
-                                            <span>{item.userName}</span>
-                                        </div>
-                                    </AutocompleteItem>
-                                )}
-                            </Autocomplete>
+                            <div className="space-y-2">
+                                <Label>{t('recipient')}</Label>
+                                <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            role="combobox"
+                                            aria-expanded={isPopoverOpen}
+                                            className="w-full justify-between"
+                                        >
+                                            {selectedUser ? selectedUser.userName : t('search_recipient_placeholder')}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                        <Command>
+                                            <CommandInput 
+                                                placeholder={t('search_recipient_placeholder')}
+                                                onValueChange={(search) => {
+                                                    setSearchTerm(search);
+                                                    if (selectedUser) setSelectedUser(null);
+                                                }}
+                                            />
+                                            <CommandList>
+                                                {isSearching && <CommandEmpty>{t('common.loading')}...</CommandEmpty>}
+                                                {!isSearching && searchResults.length === 0 && debouncedSearchTerm && <CommandEmpty>{t('no_users_found')}</CommandEmpty>}
+                                                <CommandGroup>
+                                                    {searchResults.map((user) => (
+                                                        <CommandItem
+                                                            key={user.id}
+                                                            value={user.userName}
+                                                            onSelect={() => handleSelectUser(user)}
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <Avatar className="h-6 w-6">
+                                                                    <AvatarImage src={user.avatar || undefined} />
+                                                                    <AvatarFallback>{user.userName.charAt(0)}</AvatarFallback>
+                                                                </Avatar>
+                                                                <span>{user.userName}</span>
+                                                            </div>
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
 
-                            <Input
-                                isRequired
+                            <FormField
                                 label={t('subject')}
                                 value={subject}
-                                onValueChange={setSubject}
+                                onChange={(e) => setSubject(e.target.value)}
                                 maxLength={200}
-                                description={`${subject.length}/200`}
+                                required
                             />
+                             <p className="text-sm text-muted-foreground text-right">{`${subject.length} / 200`}</p>
 
-                            <Textarea
-                                isRequired
-                                label={t('content')}
-                                value={content}
-                                onValueChange={setContent}
-                                minRows={10}
-                                maxLength={500}
-                                description={`${content.length}/500`}
-                            />
-
-                            {error && <p className="text-danger text-sm">{error}</p>}
+                            <div className="space-y-2">
+                                <Label htmlFor="content">{t('content')}</Label>
+                                <Textarea
+                                    id="content"
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    className="min-h-[200px]"
+                                    maxLength={500}
+                                    required
+                                />
+                                <p className="text-sm text-muted-foreground text-right">{`${content.length} / 500`}</p>
+                            </div>
 
                             <div className="flex justify-end">
                                 <Button
                                     type="submit"
-                                    color="primary"
-                                    isDisabled={isSubmitting || !selectedUser}
+                                    disabled={isSubmitting || !selectedUser}
                                 >
                                     {isSubmitting ? t('sending') : t('send_message')}
                                 </Button>
                             </div>
                         </form>
-                    </CardBody>
+                    </CardContent>
                 </Card>
             </div>
         </div>

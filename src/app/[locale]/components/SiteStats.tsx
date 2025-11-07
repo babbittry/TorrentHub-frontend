@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { stats as apiStats, SiteStatsDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import {Divider} from "@heroui/divider";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import React from 'react';
 
 interface SiteStatsProps {
@@ -65,7 +65,6 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
             { label: t('stats.filledRequests'), value: stats.filledRequests },
         ];
 
-        // Group stats into pairs for two-column layout
         const groupedStats = simpleStats.reduce((acc, item, index) => {
             if (index % 2 === 0) {
                 acc.push([item]);
@@ -77,7 +76,7 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
 
         return (
             <Card>
-                <CardBody>
+                <CardContent className="pt-6">
                     <div className="space-y-2">
                         {groupedStats.map((pair, index) => (
                             <React.Fragment key={index}>
@@ -87,30 +86,30 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
                                         <span><strong>{pair[1].label}:</strong> {pair[1].value}</span>
                                     )}
                                 </div>
-                                {index < groupedStats.length - 1 && <Divider />}
+                                {index < groupedStats.length - 1 && <Separator />}
                             </React.Fragment>
                         ))}
                     </div>
-                </CardBody>
+                </CardContent>
             </Card>
         );
     }
 
     const StatCard = ({ label, value }: { label: string, value: React.ReactNode }) => (
-        <Card shadow="sm">
-            <CardBody className="text-center">
-                <p className="text-sm text-default-600">{label}</p>
+        <Card>
+            <CardContent className="text-center pt-6">
+                <p className="text-sm text-muted-foreground">{label}</p>
                 <p className="text-2xl font-bold">{value}</p>
-            </CardBody>
+            </CardContent>
         </Card>
     );
 
     return (
         <Card>
             <CardHeader>
-                <h2 className="text-2xl font-bold">{t('stats.title')}</h2>
+                <CardTitle className="text-2xl">{t('stats.title')}</CardTitle>
             </CardHeader>
-            <CardBody className="space-y-6">
+            <CardContent className="space-y-6">
                 <div>
                     <h3 className="text-xl font-semibold mb-2">{t('stats.userStats')}</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -122,7 +121,7 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
                         ))}
                     </div>
                 </div>
-                <Divider />
+                <Separator />
                 <div>
                     <h3 className="text-xl font-semibold mt-4 mb-2">{t('stats.torrentStats')}</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -139,7 +138,7 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
                         <StatCard label={t('stats.nominalDownloaded')} value={formatBytes(stats.nominalDownloaded ?? 0)} />
                     </div>
                 </div>
-                <Divider />
+                <Separator />
                 <div>
                     <h3 className="text-xl font-semibold mt-4 mb-2">{t('stats.communityStats')}</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -149,7 +148,7 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
                         <StatCard label={t('stats.totalForumPosts')} value={stats.totalForumPosts} />
                     </div>
                 </div>
-            </CardBody>
+            </CardContent>
         </Card>
     );
 };

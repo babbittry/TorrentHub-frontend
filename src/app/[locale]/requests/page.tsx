@@ -5,20 +5,21 @@ import { requests, RequestDto, RequestStatus, API_BASE_URL } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from "@heroui/table";
-import { Button, ButtonGroup } from "@heroui/button";
-import { Chip } from "@heroui/chip";
-import { User } from "@heroui/user";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import UserDisplay from '@/app/[locale]/components/UserDisplay';
-import { Card, CardFooter } from "@heroui/card";
-import { Pagination } from "@heroui/pagination";
+import { Card, CardFooter } from "@/components/ui/card";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { ArrowUpDown } from "lucide-react";
 
 const RequestsPage = () => {
     const [requestsList, setRequestsList] = useState<RequestDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [statusFilter, setStatusFilter] = useState<string>('All'); // Default to All
-    const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({ column: 'createdAt', direction: 'descending' });
+    const [statusFilter, setStatusFilter] = useState<string>('All');
+    const [sortColumn, setSortColumn] = useState<string>('createdAt');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
     const [page, setPage] = useState(1);
     const [pageSize] = useState(20);
     const [totalCount, setTotalCount] = useState(0);
@@ -31,13 +32,9 @@ const RequestsPage = () => {
             try {
                 setIsLoading(true);
                 const status = statusFilter === 'All' ? undefined : statusFilter;
-                const sortOrder = sortDescriptor.direction === 'descending' ? 'desc' : 'asc';
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const data: any = await requests.getRequests(page, pageSize, status, sortDescriptor.column as string, sortOrder);
+                const data: any = await requests.getRequests(page, pageSize, status, sortColumn, sortDirection);
                 if (Array.isArray(data)) {
                     setRequestsList(data);
-                    // This is a workaround as the API is not returning a PaginatedResult.
-                    // Pagination might not work correctly if the array represents a single page.
                     setTotalCount(data.length);
                 } else {
                     setRequestsList(data?.items || []);
@@ -53,13 +50,18 @@ const RequestsPage = () => {
         };
 
         fetchRequests();
-    }, [t, statusFilter, sortDescriptor, page, pageSize]);
+    }, [t, statusFilter, sortColumn, sortDirection, page, pageSize]);
 
-    const handleSortChange = (descriptor: SortDescriptor) => {
-        setSortDescriptor(descriptor);
+    const handleSort = (column: string) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('desc');
+        }
     };
 
-    const renderCell = useCallback((request: RequestDto, columnKey: React.Key) => {
+    const renderCell = useCallback((request: RequestDto, columnKey: string) => {
         const cellValue = request[columnKey as keyof RequestDto];
 
         switch (columnKey) {
@@ -69,9 +71,9 @@ const RequestsPage = () => {
                 return `${request.bountyAmount} Coins`;
             case 'status':
                 return (
-                    <Chip color={request.status === RequestStatus.Filled ? "success" : "warning"} size="sm" variant="flat">
+                    <Badge className={request.status === RequestStatus.Filled ? "bg-green-600" : "bg-yellow-600"}>
                         {t(`requestsPage.status_${request.status.toLowerCase()}`)}
-                    </Chip>
+                    </Badge>
                 );
             case 'requestedByUser':
                 return request.requestedByUser ? (
@@ -84,54 +86,139 @@ const RequestsPage = () => {
         }
     }, [t]);
 
+    const totalPages = Math.ceil(totalCount / pageSize);
+
     return (
         <div className="container mx-auto p-4 sm:p-6">
-            <h1 className="text-4xl font-extrabold text-primary mb-8 text-center drop-shadow-lg">{t('requestsPage.title')}</h1>
+            <h1 className="text-4xl font-extrabold mb-8 text-center">{t('requestsPage.title')}</h1>
 
-            <div className="flex justify-between items-center mb-4">
-                <ButtonGroup>
-                    <Button onPress={() => setStatusFilter('All')} variant={statusFilter === 'All' ? 'solid' : 'ghost'}>{t('requestsPage.filter_all')}</Button>
-                    <Button onPress={() => setStatusFilter('Pending')} variant={statusFilter === 'Pending' ? 'solid' : 'ghost'}>{t('requestsPage.filter_pending')}</Button>
-                    <Button onPress={() => setStatusFilter('Filled')} variant={statusFilter === 'Filled' ? 'solid' : 'ghost'}>{t('requestsPage.filter_filled')}</Button>
-                </ButtonGroup>
-                <Button as={Link} href={`/requests/new`} color="primary">
-                    {t('requestsPage.createNew')}
+            <div className="flex justify-between items-center mb-4 gap-2 flex-wrap">
+                <div className="flex gap-2">
+                    <Button 
+                        onClick={() => setStatusFilter('All')} 
+                        variant={statusFilter === 'All' ? 'default' : 'ghost'}
+                    >
+                        {t('requestsPage.filter_all')}
+                    </Button>
+                    <Button 
+                        onClick={() => setStatusFilter('Pending')} 
+                        variant={statusFilter === 'Pending' ? 'default' : 'ghost'}
+                    >
+                        {t('requestsPage.filter_pending')}
+                    </Button>
+                    <Button 
+                        onClick={() => setStatusFilter('Filled')} 
+                        variant={statusFilter === 'Filled' ? 'default' : 'ghost'}
+                    >
+                        {t('requestsPage.filter_filled')}
+                    </Button>
+                </div>
+                <Button asChild>
+                    <Link href={`/requests/new`}>
+                        {t('requestsPage.createNew')}
+                    </Link>
                 </Button>
             </div>
 
-            {error && <div className="text-center p-4 text-danger bg-danger-50 rounded-md mb-4">{error}</div>}
+            {error && <div className="text-center p-4 text-destructive bg-destructive/10 rounded-md mb-4">{error}</div>}
 
-            <Table
-                aria-label="Requests list"
-                sortDescriptor={sortDescriptor}
-                onSortChange={handleSortChange}
-                bottomContent={
-                    <Card>
-                        <CardFooter>
-                            <Pagination
-                                total={Math.ceil(totalCount / pageSize)}
-                                page={page}
-                                onChange={setPage}
-                            />
-                        </CardFooter>
-                    </Card>
-                }
-            >
-                <TableHeader>
-                    <TableColumn key="title">{t('common.title')}</TableColumn>
-                    <TableColumn key="bountyAmount" allowsSorting>{t('requestsPage.bounty')}</TableColumn>
-                    <TableColumn key="status" allowsSorting>{t('requestsPage.status')}</TableColumn>
-                    <TableColumn key="requestedByUser">{t('requestsPage.requested_by')}</TableColumn>
-                    <TableColumn key="createdAt" allowsSorting>{t('common.date')}</TableColumn>
-                </TableHeader>
-                <TableBody items={requestsList} isLoading={isLoading} emptyContent={t('requestsPage.none_found')}>
-                    {(item) => (
-                        <TableRow key={item.id}>
-                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+            <Card>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>{t('common.title')}</TableHead>
+                            <TableHead>
+                                <Button 
+                                    variant="ghost" 
+                                    onClick={() => handleSort('bountyAmount')}
+                                    className="flex items-center gap-1"
+                                >
+                                    {t('requestsPage.bounty')}
+                                    <ArrowUpDown className="h-4 w-4" />
+                                </Button>
+                            </TableHead>
+                            <TableHead>
+                                <Button 
+                                    variant="ghost" 
+                                    onClick={() => handleSort('status')}
+                                    className="flex items-center gap-1"
+                                >
+                                    {t('requestsPage.status')}
+                                    <ArrowUpDown className="h-4 w-4" />
+                                </Button>
+                            </TableHead>
+                            <TableHead>{t('requestsPage.requested_by')}</TableHead>
+                            <TableHead>
+                                <Button 
+                                    variant="ghost" 
+                                    onClick={() => handleSort('createdAt')}
+                                    className="flex items-center gap-1"
+                                >
+                                    {t('common.date')}
+                                    <ArrowUpDown className="h-4 w-4" />
+                                </Button>
+                            </TableHead>
                         </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                    </TableHeader>
+                    <TableBody>
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={5} className="text-center">{t('common.loading')}</TableCell>
+                            </TableRow>
+                        ) : requestsList.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={5} className="text-center">{t('requestsPage.none_found')}</TableCell>
+                            </TableRow>
+                        ) : (
+                            requestsList.map((item) => (
+                                <TableRow key={item.id}>
+                                    <TableCell>{renderCell(item, 'title')}</TableCell>
+                                    <TableCell>{renderCell(item, 'bountyAmount')}</TableCell>
+                                    <TableCell>{renderCell(item, 'status')}</TableCell>
+                                    <TableCell>{renderCell(item, 'requestedByUser')}</TableCell>
+                                    <TableCell>{renderCell(item, 'createdAt')}</TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+                <CardFooter className="justify-center pt-6">
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    href="#"
+                                    onClick={(e) => { e.preventDefault(); if (page > 1) setPage(p => p - 1); }}
+                                    aria-disabled={page === 1}
+                                    className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                                />
+                            </PaginationItem>
+                            {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                                const pageNumber = i + 1;
+                                return (
+                                    <PaginationItem key={pageNumber}>
+                                        <PaginationLink
+                                            href="#"
+                                            onClick={(e) => { e.preventDefault(); setPage(pageNumber); }}
+                                            isActive={page === pageNumber}
+                                        >
+                                            {pageNumber}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                );
+                            })}
+                            <PaginationItem>
+                                <PaginationNext
+                                    href="#"
+                                    onClick={(e) => { e.preventDefault(); if (page < totalPages) setPage(p => p + 1); }}
+                                    aria-disabled={page === totalPages}
+                                    className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </CardFooter>
+            </Card>
         </div>
     );
 };

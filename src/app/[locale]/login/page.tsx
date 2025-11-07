@@ -6,12 +6,11 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "@/i18n/navigation";
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { Button } from "@heroui/button";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
-import { Input } from "@heroui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { FormField } from "@/components/ui/form-field";
 import StepIndicator from "../components/StepIndicator";
-import { addToast } from "@heroui/toast";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
+import { toast } from "sonner";
 
 export default function LoginPage() {
     const [step, setStep] = useState(1);
@@ -97,31 +96,25 @@ export default function LoginPage() {
     const handleSendEmailCode = async () => {
         try {
             await auth.sendEmailCode({ userName: userNameOrEmail });
-            addToast({
-                title: t('login2fa.email_sent'),
-                color: 'success'
-            });
+            toast.success(t('login2fa.email_sent'));
         } catch (err) {
-            addToast({
-                title: t('login2fa.error_sending_email'),
-                color: 'danger'
-            });
+            toast.error(t('login2fa.error_sending_email'));
         }
     };
 
     const handleResendVerification = async () => {
         if (!userNameOrEmail) {
-            addToast({ title: t('loginPage.enter_username_or_email_for_verification'), color: 'warning' });
+            toast.warning(t('loginPage.enter_username_or_email_for_verification'));
             return;
         }
         try {
             await auth.resendVerification({ userNameOrEmail: userNameOrEmail });
-            addToast({ title: t('loginPage.verification_sent_success'), color: 'success' });
+            toast.success(t('loginPage.verification_sent_success'));
         } catch (err) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const error = err as any;
             const errorMessage = error.response?.data?.message || t('loginPage.verification_sent_failed');
-            addToast({ title: errorMessage, color: 'danger' });
+            toast.error(errorMessage);
         }
     };
     
@@ -131,11 +124,10 @@ export default function LoginPage() {
     ];
 
     return (
-        <>
-            <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
-                <Card className="w-full max-w-md p-4">
-                    <CardHeader className="flex flex-col items-center pb-4">
-                    <h1 className="text-3xl font-bold">{t('header.login')}</h1>
+        <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
+            <Card className="w-full max-w-md p-4">
+                <CardHeader className="flex flex-col items-center pb-4">
+                    <CardTitle>{t('header.login')}</CardTitle>
                     <div className="mt-4 w-full">
                         <StepIndicator currentStep={step} totalSteps={2} stepTitles={stepTitles} />
                     </div>
@@ -143,75 +135,69 @@ export default function LoginPage() {
 
                 {step === 1 && (
                     <form onSubmit={handleLoginStep1}>
-                        <CardBody className="gap-6">
-                            <Input
-                                isRequired
-                                label={t('loginPage.username_or_email')}
+                        <CardContent className="space-y-4">
+                            <FormField
+                                label={t('common.username')}
                                 placeholder={t('loginPage.enter_your_username_or_email')}
                                 value={userNameOrEmail}
-                                onValueChange={setUserNameOrEmail}
-                                size="lg"
-                                labelPlacement="outside"
+                                onChange={(e) => setUserNameOrEmail(e.target.value)}
+                                required
                             />
-                            <Input
-                                isRequired
+                            <FormField
                                 label={t('common.password')}
                                 placeholder={t('loginPage.enter_your_password')}
                                 type="password"
                                 value={password}
-                                onValueChange={setPassword}
-                                size="lg"
-                                labelPlacement="outside"
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
                             />
-                            {error && <p className="text-danger text-center text-sm font-medium">{error}</p>}
+                            {error && <p className="text-destructive text-center text-sm font-medium">{error}</p>}
                             {needsVerification && (
-                                <div className="text-center text-sm font-medium text-warning p-2 rounded-md border border-warning bg-warning/10 flex flex-col items-center gap-2">
+                                <div className="text-center text-sm font-medium text-yellow-500 p-2 rounded-md border border-yellow-500 bg-yellow-500/10 flex flex-col items-center gap-2">
                                     <p>{t('loginPage.email_verification_needed')}</p>
-                                    <Button variant="ghost" color="primary" size="sm" onPress={handleResendVerification}>
+                                    <Button variant="ghost" size="sm" onClick={handleResendVerification}>
                                         {t('loginPage.resend_verification_email')}
                                     </Button>
                                 </div>
                             )}
-                            <Button type="submit" color="primary" className="w-full font-bold text-lg" size="lg" isLoading={isLoading}>
-                                {t('common.next_step')}
+                            <Button type="submit" className="w-full font-bold text-lg" disabled={isLoading}>
+                                {isLoading ? t('common.loading') : t('common.next_step')}
                             </Button>
-                        </CardBody>
+                        </CardContent>
                     </form>
                 )}
 
                 {step === 2 && (
                     <form onSubmit={handleLoginStep2}>
-                        <CardBody className="gap-6">
-                            <p className="text-center text-sm text-default-500">{t('login2fa.enter_code')}</p>
-                            <Input
-                                isRequired
-                                label={t('login2fa.code_placeholder')}
+                        <CardContent className="space-y-4">
+                            <p className="text-center text-sm text-muted-foreground">{t('login2fa.enter_code')}</p>
+                            <FormField
+                                label={t('login2fa.verification_code')}
                                 placeholder="123456"
                                 value={code}
-                                onValueChange={setCode}
-                                size="lg"
-                                labelPlacement="outside"
+                                onChange={(e) => setCode(e.target.value)}
                                 maxLength={6}
+                                required
                             />
-                            {error && <p className="text-danger text-center text-sm font-medium">{error}</p>}
-                            <Button type="submit" color="primary" className="w-full font-bold text-lg" size="lg" isLoading={isLoading}>
-                                {t('login2fa.submit_button')}
+                            {error && <p className="text-destructive text-center text-sm font-medium">{error}</p>}
+                            <Button type="submit" className="w-full font-bold text-lg" disabled={isLoading}>
+                                {isLoading ? t('common.loading') : t('login2fa.submit_button')}
                             </Button>
-                             <div className="flex flex-col items-center gap-2 mt-2">
-                                <p className="text-center text-default-500 text-sm">
+                            <div className="flex flex-col items-center gap-2 mt-2">
+                                <p className="text-center text-sm text-muted-foreground">
                                     {t('login2fa.no_app_code')}
                                 </p>
-                                <Button variant="ghost" color="primary" onPress={handleSendEmailCode}>
+                                <Button variant="ghost" onClick={handleSendEmailCode}>
                                     {t('login2fa.use_email')}
                                 </Button>
                             </div>
-                        </CardBody>
+                        </CardContent>
                     </form>
                 )}
 
                 {step === 1 && (
                     <CardFooter className="pt-4">
-                        <p className="text-center text-default-500 text-sm w-full">
+                        <p className="text-center text-muted-foreground text-sm w-full">
                             {t('loginPage.no_account_yet')}{' '}
                             <Link href="/register" className="text-primary hover:underline font-semibold">
                                 {t('header.register')}
@@ -221,6 +207,5 @@ export default function LoginPage() {
                 )}
             </Card>
         </div>
-        </>
     );
 }

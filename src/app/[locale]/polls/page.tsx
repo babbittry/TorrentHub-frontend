@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { polls } from '@/lib/api';
 import type { PollDto } from '@/lib/api';
-import Poll from '../components/Poll'; // Import the new Poll component
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Progress } from "@heroui/progress";
+import Poll from '../components/Poll';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { useTranslations } from 'next-intl';
 
 export default function PollsPage() {
@@ -59,16 +59,16 @@ export default function PollsPage() {
                         {historyPolls.map((poll) => (
                             <Card key={poll.id}>
                                 <CardHeader>
-                                    <h3 className="text-lg font-semibold">{poll.question}</h3>
+                                    <CardTitle>{poll.question}</CardTitle>
                                 </CardHeader>
-                                <CardBody className="space-y-4">
+                                <CardContent className="space-y-4">
                                     {Array.isArray(poll.options) ? poll.options.map((option) => {
                                         const percentage = poll.totalVotes > 0 ? (option.voteCount / poll.totalVotes) * 100 : 0;
                                         return (
                                             <div key={option.id}>
                                                 <div className="flex justify-between mb-1">
                                                     <span className="font-medium">{option.text}</span>
-                                                    <span className="text-sm text-gray-500">
+                                                    <span className="text-sm text-muted-foreground">
                                                         {option.voteCount} {t('votes')} ({percentage.toFixed(1)}%)
                                                     </span>
                                                 </div>
@@ -76,10 +76,10 @@ export default function PollsPage() {
                                             </div>
                                         );
                                     }) : <p>{t('noOptions')}</p>}
-                                    <p className="text-sm text-center text-gray-600 pt-2">
+                                    <p className="text-sm text-center text-muted-foreground pt-2">
                                         {t('totalVotes')}: {poll.totalVotes}
                                     </p>
-                                </CardBody>
+                                </CardContent>
                             </Card>
                         ))}
                     </div>

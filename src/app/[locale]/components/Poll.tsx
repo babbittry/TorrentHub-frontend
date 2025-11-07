@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import { polls } from '@/lib/api';
 import type { PollDto } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
-import { Button } from "@heroui/button";
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Progress } from "@heroui/progress";
-import { RadioGroup, Radio } from "@heroui/radio";
-import { addToast } from "@heroui/toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import { useTranslations } from 'next-intl';
 
 export default function Poll({ poll: initialPoll }: { poll?: PollDto }) {
@@ -39,26 +40,17 @@ export default function Poll({ poll: initialPoll }: { poll?: PollDto }) {
 
     const handleVote = async () => {
         if (!poll || !selectedOption) {
-            addToast({
-                title: t('selectOptionError'),
-                color: 'warning',
-            });
+            toast.warning(t('selectOptionError'));
             return;
         }
 
         try {
             await polls.vote(poll.id, { option: selectedOption });
-            addToast({
-                title: t('voteSuccess'),
-                color: 'success',
-            });
-            fetchLatestPoll(); // Refresh poll data to show results
+            toast.success(t('voteSuccess'));
+            fetchLatestPoll();
         } catch (error) {
             console.error('Failed to submit vote', error);
-            addToast({
-                title: t('voteFailed'),
-                color: 'danger',
-            });
+            toast.error(t('voteFailed'));
         }
     };
 
@@ -66,15 +58,15 @@ export default function Poll({ poll: initialPoll }: { poll?: PollDto }) {
         return (
             <Card>
                 <CardHeader>
-                    <h3 className="text-lg font-semibold">{t('loading')}</h3>
+                    <CardTitle>{t('loading')}</CardTitle>
                 </CardHeader>
-                <CardBody>
+                <CardContent>
                     <div className="animate-pulse space-y-4">
-                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                        <div className="h-4 bg-secondary rounded w-3/4"></div>
+                        <div className="h-4 bg-secondary rounded w-1/2"></div>
+                        <div className="h-4 bg-secondary rounded w-5/6"></div>
                     </div>
-                </CardBody>
+                </CardContent>
             </Card>
         );
     }
@@ -83,11 +75,11 @@ export default function Poll({ poll: initialPoll }: { poll?: PollDto }) {
         return (
             <Card>
                 <CardHeader>
-                    <h3 className="text-lg font-semibold">{t('title')}</h3>
+                    <CardTitle>{t('title')}</CardTitle>
                 </CardHeader>
-                <CardBody>
+                <CardContent>
                     <p>{t('noActive')}</p>
-                </CardBody>
+                </CardContent>
             </Card>
         );
     }
@@ -99,9 +91,9 @@ export default function Poll({ poll: initialPoll }: { poll?: PollDto }) {
     return (
         <Card>
             <CardHeader>
-                <h3 className="text-lg font-semibold">{poll.question}</h3>
+                <CardTitle>{poll.question}</CardTitle>
             </CardHeader>
-            <CardBody>
+            <CardContent>
                 {userHasVoted ? (
                     <div className="space-y-4">
                         {Object.entries(pollResults).map(([option, votes]) => {
@@ -111,22 +103,24 @@ export default function Poll({ poll: initialPoll }: { poll?: PollDto }) {
                             return (
                                 <div key={option}>
                                     <div className="flex justify-between mb-1">
-                                        <span className={`font-medium ${isUserChoice ? 'text-primary-500' : ''}`}>{option}</span>
-                                        <span className="text-sm text-gray-500">{voteCount} {t('votes')} ({percentage.toFixed(1)}%)</span>
+                                        <span className={`font-medium ${isUserChoice ? 'text-primary' : ''}`}>{option}</span>
+                                        <span className="text-sm text-muted-foreground">{voteCount} {t('votes')} ({percentage.toFixed(1)}%)</span>
                                     </div>
                                     <Progress value={percentage} />
                                 </div>
                             );
                         })}
-                       <p className="text-sm text-center text-gray-600 pt-2">{t('totalVotes')}: {totalVotes}</p>
+                       <p className="text-sm text-center text-muted-foreground pt-2">{t('totalVotes')}: {totalVotes}</p>
                    </div>
                ) : (
                    <div className="space-y-4">
-                       <RadioGroup onValueChange={setSelectedOption} value={selectedOption} label={t('selectAnOption')}>
+                       <RadioGroup onValueChange={setSelectedOption} value={selectedOption}>
+                           <Label className="mb-2 block">{t('selectAnOption')}</Label>
                            {Object.keys(pollResults).map((option) => (
-                               <Radio key={option} value={option}>
-                                   {option}
-                               </Radio>
+                               <div key={option} className="flex items-center space-x-2">
+                                   <RadioGroupItem value={option} id={option} />
+                                   <Label htmlFor={option}>{option}</Label>
+                               </div>
                            ))}
                        </RadioGroup>
                        <Button onClick={handleVote} disabled={!user}>
@@ -134,7 +128,7 @@ export default function Poll({ poll: initialPoll }: { poll?: PollDto }) {
                        </Button>
                     </div>
                 )}
-            </CardBody>
+            </CardContent>
         </Card>
     );
 }

@@ -629,6 +629,7 @@
             "modal": {
                 "title": "Edit User: {username}",
                 "roleLabel": "Role",
+                "selectRole": "Sélectionner un rôle",
                 "bannedLabel": "Banned",
                 "banReasonLabel": "Ban Reason",
                 "cancelButton": "Cancel",

@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { admin, SiteSettingsDto } from '../../../../lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { CustomInput } from '../../components/CustomInputs';
-import { Button } from "@heroui/button";
-import { Switch } from '@heroui/react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Switch } from '@/components/ui/switch';
 import { useTranslations } from 'next-intl';
 
 const SiteSettingsPage = () => {
@@ -60,49 +61,58 @@ const SiteSettingsPage = () => {
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-6">{t('siteSettings.title')}</h1>
             <Card>
-                <CardHeader>{t('siteSettings.configuration')}</CardHeader>
-                <CardBody>
+                <CardHeader>
+                    <CardTitle>{t('siteSettings.configuration')}</CardTitle>
+                </CardHeader>
+                <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <CustomInput
-                            label={t('siteSettings.siteNameLabel')}
-                            name="siteName"
-                            value={settings.siteName ?? ''}
-                            onChange={handleInputChange}
-                            fullWidth
-                        />
-                        <CustomInput
-                            label={t('siteSettings.siteDescriptionLabel')}
-                            name="siteDescription"
-                            value={settings.siteDescription ?? ''}
-                            onChange={handleInputChange}
-                            fullWidth
-                        />
-                        <div className="flex items-center justify-between">
-                            <label>{t('siteSettings.registrationOpenLabel')}</label>
-                            <Switch
-                                isSelected={settings.isRegistrationOpen}
-                                onValueChange={(val) => handleSwitchChange('isRegistrationOpen', val)}
+                        <div className="space-y-2">
+                            <Label htmlFor="siteName">{t('siteSettings.siteNameLabel')}</Label>
+                            <Input
+                                id="siteName"
+                                name="siteName"
+                                value={settings.siteName ?? ''}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="siteDescription">{t('siteSettings.siteDescriptionLabel')}</Label>
+                            <Input
+                                id="siteDescription"
+                                name="siteDescription"
+                                value={settings.siteDescription ?? ''}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className="flex items-center justify-between">
-                            <label>{t('siteSettings.inviteOnlyLabel')}</label>
+                            <Label htmlFor="isRegistrationOpen">{t('siteSettings.registrationOpenLabel')}</Label>
                             <Switch
-                                isSelected={settings.isInviteOnly}
-                                onValueChange={(val) => handleSwitchChange('isInviteOnly', val)}
+                                id="isRegistrationOpen"
+                                checked={settings.isRegistrationOpen}
+                                onCheckedChange={(val) => handleSwitchChange('isRegistrationOpen', val)}
                             />
                         </div>
                         <div className="flex items-center justify-between">
-                            <label>{t('siteSettings.maintenanceModeLabel')}</label>
+                            <Label htmlFor="isInviteOnly">{t('siteSettings.inviteOnlyLabel')}</Label>
                             <Switch
-                                isSelected={settings.maintenanceMode}
-                                onValueChange={(val) => handleSwitchChange('maintenanceMode', val)}
+                                id="isInviteOnly"
+                                checked={settings.isInviteOnly}
+                                onCheckedChange={(val) => handleSwitchChange('isInviteOnly', val)}
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="maintenanceMode">{t('siteSettings.maintenanceModeLabel')}</Label>
+                            <Switch
+                                id="maintenanceMode"
+                                checked={settings.maintenanceMode}
+                                onCheckedChange={(val) => handleSwitchChange('maintenanceMode', val)}
                             />
                         </div>
                         <div className="flex justify-end">
-                            <Button type="submit" color="primary">{t('siteSettings.saveButton')}</Button>
+                            <Button type="submit">{t('siteSettings.saveButton')}</Button>
                         </div>
                     </form>
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );

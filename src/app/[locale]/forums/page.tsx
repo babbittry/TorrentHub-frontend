@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { forum, ForumCategoryDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Card, CardBody } from '@heroui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBullhorn, faComments, faVial, faPills, faFaucet, faQuestionCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
@@ -57,22 +57,22 @@ const ForumHomePage = () => {
             {isLoading ? (
                 <p className="text-center">{t('forumPage.loading_categories')}</p>
             ) : error ? (
-                <p className="text-center text-danger">{error}</p>
+                <p className="text-center text-destructive">{error}</p>
             ) : (
                 <div className="space-y-4">
                     {categories.map(category => (
                         <Link key={category.id} href={`/forums/category/${category.id}`} className="block">
-                            <Card isPressable isHoverable className="w-full">
-                                <CardBody>
+                            <Card className="w-full hover:shadow-lg transition-shadow cursor-pointer">
+                                <CardContent className="pt-6">
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-4">
                                             <FontAwesomeIcon icon={getCategoryIcon(category.code)} className="text-2xl text-primary" />
                                             <div>
                                                 <h2 className="text-xl font-bold text-primary">{getCategoryName(category.code)}</h2>
-                                                <p className="text-sm text-default-500 mt-1">{getCategoryDescription(category.code)}</p>
+                                                <p className="text-sm text-muted-foreground mt-1">{getCategoryDescription(category.code)}</p>
                                             </div>
                                         </div>
-                                        <div className="text-right text-sm text-default-500 space-y-1">
+                                        <div className="text-right text-sm text-muted-foreground space-y-1">
                                             <div className="flex items-center justify-end gap-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" /></svg>
                                                 <span>{t('forumPage.topics')}: {category.topicCount}</span>
@@ -83,7 +83,7 @@ const ForumHomePage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                </CardBody>
+                                </CardContent>
                             </Card>
                         </Link>
                     ))}

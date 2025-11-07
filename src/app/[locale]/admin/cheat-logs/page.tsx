@@ -4,25 +4,25 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { cheatLogs, CheatDetectionType, CheatSeverity } from '@/lib/api';
 import type { CheatLogDto, CheatLogFilters } from '@/lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Input } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
-import { Chip } from "@heroui/chip";
-import { Pagination } from "@heroui/pagination";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Link } from '@/i18n/navigation';
-import { Button } from '@heroui/button';
-import { Checkbox } from '@heroui/checkbox';
-import { Modal, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@heroui/modal';
-import { Textarea } from '@heroui/input';
-import { addToast } from '@heroui/toast';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from 'sonner';
+import { Label } from '@/components/ui/label';
 
 export default function CheatLogsPage() {
     const t = useTranslations('cheatLogsPage');
     const [logs, setLogs] = useState<CheatLogDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     
-    // 筛选和分页状态
     const [page, setPage] = useState(1);
     const [pageSize] = useState(20);
     const [totalPages, setTotalPages] = useState(1);
@@ -30,15 +30,13 @@ export default function CheatLogsPage() {
     const [userId, setUserId] = useState('');
     const [detectionType, setDetectionType] = useState<CheatDetectionType | ''>('');
 
-    // 处理状态
     const [selectedLog, setSelectedLog] = useState<CheatLogDto | null>(null);
     const [selectedLogIds, setSelectedLogIds] = useState<Set<number>>(new Set());
     const [processingNotes, setProcessingNotes] = useState('');
-    const { isOpen: isProcessModalOpen, onOpen: onProcessModalOpen, onClose: onProcessModalClose } = useDisclosure();
+    const [isProcessModalOpen, setIsProcessModalOpen] = useState(false);
 
     const loadLogs = async () => {
         setIsLoading(true);
-        // 在重新加载时清除选择
         setSelectedLogIds(new Set());
         try {
             const filters: CheatLogFilters = {
@@ -69,7 +67,7 @@ export default function CheatLogsPage() {
     }, [page, userId, detectionType]);
 
     const handleSearch = () => {
-        setPage(1); // 重置到第一页
+        setPage(1);
         loadLogs();
     };
 
@@ -77,34 +75,33 @@ export default function CheatLogsPage() {
         setUserId('');
         setDetectionType('');
         setPage(1);
-        // 注意：useEffect会因为page改变而自动调用loadLogs
     };
 
     const handleProcessClick = (log: CheatLogDto) => {
         setSelectedLog(log);
         setProcessingNotes(log.adminNotes || '');
-        onProcessModalOpen();
+        setIsProcessModalOpen(true);
     };
 
     const handleConfirmProcess = async () => {
         if (!selectedLog) return;
         try {
             await cheatLogs.processLog(selectedLog.id, { notes: processingNotes });
-            addToast({ title: t('process_success'), color: 'success' });
-            onProcessModalClose();
+            toast.success(t('process_success'));
+            setIsProcessModalOpen(false);
             loadLogs();
         } catch (error) {
-            addToast({ title: t('process_error'), description: (error as Error).message, color: 'danger' });
+            toast.error(t('process_error'), { description: (error as Error).message });
         }
     };
     
     const handleUnprocessClick = async (logId: number) => {
         try {
             await cheatLogs.unprocessLog(logId);
-            addToast({ title: t('unprocess_success'), color: 'success' });
+            toast.success(t('unprocess_success'));
             loadLogs();
         } catch (error) {
-            addToast({ title: t('unprocess_error'), description: (error as Error).message, color: 'danger' });
+            toast.error(t('unprocess_error'), { description: (error as Error).message });
         }
     };
 
@@ -135,26 +132,26 @@ export default function CheatLogsPage() {
     const getDetectionTypeColor = (type: CheatDetectionType) => {
         switch (type) {
             case CheatDetectionType.AnnounceFrequency:
-                return 'warning';
+                return 'bg-yellow-600';
             case CheatDetectionType.MultiLocation:
-                return 'danger';
+                return 'bg-red-600';
             default:
-                return 'default';
+                return '';
         }
     };
 
     const getSeverityColor = (severity: CheatSeverity) => {
         switch (severity) {
             case CheatSeverity.Low:
-                return 'success';
+                return 'bg-green-600';
             case CheatSeverity.Medium:
-                return 'warning';
+                return 'bg-yellow-600';
             case CheatSeverity.High:
-                return 'danger';
+                return 'bg-red-600';
             case CheatSeverity.Critical:
-                return 'danger';
+                return 'bg-red-700';
             default:
-                return 'default';
+                return '';
         }
     };
 
@@ -175,107 +172,97 @@ export default function CheatLogsPage() {
             
             <Card className="mb-6">
                 <CardHeader>
-                    <h2 className="text-xl font-semibold">{t('filters_title')}</h2>
+                    <CardTitle>{t('filters_title')}</CardTitle>
                 </CardHeader>
-                <CardBody>
+                <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Input
-                            label={t('user_id_label')}
                             placeholder={t('user_id_placeholder')}
                             value={userId}
-                            onValueChange={setUserId}
+                            onChange={(e) => setUserId(e.target.value)}
                             type="number"
                         />
                         
-                        <Select
-                            label={t('detection_type_label')}
-                            placeholder={t('detection_type_placeholder')}
-                            selectedKeys={detectionType ? [detectionType.toString()] : []}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                setDetectionType(value ? parseInt(value) as CheatDetectionType : '');
-                            }}
-                        >
-                            <SelectItem key="">{t('all_types')}</SelectItem>
-                            <SelectItem key={CheatDetectionType.AnnounceFrequency.toString()}>
-                                {t('types.announce_frequency')}
-                            </SelectItem>
-                            <SelectItem key={CheatDetectionType.MultiLocation.toString()}>
-                                {t('types.multi_location')}
-                            </SelectItem>
-                        </Select>
+                        <div className="space-y-2">
+                            <Label>{t('detection_type_label')}</Label>
+                            <Select value={detectionType === '' ? 'all' : detectionType.toString()} onValueChange={(value) => setDetectionType(value === 'all' ? '' : parseInt(value) as CheatDetectionType)}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t('detection_type_placeholder')} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">{t('all_types')}</SelectItem>
+                                    <SelectItem value={CheatDetectionType.AnnounceFrequency.toString()}>
+                                        {t('types.announce_frequency')}
+                                    </SelectItem>
+                                    <SelectItem value={CheatDetectionType.MultiLocation.toString()}>
+                                        {t('types.multi_location')}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                         
                         <div className="flex gap-2 items-end">
-                            <button
-                                onClick={handleSearch}
-                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors"
-                            >
-                                {t('search_button')}
-                            </button>
-                            <button
-                                onClick={handleReset}
-                                className="px-4 py-2 bg-default-200 text-default-700 rounded-lg hover:bg-default-300 transition-colors"
-                            >
-                                {t('reset_button')}
-                            </button>
+                            <Button onClick={handleSearch}>{t('search_button')}</Button>
+                            <Button variant="outline" onClick={handleReset}>{t('reset_button')}</Button>
                         </div>
                     </div>
-                </CardBody>
+                </CardContent>
             </Card>
 
             <Card>
-                <CardHeader className="flex justify-between items-center">
+                <CardHeader className="flex flex-row justify-between items-center">
                     <div>
-                        <h2 className="text-xl font-semibold">{t('logs_title')}</h2>
-                        <p className="text-sm text-default-500 mt-1">
+                        <CardTitle>{t('logs_title')}</CardTitle>
+                        <p className="text-sm text-muted-foreground mt-1">
                             {t('total_logs', { count: totalItems })}
                         </p>
                     </div>
                     <Button
-                        color="primary"
-                        variant="flat"
-                        isDisabled={selectedLogIds.size === 0}
-                        onPress={() => {
-                            setSelectedLog(null); // 表示是批量操作
+                        variant="outline"
+                        disabled={selectedLogIds.size === 0}
+                        onClick={() => {
+                            setSelectedLog(null);
                             setProcessingNotes('');
-                            onProcessModalOpen();
+                            setIsProcessModalOpen(true);
                         }}
                     >
                         {t('batch_process')} ({selectedLogIds.size})
                     </Button>
                 </CardHeader>
-                <CardBody>
+                <CardContent>
                     {isLoading ? (
                         <p className="text-center py-8">{t('loading')}</p>
                     ) : logs.length === 0 ? (
-                        <p className="text-center py-8 text-default-500">{t('no_logs')}</p>
+                        <p className="text-center py-8 text-muted-foreground">{t('no_logs')}</p>
                     ) : (
                         <>
-                            <Table aria-label="Cheat logs table">
+                            <Table>
                                 <TableHeader>
-                                    <TableColumn width={50}>
-                                        <Checkbox
-                                            isSelected={selectedLogIds.size > 0 && selectedLogIds.size === logs.length}
-                                            onValueChange={handleSelectAll}
-                                        />
-                                    </TableColumn>
-                                    <TableColumn>{t('table.user')}</TableColumn>
-                                    <TableColumn>{t('table.torrent')}</TableColumn>
-                                    <TableColumn>{t('table.detection_type')}</TableColumn>
-                                    <TableColumn>{t('table.severity')}</TableColumn>
-                                    <TableColumn>{t('table.details')}</TableColumn>
-                                    <TableColumn>{t('table.ip_address')}</TableColumn>
-                                    <TableColumn>{t('table.detected_at')}</TableColumn>
-                                    <TableColumn>{t('table.status')}</TableColumn>
-                                    <TableColumn>{t('table.actions')}</TableColumn>
+                                    <TableRow>
+                                        <TableHead className="w-12">
+                                            <Checkbox
+                                                checked={selectedLogIds.size > 0 && selectedLogIds.size === logs.length}
+                                                onCheckedChange={handleSelectAll}
+                                            />
+                                        </TableHead>
+                                        <TableHead>{t('table.user')}</TableHead>
+                                        <TableHead>{t('table.torrent')}</TableHead>
+                                        <TableHead>{t('table.detection_type')}</TableHead>
+                                        <TableHead>{t('table.severity')}</TableHead>
+                                        <TableHead>{t('table.details')}</TableHead>
+                                        <TableHead>{t('table.ip_address')}</TableHead>
+                                        <TableHead>{t('table.detected_at')}</TableHead>
+                                        <TableHead>{t('table.status')}</TableHead>
+                                        <TableHead>{t('table.actions')}</TableHead>
+                                    </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {logs.map((log) => (
                                         <TableRow key={log.id}>
                                             <TableCell>
                                                 <Checkbox
-                                                    isSelected={selectedLogIds.has(log.id)}
-                                                    onValueChange={(checked) => handleSelectLog(log.id, checked)}
+                                                    checked={selectedLogIds.has(log.id)}
+                                                    onCheckedChange={(checked) => handleSelectLog(log.id, checked as boolean)}
                                                 />
                                             </TableCell>
                                             <TableCell>
@@ -295,25 +282,18 @@ export default function CheatLogsPage() {
                                                         {log.torrentName}
                                                     </Link>
                                                 ) : (
-                                                    <span className="text-default-400">N/A</span>
+                                                    <span className="text-muted-foreground">N/A</span>
                                                 )}
                                             </TableCell>
                                             <TableCell>
-                                                <Chip
-                                                    color={getDetectionTypeColor(log.detectionType)}
-                                                    size="sm"
-                                                >
+                                                <Badge className={getDetectionTypeColor(log.detectionType)}>
                                                     {t(`types.${getDetectionTypeName(log.detectionType)}`)}
-                                                </Chip>
+                                                </Badge>
                                             </TableCell>
                                             <TableCell>
-                                                <Chip
-                                                    color={getSeverityColor(log.severity)}
-                                                    size="sm"
-                                                    variant="flat"
-                                                >
+                                                <Badge className={getSeverityColor(log.severity)}>
                                                     {t(`severity.${log.severity}`)}
-                                                </Chip>
+                                                </Badge>
                                             </TableCell>
                                             <TableCell>
                                                 <div className="max-w-md truncate" title={log.details || undefined}>
@@ -326,18 +306,18 @@ export default function CheatLogsPage() {
                                             <TableCell>{formatDate(log.timestamp)}</TableCell>
                                             <TableCell>
                                                 {log.isProcessed ? (
-                                                    <Chip color="success" size="sm">{t('status.processed')}</Chip>
+                                                    <Badge className="bg-green-600">{t('status.processed')}</Badge>
                                                 ) : (
-                                                    <Chip color="default" size="sm">{t('status.pending')}</Chip>
+                                                    <Badge variant="secondary">{t('status.pending')}</Badge>
                                                 )}
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex gap-2">
-                                                    <Button size="sm" variant="flat" onPress={() => handleProcessClick(log)}>
+                                                    <Button size="sm" variant="outline" onClick={() => handleProcessClick(log)}>
                                                         {log.isProcessed ? t('view_details') : t('process')}
                                                     </Button>
                                                     {log.isProcessed && (
-                                                         <Button size="sm" variant="flat" color="warning" onPress={() => handleUnprocessClick(log.id)}>
+                                                         <Button size="sm" variant="destructive" onClick={() => handleUnprocessClick(log.id)}>
                                                             {t('unprocess')}
                                                         </Button>
                                                     )}
@@ -350,45 +330,76 @@ export default function CheatLogsPage() {
                             
                             {totalPages > 1 && (
                                 <div className="flex justify-center mt-6">
-                                    <Pagination
-                                        total={totalPages}
-                                        page={page}
-                                        onChange={setPage}
-                                        showControls
-                                    />
+                                    <Pagination>
+                                        <PaginationContent>
+                                            <PaginationItem>
+                                                <PaginationPrevious
+                                                    href="#"
+                                                    onClick={(e) => { e.preventDefault(); if (page > 1) setPage(p => p - 1); }}
+                                                    aria-disabled={page === 1}
+                                                    className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                                                />
+                                            </PaginationItem>
+                                            {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                                                const pageNumber = i + 1;
+                                                return (
+                                                    <PaginationItem key={pageNumber}>
+                                                        <PaginationLink
+                                                            href="#"
+                                                            onClick={(e) => { e.preventDefault(); setPage(pageNumber); }}
+                                                            isActive={page === pageNumber}
+                                                        >
+                                                            {pageNumber}
+                                                        </PaginationLink>
+                                                    </PaginationItem>
+                                                );
+                                            })}
+                                            <PaginationItem>
+                                                <PaginationNext
+                                                    href="#"
+                                                    onClick={(e) => { e.preventDefault(); if (page < totalPages) setPage(p => p + 1); }}
+                                                    aria-disabled={page === totalPages}
+                                                    className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+                                                />
+                                            </PaginationItem>
+                                        </PaginationContent>
+                                    </Pagination>
                                 </div>
                             )}
                         </>
                     )}
-                </CardBody>
+                </CardContent>
             </Card>
 
-            {/* 处理日志模态框 */}
-            <Modal isOpen={isProcessModalOpen} onClose={onProcessModalClose}>
-                <ModalHeader>{selectedLog ? t('process_log_title') : t('batch_process_title')}</ModalHeader>
-                <ModalBody>
+            <Dialog open={isProcessModalOpen} onOpenChange={setIsProcessModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{selectedLog ? t('process_log_title') : t('batch_process_title')}</DialogTitle>
+                    </DialogHeader>
                     {selectedLog && (
                         <div className="text-sm mb-4">
                             <p><strong>{t('table.user')}:</strong> {selectedLog.userName}</p>
                             <p><strong>{t('table.detection_type')}:</strong> {t(`types.${getDetectionTypeName(selectedLog.detectionType)}`)}</p>
                         </div>
                     )}
-                    <Textarea
-                        label={t('admin_notes_label')}
-                        placeholder={t('admin_notes_placeholder')}
-                        value={processingNotes}
-                        onValueChange={setProcessingNotes}
-                    />
-                </ModalBody>
-                <ModalFooter>
-                    <Button variant="ghost" onPress={onProcessModalClose}>
-                        {t('cancel')}
-                    </Button>
-                    <Button color="primary" onPress={handleConfirmProcess}>
-                        {t('confirm_process')}
-                    </Button>
-                </ModalFooter>
-            </Modal>
+                    <div className="space-y-2">
+                        <Label>{t('admin_notes_label')}</Label>
+                        <Textarea
+                            placeholder={t('admin_notes_placeholder')}
+                            value={processingNotes}
+                            onChange={(e) => setProcessingNotes(e.target.value)}
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setIsProcessModalOpen(false)}>
+                            {t('cancel')}
+                        </Button>
+                        <Button onClick={handleConfirmProcess}>
+                            {t('confirm_process')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

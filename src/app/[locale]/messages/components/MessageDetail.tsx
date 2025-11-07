@@ -1,9 +1,10 @@
+'use client';
+
 import React, { useEffect } from 'react';
 import { MessageDto, UserPublicProfileDto, messages, API_BASE_URL } from '@/lib/api';
 import { useTranslations } from 'next-intl';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import {Divider} from "@heroui/divider";
-import { User } from "@heroui/user";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { MailboxType } from '../page';
 import { useAuth } from '@/context/AuthContext';
 
@@ -19,24 +20,21 @@ const MessageDetail: React.FC<MessageDetailProps> = ({ message, activeMailbox, o
 
     useEffect(() => {
         if (message && activeMailbox === 'inbox' && !message.isRead) {
-            // Mark message as read
             messages.markMessageAsRead(message.id)
                 .then(() => {
                     console.log('[MessageDetail] Message marked as read, refreshing user data');
-                    onMessageRead(message.id); // Update parent state
-                    // Refresh user data to update unread messages count in header
+                    onMessageRead(message.id);
                     refreshUser();
                 })
                 .catch(error => {
                     console.error("Failed to mark message as read:", error);
-                    // Optionally, show an error to the user
                 });
         }
     }, [message, activeMailbox, onMessageRead, refreshUser]);
 
     if (!message) {
         return (
-            <div className="flex items-center justify-center h-full text-default-500">
+            <div className="flex items-center justify-center h-full text-muted-foreground">
                 <p>{t('select_a_message')}</p>
             </div>
         );
@@ -46,26 +44,27 @@ const MessageDetail: React.FC<MessageDetailProps> = ({ message, activeMailbox, o
         ? message.sender
         : message.receiver;
 
-
-
     return (
-        <Card className="h-full">
+        <Card className="h-full flex flex-col">
             <CardHeader className="flex flex-col items-start gap-4">
-                <h2 className="text-2xl font-bold text-foreground">{message.subject}</h2>
-                <User
-                    name={displayUser?.userName || 'N/A'}
-                    avatarProps={{
-                        src: displayUser?.avatar ? `${API_BASE_URL}${displayUser.avatar}` : undefined
-                    }}
-                />
-                 <p className="text-xs text-default-500">{new Date(message.sentAt).toLocaleString()}</p>
+                <CardTitle className="text-2xl">{message.subject}</CardTitle>
+                <div className="flex items-center gap-3">
+                    <Avatar>
+                        <AvatarImage src={displayUser?.avatar ? `${API_BASE_URL}${displayUser.avatar}` : undefined} />
+                        <AvatarFallback>{displayUser?.userName?.charAt(0).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                        <span className="font-semibold">{displayUser?.userName || 'N/A'}</span>
+                        <span className="text-xs text-muted-foreground">{new Date(message.sentAt).toLocaleString()}</span>
+                    </div>
+                </div>
             </CardHeader>
-            <Divider />
-            <CardBody>
+            <div className="border-t my-4" />
+            <CardContent className="flex-grow">
                 <div className="prose dark:prose-invert max-w-none text-foreground whitespace-pre-wrap">
                     {message.content}
                 </div>
-            </CardBody>
+            </CardContent>
         </Card>
     );
 };

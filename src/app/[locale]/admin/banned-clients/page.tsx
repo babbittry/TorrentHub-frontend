@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { admin, BannedClientDto } from '../../../../lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
-import { CustomInput } from '../../components/CustomInputs';
-import { Button } from "@heroui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useTranslations } from 'next-intl';
@@ -69,65 +70,77 @@ const BannedClientsPage = () => {
             <h1 className="text-3xl font-bold mb-6">{t('bannedClients.title')}</h1>
 
             <Card>
-                <CardHeader>{t('bannedClients.addNew')}</CardHeader>
-                <CardBody>
+                <CardHeader>
+                    <CardTitle>{t('bannedClients.addNew')}</CardTitle>
+                </CardHeader>
+                <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <CustomInput
-                            label={t('bannedClients.peerIdPrefixLabel')}
-                            name="peer_id_prefix"
-                            value={newClient.peer_id_prefix ?? ''}
-                            onChange={handleInputChange}
-                            fullWidth
-                        />
-                        <CustomInput
-                            label={t('bannedClients.userAgentPatternLabel')}
-                            name="user_agent_pattern"
-                            value={newClient.user_agent_pattern ?? ''}
-                            onChange={handleInputChange}
-                            fullWidth
-                        />
-                        <CustomInput
-                            label={t('bannedClients.reasonLabel')}
-                            name="reason"
-                            value={newClient.reason ?? ''}
-                            onChange={handleInputChange}
-                            fullWidth
-                        />
-                        <Button type="submit" color="primary">{t('bannedClients.addButton')}</Button>
+                        <div className="space-y-2">
+                            <Label htmlFor="peer_id_prefix">{t('bannedClients.peerIdPrefixLabel')}</Label>
+                            <Input
+                                id="peer_id_prefix"
+                                name="peer_id_prefix"
+                                value={newClient.peer_id_prefix ?? ''}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="user_agent_pattern">{t('bannedClients.userAgentPatternLabel')}</Label>
+                            <Input
+                                id="user_agent_pattern"
+                                name="user_agent_pattern"
+                                value={newClient.user_agent_pattern ?? ''}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="reason">{t('bannedClients.reasonLabel')}</Label>
+                            <Input
+                                id="reason"
+                                name="reason"
+                                value={newClient.reason ?? ''}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <Button type="submit">{t('bannedClients.addButton')}</Button>
                     </form>
-                </CardBody>
+                </CardContent>
             </Card>
 
             <Card>
-                <CardHeader>{t('bannedClients.existing')}</CardHeader>
-                <CardBody>
+                <CardHeader>
+                    <CardTitle>{t('bannedClients.existing')}</CardTitle>
+                </CardHeader>
+                <CardContent>
                     {loading ? (
                         <p>{t('bannedClients.loading')}</p>
                     ) : (
-                        <Table aria-label={t('bannedClients.existing')}>
+                        <Table>
                             <TableHeader>
-                                <TableColumn>{t('bannedClients.table.peerIdPrefix')}</TableColumn>
-                                <TableColumn>{t('bannedClients.table.userAgentPattern')}</TableColumn>
-                                <TableColumn>{t('bannedClients.table.reason')}</TableColumn>
-                                <TableColumn>{t('bannedClients.table.actions')}</TableColumn>
+                                <TableRow>
+                                    <TableHead>{t('bannedClients.table.peerIdPrefix')}</TableHead>
+                                    <TableHead>{t('bannedClients.table.userAgentPattern')}</TableHead>
+                                    <TableHead>{t('bannedClients.table.reason')}</TableHead>
+                                    <TableHead>{t('bannedClients.table.actions')}</TableHead>
+                                </TableRow>
                             </TableHeader>
-                            <TableBody items={clients}>
-                                {(item) => (
+                            <TableBody>
+                                {clients.map((item) => (
                                     <TableRow key={item.id}>
                                         <TableCell>{item.peer_id_prefix}</TableCell>
                                         <TableCell>{item.user_agent_pattern}</TableCell>
                                         <TableCell>{item.reason}</TableCell>
                                         <TableCell>
-                                            <Button isIconOnly onClick={() => handleDelete(item.id)} color="danger" variant="light">
-                                                <FontAwesomeIcon icon={faTrash} />
+                                            <Button size="icon" onClick={() => handleDelete(item.id)} variant="ghost">
+                                                <FontAwesomeIcon icon={faTrash} className="text-red-600" />
                                             </Button>
                                         </TableCell>
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
                     )}
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );

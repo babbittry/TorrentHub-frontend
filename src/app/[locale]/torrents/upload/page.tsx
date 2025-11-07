@@ -1,22 +1,19 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Button,
-    Progress,
-    Input,
-    Select,
-    SelectItem,
-    Alert,
-} from '@heroui/react';
-import { CustomInput, CustomTextarea } from '@/app/[locale]/components/CustomInputs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { FormField } from '@/components/ui/form-field';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { TorrentCategory, TorrentCategoryDto, torrents, media, TMDbMovieDto, ApiError } from '@/lib/api';
 import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 interface TorrentFileInfo {
     name: string;
@@ -36,6 +33,7 @@ interface FormErrors {
     description?: string;
     category?: string;
     imdbId?: string;
+    fetchMedia?: string;
 }
 
 export default function TorrentUploadPage() {
@@ -55,13 +53,10 @@ export default function TorrentUploadPage() {
     const [mediaInput, setMediaInput] = useState('');
     const [mediaInfo, setMediaInfo] = useState<TMDbMovieDto | null>(null);
     const [isFetchingMediaInfo, setIsFetchingMediaInfo] = useState(false);
-    const [fetchMediaError, setFetchMediaError] = useState<string | null>(null);
     const [torrentInfo, setTorrentInfo] = useState<TorrentFileInfo | null>(null);
     const [errors, setErrors] = useState<FormErrors>({});
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
-    const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [categories, setCategories] = useState<TorrentCategoryDto[]>([]);
@@ -75,24 +70,16 @@ export default function TorrentUploadPage() {
                 setCategories(categoriesList);
             } catch (err) {
                 console.error('Failed to fetch categories:', err);
-                // Fallback to enum-based categories if API fails
-                const fallbackCategories = Object.entries(TorrentCategory)
-                    .filter(([key]) => isNaN(Number(key)))
-                    .map(([key, value]) => ({
-                        id: value as number,
-                        name: key,
-                        key: key.toLowerCase(),
-                    }));
-                setCategories(fallbackCategories);
+                toast.error(t('torrentUpload.error_fetch_categories'));
             } finally {
                 setIsLoadingCategories(false);
             }
         };
 
         fetchCategories();
-    }, []);
+    }, [t]);
 
-    const validateForm = (): boolean => {
+    const validateForm = useCallback((): boolean => {
         const newErrors: FormErrors = {};
 
         if (!formData.torrentFile) {
@@ -102,7 +89,7 @@ export default function TorrentUploadPage() {
         if (!formData.description.trim()) {
             newErrors.description = t('torrentUpload.error_description_required');
         } else if (formData.description.length > 4096) {
-            newErrors.description = `${t('torrentUpload.error_description_required')} (Max 4096 chars)`;
+            newErrors.description = `${t('torrentUpload.error_description_max_length')}`;
         }
 
         if (!formData.category) {
@@ -111,43 +98,24 @@ export default function TorrentUploadPage() {
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-    };
+    }, [formData, t]);
 
     const handleFileSelect = (file: File) => {
         if (!file.name.endsWith('.torrent')) {
-            setErrors({ torrentFile: t('torrentUpload.error_invalid_file') });
+            setErrors(prev => ({ ...prev, torrentFile: t('torrentUpload.error_invalid_file') }));
             return;
         }
 
-        if (file.size > 100 * 1024 * 1024) {
-            setErrors({ torrentFile: t('torrentUpload.error_file_too_large') });
+        if (file.size > 100 * 1024 * 1024) { // 100MB limit
+            setErrors(prev => ({ ...prev, torrentFile: t('torrentUpload.error_file_too_large') }));
             return;
         }
 
         setFormData({ ...formData, torrentFile: file });
-        setErrors({ ...errors, torrentFile: undefined });
+        setErrors(prev => ({ ...prev, torrentFile: undefined }));
 
-        // Parse torrent file info
-        parseTorrentFile(file);
-    };
-
-    const parseTorrentFile = async (file: File) => {
-        try {
-            const buffer = await file.arrayBuffer();
-            const decoder = new TextDecoder('utf-8');
-            const text = decoder.decode(buffer);
-
-            // Extract filename from torrent (basic parsing)
-            const nameMatch = text.match(/name(\d+):/);
-            const info: TorrentFileInfo = {
-                name: file.name,
-                size: file.size,
-            };
-
-            setTorrentInfo(info);
-        } catch (err) {
-            console.error('Failed to parse torrent file:', err);
-        }
+        // Basic torrent info parsing
+        setTorrentInfo({ name: file.name, size: file.size });
     };
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -176,7 +144,7 @@ export default function TorrentUploadPage() {
     const handleFetchMediaInfo = async () => {
         if (!mediaInput) return;
         setIsFetchingMediaInfo(true);
-        setFetchMediaError(null);
+        setErrors(prev => ({ ...prev, fetchMedia: undefined }));
         setMediaInfo(null);
         try {
             const data = await media.getMetadata(mediaInput, locale);
@@ -186,11 +154,8 @@ export default function TorrentUploadPage() {
             }
         } catch (error) {
             console.error('Failed to fetch media info:', error);
-            if (error instanceof ApiError) {
-                setFetchMediaError(error.message);
-            } else {
-                setFetchMediaError(t('torrentUpload.error_fetch_generic'));
-            }
+            const errorMessage = error instanceof ApiError ? error.message : t('torrentUpload.error_fetch_generic');
+            setErrors(prev => ({ ...prev, fetchMedia: errorMessage }));
             setMediaInfo(null);
         } finally {
             setIsFetchingMediaInfo(false);
@@ -205,14 +170,12 @@ export default function TorrentUploadPage() {
         }
 
         if (!formData.torrentFile) {
-            setErrorMessage(t('torrentUpload.error_no_file'));
+            toast.error(t('torrentUpload.error_no_file'));
             return;
         }
 
         setIsUploading(true);
         setUploadProgress(0);
-        setErrorMessage('');
-        setSuccessMessage('');
 
         try {
             const response = await torrents.uploadTorrent(
@@ -222,35 +185,29 @@ export default function TorrentUploadPage() {
                 formData.imdbId,
                 (progressEvent) => {
                     if (progressEvent.total) {
-                        const progress = Math.round(
-                            (progressEvent.loaded / progressEvent.total) * 100
-                        );
+                        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
                         setUploadProgress(progress);
                     }
                 }
             );
 
-            setSuccessMessage(t('torrentUpload.uploadSuccess'));
+            toast.success(t('torrentUpload.uploadSuccess'));
 
-            // Redirect to torrent details page after 2 seconds
             setTimeout(() => {
                 router.push(`/${locale}/torrents/${response.id}`);
             }, 2000);
         } catch (err) {
-            const axiosError = err as AxiosError<{
-                errors?: Record<string, string[]>;
-                error?: string;
-            }>;
+            const axiosError = err as AxiosError<{ errors?: Record<string, string[]>; error?: string; }>;
             const errorData = axiosError.response?.data;
 
+            let message = t('torrentUpload.uploadFailed');
             if (errorData?.errors) {
                 const firstError = Object.values(errorData.errors)[0];
-                setErrorMessage(Array.isArray(firstError) ? firstError[0] : String(firstError));
+                message = Array.isArray(firstError) ? firstError[0] : String(firstError);
             } else if (errorData?.error) {
-                setErrorMessage(errorData.error);
-            } else {
-                setErrorMessage(t('torrentUpload.uploadFailed'));
+                message = errorData.error;
             }
+            toast.error(message);
         } finally {
             setIsUploading(false);
             setUploadProgress(0);
@@ -260,34 +217,19 @@ export default function TorrentUploadPage() {
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             <Card>
-                <CardHeader className="flex flex-col items-start gap-2 pb-6">
-                    <h1 className="text-2xl font-bold">{t('torrentUpload.title')}</h1>
-                    <p className="text-default-500">{t('torrentUpload.description')}</p>
+                <CardHeader>
+                    <CardTitle className="text-2xl">{t('torrentUpload.title')}</CardTitle>
+                    <p className="text-muted-foreground pt-2">{t('torrentUpload.description')}</p>
                 </CardHeader>
-                <CardBody>
-                    {successMessage && (
-                        <Alert color="success" className="mb-4">
-                            {successMessage}
-                        </Alert>
-                    )}
-
-                    {errorMessage && (
-                        <Alert color="danger" className="mb-4">
-                            {errorMessage}
-                        </Alert>
-                    )}
-
-                    <form onSubmit={handleUpload}>
+                <CardContent>
+                    <form onSubmit={handleUpload} className="space-y-8">
                         {/* File Upload Area */}
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium mb-2">
-                                {t('torrentUpload.selectFile')} <span className="text-danger">*</span>
-                            </label>
+                        <div>
+                            <Label className="block text-sm font-medium mb-2">
+                                {t('torrentUpload.selectFile')} <span className="text-destructive">*</span>
+                            </Label>
                             <div
-                                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition ${isDragging
-                                        ? 'border-primary bg-primary-50'
-                                        : 'border-default-300 hover:border-primary'
-                                    } ${errors.torrentFile ? 'border-danger' : ''}`}
+                                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition ${isDragging ? 'border-primary bg-primary/10' : 'border-border hover:border-primary'} ${errors.torrentFile ? 'border-destructive' : ''}`}
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
                                 onDrop={handleDrop}
@@ -297,124 +239,98 @@ export default function TorrentUploadPage() {
                                     ref={fileInputRef}
                                     type="file"
                                     accept=".torrent"
-                                    onChange={(e) => {
-                                        if (e.target.files?.[0]) {
-                                            handleFileSelect(e.target.files[0]);
-                                        }
-                                    }}
+                                    onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
                                     disabled={isUploading}
                                     className="hidden"
                                 />
 
                                 {formData.torrentFile ? (
                                     <div>
-                                        <p className="text-success font-medium">{t('torrentUpload.fileSelected')}</p>
-                                        <p className="text-default-500 text-sm mt-2">
-                                            {formData.torrentFile.name}
-                                        </p>
-                                        <p className="text-default-400 text-xs">
-                                            {(formData.torrentFile.size / 1024).toFixed(2)} KB
-                                        </p>
+                                        <p className="text-green-600 font-medium">{t('torrentUpload.fileSelected')}</p>
+                                        <p className="text-muted-foreground text-sm mt-2">{formData.torrentFile.name}</p>
+                                        <p className="text-muted-foreground text-xs">{(formData.torrentFile.size / 1024).toFixed(2)} KB</p>
                                     </div>
                                 ) : (
-                                    <div>
-                                        <p className="text-default-700 font-medium">
-                                            {t('torrentUpload.dragDropHint')}
-                                        </p>
-                                    </div>
+                                    <p className="text-foreground font-medium">{t('torrentUpload.dragDropHint')}</p>
                                 )}
                             </div>
-                            {errors.torrentFile && (
-                                <p className="text-danger text-sm mt-2">{errors.torrentFile}</p>
-                            )}
+                            {errors.torrentFile && <p className="text-destructive text-sm mt-2">{errors.torrentFile}</p>}
                         </div>
 
                         {/* Torrent Info Preview */}
                         {torrentInfo && (
-                            <div className="mb-6 p-4 bg-default-100 rounded-lg">
+                            <div className="p-4 bg-secondary rounded-lg">
                                 <h3 className="font-medium mb-2">{t('torrentUpload.torrentInfo')}</h3>
-                                <p className="text-sm text-default-600">
-                                    <span className="font-medium">{t('torrentUpload.fileName')}:</span>{' '}
-                                    {torrentInfo.name}
+                                <p className="text-sm text-muted-foreground">
+                                    <span className="font-medium">{t('torrentUpload.fileName')}:</span> {torrentInfo.name}
                                 </p>
-                                <p className="text-sm text-default-600">
-                                    <span className="font-medium">{t('torrentUpload.fileSize')}:</span>{' '}
-                                    {(torrentInfo.size / 1024 / 1024).toFixed(2)} MB
+                                <p className="text-sm text-muted-foreground">
+                                    <span className="font-medium">{t('torrentUpload.fileSize')}:</span> {(torrentInfo.size / 1024 / 1024).toFixed(2)} MB
                                 </p>
                             </div>
                         )}
 
                         {/* Description Field */}
-                        <div className="mb-6">
-                            <CustomTextarea
-                                label={t('torrentUpload.description_label')}
+                        <div className="space-y-2">
+                            <Label htmlFor="description">{t('torrentUpload.description_label')}</Label>
+                            <Textarea
+                                id="description"
                                 placeholder={t('torrentUpload.description_placeholder')}
                                 value={formData.description}
                                 onChange={(e) => {
                                     setFormData({ ...formData, description: e.target.value });
-                                    if (errors.description) {
-                                        setErrors({ ...errors, description: undefined });
-                                    }
+                                    if (errors.description) setErrors({ ...errors, description: undefined });
                                 }}
                                 maxLength={4096}
-                                minRows={4}
-                                isInvalid={!!errors.description}
-                                errorMessage={errors.description}
+                                className={`min-h-[100px] ${errors.description ? 'border-destructive' : ''}`}
                             />
+                            {errors.description && <p className="text-destructive text-sm">{errors.description}</p>}
                         </div>
 
                         {/* Category Dropdown */}
-                        <div className="mb-6">
+                        <div className="space-y-2">
+                            <Label>{t('torrentUpload.category_label')}</Label>
                             <Select
-                                label={t('torrentUpload.category_label')}
-                                placeholder={t('torrentUpload.category_placeholder')}
-                                selectedKeys={formData.category ? [formData.category] : new Set()}
-                                onChange={(e) => {
-                                    setFormData({ ...formData, category: e.target.value });
-                                    if (errors.category) {
-                                        setErrors({ ...errors, category: undefined });
-                                    }
+                                value={formData.category}
+                                onValueChange={(value) => {
+                                    setFormData({ ...formData, category: value });
+                                    if (errors.category) setErrors({ ...errors, category: undefined });
                                 }}
-                                isInvalid={!!errors.category}
-                                errorMessage={errors.category}
-                                isDisabled={isLoadingCategories}
+                                disabled={isLoadingCategories}
                             >
-                                {categories.map((cat) => (
-                                    <SelectItem key={cat.key}>
-                                        {t("categories." + cat.name)}
-                                    </SelectItem>
-                                ))}
+                                <SelectTrigger className={errors.category ? 'border-destructive' : ''}>
+                                    <SelectValue placeholder={t('torrentUpload.category_placeholder')} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {categories.map((cat) => (
+                                        <SelectItem key={cat.key} value={cat.key}>{t(`categories.${cat.name}`)}</SelectItem>
+                                    ))}
+                                </SelectContent>
                             </Select>
+                            {errors.category && <p className="text-destructive text-sm">{errors.category}</p>}
                         </div>
 
-                        {/* IMDB ID Field */}
                         {/* Media Info Fetcher */}
-                        <div className="mb-6">
+                        <div>
                             <div className="flex items-end space-x-2">
-                                <div className="flex-grow">
-                                    <CustomInput
-                                        label={t('torrentUpload.media_label')}
-                                        placeholder={t('torrentUpload.media_placeholder')}
-                                        value={mediaInput}
-                                        onChange={(e) => setMediaInput(e.target.value)}
-                                        description={t('torrentUpload.media_hint')}
-                                        isInvalid={!!fetchMediaError}
-                                        errorMessage={fetchMediaError}
-                                    />
-                                </div>
-                                <Button
-                                    type="button"
-                                    onClick={handleFetchMediaInfo}
-                                    isLoading={isFetchingMediaInfo}
-                                >
-                                    {t('torrentUpload.fetchInfo')}
+                                <FormField
+                                    label={t('torrentUpload.media_label')}
+                                    placeholder={t('torrentUpload.media_placeholder')}
+                                    value={mediaInput}
+                                    onChange={(e) => setMediaInput(e.target.value)}
+                                    error={errors.fetchMedia}
+                                    containerClassName="flex-grow"
+                                />
+                                <Button type="button" onClick={handleFetchMediaInfo} disabled={isFetchingMediaInfo}>
+                                    {isFetchingMediaInfo ? t('common.loading') : t('torrentUpload.fetchInfo')}
                                 </Button>
                             </div>
+                            <p className="text-sm text-muted-foreground mt-1">{t('torrentUpload.media_hint')}</p>
                         </div>
 
                         {/* Media Info Preview */}
                         {mediaInfo && (
-                            <div className="mb-6 p-4 bg-default-100 rounded-lg flex space-x-4">
+                            <div className="p-4 bg-secondary rounded-lg flex space-x-4">
                                 {mediaInfo.poster_path && (
                                     <div className="flex-shrink-0 w-24">
                                         <img
@@ -426,49 +342,33 @@ export default function TorrentUploadPage() {
                                 )}
                                 <div>
                                     <h3 className="font-bold text-lg">{mediaInfo.title}</h3>
-                                    <p className="text-sm text-default-500">
-                                        {mediaInfo.release_date
-                                            ? new Date(mediaInfo.release_date).getFullYear()
-                                            : 'N/A'}
+                                    <p className="text-sm text-muted-foreground">
+                                        {mediaInfo.release_date ? new Date(mediaInfo.release_date).getFullYear() : 'N/A'}
                                     </p>
-                                    <p className="text-sm mt-2 text-default-700 line-clamp-3">
-                                        {mediaInfo.overview}
-                                    </p>
+                                    <p className="text-sm mt-2 text-foreground line-clamp-3">{mediaInfo.overview}</p>
                                 </div>
                             </div>
                         )}
 
                         {/* Upload Progress */}
                         {isUploading && (
-                            <div className="mb-6">
-                                <Progress
-                                    value={uploadProgress}
-                                    label={`${t('torrentUpload.uploadingProgress')}: ${uploadProgress}%`}
-                                    className="max-w-md"
-                                />
+                            <div className="space-y-2">
+                                <Label>{`${t('torrentUpload.uploadingProgress')}: ${uploadProgress}%`}</Label>
+                                <Progress value={uploadProgress} />
                             </div>
                         )}
 
                         {/* Submit Buttons */}
-                        <div className="flex gap-2 mt-8">
-                            <Button
-                                color="primary"
-                                type="submit"
-                                isLoading={isUploading}
-                                isDisabled={isUploading || !formData.torrentFile}
-                            >
-                                {t('torrentUpload.uploadButton')}
+                        <div className="flex gap-2 pt-4">
+                            <Button type="submit" disabled={isUploading || !formData.torrentFile}>
+                                {isUploading ? t('common.loading') : t('torrentUpload.uploadButton')}
                             </Button>
-                            <Button
-                                variant="flat"
-                                onClick={() => router.back()}
-                                isDisabled={isUploading}
-                            >
-                                {t('torrentUpload.cancel')}
+                            <Button variant="outline" type="button" onClick={() => router.back()} disabled={isUploading}>
+                                {t('common.cancel')}
                             </Button>
                         </div>
                     </form>
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );

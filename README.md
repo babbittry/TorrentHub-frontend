@@ -7,7 +7,7 @@
 -   基于 **Next.js App Router** 的现代化 Web 应用。
 -   使用 **Tailwind CSS** 构建的响应式设计。
 -   通过 **`next-intl`** 实现完整的国际化支持。
--   包含一套由 **`@heroui/react`** 提供的 UI 组件。
+-   包含一套由 **`shadcn`** 提供的 UI 组件。
 -   严格的 **TypeScript** 类型检查和 **ESLint** 代码规范。
 
 ## 🚀 快速开始
@@ -47,7 +47,7 @@ npm run dev
 -   **UI 库**: [React](https://react.dev/)
 -   **语言**: [TypeScript](https://www.typescriptlang.org/)
 -   **样式**: [Tailwind CSS](https://tailwindcss.com/)
--   **UI 组件**: [@heroui/react](https://www.heroui.net/)
+-   **UI 组件**: [shadcn](https://ui.shadcn.com/)
 -   **国际化**: [next-intl](https://next-intl-docs.vercel.app/)
 -   **图标**: [Font Awesome](https://fontawesome.com/)
 

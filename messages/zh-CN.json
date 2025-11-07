@@ -629,6 +629,7 @@
             "modal": {
                 "title": "编辑用户: {username}",
                 "roleLabel": "角色",
+                "selectRole": "请选择角色",
                 "bannedLabel": "已封禁",
                 "banReasonLabel": "封禁原因",
                 "cancelButton": "取消",

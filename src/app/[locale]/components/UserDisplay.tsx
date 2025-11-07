@@ -3,7 +3,7 @@
 import React from 'react';
 import { UserDisplayDto } from '@/lib/api';
 import { API_BASE_URL } from '@/lib/api';
-import { Tooltip } from '@heroui/react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Link } from '@/i18n/navigation';
 
 interface UserDisplayProps {
@@ -56,24 +56,30 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ user, showAvatar = false, ava
     return (
         <span className="inline-flex items-center space-x-2">
             {showAvatar && (
-                <Link href={`/users/${id}`} className="flex-shrink-0">
-                    <img
-                        src={avatarUrl}
-                        alt={username}
-                        className={`${avatarSizeClasses[avatarSize]} rounded-full border-2 border-gray-200`}
-                    />
-                </Link>
+                <img
+                    src={avatarUrl}
+                    alt={username}
+                    className={`${avatarSizeClasses[avatarSize]} rounded-full border-2 border-gray-200 cursor-pointer`}
+                    onClick={() => window.location.href = `/users/${id}`}
+                />
             )}
             {showUsername && (
                 <>
                     {equippedBadge && (
-                        <Tooltip title={equippedBadge.code}>
-                            <img
-                                src={`${API_BASE_URL}/badges/${equippedBadge.code}.svg`}
-                                alt={equippedBadge.code}
-                                className="h-5 w-5"
-                            />
-                        </Tooltip>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <img
+                                        src={`${API_BASE_URL}/badges/${equippedBadge.code}.svg`}
+                                        alt={equippedBadge.code}
+                                        className="h-5 w-5"
+                                    />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{equippedBadge.code}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     )}
                     <Link href={`/users/${id}`} style={usernameStyle} title={userLevelName || ''}>
                         {username}

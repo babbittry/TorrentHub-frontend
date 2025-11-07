@@ -4,10 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { requests, CreateRequestDto, settings, PublicSiteSettingsDto } from '@/lib/api';
 import { useTranslations } from 'next-intl';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Input } from "@heroui/input";
-import { Textarea } from "@heroui/input";
-import { Button } from "@heroui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form-field";
 
 const NewRequestPage = () => {
     const router = useRouter();
@@ -64,40 +65,39 @@ const NewRequestPage = () => {
 
     return (
         <div className="container mx-auto p-4 sm:p-6">
-            <Card className="max-w-2xl mx-auto p-4">
+            <Card className="max-w-2xl mx-auto">
                 <form onSubmit={handleSubmit}>
-                    <CardHeader className="flex flex-col items-center pb-4">
-                        <h1 className="text-3xl font-bold">{t('requestsPage.createNew')}</h1>
+                    <CardHeader className="text-center">
+                        <CardTitle className="text-3xl">{t('requestsPage.createNew')}</CardTitle>
                     </CardHeader>
-                    <CardBody className="gap-6">
-                        <Input
-                            isRequired
+                    <CardContent className="space-y-6">
+                        <FormField
                             label={t('common.title')}
                             value={title}
-                            onValueChange={setTitle}
-                            labelPlacement="outside"
+                            onChange={(e) => setTitle(e.target.value)}
                             placeholder={t('requestsPage.enter_request_title')}
                             maxLength={100}
+                            required
                         />
-                        <Textarea
-                            isRequired
-                            label={t('common.description')}
-                            value={description}
-                            onValueChange={setDescription}
-                            labelPlacement="outside"
-                            placeholder={t('requestsPage.enter_request_description')}
-                            maxLength={500}
-                        />
-                        <Input
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">{t('common.description')}</label>
+                            <Textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder={t('requestsPage.enter_request_description')}
+                                maxLength={500}
+                                required
+                            />
+                        </div>
+                        <FormField
                             label={`${t('requestsPage.initial_bounty')} (${t('common.optional')})`}
                             type="number"
                             value={initialBounty}
-                            onValueChange={setInitialBounty}
-                            labelPlacement="outside"
+                            onChange={(e) => setInitialBounty(e.target.value)}
                             placeholder="e.g., 500"
                         />
                         {siteSettings && (
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                                 {t('requestsPage.bounty_help_text', {
                                     baseCost: siteSettings.createRequestCost,
                                     totalCost: siteSettings.createRequestCost + (Number(initialBounty) || 0)
@@ -105,18 +105,17 @@ const NewRequestPage = () => {
                             </p>
                         )}
 
-                        {error && <p className="text-danger text-sm">{error}</p>}
+                        {error && <p className="text-destructive text-sm">{error}</p>}
 
                         <div className="flex justify-end">
                             <Button
                                 type="submit"
-                                color="primary"
-                                isLoading={isSubmitting}
+                                disabled={isSubmitting}
                             >
-                                {t('requestsPage.submit_request')}
+                                {isSubmitting ? t('common.loading') : t('requestsPage.submit_request')}
                             </Button>
                         </div>
-                    </CardBody>
+                    </CardContent>
                 </form>
             </Card>
         </div>

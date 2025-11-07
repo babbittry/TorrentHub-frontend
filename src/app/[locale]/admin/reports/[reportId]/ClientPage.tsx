@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { reports, ReportDto } from '../../../../../lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Button } from '@heroui/react';
-import { Textarea } from "@heroui/react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -81,8 +82,10 @@ const ClientPage = ({ params }: ClientPageProps) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
-                    <CardHeader>{t('process.reportDetails')}</CardHeader>
-                    <CardBody className="space-y-4">
+                    <CardHeader>
+                        <CardTitle>{t('process.reportDetails')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
                         <div>
                             <p className="font-semibold">{t('process.torrent')}:</p>
                             {report.torrent ? (
@@ -125,32 +128,33 @@ const ClientPage = ({ params }: ClientPageProps) => {
                             <p className="font-semibold">{t('process.reportedAt')}:</p>
                             <p>{new Date(report.reportedAt).toLocaleString()}</p>
                         </div>
-                    </CardBody>
+                    </CardContent>
                 </Card>
 
                 <Card>
-                    <CardHeader>{t('process.processAction')}</CardHeader>
-                    <CardBody>
+                    <CardHeader>
+                        <CardTitle>{t('process.processAction')}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label htmlFor="adminNotes" className="block text-sm font-medium text-gray-700">
+                            <div className="space-y-2">
+                                <Label htmlFor="adminNotes">
                                     {t('process.adminNotes')}
-                                </label>
+                                </Label>
                                 <Textarea
                                     id="adminNotes"
                                     value={adminNotes}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAdminNotes(e.target.value)}
+                                    onChange={(e) => setAdminNotes(e.target.value)}
                                     placeholder={t('process.notesPlaceholder')}
                                     required
-                                    className="mt-1 block w-full"
                                 />
                             </div>
-                            {error && <p className="text-red-500 text-sm">{error}</p>}
-                            <Button type="submit" color="primary" disabled={isSubmitting}>
+                            {error && <p className="text-destructive text-sm">{error}</p>}
+                            <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? t('process.submitting') : t('process.markAsProcessed')}
                             </Button>
                         </form>
-                    </CardBody>
+                    </CardContent>
                 </Card>
             </div>
         </div>

@@ -1,29 +1,29 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { stats, reports, cheatLogs as cheatLogsApi, SiteStatsDto, ReportDto, CheatLogDto } from '../../../../lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faCompactDisc, faArrowUp, faArrowDown, faExclamationTriangle, faShieldAlt, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
-import { Button } from '@heroui/react';
+import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 const StatCard = ({ title, value, icon, link }: { title: string, value: string | number, icon: IconDefinition, link: string }) => (
     <Link href={link}>
         <Card className="hover:shadow-lg transition-shadow duration-300">
-            <CardBody>
+            <CardContent className="pt-6">
                 <div className="flex items-center">
                     <div className="mr-4">
-                        <FontAwesomeIcon icon={icon} className="text-3xl text-gray-500" />
+                        <FontAwesomeIcon icon={icon} className="text-3xl text-muted-foreground" />
                     </div>
                     <div>
-                        <p className="text-sm text-gray-600">{title}</p>
+                        <p className="text-sm text-muted-foreground">{title}</p>
                         <p className="text-2xl font-bold">{value}</p>
                     </div>
                 </div>
-            </CardBody>
+            </CardContent>
         </Card>
     </Link>
 );
@@ -78,17 +78,21 @@ const AdminDashboard = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <Card>
-                    <CardHeader>{t('dashboard.reports.title')}</CardHeader>
-                    <CardBody>
-                        <Table aria-label={t('dashboard.reports.title')}>
+                    <CardHeader>
+                        <CardTitle>{t('dashboard.reports.title')}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
                             <TableHeader>
-                                <TableColumn>{t('dashboard.reports.torrent')}</TableColumn>
-                                <TableColumn>{t('dashboard.reports.reason')}</TableColumn>
-                                <TableColumn>{t('dashboard.reports.reportedAt')}</TableColumn>
-                                <TableColumn>{t('dashboard.reports.actions')}</TableColumn>
+                                <TableRow>
+                                    <TableHead>{t('dashboard.reports.torrent')}</TableHead>
+                                    <TableHead>{t('dashboard.reports.reason')}</TableHead>
+                                    <TableHead>{t('dashboard.reports.reportedAt')}</TableHead>
+                                    <TableHead>{t('dashboard.reports.actions')}</TableHead>
+                                </TableRow>
                             </TableHeader>
-                            <TableBody items={pendingReports.slice(0, 5)}>
-                                {(item) => (
+                            <TableBody>
+                                {pendingReports.slice(0, 5).map((item) => (
                                     <TableRow key={item.id}>
                                         <TableCell>
                                            {item.torrent ? (
@@ -103,36 +107,40 @@ const AdminDashboard = () => {
                                         <TableCell>{new Date(item.reportedAt).toLocaleString()}</TableCell>
                                         <TableCell>
                                            <Link href={`/admin/reports/${item.id}`}>
-                                               <Button color="primary">{t('dashboard.reports.process')}</Button>
+                                               <Button>{t('dashboard.reports.process')}</Button>
                                            </Link>
                                        </TableCell>
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
-                    </CardBody>
+                    </CardContent>
                 </Card>
 
                 <Card>
-                    <CardHeader>{t('dashboard.cheatLogs.title')}</CardHeader>
-                    <CardBody>
-                        <Table aria-label={t('dashboard.cheatLogs.title')}>
+                    <CardHeader>
+                        <CardTitle>{t('dashboard.cheatLogs.title')}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
                             <TableHeader>
-                                <TableColumn>{t('dashboard.cheatLogs.user')}</TableColumn>
-                                <TableColumn>{t('dashboard.cheatLogs.reason')}</TableColumn>
-                                <TableColumn>{t('dashboard.cheatLogs.date')}</TableColumn>
+                                <TableRow>
+                                    <TableHead>{t('dashboard.cheatLogs.user')}</TableHead>
+                                    <TableHead>{t('dashboard.cheatLogs.reason')}</TableHead>
+                                    <TableHead>{t('dashboard.cheatLogs.date')}</TableHead>
+                                </TableRow>
                             </TableHeader>
-                            <TableBody items={cheatLogs.slice(0, 5)}>
-                                {(item) => (
+                            <TableBody>
+                                {cheatLogs.slice(0, 5).map((item) => (
                                     <TableRow key={item.id}>
                                         <TableCell>{item.userName || `User #${item.userId}`}</TableCell>
                                         <TableCell>{item.details || '-'}</TableCell>
                                         <TableCell>{new Date(item.timestamp).toLocaleString()}</TableCell>
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
-                    </CardBody>
+                    </CardContent>
                 </Card>
             </div>
         </div>

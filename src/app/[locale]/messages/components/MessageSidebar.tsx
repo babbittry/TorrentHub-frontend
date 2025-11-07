@@ -1,9 +1,11 @@
+'use client';
+
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import type { MailboxType } from '../page';
-import { Button } from "@heroui/button";
-import { Listbox, ListboxItem } from "@heroui/listbox";
+import { Button } from "@/components/ui/button";
+import { cn } from '@/lib/utils';
 
 interface MessageSidebarProps {
     activeMailbox: MailboxType;
@@ -13,29 +15,31 @@ interface MessageSidebarProps {
 const MessageSidebar: React.FC<MessageSidebarProps> = ({ activeMailbox, onSelectMailbox }) => {
     const t = useTranslations('messagesPage');
 
+    const mailboxOptions: { key: MailboxType; label: string }[] = [
+        { key: 'inbox', label: t('inbox') },
+        { key: 'sent', label: t('sent') },
+    ];
+
     return (
         <div className="flex flex-col space-y-4">
-            <Button as={Link} href="/messages/new" color="primary" className="w-full">
-                {t('compose')}
+            <Button asChild>
+                <Link href="/messages/new">{t('compose')}</Link>
             </Button>
-            <Listbox
-                aria-label="Mailbox navigation"
-                variant="flat"
-                disallowEmptySelection
-                selectionMode="single"
-                selectedKeys={new Set([activeMailbox])}
-                onSelectionChange={(keys) => onSelectMailbox(Array.from(keys)[0] as MailboxType)}
-                itemClasses={{
-                    base: [
-                        "px-3 py-2 rounded-md transition-colors font-semibold",
-                        "data-[hover=true]:bg-default-100",
-                        "data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground",
-                    ],
-                }}
-            >
-                <ListboxItem key="inbox">{t('inbox')}</ListboxItem>
-                <ListboxItem key="sent">{t('sent')}</ListboxItem>
-            </Listbox>
+            <div className="space-y-1">
+                {mailboxOptions.map(({ key, label }) => (
+                    <Button
+                        key={key}
+                        variant={activeMailbox === key ? 'secondary' : 'ghost'}
+                        className={cn(
+                            "w-full justify-start",
+                            activeMailbox === key && "font-bold"
+                        )}
+                        onClick={() => onSelectMailbox(key)}
+                    >
+                        {label}
+                    </Button>
+                ))}
+            </div>
         </div>
     );
 };

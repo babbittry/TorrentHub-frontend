@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { admin, SystemLogDto } from '../../../../lib/api';
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
-import { CustomInput } from '../../components/CustomInputs';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useTranslations } from 'next-intl';
 
 const LogViewerPage = () => {
@@ -39,41 +40,50 @@ const LogViewerPage = () => {
 
             <Card>
                 <CardHeader>
-                    <div className="flex space-x-4">
-                        <CustomInput
-                            label={t('logViewer.searchLabel')}
-                            value={q}
-                            onChange={(e) => setQ(e.target.value)}
-                        />
-                        <CustomInput
-                            label={t('logViewer.levelLabel')}
-                            value={level}
-                            onChange={(e) => setLevel(e.target.value)}
-                        />
+                    <CardTitle>{t('logViewer.systemLogsTab')}</CardTitle>
+                    <div className="flex space-x-4 mt-4">
+                        <div className="space-y-2 flex-1">
+                            <Label htmlFor="search">{t('logViewer.searchLabel')}</Label>
+                            <Input
+                                id="search"
+                                value={q}
+                                onChange={(e) => setQ(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2 flex-1">
+                            <Label htmlFor="level">{t('logViewer.levelLabel')}</Label>
+                            <Input
+                                id="level"
+                                value={level}
+                                onChange={(e) => setLevel(e.target.value)}
+                            />
+                        </div>
                     </div>
                 </CardHeader>
-                <CardBody>
+                <CardContent>
                     {loading ? (
                         <p>{t('logViewer.loading')}</p>
                     ) : (
-                        <Table aria-label={t('logViewer.systemLogsTab')}>
+                        <Table>
                             <TableHeader>
-                                <TableColumn>{t('logViewer.systemLogs.table.level')}</TableColumn>
-                                <TableColumn>{t('logViewer.systemLogs.table.timestamp')}</TableColumn>
-                                <TableColumn>{t('logViewer.systemLogs.table.message')}</TableColumn>
+                                <TableRow>
+                                    <TableHead>{t('logViewer.systemLogs.table.level')}</TableHead>
+                                    <TableHead>{t('logViewer.systemLogs.table.timestamp')}</TableHead>
+                                    <TableHead>{t('logViewer.systemLogs.table.message')}</TableHead>
+                                </TableRow>
                             </TableHeader>
-                            <TableBody items={systemLogs}>
-                                {(item) => (
+                            <TableBody>
+                                {systemLogs.map((item) => (
                                     <TableRow key={item.id}>
                                         <TableCell>{item.level}</TableCell>
                                         <TableCell>{new Date(item.timestamp).toLocaleString()}</TableCell>
                                         <TableCell>{item.message}</TableCell>
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
                     )}
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );
