@@ -205,7 +205,8 @@
         "error_rejecting": "拒绝满足失败。",
         "rejection_reason_required": "必须填写拒绝原因。",
         "rejection_reason": "拒绝原因",
-        "bounty_help_text": "发布此求种将花费 {baseCost} 金币作为基础费用。您还可以额外增加悬赏，总花费为 {totalCost} 金币。"
+        "bounty_help_text": "发布此求种将花费 {baseCost} 金币作为基础费用。您还可以额外增加悬赏，总花费为 {totalCost} 金币。",
+        "reason": "原因"
     },
     "messagesPage": {
         "title": "站内信",
@@ -841,6 +842,10 @@
         "imdb_label": "IMDB ID",
         "imdb_placeholder": "例如: tt1234567",
         "imdb_hint": "可选,用于自动获取影片信息",
+        "media_label": "TMDB/豆瓣/IMDb 链接或ID",
+        "media_placeholder": "输入链接或ID",
+        "media_hint": "输入IMDb/豆瓣链接或ID，自动获取电影信息。",
+        "fetchInfo": "获取信息",
         "uploadButton": "开始上传",
         "uploadingProgress": "上传进度",
         "uploadSuccess": "上传成功!",
@@ -850,6 +855,7 @@
         "error_file_too_large": "文件太大",
         "error_description_required": "描述不能为空",
         "error_category_required": "请选择分类",
+        "error_fetch_generic": "获取媒体信息失败，请检查输入或稍后再试。",
         "validating": "验证中...",
         "parsing": "解析种子文件...",
         "cancel": "取消"

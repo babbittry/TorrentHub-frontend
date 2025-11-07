@@ -576,6 +576,42 @@ export interface StoreItemDto {
     actionMetadata?: ActionMetadata | null;
 }
 
+// DTOs for Media related operations
+export interface Genre {
+    name: string;
+}
+
+export interface CastMember {
+    name: string;
+    order: number;
+}
+
+export interface CrewMember {
+    name: string;
+    job: string;
+}
+
+export interface Credits {
+    cast: CastMember[];
+    crew: CrewMember[];
+}
+
+export interface TMDbMovieDto {
+    id: number;
+    imdb_id?: string | null;
+    title?: string | null;
+    original_title?: string | null;
+    overview?: string | null;
+    release_date?: string | null;
+    poster_path?: string | null;
+    backdrop_path?: string | null;
+    tagline?: string | null;
+    runtime?: number | null;
+    genres: Genre[];
+    credits: Credits;
+    vote_average?: number | null;
+}
+
 // DTOs for Torrent related operations
 export enum TorrentStickyStatus {
     Normal = 0,
@@ -1118,6 +1154,17 @@ export const store = {
     },
     purchaseItem: async (itemId: number, payload?: object): Promise<void> => {
         await api.post(`/api/store/purchase`, { storeItemId: itemId, ...payload });
+    },
+};
+
+// Media API Functions
+export const media = {
+    getMetadata: async (input: string, language: string = 'zh-CN'): Promise<TMDbMovieDto> => {
+        const params = new URLSearchParams({
+            input: input,
+            language: language,
+        });
+        return callApi(api.get<ApiResponse<TMDbMovieDto>>(`/api/Media/metadata?${params.toString()}`));
     },
 };
 

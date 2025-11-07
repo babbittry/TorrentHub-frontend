@@ -842,6 +842,10 @@
         "imdb_label": "IMDB ID",
         "imdb_placeholder": "e.g., tt1234567",
         "imdb_hint": "Optional, used to fetch movie information automatically",
+        "media_label": "TMDB/Douban/IMDb Link or ID",
+        "media_placeholder": "Enter link or ID",
+        "media_hint": "Enter an IMDb/Douban link or ID to automatically fetch movie information.",
+        "fetchInfo": "Fetch Info",
         "uploadButton": "Start Upload",
         "uploadingProgress": "Upload Progress",
         "uploadSuccess": "Upload Successful!",
@@ -851,6 +855,7 @@
         "error_file_too_large": "File is too large",
         "error_description_required": "Description cannot be empty",
         "error_category_required": "Please select a category",
+        "error_fetch_generic": "Failed to fetch media info. Please check your input or try again later.",
         "validating": "Validating...",
         "parsing": "Parsing torrent file...",
         "cancel": "Cancel"

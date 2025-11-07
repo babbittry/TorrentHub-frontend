@@ -15,7 +15,7 @@ import {
     Alert,
 } from '@heroui/react';
 import { CustomInput, CustomTextarea } from '@/app/[locale]/components/CustomInputs';
-import { TorrentCategory, TorrentCategoryDto, torrents } from '@/lib/api';
+import { TorrentCategory, TorrentCategoryDto, torrents, media, TMDbMovieDto, ApiError } from '@/lib/api';
 import { AxiosError } from 'axios';
 
 interface TorrentFileInfo {
@@ -52,6 +52,10 @@ export default function TorrentUploadPage() {
         imdbId: '',
     });
 
+    const [mediaInput, setMediaInput] = useState('');
+    const [mediaInfo, setMediaInfo] = useState<TMDbMovieDto | null>(null);
+    const [isFetchingMediaInfo, setIsFetchingMediaInfo] = useState(false);
+    const [fetchMediaError, setFetchMediaError] = useState<string | null>(null);
     const [torrentInfo, setTorrentInfo] = useState<TorrentFileInfo | null>(null);
     const [errors, setErrors] = useState<FormErrors>({});
     const [isUploading, setIsUploading] = useState(false);
@@ -103,10 +107,6 @@ export default function TorrentUploadPage() {
 
         if (!formData.category) {
             newErrors.category = t('torrentUpload.error_category_required');
-        }
-
-        if (formData.imdbId && !/^tt\d{7,8}$/.test(formData.imdbId)) {
-            newErrors.imdbId = 'IMDB ID must be in format tt1234567';
         }
 
         setErrors(newErrors);
@@ -170,6 +170,30 @@ export default function TorrentUploadPage() {
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             handleFileSelect(files[0]);
+        }
+    };
+
+    const handleFetchMediaInfo = async () => {
+        if (!mediaInput) return;
+        setIsFetchingMediaInfo(true);
+        setFetchMediaError(null);
+        setMediaInfo(null);
+        try {
+            const data = await media.getMetadata(mediaInput, locale);
+            setMediaInfo(data);
+            if (data.imdb_id) {
+                setFormData((prev) => ({ ...prev, imdbId: data.imdb_id! }));
+            }
+        } catch (error) {
+            console.error('Failed to fetch media info:', error);
+            if (error instanceof ApiError) {
+                setFetchMediaError(error.message);
+            } else {
+                setFetchMediaError(t('torrentUpload.error_fetch_generic'));
+            }
+            setMediaInfo(null);
+        } finally {
+            setIsFetchingMediaInfo(false);
         }
     };
 
@@ -364,22 +388,55 @@ export default function TorrentUploadPage() {
                         </div>
 
                         {/* IMDB ID Field */}
+                        {/* Media Info Fetcher */}
                         <div className="mb-6">
-                            <CustomInput
-                                label={t('torrentUpload.imdb_label')}
-                                placeholder={t('torrentUpload.imdb_placeholder')}
-                                value={formData.imdbId}
-                                onChange={(e) => {
-                                    setFormData({ ...formData, imdbId: e.target.value });
-                                    if (errors.imdbId) {
-                                        setErrors({ ...errors, imdbId: undefined });
-                                    }
-                                }}
-                                description={t('torrentUpload.imdb_hint')}
-                                isInvalid={!!errors.imdbId}
-                                errorMessage={errors.imdbId}
-                            />
+                            <div className="flex items-end space-x-2">
+                                <div className="flex-grow">
+                                    <CustomInput
+                                        label={t('torrentUpload.media_label')}
+                                        placeholder={t('torrentUpload.media_placeholder')}
+                                        value={mediaInput}
+                                        onChange={(e) => setMediaInput(e.target.value)}
+                                        description={t('torrentUpload.media_hint')}
+                                        isInvalid={!!fetchMediaError}
+                                        errorMessage={fetchMediaError}
+                                    />
+                                </div>
+                                <Button
+                                    type="button"
+                                    onClick={handleFetchMediaInfo}
+                                    isLoading={isFetchingMediaInfo}
+                                >
+                                    {t('torrentUpload.fetchInfo')}
+                                </Button>
+                            </div>
                         </div>
+
+                        {/* Media Info Preview */}
+                        {mediaInfo && (
+                            <div className="mb-6 p-4 bg-default-100 rounded-lg flex space-x-4">
+                                {mediaInfo.poster_path && (
+                                    <div className="flex-shrink-0 w-24">
+                                        <img
+                                            src={`https://image.tmdb.org/t/p/w200${mediaInfo.poster_path}`}
+                                            alt={mediaInfo.title || 'Movie Poster'}
+                                            className="rounded-md"
+                                        />
+                                    </div>
+                                )}
+                                <div>
+                                    <h3 className="font-bold text-lg">{mediaInfo.title}</h3>
+                                    <p className="text-sm text-default-500">
+                                        {mediaInfo.release_date
+                                            ? new Date(mediaInfo.release_date).getFullYear()
+                                            : 'N/A'}
+                                    </p>
+                                    <p className="text-sm mt-2 text-default-700 line-clamp-3">
+                                        {mediaInfo.overview}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Upload Progress */}
                         {isUploading && (
