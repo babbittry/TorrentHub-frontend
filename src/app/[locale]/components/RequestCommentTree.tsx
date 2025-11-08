@@ -133,7 +133,7 @@ export default function RequestCommentTree({
 				{/* 评论主体 */}
 				<div className="flex items-start gap-4">
 					{/* 左侧头像 - 只显示头像,不显示用户名,可点击跳转 */}
-					<div className="flex-shrink-0">
+					<div className="shrink-0">
 						{comment.user && (
 							<UserDisplay user={comment.user} showAvatar={true} avatarSize="md" showUsername={false} />
 						)}
@@ -154,7 +154,7 @@ export default function RequestCommentTree({
 									</span>
 								)}
 							</div>
-							<span className="text-xs text-gray-400 flex-shrink-0">
+							<span className="text-xs text-gray-400 shrink-0">
 								{formatDistanceToNow(new Date(comment.createdAt), {
 									addSuffix: true,
 									locale: dateLocales[locale],
@@ -176,7 +176,7 @@ export default function RequestCommentTree({
 										{parentComment.text.length > 150 && (
 											<button
 												onClick={() => toggleQuote(comment.id)}
-												className="text-xs text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 flex-shrink-0"
+												className="text-xs text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 shrink-0"
 											>
 												{isQuoteExpanded ? t('collapse') : t('expand')}
 											</button>

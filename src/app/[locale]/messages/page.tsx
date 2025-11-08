@@ -85,7 +85,7 @@ const MessagesPage = () => {
                             <div className="flex-1 flex flex-col gap-1 min-w-0">
                                 <div className="flex justify-between gap-2">
                                     <span className={cn("truncate flex-1 min-w-0", isUnread ? 'text-primary' : 'text-muted-foreground')}>{fromToText}</span>
-                                    <span className="text-xs text-muted-foreground flex-shrink-0">{new Date(item.sentAt).toLocaleDateString()}</span>
+                                    <span className="text-xs text-muted-foreground shrink-0">{new Date(item.sentAt).toLocaleDateString()}</span>
                                 </div>
                                 <div className="text-foreground truncate">
                                     {item.subject}

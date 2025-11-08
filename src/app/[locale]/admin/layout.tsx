@@ -74,7 +74,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return (
         <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
             {/* Sidebar */}
-            <aside className={`bg-gray-800 text-white shadow-lg flex-shrink-0 transition-all duration-300 ${isSidebarOpen ? 'w-64 p-4' : 'w-0 p-0 overflow-hidden'}`}>
+            <aside className={`bg-gray-800 text-white shadow-lg shrink-0 transition-all duration-300 ${isSidebarOpen ? 'w-64 p-4' : 'w-0 p-0 overflow-hidden'}`}>
                 <h2 className="text-2xl font-bold mb-6">{t('adminPanel')}</h2>
                 <nav>
                     <ul>
@@ -95,14 +95,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </aside>
 
             {/* Main Content */}
-            <div className="flex-grow flex flex-col">
+            <div className="grow flex flex-col">
                 <header className="bg-white dark:bg-gray-800 shadow-md p-4 flex items-center">
                     <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                         <FontAwesomeIcon icon={faBars} />
                     </button>
                     {/* You can add more header content here, like user menu or notifications */}
                 </header>
-                <main className="flex-grow p-4 sm:p-6 lg:p-8">
+                <main className="grow p-4 sm:p-6 lg:p-8">
                     {children}
                 </main>
             </div>

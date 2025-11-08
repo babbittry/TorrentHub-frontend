@@ -1,88 +1,104 @@
 @import "tailwindcss";
-@config "../../../tailwind.config.ts"; /* 路径相对于当前 CSS 文件 */
+@config "../../../tailwind.config.ts";
 @plugin "tailwindcss-animate";
-/* Base colors for light mode */
+
+/* ==================== 主题色定义 ==================== */
+/* 亮色模式 */
 :root {
-  --color-background: #f8fafc; /* 浅蓝灰色背景 */
-  --color-foreground: #1e293b; /* 深蓝灰色文字 */
-  --color-primary: #ff9903; /* 橙色作为主色调 */
-  --color-primary-hover: #e68a00; /* 主色调的悬停状态 */
-  --color-secondary: #64748b; /* 次要文字/元素灰色 */
-  --color-border: #e2e8f0; /* 浅边框 */
-  --color-card-background: #ffffff; /* 卡片背景白色 */
-  --color-card-background-hover: #f1f5f9; /* 卡片悬停背景 */
-  --color-input-background: #ffffff; /* 输入框背景白色 */
-  --color-input-border: #cbd5e1; /* 输入框边框浅灰 */
-  --color-text-muted: #64748b; /* 柔和文字 */
-  --color-success: #22c55e; /* 成功提示绿色 */
-  --color-error: #ef4444; /* 错误提示红色 */ --radius: 0.625rem; --background: oklch(1 0 0); --foreground: oklch(0.145 0 0); --card: oklch(1 0 0); --card-foreground: oklch(0.145 0 0); --popover: oklch(1 0 0); --popover-foreground: oklch(0.145 0 0); --primary: oklch(0.205 0 0); --primary-foreground: oklch(0.985 0 0); --secondary: oklch(0.97 0 0); --secondary-foreground: oklch(0.205 0 0); --muted: oklch(0.97 0 0); --muted-foreground: oklch(0.556 0 0); --accent: oklch(0.97 0 0); --accent-foreground: oklch(0.205 0 0); --destructive: oklch(0.577 0.245 27.325); --border: oklch(0.922 0 0); --input: oklch(0.922 0 0); --ring: oklch(0.708 0 0); --chart-1: oklch(0.646 0.222 41.116); --chart-2: oklch(0.6 0.118 184.704); --chart-3: oklch(0.398 0.07 227.392); --chart-4: oklch(0.828 0.189 84.429); --chart-5: oklch(0.769 0.188 70.08); --sidebar: oklch(0.985 0 0); --sidebar-foreground: oklch(0.145 0 0); --sidebar-primary: oklch(0.205 0 0); --sidebar-primary-foreground: oklch(0.985 0 0); --sidebar-accent: oklch(0.97 0 0); --sidebar-accent-foreground: oklch(0.205 0 0); --sidebar-border: oklch(0.922 0 0); --sidebar-ring: oklch(0.708 0 0);
+  /* 主题色 - 橙黄色 */
+  --color-primary: #ff9903;
+  --color-primary-hover: #e68a00;
+  
+  /* shadcn/ui 变量 */
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  
+  /* 主色调 - 使用橙黄色 */
+  --primary: oklch(0.72 0.15 60);
+  --primary-foreground: oklch(1 0 0);
+  
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.72 0.15 60);
+  
 }
 
-/* Dark mode overrides */
+/* 暗色模式 */
 .dark {
-  --color-background: #0f172a; /* 深蓝灰色背景 */
-  --color-foreground: #e2e8f0; /* 浅蓝灰色文字 */
-  --color-primary: #ff9903; /* 橙色作为主色调 (与亮色模式相同) */
-  --color-primary-hover: #e68a00; /* 主色调的悬停状态 (与亮色模式相同) */
-  --color-secondary: #94a3b8; /* 次要文字/元素浅灰 */
-  --color-border: #334155; /* 深边框 */
-  --color-card-background: #1e293b; /* 深蓝灰色卡片背景 */
-  --color-card-background-hover: #334155; /* 卡片悬停背景 */
-  --color-input-background: #0f172a; /* 输入框背景深蓝灰 */
-  --color-input-border: #475569; /* 输入框边框深灰 */
-  --color-text-muted: #94a3b8; /* 柔和文字 */
-  --color-success: #22c55e; /* 成功提示绿色 */
-  --color-error: #ef4444; /* 错误提示红色 */ --background: oklch(0.145 0 0); --foreground: oklch(0.985 0 0); --card: oklch(0.205 0 0); --card-foreground: oklch(0.985 0 0); --popover: oklch(0.205 0 0); --popover-foreground: oklch(0.985 0 0); --primary: oklch(0.922 0 0); --primary-foreground: oklch(0.205 0 0); --secondary: oklch(0.269 0 0); --secondary-foreground: oklch(0.985 0 0); --muted: oklch(0.269 0 0); --muted-foreground: oklch(0.708 0 0); --accent: oklch(0.269 0 0); --accent-foreground: oklch(0.985 0 0); --destructive: oklch(0.704 0.191 22.216); --border: oklch(1 0 0 / 10%); --input: oklch(1 0 0 / 15%); --ring: oklch(0.556 0 0); --chart-1: oklch(0.488 0.243 264.376); --chart-2: oklch(0.696 0.17 162.48); --chart-3: oklch(0.769 0.188 70.08); --chart-4: oklch(0.627 0.265 303.9); --chart-5: oklch(0.645 0.246 16.439); --sidebar: oklch(0.205 0 0); --sidebar-foreground: oklch(0.985 0 0); --sidebar-primary: oklch(0.488 0.243 264.376); --sidebar-primary-foreground: oklch(0.985 0 0); --sidebar-accent: oklch(0.269 0 0); --sidebar-accent-foreground: oklch(0.985 0 0); --sidebar-border: oklch(1 0 0 / 10%); --sidebar-ring: oklch(0.556 0 0);
+  /* 主题色 - 橙黄色（保持一致） */
+  --color-primary: #ff9903;
+  --color-primary-hover: #e68a00;
+  
+  /* shadcn/ui 变量 */
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  
+  /* 主色调 - 使用橙黄色 */
+  --primary: oklch(0.72 0.15 60);
+  --primary-foreground: oklch(0.145 0 0);
+  
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.72 0.15 60);
+  
 }
 
+/* ==================== 全局样式 ==================== */
 body {
-  background: var(--color-background);
-  color: var(--color-foreground);
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* 为所有元素添加平滑的主题切换过渡效果 */
-*,
-*::before,
-*::after {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-duration: 0.3s;
-  transition-timing-function: ease-in-out;
-}
-
-/* 排除某些不需要过渡的元素 */
-input,
-textarea,
-select,
-button {
-  transition-property: background-color, border-color, color, fill, stroke, opacity, transform;
-  transition-duration: 0.2s;
-}
-
-/* 为卡片和容器添加更明显的过渡效果 */
-.card,
-.bg-white,
-.dark\:bg-gray-800,
-.bg-gray-100,
-.dark\:bg-gray-700 {
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Custom utilities or components for common styles */
-.btn-primary {
-  @apply bg-[var(--color-primary)] text-white px-4 py-2 rounded-md hover:bg-[var(--color-primary-hover)] transition-colors duration-200;
-}
-
+/* 仅为交互元素添加过渡效果 */
+button,
+a,
+.btn-primary,
 .card {
-  @apply bg-[var(--color-card-background)] border border-[var(--color-border)] rounded-lg shadow-md p-6;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.input-field {
-  @apply w-full px-4 py-2 rounded-md border border-[var(--color-input-border)] bg-[var(--color-input-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)];
+button:hover,
+a:hover {
+  transition: opacity 0.15s ease;
 }
 
-/* Hide spinners from number inputs */
+/* ==================== 工具类 ==================== */
+.btn-primary {
+  @apply bg-(--color-primary) text-white px-4 py-2 rounded-md hover:bg-(--color-primary-hover) transition-colors duration-200;
+}
+
+
+/* 确保 destructive 按钮和 Badge 的图标和文字都是白色 */
+button[class*="destructive"] svg,
+button[class*="destructive"],
+[class*="badge"][class*="destructive"] {
+  color: white !important;
+}
+
+/* ==================== 表单输入优化 ==================== */
+/* 隐藏数字输入框的上下箭头 */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -93,12 +109,13 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-/* Rich Text Editor Styles */
+/* ==================== Markdown 编辑器样式 ==================== */
+/* 编辑器容器 */
 .rich-editor-wrapper {
-  /* Increase toolbar icon size */
   --md-editor-toolbar-height: 42px;
 }
 
+/* 工具栏 */
 .rich-editor-wrapper .w-md-editor-toolbar {
   padding: 8px !important;
   min-height: var(--md-editor-toolbar-height) !important;
@@ -115,159 +132,7 @@ input[type=number] {
   height: 18px !important;
 }
 
-/* Dark mode styles for MDEditor */
-.rich-editor-wrapper[data-color-mode='dark'] {
-  --color-canvas-default: var(--color-card-background);
-  --color-canvas-subtle: var(--color-background);
-  --color-border-default: var(--color-border);
-  --color-fg-default: var(--color-foreground);
-  --color-fg-muted: var(--color-text-muted);
-  --color-neutral-muted: rgba(255, 255, 255, 0.1);
-  --color-accent-fg: var(--color-primary);
-  --color-accent-emphasis: var(--color-primary);
-}
-
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor {
-  background-color: var(--color-card-background);
-  color: var(--color-foreground);
-  border-color: var(--color-border);
-}
-
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-toolbar {
-  background-color: var(--color-card-background);
-  border-color: var(--color-border);
-}
-
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-content,
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-}
-
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-toolbar button {
-  color: var(--color-foreground);
-}
-
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-toolbar button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Fix dark mode text input area - ensure text is visible */
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text-pre,
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text-input,
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text-pre > code,
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-input,
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text,
-.rich-editor-wrapper[data-color-mode='dark'] textarea.w-md-editor-text-input {
-  background-color: var(--color-input-background) !important;
-  color: var(--color-foreground) !important;
-}
-
-/* Additional specificity for textarea */
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-content textarea {
-  background-color: var(--color-input-background) !important;
-  color: var(--color-foreground) !important;
-  caret-color: var(--color-foreground) !important;
-}
-
-/* Ensure the editing area wrapper also respects the colors */
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-area {
-  background-color: var(--color-input-background) !important;
-}
-
-/* Fix preview area background in dark mode */
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview {
-  background-color: transparent !important;
-}
-
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown,
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown code,
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown pre {
-  background-color: transparent !important;
-}
-
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown code {
-  padding: 2px 4px;
-  border-radius: 3px;
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown pre code {
-  background-color: transparent !important;
-  padding: 0;
-}
-
-/* Fix MdPreview background in dark mode for comments */
-.dark .md-editor-preview-wrapper,
-.dark .md-editor-preview,
-.dark #md-editor-v3-preview,
-.dark [id*="md-editor"][id*="preview"] {
-  background-color: transparent !important;
-}
-
-.dark .md-editor-preview .wmde-markdown,
-.dark .md-editor-preview .wmde-markdown code,
-.dark .md-editor-preview .wmde-markdown pre {
-  background-color: transparent !important;
-}
-
-.dark .md-editor-preview .wmde-markdown code {
-  padding: 2px 4px;
-  border-radius: 3px;
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.dark .md-editor-preview .wmde-markdown pre code {
-  background-color: transparent !important;
-  padding: 0;
-}
-
-/* Additional fix for md-editor-rt preview in dark mode */
-.dark .md-editor-scrn {
-  background-color: transparent !important;
-}
-
-.dark .default-theme {
-  background-color: transparent !important;
-}
-
-/* Force transparent background for markdown preview with custom class */
-.markdown-preview-transparent {
-  background-color: transparent !important;
-}
-
-.dark .markdown-preview-transparent,
-.dark .markdown-preview-transparent * {
-  background-color: transparent !important;
-}
-
-.dark .markdown-preview-transparent .wmde-markdown {
-  color: rgb(209, 213, 219) !important;
-}
-
-.dark .markdown-preview-transparent .wmde-markdown code {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  color: rgb(209, 213, 219) !important;
-}
-
-/* Light mode styles for MDEditor */
-.rich-editor-wrapper[data-color-mode='light'] {
-  --color-canvas-default: var(--color-card-background);
-  --color-canvas-subtle: var(--color-background);
-  --color-border-default: var(--color-border);
-  --color-fg-default: var(--color-foreground);
-  --color-fg-muted: var(--color-text-muted);
-  --color-neutral-muted: rgba(0, 0, 0, 0.05);
-  --color-accent-fg: var(--color-primary);
-  --color-accent-emphasis: var(--color-primary);
-}
-
-/* Toolbar button tooltips - make them invisible by default */
-.w-md-editor-toolbar button[title] {
-  position: relative;
-}
-
-/* Custom Chinese tooltips for toolbar buttons */
+/* 工具栏提示 */
 .w-md-editor-toolbar button[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -291,13 +156,151 @@ input[type=number] {
   opacity: 1;
 }
 
+/* 亮色模式编辑器 */
+.rich-editor-wrapper[data-color-mode='light'] {
+  --color-canvas-default: var(--card);
+  --color-canvas-subtle: var(--background);
+  --color-border-default: var(--border);
+  --color-fg-default: var(--foreground);
+  --color-fg-muted: var(--muted-foreground);
+  --color-neutral-muted: rgba(0, 0, 0, 0.05);
+  --color-accent-fg: var(--color-primary);
+  --color-accent-emphasis: var(--color-primary);
+}
+
+/* 暗色模式编辑器 */
+.rich-editor-wrapper[data-color-mode='dark'] {
+  --color-canvas-default: var(--card);
+  --color-canvas-subtle: var(--background);
+  --color-border-default: var(--border);
+  --color-fg-default: var(--foreground);
+  --color-fg-muted: var(--muted-foreground);
+  --color-neutral-muted: rgba(255, 255, 255, 0.1);
+  --color-accent-fg: var(--color-primary);
+  --color-accent-emphasis: var(--color-primary);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor {
+  background-color: var(--card);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-toolbar {
+  background-color: var(--card);
+  border-color: var(--border);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-content,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-toolbar button {
+  color: var(--foreground);
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-toolbar button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 暗色模式文本输入区域 */
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text-pre,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text-input,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text-pre > code,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-input,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-text,
+.rich-editor-wrapper[data-color-mode='dark'] textarea.w-md-editor-text-input,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-content textarea {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+  caret-color: var(--foreground) !important;
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-area {
+  background-color: var(--background) !important;
+}
+
+/* 预览区域 */
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview {
+  background-color: transparent !important;
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown code,
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown pre {
+  background-color: transparent !important;
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown code {
+  padding: 2px 4px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.rich-editor-wrapper[data-color-mode='dark'] .w-md-editor-preview .wmde-markdown pre code {
+  background-color: transparent !important;
+  padding: 0;
+}
+
+/* ==================== Markdown 预览样式（评论区） ==================== */
+.dark .md-editor-preview-wrapper,
+.dark .md-editor-preview,
+.dark #md-editor-v3-preview,
+.dark [id*="md-editor"][id*="preview"],
+.dark .md-editor-scrn,
+.dark .default-theme {
+  background-color: transparent !important;
+}
+
+.dark .md-editor-preview .wmde-markdown,
+.dark .md-editor-preview .wmde-markdown code,
+.dark .md-editor-preview .wmde-markdown pre {
+  background-color: transparent !important;
+}
+
+.dark .md-editor-preview .wmde-markdown code {
+  padding: 2px 4px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark .md-editor-preview .wmde-markdown pre code {
+  background-color: transparent !important;
+  padding: 0;
+}
+
+/* 自定义透明预览类 */
+.markdown-preview-transparent {
+  background-color: transparent !important;
+}
+
+.dark .markdown-preview-transparent,
+.dark .markdown-preview-transparent * {
+  background-color: transparent !important;
+}
+
+.dark .markdown-preview-transparent .wmde-markdown {
+  color: rgb(209, 213, 219) !important;
+}
+
+.dark .markdown-preview-transparent .wmde-markdown code {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgb(209, 213, 219) !important;
+}
+
+/* ==================== Tailwind 自定义变体和主题 ==================== */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* 圆角尺寸 */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  
+  /* 颜色变量 */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -316,21 +319,9 @@ input[type=number] {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* ==================== Tailwind 基础层 ==================== */
 @layer base {
   * {
     @apply border-border outline-ring/50;

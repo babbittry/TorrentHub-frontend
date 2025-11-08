@@ -29,14 +29,14 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
     return (
         <div className="block group">
             <div className="flex items-center bg-card p-3 rounded-lg shadow-sm hover:bg-secondary transition-all duration-200 border-2 border-transparent hover:border-primary">
-                <div className="flex-shrink-0 w-16 h-24 relative mr-4">
+                <div className="shrink-0 w-16 h-24 relative mr-4">
                     <img
                         src={posterUrl}
                         alt={torrent.name}
                         className="w-full h-full object-cover rounded-sm"
                     />
                 </div>
-                <div className="flex-grow grid grid-cols-12 gap-4 items-center">
+                <div className="grow grid grid-cols-12 gap-4 items-center">
                     <div className="col-span-4">
                         <Link href={`/torrents/${torrent.id}`} className="font-bold text-md text-foreground group-hover:text-primary transition-colors truncate hover:underline">
                             {torrent.name}

@@ -22,11 +22,11 @@ const RequestListItem: React.FC<RequestListItemProps> = ({ request }) => {
 
     return (
         <Link href={`/requests/${request.id}`}
-              className="group flex items-center bg-[var(--color-card-background)] p-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 border border-transparent hover:border-[var(--color-primary)]">
-            <div className="flex-grow grid grid-cols-12 gap-x-4 gap-y-2 items-center">
+              className="group flex items-center bg-(--color-card-background) p-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 border border-transparent hover:border-(--color-primary)">
+            <div className="grow grid grid-cols-12 gap-x-4 gap-y-2 items-center">
                 {/* Title */}
                 <div className="col-span-12 md:col-span-5">
-                    <p className="font-bold text-md text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors truncate">
+                    <p className="font-bold text-md text-(--color-foreground) group-hover:text-(--color-primary) transition-colors truncate">
                         {request.title}
                     </p>
                 </div>

@@ -319,7 +319,7 @@ export default function TorrentUploadPage() {
                                     value={mediaInput}
                                     onChange={(e) => setMediaInput(e.target.value)}
                                     error={errors.fetchMedia}
-                                    containerClassName="flex-grow"
+                                    containerClassName="grow"
                                 />
                                 <Button type="button" onClick={handleFetchMediaInfo} disabled={isFetchingMediaInfo}>
                                     {isFetchingMediaInfo ? t('common.loading') : t('torrentUpload.fetchInfo')}
@@ -332,7 +332,7 @@ export default function TorrentUploadPage() {
                         {mediaInfo && (
                             <div className="p-4 bg-secondary rounded-lg flex space-x-4">
                                 {mediaInfo.poster_path && (
-                                    <div className="flex-shrink-0 w-24">
+                                    <div className="shrink-0 w-24">
                                         <img
                                             src={`https://image.tmdb.org/t/p/w200${mediaInfo.poster_path}`}
                                             alt={mediaInfo.title || 'Movie Poster'}

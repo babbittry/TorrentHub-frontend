@@ -64,7 +64,7 @@ export function TableOfContents({ items }: TableOfContentsProps) {
   }
 
   return (
-    <nav className="w-64 flex-shrink-0 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto hidden xl:block">
+    <nav className="w-64 shrink-0 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto hidden xl:block">
       <div className="space-y-2 pr-4">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4 px-2">
           目录

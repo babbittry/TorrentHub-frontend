@@ -30,7 +30,7 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
     return (
         <>
             {isClient && !shouldHideHeaderFooter && <Header />}
-            <main className="flex-grow">
+            <main className="grow">
                 {children}
             </main>
             {isClient && !shouldHideHeaderFooter && <Footer />}

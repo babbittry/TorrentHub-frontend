@@ -125,7 +125,7 @@ export default function Header() {
                     <select
                         onChange={(e) => changeLanguage(e.target.value)}
                         value={pathname.split('/')[1]}
-                        className="input-field bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200"
+                        className="px-4 py-2 rounded-md border bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                         <option value="en">English</option>
                         <option value="zh-CN">中文</option>

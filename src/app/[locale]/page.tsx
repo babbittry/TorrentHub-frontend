@@ -77,19 +77,19 @@ export default function Home() {
         <div className="container mx-auto p-4">
             {/* 公告区 */}
             <section className="card mb-12 transform hover:scale-105 transition-transform duration-500 ease-in-out">
-                <h2 className="text-4xl font-extrabold text-[var(--color-primary)] text-center mb-6 drop-shadow-lg">{t_announcements('latest')}</h2>
+                <h2 className="text-4xl font-extrabold text-(--color-primary) text-center mb-6 drop-shadow-lg">{t_announcements('latest')}</h2>
                 {loadingAnnouncements ? (
-                    <p className="text-center text-[var(--color-foreground)] text-lg">{t_common('loading')}</p>
+                    <p className="text-center text-(--color-foreground) text-lg">{t_common('loading')}</p>
                 ) : errorAnnouncements ? (
-                    <p className="text-center text-[var(--color-error)] text-lg">{t_common('error')}: {errorAnnouncements}</p>
+                    <p className="text-center text-(--color-error) text-lg">{t_common('error')}: {errorAnnouncements}</p>
                 ) : _announcements.length > 0 ? (
-                    <div className="text-center text-[var(--color-foreground)] text-xl leading-relaxed">
+                    <div className="text-center text-(--color-foreground) text-xl leading-relaxed">
                         <p className="font-semibold">{_announcements[0].title}</p>
-                        <p className="text-lg text-[var(--color-text-muted)] opacity-90">{_announcements[0].content}</p>
-                        <p className="text-sm text-[var(--color-text-muted)] opacity-70 mt-2">{t_common('release_time')}: {new Date(_announcements[0].createdAt).toLocaleDateString()}</p>
+                        <p className="text-lg text-(--color-text-muted) opacity-90">{_announcements[0].content}</p>
+                        <p className="text-sm text-(--color-text-muted) opacity-70 mt-2">{t_common('release_time')}: {new Date(_announcements[0].createdAt).toLocaleDateString()}</p>
                     </div>
                 ) : (
-                    <p className="text-center text-[var(--color-text-muted)] text-lg opacity-80">{t_announcements('none')}</p>
+                    <p className="text-center text-(--color-text-muted) text-lg opacity-80">{t_announcements('none')}</p>
                 )}
             </section>
 
@@ -105,7 +105,7 @@ export default function Home() {
                 <input
                     type="text"
                     placeholder={t_header('search_torrents')}
-                    className="input-field flex-grow max-w-xl"
+                    className="w-full px-4 py-2 rounded-md border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring grow max-w-xl"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -119,11 +119,11 @@ export default function Home() {
 
             {/* 最新种子列表 */}
             <section>
-                <h2 className="text-4xl font-extrabold text-[var(--color-primary)] mb-8 text-center drop-shadow-lg">{t_torrents('latest_torrents')}</h2>
+                <h2 className="text-4xl font-extrabold text-(--color-primary) mb-8 text-center drop-shadow-lg">{t_torrents('latest_torrents')}</h2>
                 {loadingTorrents ? (
-                    <p className="text-center text-[var(--color-foreground)] text-lg">{t_common('loading')}</p>
+                    <p className="text-center text-(--color-foreground) text-lg">{t_common('loading')}</p>
                 ) : errorTorrents ? (
-                    <p className="text-center text-[var(--color-error)] text-lg">{t_common('error')}: {errorTorrents}</p>
+                    <p className="text-center text-(--color-error) text-lg">{t_common('error')}: {errorTorrents}</p>
                 ) : torrents.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
                         {torrents.map((torrent) => (
@@ -131,7 +131,7 @@ export default function Home() {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-[var(--color-text-muted)] text-center text-lg opacity-80">{t_torrents('no_torrents_found')}</p>
+                    <p className="text-(--color-text-muted) text-center text-lg opacity-80">{t_torrents('no_torrents_found')}</p>
                 )}
             </section>
 

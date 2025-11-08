@@ -9,7 +9,7 @@ interface SortableHeaderProps {
 
 const SortableHeader: React.FC<SortableHeaderProps> = ({ columns, sortBy, sortOrder, onSort }) => {
     return (
-        <div className="hidden md:flex bg-[var(--color-border)] p-4 rounded-lg font-semibold text-[var(--color-text-muted)] grid grid-cols-12 gap-4">
+        <div className="hidden md:flex bg-(--color-border) p-4 rounded-lg font-semibold text-(--color-text-muted) grid grid-cols-12 gap-4">
             {columns.map(col => (
                 <div key={col.key} className={col.className}>
                     {col.sortable ? (

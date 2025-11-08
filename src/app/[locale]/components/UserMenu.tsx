@@ -62,10 +62,10 @@ export default function UserMenu() {
             </Link>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-[var(--color-card-background)] rounded-lg shadow-lg p-4 z-50 border border-[var(--color-border)]">
+                <div className="absolute right-0 mt-2 w-72 bg-(--color-card-background) rounded-lg shadow-lg p-4 z-50 border border-(--color-border)">
                     <Link href={`/users/${user.id}`}>
                         <div className="flex items-center mb-4">
-                            <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0 bg-gray-300 dark:bg-gray-600">
+                            <div className="w-16 h-16 rounded-full overflow-hidden mr-4 shrink-0 bg-gray-300 dark:bg-gray-600">
                                 <Image
                                     src={user.avatar ? `${API_BASE_URL}${user.avatar}` : '/default-avatar.svg'}
                                     alt="User Avatar"
@@ -81,30 +81,30 @@ export default function UserMenu() {
                     </Link>
 
                     {user.signature && (
-                        <p className="text-sm text-[var(--color-foreground-muted)] italic mb-4 border-t border-[var(--color-border)] pt-2 break-words">{user.signature}</p>
+                        <p className="text-sm text-(--color-foreground-muted) italic mb-4 border-t border-(--color-border) pt-2 warp-break-words">{user.signature}</p>
                     )}
 
-                    <div className="space-y-2 text-sm mb-4 border-t border-[var(--color-border)] pt-2">
+                    <div className="space-y-2 text-sm mb-4 border-t border-(--color-border) pt-2">
                         <p><strong>{t('uploaded')}:</strong> {formatBytes(user.uploadedBytes)}</p>
                         <p><strong>{t('downloaded')}:</strong> {formatBytes(user.downloadedBytes)}</p>
                         <p><strong>{t('coins')}:</strong> {user.coins}</p>
                     </div>
 
-                    <Link href={`/users/${user.id}`} className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200">
+                    <Link href={`/users/${user.id}`} className="block w-full text-left px-4 py-2 text-sm hover:bg-(--color-secondary) rounded transition-colors duration-200">
                         <FontAwesomeIcon icon={faInfo} />
                         {t('personal_info')}
                     </Link>
-                    <Link href="/invites" className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200">
+                    <Link href="/invites" className="block w-full text-left px-4 py-2 text-sm hover:bg-(--color-secondary) rounded transition-colors duration-200">
                         <FontAwesomeIcon icon={faTicket} />
                         {t('invites_system')}
                     </Link>
-                    <Link href="/settings" className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200">
+                    <Link href="/settings" className="block w-full text-left px-4 py-2 text-sm hover:bg-(--color-secondary) rounded transition-colors duration-200">
                         <FontAwesomeIcon icon={faGear} />
                         {t('settings')}
                     </Link>
                     <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-secondary)] rounded transition-colors duration-200"
+                        className="block w-full text-left px-4 py-2 text-sm hover:bg-(--color-secondary) rounded transition-colors duration-200"
                     >
                         <FontAwesomeIcon icon={faArrowRightFromBracket} />
                         {t('logout')}

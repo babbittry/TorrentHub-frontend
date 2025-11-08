@@ -60,7 +60,7 @@ const MessageDetail: React.FC<MessageDetailProps> = ({ message, activeMailbox, o
                 </div>
             </CardHeader>
             <div className="border-t my-4" />
-            <CardContent className="flex-grow">
+            <CardContent className="grow">
                 <div className="prose dark:prose-invert max-w-none text-foreground whitespace-pre-wrap">
                     {message.content}
                 </div>

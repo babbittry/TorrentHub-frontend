@@ -135,7 +135,7 @@ const AddPollPage = () => {
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleOptionChange(index, e.target.value)}
                                         placeholder={t('addPoll.optionPlaceholder', { index: index + 1 })}
                                         maxLength={255}
-                                        containerClassName="flex-grow"
+                                        containerClassName="grow"
                                     />
                                     <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveOption(index)}>
                                         <FontAwesomeIcon icon={faTrash} />

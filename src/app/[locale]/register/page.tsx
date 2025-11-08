@@ -117,7 +117,7 @@ export default function RegisterPage() {
                     <label className="block text-sm font-medium text-foreground pb-1.5">{t('register.avatar')}</label>
                     <div className="flex items-center space-x-4">
                         <div
-                            className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0"
+                            className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 shrink-0"
                             dangerouslySetInnerHTML={{ __html: formData.avatarSvg || '' }}
                         />
                         <Button type="button" onClick={generateAvatar} variant="ghost">

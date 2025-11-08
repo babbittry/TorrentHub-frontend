@@ -17,7 +17,7 @@ const MessageListItem: React.FC<MessageListItemProps> = ({ message, onSelect, is
 
     const itemClasses = `
         p-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-4
-        ${isSelected ? 'bg-[var(--color-border)] border-[var(--color-primary)]' : 'border-transparent hover:bg-[var(--color-border)]'}
+        ${isSelected ? 'bg-(--color-border) border-(--color-primary)' : 'border-transparent hover:bg-(--color-border)'}
         ${isUnread ? 'font-bold' : 'font-normal'}
     `;
 
@@ -27,11 +27,11 @@ const MessageListItem: React.FC<MessageListItemProps> = ({ message, onSelect, is
 
     return (
         <div onClick={onSelect} className={itemClasses}>
-            <div className={`flex justify-between items-center text-sm ${isUnread ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-muted)]'}`}>
+            <div className={`flex justify-between items-center text-sm ${isUnread ? 'text-(--color-primary)' : 'text-(--color-text-muted)'}`}>
                 <p className="truncate">{fromToText}</p>
-                <p className="flex-shrink-0">{new Date(message.sentAt).toLocaleDateString()}</p>
+                <p className="shrink-0">{new Date(message.sentAt).toLocaleDateString()}</p>
             </div>
-            <p className="text-md text-[var(--color-foreground)] truncate mt-1">
+            <p className="text-md text-(--color-foreground) truncate mt-1">
                 {message.subject}
             </p>
         </div>

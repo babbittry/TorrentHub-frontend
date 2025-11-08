@@ -14,7 +14,7 @@ export async function DocsNavigation({ locale, currentSlug }: DocsNavigationProp
   const navigation = await getDocumentNavigation(locale);
 
   return (
-    <nav className="w-64 flex-shrink-0 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
+    <nav className="w-64 shrink-0 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
       <div className="space-y-1">
         {navigation.map((item: DocumentNavItem) => {
           const isActive = currentSlug === item.slug;

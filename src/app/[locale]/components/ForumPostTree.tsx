@@ -100,7 +100,7 @@ export default function ForumPostTree({
                 {/* 帖子主体 */}
                 <div className="flex items-start gap-4">
                     {/* 左侧头像 - 只显示头像,不显示用户名,可点击跳转 */}
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                         {post.author && (
                             <UserDisplay user={post.author} showAvatar={true} avatarSize="md" showUsername={false} />
                         )}
@@ -116,7 +116,7 @@ export default function ForumPostTree({
                                 )}
                                 <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">#{post.floor}</span>
                             </div>
-                            <span className="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">
+                            <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0">
                                 {formatDistanceToNow(new Date(post.createdAt), {
                                     addSuffix: true,
                                     locale: dateLocales[locale],
@@ -138,7 +138,7 @@ export default function ForumPostTree({
                                         {parentPost.content.length > 150 && (
                                             <button
                                                 onClick={() => toggleQuote(post.id)}
-                                                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex-shrink-0"
+                                                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 shrink-0"
                                             >
                                                 {isQuoteExpanded ? t('reply.collapse') : t('reply.expand')}
                                             </button>
