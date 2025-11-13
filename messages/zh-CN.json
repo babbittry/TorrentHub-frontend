@@ -145,6 +145,42 @@
         "enter_your_comment": "请输入您的评论...",
         "tip_user": "打赏"
     },
+    "torrentDetail": {
+        "downloadNow": "立即下载",
+        "tip": "打赏",
+        "actors": "演员",
+        "asCharacter": "饰 {characterName}",
+        "tabs": {
+            "details": "种子详情",
+            "comments": "评论 ({count})",
+            "screenshots": "截图"
+        },
+        "techSpecs": {
+            "title": "技术规格",
+            "fileSize": "文件大小",
+            "resolution": "分辨率",
+            "videoCodec": "视频编码",
+            "audioCodec": "音频编码",
+            "subtitles": "字幕",
+            "source": "来源"
+        },
+        "fileList": {
+            "title": "文件列表",
+            "noFiles": "暂无文件"
+        },
+        "status": {
+            "title": "种子状态",
+            "uploader": "上传者",
+            "uploadTime": "上传时间",
+            "seeders": "做种",
+            "leechers": "下载",
+            "completed": "完成"
+        },
+        "screenshots": {
+            "comingSoonTitle": "即将推出",
+            "comingSoonBody": "该种子的截图尚不可用。"
+        }
+    },
     "login2fa": {
         "title": "双因素认证",
         "enter_code": "请输入您的验证器应用中的6位数代码。",

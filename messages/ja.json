@@ -145,6 +145,42 @@
         "enter_your_comment": "コメントを入力してください...",
         "tip_user": "チップ"
     },
+    "torrentDetail": {
+        "downloadNow": "今すぐダウンロード",
+        "tip": "チップ",
+        "actors": "俳優",
+        "asCharacter": "{characterName}として",
+        "tabs": {
+            "details": "詳細",
+            "comments": "コメント ({count})",
+            "screenshots": "スクリーンショット"
+        },
+        "techSpecs": {
+            "title": "技術仕様",
+            "fileSize": "ファイルサイズ",
+            "resolution": "解像度",
+            "videoCodec": "ビデオコーデック",
+            "audioCodec": "オーディオコーデック",
+            "subtitles": "字幕",
+            "source": "ソース"
+        },
+        "fileList": {
+            "title": "ファイルリスト",
+            "noFiles": "利用可能なファイルがありません。"
+        },
+        "status": {
+            "title": "トレントステータス",
+            "uploader": "アップローダー",
+            "uploadTime": "アップロード時間",
+            "seeders": "シーダー",
+            "leechers": "リーチャー",
+            "completed": "完了"
+        },
+        "screenshots": {
+            "comingSoonTitle": "近日公開",
+            "comingSoonBody": "このトレントのスクリーンショットはまだ利用できません。"
+        }
+    },
     "login2fa": {
         "title": "二要素認証",
         "enter_code": "Enter the 6-digit code from your authenticator app.",

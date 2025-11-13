@@ -145,6 +145,42 @@
         "enter_your_comment": "Entrez votre commentaire...",
         "tip_user": "Pourboire"
     },
+    "torrentDetail": {
+        "downloadNow": "Télécharger maintenant",
+        "tip": "Pourboire",
+        "actors": "Acteurs",
+        "asCharacter": "comme {characterName}",
+        "tabs": {
+            "details": "Détails",
+            "comments": "Commentaires ({count})",
+            "screenshots": "Captures d'écran"
+        },
+        "techSpecs": {
+            "title": "Spécifications techniques",
+            "fileSize": "Taille du fichier",
+            "resolution": "Résolution",
+            "videoCodec": "Codec vidéo",
+            "audioCodec": "Codec audio",
+            "subtitles": "Sous-titres",
+            "source": "Source"
+        },
+        "fileList": {
+            "title": "Liste de fichiers",
+            "noFiles": "Aucun fichier disponible."
+        },
+        "status": {
+            "title": "Statut du torrent",
+            "uploader": "Uploader",
+            "uploadTime": "Date de téléversement",
+            "seeders": "Seeders",
+            "leechers": "Leechers",
+            "completed": "Terminé"
+        },
+        "screenshots": {
+            "comingSoonTitle": "Bientôt disponible",
+            "comingSoonBody": "Les captures d'écran pour ce torrent ne sont pas encore disponibles."
+        }
+    },
     "login2fa": {
         "title": "Authentification à deux facteurs",
         "enter_code": "Enter the 6-digit code from your authenticator app.",

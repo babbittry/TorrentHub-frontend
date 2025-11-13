@@ -654,6 +654,25 @@ export interface UploadTorrentResponseDto {
     imdbId?: string | null;
 }
 
+export interface TechnicalSpecsDto {
+    resolution?: string | null;
+    videoCodec?: string | null;
+    audioCodec?: string | null;
+    subtitles?: string | null;
+    source?: string | null;
+}
+
+export interface TorrentFileDto {
+    name: string;
+    size: number;
+}
+
+export interface CastMemberDto {
+    name: string;
+    character?: string | null;
+    profilePath?: string | null;
+}
+
 export interface TorrentDto {
     id: number;
     name: string;
@@ -671,15 +690,18 @@ export interface TorrentDto {
     imdbId?: string | null;
     tmDbId?: number | null;
     originalTitle?: string | null;
-    tagline?: string | null;
     year?: number | null;
     posterPath?: string | null;
     backdropPath?: string | null;
     runtime?: number | null;
-    genres?: string | null;
+    country?: string | null;
+    genres?: string[] | null;
     directors?: string | null;
-    cast?: string | null;
+    cast?: CastMemberDto[] | null;
     rating?: number | null;
+    imdbRating?: number | null;
+    technicalSpecs?: TechnicalSpecsDto | null;
+    files?: TorrentFileDto[] | null;
 }
 
 export interface SetStickyRequestDto {

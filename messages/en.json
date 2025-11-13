@@ -145,6 +145,42 @@
         "enter_your_comment": "Enter your comment...",
         "tip_user": "Tip"
     },
+    "torrentDetail": {
+        "downloadNow": "Download Now",
+        "tip": "Tip",
+        "actors": "Actors",
+        "asCharacter": "as {characterName}",
+        "tabs": {
+            "details": "Details",
+            "comments": "Comments ({count})",
+            "screenshots": "Screenshots"
+        },
+        "techSpecs": {
+            "title": "Technical Specs",
+            "fileSize": "File Size",
+            "resolution": "Resolution",
+            "videoCodec": "Video Codec",
+            "audioCodec": "Audio Codec",
+            "subtitles": "Subtitles",
+            "source": "Source"
+        },
+        "fileList": {
+            "title": "File List",
+            "noFiles": "No files available."
+        },
+        "status": {
+            "title": "Torrent Status",
+            "uploader": "Uploader",
+            "uploadTime": "Upload Time",
+            "seeders": "Seeders",
+            "leechers": "Leechers",
+            "completed": "Completed"
+        },
+        "screenshots": {
+            "comingSoonTitle": "Coming Soon",
+            "comingSoonBody": "Screenshots for this torrent are not yet available."
+        }
+    },
     "login2fa": {
         "title": "Two-Factor Authentication",
         "enter_code": "Enter the 6-digit code from your authenticator app.",
