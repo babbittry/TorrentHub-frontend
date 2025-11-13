@@ -150,10 +150,13 @@
         "tip": "Tip",
         "actors": "Actors",
         "asCharacter": "as {characterName}",
+        "showAll": "Show All",
+        "showLess": "Show Less",
         "tabs": {
             "details": "Details",
             "comments": "Comments ({count})",
-            "screenshots": "Screenshots"
+            "screenshots": "Screenshots",
+            "loadingComments": "Loading comments..."
         },
         "techSpecs": {
             "title": "Technical Specs",

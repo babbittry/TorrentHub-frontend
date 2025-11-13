@@ -10,16 +10,15 @@ import {
     CommentType
 } from '@/lib/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faThumbsUp, 
-    faThumbsDown, 
-    faHeart, 
+import {
+    faThumbsUp,
+    faThumbsDown,
+    faHeart,
     faFaceLaugh,
     faEye,
     faPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { AxiosError } from 'axios';
-import useSWR from 'swr';
 
 interface CommentReactionBarProps {
     commentType: CommentType;
@@ -48,22 +47,9 @@ export default function CommentReactionBar({
     const [showPicker, setShowPicker] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // 使用 SWR 获取回应数据
-    const { data: reactions, mutate } = useSWR<CommentReactionsDto>(
-        `reactions-${commentType}-${commentId}`,
-        async () => {
-            try {
-                return await reactionsApi.getReactions(commentType, commentId);
-            } catch (err) {
-                // 如果获取失败，返回初始数据或空数据
-                return initialReactions || { totalCount: 0, reactions: [] };
-            }
-        },
-        {
-            fallbackData: initialReactions,
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-        }
+    // 使用简单的 useState 来管理本地状态
+    const [reactions, setReactions] = useState<CommentReactionsDto>(
+        initialReactions || { totalCount: 0, reactions: [] }
     );
 
     // 切换回应（乐观更新）
@@ -124,29 +110,20 @@ export default function CommentReactionBar({
         setError(null);
         setShowPicker(false);
 
+        // 立即更新UI（乐观更新）
+        const optimisticData = optimisticUpdate(reactions);
+        setReactions(optimisticData);
+
         try {
-            // 使用 SWR 的乐观更新
-            await mutate(
-                async (currentData) => {
-                    if (!currentData) return currentData;
-
-                    // 调用 API
-                    if (hasReacted) {
-                        await reactionsApi.removeReaction(commentType, commentId, type);
-                    } else {
-                        await reactionsApi.addReaction(commentType, commentId, { type });
-                    }
-
-                    // 返回乐观更新后的数据
-                    return optimisticUpdate(currentData);
-                },
-                {
-                    optimisticData: reactions ? optimisticUpdate(reactions) : undefined,
-                    rollbackOnError: true,
-                    revalidate: false
-                }
-            );
+            // 调用 API
+            if (hasReacted) {
+                await reactionsApi.removeReaction(commentType, commentId, type);
+            } else {
+                await reactionsApi.addReaction(commentType, commentId, { type });
+            }
         } catch (err) {
+            // 如果API调用失败，回滚到之前的状态
+            setReactions(reactions);
             // 错误处理
             if (err instanceof AxiosError && err.response?.data?.message) {
                 const errorKey = err.response.data.message;

@@ -20,11 +20,13 @@ export default function TorrentDetailPage() {
     const { torrentId } = useParams();
     const [torrent, setTorrent] = useState<TorrentDto | null>(null);
     const [torrentComments, setComments] = useState<CommentDto[]>([]);
+    const [commentsCount, setCommentsCount] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [lastFloor, setLastFloor] = useState<number>(0);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loadingMore, setLoadingMore] = useState<boolean>(false);
+    const [commentsLoaded, setCommentsLoaded] = useState<boolean>(false);
     const [isTipModalOpen, setIsTipModalOpen] = useState(false);
     const [isTorrentTipModalOpen, setIsTorrentTipModalOpen] = useState(false);
     const [selectedCommentForTip, setSelectedCommentForTip] = useState<CommentDto | null>(null);
@@ -43,18 +45,34 @@ export default function TorrentDetailPage() {
         try {
             const data: TorrentDto = await torrents.getTorrentById(Number(torrentId));
             setTorrent(data);
-
-            const response = await comments.getComments(Number(torrentId), 0, 30);
-            setComments(response.items);
-            setHasMore(response.hasMore);
-            setLastFloor(response.items[response.items.length - 1]?.floor || 0);
-
+            
+            // 只获取评论数量，不加载评论内容
+            const commentsResponse = await comments.getComments(Number(torrentId), 0, 0);
+            setCommentsCount(commentsResponse.totalCount);
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
         } finally {
             setLoading(false);
         }
     }, [torrentId, t]);
+
+    const fetchComments = useCallback(async () => {
+        if (commentsLoaded) return;
+        
+        setLoadingMore(true);
+        setError(null);
+        try {
+            const response = await comments.getComments(Number(torrentId), 0, 30);
+            setComments(response.items);
+            setHasMore(response.hasMore);
+            setLastFloor(response.items[response.items.length - 1]?.floor || 0);
+            setCommentsLoaded(true);
+        } catch (err: unknown) {
+            setError((err as Error).message || t('common.error'));
+        } finally {
+            setLoadingMore(false);
+        }
+    }, [torrentId, t, commentsLoaded]);
 
     useEffect(() => {
         if (torrentId) {
@@ -161,7 +179,9 @@ export default function TorrentDetailPage() {
             <TorrentInfoCard
                 torrent={torrent}
                 commentsSection={commentsSection}
-                commentsCount={torrentComments.length}
+                commentsCount={commentsCount}
+                onCommentsTabOpen={fetchComments}
+                commentsLoading={loadingMore && !commentsLoaded}
             />
 
             {selectedCommentForTip && selectedCommentForTip.user && (

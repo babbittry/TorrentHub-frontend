@@ -150,10 +150,13 @@
         "tip": "Pourboire",
         "actors": "Acteurs",
         "asCharacter": "comme {characterName}",
+        "showAll": "Voir tout",
+        "showLess": "Voir moins",
         "tabs": {
             "details": "Détails",
             "comments": "Commentaires ({count})",
-            "screenshots": "Captures d'écran"
+            "screenshots": "Captures d'écran",
+            "loadingComments": "Chargement des commentaires..."
         },
         "techSpecs": {
             "title": "Spécifications techniques",

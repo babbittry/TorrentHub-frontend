@@ -150,10 +150,13 @@
         "tip": "打赏",
         "actors": "演员",
         "asCharacter": "饰 {characterName}",
+        "showAll": "查看全部",
+        "showLess": "收起",
         "tabs": {
             "details": "种子详情",
             "comments": "评论 ({count})",
-            "screenshots": "截图"
+            "screenshots": "截图",
+            "loadingComments": "加载评论中..."
         },
         "techSpecs": {
             "title": "技术规格",

@@ -150,10 +150,13 @@
         "tip": "チップ",
         "actors": "俳優",
         "asCharacter": "{characterName}として",
+        "showAll": "すべて表示",
+        "showLess": "折りたたむ",
         "tabs": {
             "details": "詳細",
             "comments": "コメント ({count})",
-            "screenshots": "スクリーンショット"
+            "screenshots": "スクリーンショット",
+            "loadingComments": "コメントを読み込んでいます..."
         },
         "techSpecs": {
             "title": "技術仕様",

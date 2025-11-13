@@ -10,6 +10,8 @@ interface TorrentTabsProps {
   torrent: TorrentDto;
   commentsSection: React.ReactNode;
   commentsCount: number;
+  onCommentsTabOpen: () => void;
+  commentsLoading: boolean;
 }
 
 const formatBytes = (bytes: number | undefined | null): string => {
@@ -20,9 +22,16 @@ const formatBytes = (bytes: number | undefined | null): string => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
 
-const TorrentTabs = ({ torrent, commentsSection, commentsCount }: TorrentTabsProps) => {
+const TorrentTabs = ({ torrent, commentsSection, commentsCount, onCommentsTabOpen, commentsLoading }: TorrentTabsProps) => {
   const t = useTranslations('torrentDetail');
   const [activeTab, setActiveTab] = useState('details');
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    if (tabId === 'comments') {
+      onCommentsTabOpen();
+    }
+  };
 
   const tabs = [
     { id: 'details', label: t('tabs.details') },
@@ -89,7 +98,17 @@ const TorrentTabs = ({ torrent, commentsSection, commentsCount }: TorrentTabsPro
           </div>
         );
       case 'comments':
-        return <div className="mt-6">{commentsSection}</div>;
+        return (
+          <div className="mt-6">
+            {commentsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <p className="text-muted-foreground">{t('tabs.loadingComments')}</p>
+              </div>
+            ) : (
+              commentsSection
+            )}
+          </div>
+        );
       case 'screenshots':
         return (
             <div className="bg-background/50 p-6 rounded-xl shadow-md mt-6 text-center">
@@ -110,7 +129,7 @@ const TorrentTabs = ({ torrent, commentsSection, commentsCount }: TorrentTabsPro
           {tabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => handleTabChange(tab.id)}
               className={`shrink-0 border-b-2 px-1 pb-4 text-sm font-medium ${
                 activeTab === tab.id
                   ? 'border-primary text-primary'

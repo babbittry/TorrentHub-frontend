@@ -1,20 +1,23 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ExternalLink, Download, Plus, Film, Clock, Flag } from 'lucide-react';
+import { ExternalLink, Download, Plus, Film, Clock, Flag, ChevronDown, ChevronUp } from 'lucide-react';
 import ActorAvatar from './ActorAvatar';
 import { TorrentDto } from '@/lib/api';
 import TorrentTabs from './TorrentTabs';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 interface TorrentInfoCardProps {
   torrent: TorrentDto;
   commentsSection: React.ReactNode;
   commentsCount: number;
+  onCommentsTabOpen: () => void;
+  commentsLoading: boolean;
 }
 
-const TorrentInfoCard = ({ torrent, commentsSection, commentsCount }: TorrentInfoCardProps) => {
+const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTabOpen, commentsLoading }: TorrentInfoCardProps) => {
   const t = useTranslations('torrentDetail');
+  const [showAllActors, setShowAllActors] = useState(false);
   const posterUrl = torrent.posterPath
     ? `https://image.tmdb.org/t/p/w500${torrent.posterPath}`
     : '/logo-black.png';
@@ -124,9 +127,31 @@ const TorrentInfoCard = ({ torrent, commentsSection, commentsCount }: TorrentInf
             {/* Cast Section */}
             {torrent.cast && torrent.cast.length > 0 && (
               <div className="mt-8">
-                <h2 className="text-2xl font-bold text-foreground mb-4">{t('actors')}</h2>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-foreground">{t('actors')}</h2>
+                  {torrent.cast.length > 6 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowAllActors(!showAllActors)}
+                      className="flex items-center gap-1"
+                    >
+                      {showAllActors ? (
+                        <>
+                          {t('showLess')}
+                          <ChevronUp className="h-4 w-4" />
+                        </>
+                      ) : (
+                        <>
+                          {t('showAll')} ({torrent.cast.length})
+                          <ChevronDown className="h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
-                  {Array.isArray(torrent.cast) && torrent.cast.slice(0, 6).map((actor) => (
+                  {Array.isArray(torrent.cast) && (showAllActors ? torrent.cast : torrent.cast.slice(0, 6)).map((actor) => (
                     <ActorAvatar
                       key={actor.name}
                       name={actor.name}
@@ -143,6 +168,8 @@ const TorrentInfoCard = ({ torrent, commentsSection, commentsCount }: TorrentInf
             torrent={torrent}
             commentsSection={commentsSection}
             commentsCount={commentsCount}
+            onCommentsTabOpen={onCommentsTabOpen}
+            commentsLoading={commentsLoading}
           />
 
         </div>
