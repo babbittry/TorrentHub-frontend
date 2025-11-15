@@ -1,12 +1,12 @@
 'use client';
 
-import { CreateCommentRequestDto, UserDisplayDto } from '@/lib/api';
+import { CreateCommentDto, UserDisplayDto } from '@/lib/api';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import RichEditor from './RichEditor';
 
 interface ReplyEditorProps {
-    onSubmit: (data: { text: string; parentCommentId?: number | null; replyToUserId?: number | null }) => Promise<void>;
+    onSubmit: (data: { content: string; parentCommentId?: number | null; replyToUserId?: number | null }) => Promise<void>;
     parentId?: number;
     replyToUser?: UserDisplayDto;
     onCancel?: () => void;
@@ -44,7 +44,7 @@ export default function ReplyEditor({
 
         try {
             await onSubmit({
-                text: content,
+                content: content,
                 parentCommentId: parentId,
                 replyToUserId: replyToUser?.id,
             });

@@ -1,6 +1,6 @@
 'use client';
 
-import { RequestCommentDto, UserDisplayDto, COMMENT_TYPE } from '@/lib/api';
+import { CommentDto, UserDisplayDto, COMMENT_TYPE } from '@/lib/api';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN, enUS, fr, ja } from 'date-fns/locale';
 import { useState } from 'react';
@@ -9,23 +9,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReply, faTrash, faQuoteLeft, faEdit } from '@fortawesome/free-solid-svg-icons';
 import UserDisplay from './UserDisplay';
 import ReplyEditor from './ReplyEditor';
-import { CreateRequestCommentDto } from '@/lib/api';
+import { CreateCommentDto } from '@/lib/api';
 import MarkdownRenderer from './MarkdownRenderer';
 import CommentReactionBar from './CommentReactionBar';
 
 interface RequestCommentTreeProps {
-	comments: RequestCommentDto[];
+	comments: CommentDto[];
 	onReply: (parentId: number, replyToUser: UserDisplayDto) => void;
 	onLoadMore?: () => void;
 	hasMore?: boolean;
 	isLoading?: boolean;
-	canDelete?: (comment: RequestCommentDto) => boolean;
-	canEdit?: (comment: RequestCommentDto) => boolean;
+	canDelete?: (comment: CommentDto) => boolean;
+	canEdit?: (comment: CommentDto) => boolean;
 	onDelete?: (commentId: number) => void;
 	onEdit?: (commentId: number, newContent: string) => Promise<void>;
 	isDeleting?: boolean;
 	isEditing?: boolean;
-	onSubmitReply?: (data: CreateRequestCommentDto) => Promise<void>;
+	onSubmitReply?: (data: CreateCommentDto) => Promise<void>;
 }
 
 const dateLocales = {
@@ -60,7 +60,7 @@ export default function RequestCommentTree({
 	const sortedComments = [...comments].sort((a, b) => a.floor - b.floor);
 
 	// 查找父评论
-	const getParentComment = (comment: RequestCommentDto): RequestCommentDto | null => {
+	const getParentComment = (comment: CommentDto): CommentDto | null => {
 		if (!comment.parentCommentId) return null;
 		return comments.find(c => c.id === comment.parentCommentId) || null;
 	};
@@ -76,14 +76,14 @@ export default function RequestCommentTree({
 		setExpandedQuotes(newExpanded);
 	};
 
-	const handleReplyClick = (comment: RequestCommentDto) => {
+	const handleReplyClick = (comment: CommentDto) => {
 		setActiveReplyId(comment.id);
 		if (comment.user) {
 			onReply(comment.id, comment.user);
 		}
 	};
 
-	const handleSubmitReply = async (data: CreateRequestCommentDto) => {
+	const handleSubmitReply = async (data: CreateCommentDto) => {
 		if (onSubmitReply) {
 			await onSubmitReply(data);
 			setActiveReplyId(null);
@@ -94,9 +94,9 @@ export default function RequestCommentTree({
 		setActiveReplyId(null);
 	};
 
-	const handleEditClick = (comment: RequestCommentDto) => {
+	const handleEditClick = (comment: CommentDto) => {
 		setActiveEditId(comment.id);
-		setEditContent(comment.text);
+		setEditContent(comment.content);
 		setActiveReplyId(null); // 关闭回复编辑器
 	};
 
@@ -118,7 +118,7 @@ export default function RequestCommentTree({
 		setEditContent('');
 	};
 
-	const renderComment = (comment: RequestCommentDto) => {
+	const renderComment = (comment: CommentDto) => {
 		const parentComment = getParentComment(comment);
 		const isReplyEditorOpen = activeReplyId === comment.id;
 		const isEditMode = activeEditId === comment.id;
@@ -163,7 +163,7 @@ export default function RequestCommentTree({
 						</div>
 
 						{/* 引用信息 */}
-						{parentComment && comment.replyToUser && parentComment.text && (
+						{parentComment && comment.replyToUser && parentComment.content && (
 							<div className="mb-3 bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-500 rounded-r overflow-hidden">
 								<div className="px-3 py-2">
 									<div className="flex items-center justify-between mb-1">
@@ -173,7 +173,7 @@ export default function RequestCommentTree({
 												{t('quote')} #{parentComment.floor} @{comment.replyToUser.username}
 											</span>
 										</div>
-										{parentComment.text.length > 150 && (
+										{parentComment.content.length > 150 && (
 											<button
 												onClick={() => toggleQuote(comment.id)}
 												className="text-xs text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 shrink-0"
@@ -185,14 +185,14 @@ export default function RequestCommentTree({
 									<div
 										className="text-sm text-gray-600 dark:text-gray-300 italic"
 										style={{
-											maxHeight: !isQuoteExpanded && parentComment.text.length > 150 ? '4.5em' : 'none',
+											maxHeight: !isQuoteExpanded && parentComment.content.length > 150 ? '4.5em' : 'none',
 											overflow: 'hidden',
 											display: '-webkit-box',
-											WebkitLineClamp: !isQuoteExpanded && parentComment.text.length > 150 ? 3 : 'unset',
+											WebkitLineClamp: !isQuoteExpanded && parentComment.content.length > 150 ? 3 : 'unset',
 											WebkitBoxOrient: 'vertical',
 										}}
 									>
-										{parentComment.text}
+										{parentComment.content}
 									</div>
 								</div>
 							</div>
@@ -228,7 +228,7 @@ export default function RequestCommentTree({
 							</form>
 						) : (
 							<div className="text-gray-800 mb-3 break-words">
-								<MarkdownRenderer content={comment.text} />
+								<MarkdownRenderer content={comment.content} />
 							</div>
 						)}
 
@@ -236,7 +236,7 @@ export default function RequestCommentTree({
 						{comment.reactions && (
 							<div className="mb-3">
 								<CommentReactionBar
-									commentType={COMMENT_TYPE.REQUEST_COMMENT}
+									commentType={COMMENT_TYPE.REQUEST}
 									commentId={comment.id}
 									initialReactions={comment.reactions}
 								/>

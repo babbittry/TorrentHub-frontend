@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { requests, RequestDto, RequestStatus, requestComments, RequestCommentDto, CreateRequestCommentDto, UserDisplayDto, UserRole } from '@/lib/api';
+import { requests, RequestDto, RequestStatus, comments as commentsApi, CommentDto, CreateCommentDto, UserDisplayDto, UserRole, COMMENT_TYPE } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Card, CardContent, CardHeader, CardFooter, CardTitle } from "@/components/ui/card";
@@ -33,7 +33,7 @@ const RequestDetailPage = () => {
     const [torrentId, setTorrentId] = useState('');
 
     // 评论相关状态
-    const [comments, setComments] = useState<RequestCommentDto[]>([]);
+    const [comments, setComments] = useState<CommentDto[]>([]);
     const [commentsLoading, setCommentsLoading] = useState(false);
     const [hasMoreComments, setHasMoreComments] = useState(false);
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
@@ -61,7 +61,7 @@ const RequestDetailPage = () => {
         if (!requestId) return;
         try {
             setCommentsLoading(true);
-            const data = await requestComments.getComments(requestId, afterFloor, 30);
+            const data = await commentsApi.getComments(COMMENT_TYPE.REQUEST, requestId, Math.floor(afterFloor / 30) + 1, 30);
             
             if (afterFloor === 0) {
                 setComments(data.items);
@@ -90,10 +90,10 @@ const RequestDetailPage = () => {
     };
 
     // 提交新评论（顶层）
-    const handleSubmitTopLevelComment = async (data: CreateRequestCommentDto) => {
+    const handleSubmitTopLevelComment = async (data: CreateCommentDto) => {
         try {
             setIsSubmittingComment(true);
-            await requestComments.createComment(requestId, data);
+            await commentsApi.createComment(COMMENT_TYPE.REQUEST, requestId, data);
             await fetchComments(0); // 重新加载评论列表
             toast.success(t('reply.submit_success'));
         } catch (err) {
@@ -105,10 +105,10 @@ const RequestDetailPage = () => {
     };
 
     // 提交回复评论
-    const handleSubmitReply = async (data: CreateRequestCommentDto) => {
+    const handleSubmitReply = async (data: CreateCommentDto) => {
         try {
             setIsSubmittingComment(true);
-            await requestComments.createComment(requestId, data);
+            await commentsApi.createComment(COMMENT_TYPE.REQUEST, requestId, data);
             await fetchComments(0); // 重新加载评论列表
             toast.success(t('reply.submit_success'));
         } catch (err) {
@@ -123,7 +123,7 @@ const RequestDetailPage = () => {
     const handleEditComment = async (commentId: number, newContent: string) => {
         try {
             setIsEditingComment(true);
-            await requestComments.updateComment(commentId, { content: newContent });
+            await commentsApi.updateComment(commentId, { content: newContent });
             await fetchComments(0); // 重新加载评论列表
             toast.success(t('reply.edit_success'));
         } catch (err) {
@@ -141,7 +141,7 @@ const RequestDetailPage = () => {
         
         try {
             setIsDeletingComment(true);
-            await requestComments.deleteComment(commentId);
+            await commentsApi.deleteComment(commentId);
             await fetchComments(0); // 重新加载评论列表
             toast.success(t('reply.delete_success'));
         } catch (err) {
@@ -153,7 +153,7 @@ const RequestDetailPage = () => {
     };
 
     // 检查是否可以编辑/删除评论
-    const canEditOrDeleteComment = (comment: RequestCommentDto): boolean => {
+    const canEditOrDeleteComment = (comment: CommentDto): boolean => {
         if (!user) return false;
         if (user.role === UserRole.Administrator || user.role === UserRole.Moderator) {
             return true;

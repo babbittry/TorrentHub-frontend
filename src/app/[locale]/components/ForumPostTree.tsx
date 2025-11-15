@@ -1,6 +1,6 @@
 'use client';
 
-import { ForumPostDto, UserDisplayDto, CreateForumPostDto, COMMENT_TYPE } from '@/lib/api';
+import { CommentDto, UserDisplayDto, CreateCommentDto, COMMENT_TYPE } from '@/lib/api';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN, enUS, fr, ja } from 'date-fns/locale';
 import { useState } from 'react';
@@ -14,15 +14,15 @@ import MarkdownRenderer from './MarkdownRenderer';
 import CommentReactionBar from './CommentReactionBar';
 
 interface ForumPostTreeProps {
-    posts: ForumPostDto[];
+    posts: CommentDto[];
     onReply: (parentId: number, replyToUser: UserDisplayDto) => void;
     onLoadMore?: () => void;
     hasMore?: boolean;
     isLoading?: boolean;
-    canDelete?: (post: ForumPostDto) => boolean;
+    canDelete?: (post: CommentDto) => boolean;
     onDelete?: (postId: number) => void;
     isDeleting?: boolean;
-    onSubmitReply?: (data: { text: string; parentCommentId?: number | null; replyToUserId?: number | null }) => Promise<void>;
+    onSubmitReply?: (data: CreateCommentDto) => Promise<void>;
 }
 
 const dateLocales = {
@@ -52,9 +52,9 @@ export default function ForumPostTree({
     const sortedPosts = [...posts].sort((a, b) => a.floor - b.floor);
 
     // 查找父帖子
-    const getParentPost = (post: ForumPostDto): ForumPostDto | null => {
-        if (!post.parentPostId) return null;
-        return posts.find(p => p.id === post.parentPostId) || null;
+    const getParentPost = (post: CommentDto): CommentDto | null => {
+        if (!post.parentCommentId) return null;
+        return posts.find(p => p.id === post.parentCommentId) || null;
     };
 
     // 切换引用展开/折叠
@@ -68,14 +68,14 @@ export default function ForumPostTree({
         setExpandedQuotes(newExpanded);
     };
 
-    const handleReplyClick = (post: ForumPostDto) => {
+    const handleReplyClick = (post: CommentDto) => {
         setActiveReplyId(post.id);
-        if (post.author) {
-            onReply(post.id, post.author);
+        if (post.user) {
+            onReply(post.id, post.user);
         }
     };
 
-    const handleSubmitReply = async (data: { text: string; parentCommentId?: number | null; replyToUserId?: number | null }) => {
+    const handleSubmitReply = async (data: CreateCommentDto) => {
         if (onSubmitReply) {
             await onSubmitReply(data);
             setActiveReplyId(null);
@@ -86,7 +86,7 @@ export default function ForumPostTree({
         setActiveReplyId(null);
     };
 
-    const renderPost = (post: ForumPostDto) => {
+    const renderPost = (post: CommentDto) => {
         const parentPost = getParentPost(post);
         const isReplyEditorOpen = activeReplyId === post.id;
         const isQuoteExpanded = expandedQuotes.has(post.id);
@@ -101,8 +101,8 @@ export default function ForumPostTree({
                 <div className="flex items-start gap-4">
                     {/* 左侧头像 - 只显示头像,不显示用户名,可点击跳转 */}
                     <div className="shrink-0">
-                        {post.author && (
-                            <UserDisplay user={post.author} showAvatar={true} avatarSize="md" showUsername={false} />
+                        {post.user && (
+                            <UserDisplay user={post.user} showAvatar={true} avatarSize="md" showUsername={false} />
                         )}
                     </div>
 
@@ -111,8 +111,8 @@ export default function ForumPostTree({
                         {/* 顶部信息栏 - 用户信息在左,时间在右 */}
                         <div className="flex items-center justify-between gap-3 mb-2">
                             <div className="flex items-center gap-3 flex-wrap">
-                                {post.author && (
-                                    <UserDisplay user={post.author} />
+                                {post.user && (
+                                    <UserDisplay user={post.user} />
                                 )}
                                 <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">#{post.floor}</span>
                             </div>
@@ -168,7 +168,7 @@ export default function ForumPostTree({
                         {/* 表情回应栏 */}
                         <div className="mb-3">
                             <CommentReactionBar
-                                commentType={COMMENT_TYPE.FORUM_POST}
+                                commentType={COMMENT_TYPE.FORUM_TOPIC}
                                 commentId={post.id}
                                 initialReactions={post.reactions}
                             />
@@ -208,7 +208,7 @@ export default function ForumPostTree({
                             onSubmit={handleSubmitReply}
                             onCancel={handleCancelReply}
                             parentId={post.id}
-                            replyToUser={post.author}
+                            replyToUser={post.user}
                         />
                     </div>
                 )}

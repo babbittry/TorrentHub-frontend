@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from "react";
-import { torrents, comments, TorrentDto, CommentDto, CreateCommentRequestDto } from "@/lib/api";
+import { torrents, comments, TorrentDto, CommentDto, CreateCommentDto, COMMENT_TYPE } from "@/lib/api";
 import { useParams } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import { useAuth } from "@/context/AuthContext";
@@ -47,7 +47,7 @@ export default function TorrentDetailPage() {
             setTorrent(data);
             
             // 只获取评论数量，不加载评论内容
-            const commentsResponse = await comments.getComments(Number(torrentId), 0, 0);
+            const commentsResponse = await comments.getComments(COMMENT_TYPE.TORRENT, Number(torrentId), 1, 0);
             setCommentsCount(commentsResponse.totalCount);
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
@@ -62,7 +62,7 @@ export default function TorrentDetailPage() {
         setLoadingMore(true);
         setError(null);
         try {
-            const response = await comments.getComments(Number(torrentId), 0, 30);
+            const response = await comments.getComments(COMMENT_TYPE.TORRENT, Number(torrentId), 1, 30);
             setComments(response.items);
             setHasMore(response.hasMore);
             setLastFloor(response.items[response.items.length - 1]?.floor || 0);
@@ -85,7 +85,10 @@ export default function TorrentDetailPage() {
         
         setLoadingMore(true);
         try {
-            const response = await comments.getComments(Number(torrentId), lastFloor, 30);
+            // Note: The old logic used `lastFloor`. The new paginated logic will use page number.
+            // We'll calculate the next page based on the current number of comments.
+            const currentPage = Math.floor(torrentComments.length / 30);
+            const response = await comments.getComments(COMMENT_TYPE.TORRENT, Number(torrentId), currentPage + 1, 30);
             setComments(prev => [...prev, ...response.items]);
             setHasMore(response.hasMore);
             setLastFloor(response.items[response.items.length - 1]?.floor || lastFloor);
@@ -96,9 +99,9 @@ export default function TorrentDetailPage() {
         }
     };
 
-    const handleSubmitTopLevelComment = async (data: CreateCommentRequestDto) => {
+    const handleSubmitTopLevelComment = async (data: CreateCommentDto) => {
         try {
-            const newComment = await comments.createComment(Number(torrentId), data);
+            const newComment = await comments.createComment(COMMENT_TYPE.TORRENT, Number(torrentId), data);
             setComments(prev => [...prev, newComment].sort((a, b) => a.floor - b.floor));
             
             setTimeout(() => {
@@ -110,9 +113,9 @@ export default function TorrentDetailPage() {
         }
     };
 
-    const handleSubmitReply = async (data: CreateCommentRequestDto) => {
+    const handleSubmitReply = async (data: CreateCommentDto) => {
         try {
-            const newComment = await comments.createComment(Number(torrentId), data);
+            const newComment = await comments.createComment(COMMENT_TYPE.TORRENT, Number(torrentId), data);
             setComments(prev => [...prev, newComment].sort((a, b) => a.floor - b.floor));
             
             setTimeout(() => {

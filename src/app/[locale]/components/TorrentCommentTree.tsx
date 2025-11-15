@@ -7,10 +7,9 @@ import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReply, faTrash, faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
-import { Link } from '@/i18n/navigation';
 import UserDisplay from './UserDisplay';
 import ReplyEditor from './ReplyEditor';
-import { CreateCommentRequestDto } from '@/lib/api';
+import { CreateCommentDto } from '@/lib/api';
 import MarkdownRenderer from './MarkdownRenderer';
 import CommentReactionBar from './CommentReactionBar';
 
@@ -23,7 +22,7 @@ interface CommentTreeProps {
 	canDelete?: (comment: CommentDto) => boolean;
 	onDelete?: (commentId: number) => void;
 	isDeleting?: boolean;
-	onSubmitReply?: (data: CreateCommentRequestDto) => Promise<void>;
+	onSubmitReply?: (data: CreateCommentDto) => Promise<void>;
 	// 未来可以添加: onLike?: (commentId: number) => void;
 }
 
@@ -77,7 +76,7 @@ export default function TorrentCommentTree({
 		}
 	};
 
-	const handleSubmitReply = async (data: CreateCommentRequestDto) => {
+	const handleSubmitReply = async (data: CreateCommentDto) => {
 		if (onSubmitReply) {
 			await onSubmitReply(data);
 			setActiveReplyId(null);
@@ -127,7 +126,7 @@ export default function TorrentCommentTree({
 						</div>
 
 						{/* 引用信息 */}
-						{parentComment && comment.replyToUser && parentComment.text && (
+						{parentComment && comment.replyToUser && parentComment.content && (
 							<div className="mb-3 bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-500 rounded-r overflow-hidden">
 								<div className="px-3 py-2">
 									<div className="flex items-center justify-between mb-1">
@@ -137,7 +136,7 @@ export default function TorrentCommentTree({
 												{t('quote')} #{parentComment.floor} @{comment.replyToUser.username}
 											</span>
 										</div>
-										{parentComment.text.length > 150 && (
+										{parentComment.content.length > 150 && (
 											<button
 												onClick={() => toggleQuote(comment.id)}
 												className="text-xs text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 shrink-0"
@@ -149,34 +148,32 @@ export default function TorrentCommentTree({
 									<div
 										className="text-sm text-gray-600 dark:text-gray-300 italic"
 										style={{
-											maxHeight: !isQuoteExpanded && parentComment.text.length > 150 ? '4.5em' : 'none',
+											maxHeight: !isQuoteExpanded && parentComment.content.length > 150 ? '4.5em' : 'none',
 											overflow: 'hidden',
 											display: '-webkit-box',
-											WebkitLineClamp: !isQuoteExpanded && parentComment.text.length > 150 ? 3 : 'unset',
+											WebkitLineClamp: !isQuoteExpanded && parentComment.content.length > 150 ? 3 : 'unset',
 											WebkitBoxOrient: 'vertical',
 										}}
 									>
-										{parentComment.text}
+										{parentComment.content}
 									</div>
 								</div>
 							</div>
 						)}
 
 						{/* 评论内容 */}
-						<div className="text-gray-800 mb-3 break-words">
-							<MarkdownRenderer content={comment.text} />
+						<div className="text-gray-800 mb-3 wrap-break-words">
+							<MarkdownRenderer content={comment.content} />
 						</div>
 
 						{/* 表情回应栏 */}
-						{comment.reactions && (
-							<div className="mb-3">
-								<CommentReactionBar
-									commentType={COMMENT_TYPE.TORRENT_COMMENT}
-									commentId={comment.id}
-									initialReactions={comment.reactions}
-								/>
-							</div>
-						)}
+						<div className="mb-3">
+							<CommentReactionBar
+								commentType={COMMENT_TYPE.TORRENT}
+								commentId={comment.id}
+								initialReactions={comment.reactions}
+							/>
+						</div>
 
 						{/* 操作按钮区 */}
 						<div className="flex items-center justify-end gap-3">

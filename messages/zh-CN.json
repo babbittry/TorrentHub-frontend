@@ -193,7 +193,8 @@
         "use_email": "使用邮件验证",
         "email_sent": "新的验证码已发送至您的邮箱。",
         "error_sending_email": "发送邮件验证码失败。",
-        "login_failed": "登录失败。验证码可能不正确或已过期。"
+        "login_failed": "登录失败。验证码可能不正确或已过期。",
+        "verification_code": "验证码"
     },
     "requestsPage": {
         "title": "种子求取",
@@ -854,6 +855,7 @@
         "loading": "加载中...",
         "submitting": "提交中...",
         "submit_failed": "提交失败,请重试",
+        "submit_success": "提交成功！",
         "quote": "引用",
         "expand": "展开",
         "collapse": "收起",

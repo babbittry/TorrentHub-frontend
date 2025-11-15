@@ -27,7 +27,7 @@ interface CommentReactionBarProps {
 }
 
 // 表情配置映射
-const REACTION_CONFIG: Record<ReactionType, { emoji: string; icon: typeof faThumbsUp; labelKey: string }> = {
+const REACTION_CONFIG: { [key in ReactionType]: { emoji: string; icon: typeof faThumbsUp; labelKey: string } } = {
     [ReactionType.ThumbsUp]: { emoji: '👍', icon: faThumbsUp, labelKey: 'thumbs_up' },
     [ReactionType.ThumbsDown]: { emoji: '👎', icon: faThumbsDown, labelKey: 'thumbs_down' },
     [ReactionType.Heart]: { emoji: '❤️', icon: faHeart, labelKey: 'heart' },
@@ -117,9 +117,9 @@ export default function CommentReactionBar({
         try {
             // 调用 API
             if (hasReacted) {
-                await reactionsApi.removeReaction(commentType, commentId, type);
+                await reactionsApi.removeReaction(commentId, type);
             } else {
-                await reactionsApi.addReaction(commentType, commentId, { type });
+                await reactionsApi.addReaction(commentId, { type });
             }
         } catch (err) {
             // 如果API调用失败，回滚到之前的状态
@@ -150,9 +150,10 @@ export default function CommentReactionBar({
                     {/* 表情选择器 */}
                     {showPicker && (
                         <div className="absolute bottom-full mb-2 left-0 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2 flex gap-1 z-10">
-                            {Object.values(ReactionType)
-                                .filter((v): v is ReactionType => isNaN(Number(v)))
-                                .map((type) => {
+                            {Object.keys(ReactionType)
+                                .filter((v) => !isNaN(Number(v)))
+                                .map((key) => {
+                                    const type = Number(key) as ReactionType;
                                     const config = REACTION_CONFIG[type];
                                     return (
                                         <button
@@ -182,9 +183,11 @@ export default function CommentReactionBar({
                 const config = REACTION_CONFIG[reaction.type];
                 if (!config) return null;
 
-                // 显示用户数量，超过10个显示"10+"
-                const displayCount = reaction.users.length >= 10 && reaction.count > 10 
-                    ? '10+' 
+                // 显示reaction数量，超过10个显示"10+"
+                // 注意：应该使用 count 字段而不是 users.length
+                // 因为批量获取时 users 数组为空（性能优化）
+                const displayCount = reaction.count > 10
+                    ? '10+'
                     : reaction.count.toString();
 
                 return (
@@ -227,9 +230,10 @@ export default function CommentReactionBar({
                     {/* 表情选择器 */}
                     {showPicker && (
                         <div className="absolute bottom-full mb-2 left-0 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2 flex gap-1 z-10">
-                            {Object.values(ReactionType)
-                                .filter((v): v is ReactionType => isNaN(Number(v)))
-                                .map((type) => {
+                            {Object.keys(ReactionType)
+                                .filter((v) => !isNaN(Number(v)))
+                                .map((key) => {
+                                    const type = Number(key) as ReactionType;
                                     const config = REACTION_CONFIG[type];
                                     const hasReacted = reactions.reactions.find(
                                         r => r.type === type

@@ -854,6 +854,7 @@
         "loading": "Chargement...",
         "submitting": "Soumission...",
         "submit_failed": "Échec de la soumission, veuillez réessayer",
+        "submit_success": "Soumis avec succès !",
         "quote": "Citation",
         "expand": "Développer",
         "collapse": "Réduire",

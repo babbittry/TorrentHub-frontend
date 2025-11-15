@@ -294,49 +294,29 @@ export interface UpdateAnnouncementDto {
     content: string;
 }
 
-// DTOs for Comment related operations
+// DTOs for Comment related operations (Unified)
+export enum CommentableType {
+    Torrent = 'torrent',
+    Request = 'request',
+    ForumTopic = 'forumtopic',
+}
+
 export interface CommentDto {
     id: number;
-    text: string;
-    torrentId: number;
+    commentableType: CommentableType;
+    commentableId: number;
+    userId: number;
     user?: UserDisplayDto;
-    createdAt: string; // date-time
-    editedAt?: string | null; // date-time
+    content: string;
     floor: number;
-    parentCommentId?: number | null;
-    replyToUser?: UserDisplayDto | null;
-    depth: number;
-    replyCount: number;
-    reactions?: CommentReactionsDto; // 新增：表情回应数据
-}
-
-// DTOs for Request Comment related operations
-export interface RequestCommentDto {
-    id: number;
-    text: string;
-    requestId: number;
-    user?: UserDisplayDto;
-    createdAt: string; // date-time
-    editedAt?: string | null; // date-time
-    floor: number;
-    parentCommentId?: number | null;
-    replyToUser?: UserDisplayDto | null;
-    depth: number;
-    replyCount: number;
-    reactions?: CommentReactionsDto;
-}
-
-export interface RequestCommentListResponse {
-    items: RequestCommentDto[];
-    hasMore: boolean;
-    totalCount: number;
-    loadedCount: number;
-}
-
-export interface CreateRequestCommentDto {
-    text: string;
     parentCommentId?: number | null;
     replyToUserId?: number | null;
+    replyToUser?: UserDisplayDto | null;
+    depth: number;
+    replyCount: number;
+    createdAt: string; // date-time
+    editedAt?: string | null; // date-time
+    reactions?: CommentReactionsDto;
 }
 
 export interface CommentListResponse {
@@ -346,13 +326,13 @@ export interface CommentListResponse {
     loadedCount: number;
 }
 
-export interface CreateCommentRequestDto {
-    text: string;
+export interface CreateCommentDto {
+    content: string;
     parentCommentId?: number | null;
     replyToUserId?: number | null;
 }
 
-export interface UpdateCommentRequestDto {
+export interface UpdateCommentDto {
     content: string;
 }
 
@@ -742,22 +722,22 @@ export interface TipCoinsRequestDto {
 // DTOs for Reaction related operations
 // CommentType 常量
 export const COMMENT_TYPE = {
-    TORRENT_COMMENT: 'TorrentComment',
-    FORUM_POST: 'ForumPost',
-    REQUEST_COMMENT: 'RequestComment',
+    TORRENT: 'torrent',
+    REQUEST: 'request',
+    FORUM_TOPIC: 'forumtopic',
 } as const;
 
 export type CommentType = typeof COMMENT_TYPE[keyof typeof COMMENT_TYPE];
 
 // 表情类型枚举（与后端保持一致：数字枚举）
 export enum ReactionType {
-    ThumbsUp = "ThumbsUp",
-    ThumbsDown = "ThumbsDown",
-    Heart = "Heart",
-    Celebration = "Celebration",
-    Thinking = "Thinking",
-    Laugh = "Laugh",
-    Eyes = "Eyes"
+    ThumbsUp = 1,
+    ThumbsDown = 2,
+    Heart = 3,
+    Celebration = 4,
+    Thinking = 5,
+    Laugh = 6,
+    Eyes = 7
 }
 
 // 单个表情回应的汇总
@@ -902,47 +882,33 @@ export const announcements = {
     },
 };
 
-// Comments API Functions
+// Comments API Functions (Unified)
 export const comments = {
-    createComment: async (torrentId: number, comment: CreateCommentRequestDto): Promise<CommentDto> => {
-        const response = await api.post(`/api/torrents/${torrentId}/comments`, comment);
-        return response.data;
-    },
-    getComments: async (torrentId: number, afterFloor: number = 0, limit: number = 30): Promise<CommentListResponse> => {
+    getComments: async (type: CommentType, id: number, page: number = 1, pageSize: number = 20): Promise<CommentListResponse> => {
         const params = new URLSearchParams({
-            afterFloor: afterFloor.toString(),
-            limit: limit.toString(),
+            page: page.toString(),
+            pageSize: pageSize.toString(),
         });
-        const response = await api.get(`/api/torrents/${torrentId}/comments?${params.toString()}`);
-        return response.data;
+        return callApi(api.get<ApiResponse<CommentListResponse>>(`/api/Comment/${type}/${id}?${params.toString()}`));
     },
-    updateComment: async (id: number, comment: UpdateCommentRequestDto): Promise<void> => {
-        await api.put(`/api/comments/${id}`, comment);
+    createComment: async (type: CommentType, id: number, data: CreateCommentDto): Promise<CommentDto> => {
+        return callApi(api.post<ApiResponse<CommentDto>>(`/api/Comment/${type}/${id}`, data));
     },
-    deleteComment: async (id: number): Promise<void> => {
-        await api.delete(`/api/comments/${id}`);
+    updateComment: async (commentId: number, data: UpdateCommentDto): Promise<CommentDto> => {
+        return callApi(api.put<ApiResponse<CommentDto>>(`/api/Comment/${commentId}`, data));
     },
-};
-
-// Request Comments API Functions
-export const requestComments = {
-    createComment: async (requestId: number, comment: CreateRequestCommentDto): Promise<RequestCommentDto> => {
-        const response = await api.post(`/api/requests/${requestId}/comments`, comment);
-        return response.data;
+    deleteComment: async (commentId: number): Promise<void> => {
+        return callApi(api.delete<ApiResponse<void>>(`/api/Comment/${commentId}`));
     },
-    getComments: async (requestId: number, afterFloor: number = 0, limit: number = 30): Promise<RequestCommentListResponse> => {
+    getCommentDetail: async (commentId: number): Promise<CommentDto> => {
+        return callApi(api.get<ApiResponse<CommentDto>>(`/api/Comment/detail/${commentId}`));
+    },
+    getUserComments: async (userId: number, page: number = 1, pageSize: number = 20): Promise<CommentListResponse> => {
         const params = new URLSearchParams({
-            afterFloor: afterFloor.toString(),
-            limit: limit.toString(),
+            page: page.toString(),
+            pageSize: pageSize.toString(),
         });
-        const response = await api.get(`/api/requests/${requestId}/comments?${params.toString()}`);
-        return response.data;
-    },
-    updateComment: async (id: number, comment: UpdateCommentRequestDto): Promise<void> => {
-        await api.put(`/api/comments/${id}`, comment);
-    },
-    deleteComment: async (id: number): Promise<void> => {
-        await api.delete(`/api/comments/${id}`);
+        return callApi(api.get<ApiResponse<CommentListResponse>>(`/api/Comment/user/${userId}?${params.toString()}`));
     },
 };
 
@@ -1065,30 +1031,14 @@ export const forum = {
         });
         return callApi(api.get<ApiResponse<ForumTopicDetailDto>>(`/api/forum/topics/${topicId}?${params.toString()}`));
     },
-    getTopicPosts: async (topicId: number, page: number = 1, pageSize: number = 30): Promise<ForumPostListResponse> => {
-        const params = new URLSearchParams({
-            page: page.toString(),
-            pageSize: pageSize.toString(),
-        });
-        return callApi(api.get<ApiResponse<ForumPostListResponse>>(`/api/forum/topics/${topicId}/posts?${params.toString()}`));
-    },
     createTopic: async (topicData: CreateForumTopicDto): Promise<ForumTopicDetailDto> => {
         return callApi(api.post<ApiResponse<ForumTopicDetailDto>>('/api/forum/topics', topicData));
-    },
-    createPost: async (topicId: number, postData: CreateForumPostDto): Promise<ForumPostDto> => {
-        return callApi(api.post<ApiResponse<ForumPostDto>>(`/api/forum/topics/${topicId}/posts`, postData));
     },
     updateTopic: async (topicId: number, topicData: UpdateForumTopicDto): Promise<void> => {
         return callApi(api.put<ApiResponse<void>>(`/api/forum/topics/${topicId}`, topicData));
     },
     deleteTopic: async (topicId: number): Promise<void> => {
         return callApi(api.delete<ApiResponse<void>>(`/api/forum/topics/${topicId}`));
-    },
-    updatePost: async (postId: number, postData: UpdateForumPostDto): Promise<void> => {
-        return callApi(api.put<ApiResponse<void>>(`/api/forum/posts/${postId}`, postData));
-    },
-    deletePost: async (postId: number): Promise<void> => {
-        return callApi(api.delete<ApiResponse<void>>(`/api/forum/posts/${postId}`));
     },
     lockTopic: async (topicId: number): Promise<void> => {
         return callApi(api.patch<ApiResponse<void>>(`/api/forum/topics/${topicId}/lock`));
@@ -1119,40 +1069,18 @@ export const coins = {
 
 // Reactions API Functions
 export const reactions = {
-    // 添加回应
-    addReaction: async (
-        commentType: CommentType,
-        commentId: number,
-        data: AddReactionRequestDto
-    ): Promise<void> => {
-        await api.post(`/api/${commentType}/${commentId}/reactions`, data);
+    getReactions: async (commentId: number): Promise<CommentReactionsDto> => {
+        return callApi(api.get<ApiResponse<CommentReactionsDto>>(`/api/reactions/comment/${commentId}`));
     },
-
-    // 移除回应
-    removeReaction: async (
-        commentType: CommentType,
-        commentId: number,
-        type: ReactionType
-    ): Promise<void> => {
-        await api.delete(`/api/${commentType}/${commentId}/reactions/${type}`);
+    addReaction: async (commentId: number, data: AddReactionRequestDto): Promise<void> => {
+        return callApi(api.post<ApiResponse<void>>(`/api/reactions/comment/${commentId}`, data));
     },
-
-    // 获取单个评论的回应
-    getReactions: async (
-        commentType: CommentType,
-        commentId: number
-    ): Promise<CommentReactionsDto> => {
-        const response = await api.get(`/api/${commentType}/${commentId}/reactions`);
-        return response.data;
+    removeReaction: async (commentId: number, type: ReactionType): Promise<void> => {
+        return callApi(api.delete<ApiResponse<void>>(`/api/reactions/comment/${commentId}/${type}`));
     },
-
-    // 批量获取回应
-    getReactionsBatch: async (
-        commentType: CommentType,
-        commentIds: number[]
-    ): Promise<Record<number, CommentReactionsDto>> => {
-        const response = await api.post(`/api/${commentType}/reactions/batch`, { commentIds });
-        return response.data;
+    getReactionsBatch: async (commentIds: number[]): Promise<Record<number, CommentReactionsDto>> => {
+        const data: GetReactionsBatchRequestDto = { commentIds };
+        return callApi(api.post<ApiResponse<Record<number, CommentReactionsDto>>>('/api/reactions/batch', data));
     }
 };
 
@@ -1551,20 +1479,20 @@ export const settings = {
 export const torrentListing = {
     getTorrentListing: async (page: number = 1, pageSize: number = 50, category?: string, searchTerm?: string, sortBy?: string, sortOrder?: string): Promise<PaginatedResult<TorrentDto>> => {
         const params = new URLSearchParams({
-            PageNumber: page.toString(),
-            PageSize: pageSize.toString(),
+            page: page.toString(),
+            pageSize: pageSize.toString(),
         });
         if (category) {
-            params.append('Category', category);
+            params.append('category', category);
         }
         if (searchTerm) {
-            params.append('SearchTerm', searchTerm);
+            params.append('searchTerm', searchTerm);
         }
         if (sortBy) {
-            params.append('SortBy', sortBy);
+            params.append('sortBy', sortBy);
         }
         if (sortOrder) {
-            params.append('SortOrder', sortOrder);
+            params.append('sortOrder', sortOrder);
         }
         const response = await api.get(`/api/torrents/listing?${params.toString()}`);
         return response.data;

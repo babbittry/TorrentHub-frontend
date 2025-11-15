@@ -5,6 +5,7 @@ import { FileText, Image as ImageIcon, ArrowUp, ArrowDown, Check } from "lucide-
 import React from "react";
 import { useTranslations } from 'next-intl';
 import { TorrentDto } from "@/lib/api";
+import UserDisplay from "@/app/[locale]/components/UserDisplay";
 
 interface TorrentTabsProps {
   torrent: TorrentDto;
@@ -74,7 +75,15 @@ const TorrentTabs = ({ torrent, commentsSection, commentsCount, onCommentsTabOpe
                 <div className="space-y-4 text-muted-foreground">
                     <div className="flex justify-between items-center">
                         <span>{t('status.uploader')}</span>
-                        <span className="font-semibold text-primary">{torrent.uploader?.username || 'N/A'}</span>
+                        {torrent.uploader ? (
+                            <UserDisplay
+                                user={torrent.uploader}
+                                showAvatar={false}
+                                showUsername={true}
+                            />
+                        ) : (
+                            <span className="font-semibold text-muted-foreground">N/A</span>
+                        )}
                     </div>
                     <div className="flex justify-between items-center">
                         <span>{t('status.uploadTime')}</span>

@@ -854,6 +854,7 @@
         "loading": "Loading...",
         "submitting": "Submitting...",
         "submit_failed": "Failed to submit, please try again",
+        "submit_success": "Submitted successfully!",
         "quote": "Quote",
         "expand": "Expand",
         "collapse": "Collapse",

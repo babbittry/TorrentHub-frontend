@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { forum, ForumTopicDetailDto, CreateForumPostDto, ForumCategoryDto, ForumPostDto } from '@/lib/api';
+import { forum, comments, ForumTopicDetailDto, CreateCommentDto, ForumCategoryDto, CommentDto, COMMENT_TYPE } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,13 +18,13 @@ const TopicDetailPage = () => {
     const topicId = Number(params.topicId);
     const [topic, setTopic] = useState<ForumTopicDetailDto | null>(null);
     const [categories, setCategories] = useState<ForumCategoryDto[]>([]);
-    const [posts, setPosts] = useState<ForumPostDto[]>([]);
+    const [posts, setPosts] = useState<CommentDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loadingMore, setLoadingMore] = useState<boolean>(false);
-    const [replyTarget, setReplyTarget] = useState<{ parentId: number; user: ForumPostDto['author'] } | null>(null);
+    const [replyTarget, setReplyTarget] = useState<{ parentId: number; user: CommentDto['user'] } | null>(null);
     const t = useTranslations();
 
     const getCategoryName = useCallback((code: string) => {
@@ -42,10 +42,11 @@ const TopicDetailPage = () => {
             setTopic(topicData);
             setCategories(categoriesData);
             
-            const postsList = topicData.posts?.items || [];
-            setPosts(postsList);
-            setHasMore(topicData.posts.page < topicData.posts.totalPages);
-            setCurrentPage(topicData.posts.page);
+            // The posts are now fetched separately using the comments API
+            const commentsResponse = await comments.getComments(COMMENT_TYPE.FORUM_TOPIC, topicId, 1, 30);
+            setPosts(commentsResponse.items);
+            setHasMore(commentsResponse.hasMore);
+            setCurrentPage(1);
         } catch (err) {
             setError(t('forumPage.error_loading_topic_details'));
             console.error(err);
@@ -76,11 +77,11 @@ const TopicDetailPage = () => {
         setLoadingMore(true);
         try {
             const nextPage = currentPage + 1;
-            const response = await forum.getTopicPosts(topicId, nextPage, 30);
+            const response = await comments.getComments(COMMENT_TYPE.FORUM_TOPIC, topicId, nextPage, 30);
             const newPosts = response.items || [];
             setPosts(prev => [...prev, ...newPosts]);
-            setHasMore(response.page < response.totalPages);
-            setCurrentPage(response.page);
+            setHasMore(response.hasMore);
+            setCurrentPage(nextPage);
         } catch (err) {
             toast.error(t('forumPage.error_loading_topic_details'));
             console.error(err);
@@ -89,14 +90,9 @@ const TopicDetailPage = () => {
         }
     };
 
-    const handleSubmitTopLevelPost = async (data: { text: string; parentCommentId?: number | null; replyToUserId?: number | null }) => {
+    const handleSubmitTopLevelPost = async (data: CreateCommentDto) => {
         try {
-            const postData: CreateForumPostDto = {
-                content: data.text,
-                parentPostId: data.parentCommentId || undefined,
-                replyToUserId: data.replyToUserId || undefined
-            };
-            const newPost = await forum.createPost(topicId, postData);
+            const newPost = await comments.createComment(COMMENT_TYPE.FORUM_TOPIC, topicId, data);
             setPosts(prev => [...prev, newPost]);
             toast.success(t('forumPage.success_posting_reply'));
         } catch (err) {
@@ -105,14 +101,9 @@ const TopicDetailPage = () => {
         }
     };
 
-    const handleSubmitReply = async (data: { text: string; parentCommentId?: number | null; replyToUserId?: number | null }) => {
+    const handleSubmitReply = async (data: CreateCommentDto) => {
         try {
-            const postData: CreateForumPostDto = {
-                content: data.text,
-                parentPostId: data.parentCommentId || undefined,
-                replyToUserId: data.replyToUserId || undefined
-            };
-            const newPost = await forum.createPost(topicId, postData);
+            const newPost = await comments.createComment(COMMENT_TYPE.FORUM_TOPIC, topicId, data);
             setPosts(prev => [...prev, newPost]);
             setReplyTarget(null);
             toast.success(t('forumPage.success_posting_reply'));
@@ -124,7 +115,7 @@ const TopicDetailPage = () => {
 
     const handleDeletePost = async (postId: number) => {
         try {
-            await forum.deletePost(postId);
+            await comments.deleteComment(postId);
             setPosts(prev => prev.filter(p => p.id !== postId));
             toast.success(t('forumPage.success_deleting_post'));
         } catch (err) {
@@ -133,7 +124,7 @@ const TopicDetailPage = () => {
         }
     };
 
-    const handleReplyClick = (parentId: number, replyToUser: ForumPostDto['author']) => {
+    const handleReplyClick = (parentId: number, replyToUser: CommentDto['user']) => {
         setReplyTarget({ parentId, user: replyToUser });
     };
 
