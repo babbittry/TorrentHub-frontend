@@ -227,7 +227,7 @@ export default function RequestCommentTree({
 								</div>
 							</form>
 						) : (
-							<div className="text-gray-800 mb-3 break-words">
+							<div className="text-gray-800 mb-3 warp-break-words">
 								<MarkdownRenderer content={comment.content} />
 							</div>
 						)}

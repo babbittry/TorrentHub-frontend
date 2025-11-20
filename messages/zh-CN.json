@@ -246,7 +246,11 @@
         "rejection_reason_required": "必须填写拒绝原因。",
         "rejection_reason": "拒绝原因",
         "bounty_help_text": "发布此求种将花费 {baseCost} 金币作为基础费用。您还可以额外增加悬赏，总花费为 {totalCost} 金币。",
-        "reason": "原因"
+        "reason": "原因",
+        "bounty_added_success": "悬赏添加成功！",
+        "fill_success": "求种满足成功！",
+        "confirm_success": "确认成功！",
+        "reject_success": "拒绝成功！"
     },
     "messagesPage": {
         "title": "站内信",
@@ -307,7 +311,11 @@
         "error_permission_denied": "你没有权限在此分区发帖。",
         "title_placeholder": "请输入标题",
         "content_placeholder": "请输入内容",
-        "write_reply_placeholder": "写下你的想法，保持友善。"
+        "write_reply_placeholder": "写下你的想法，保持友善。",
+        "success_creating_topic": "主题发布成功！",
+        "success_posting_reply": "回复发布成功！",
+        "success_deleting_post": "帖子删除成功！",
+        "error_deleting_post": "删除帖子失败。"
     },
     "forum_categories": {
         "Announcement": "公告区",
@@ -453,7 +461,8 @@
         "tableExpiresAt": "过期时间",
         "tableUsedBy": "受邀用户",
         "noInvites": "没有找到邀请码。",
-        "purchaseInvite": "购买邀请名额"
+        "purchaseInvite": "购买邀请名额",
+        "purchase_success": "购买成功！"
     },
     "Admin": {
         "sidebar": {
@@ -552,7 +561,12 @@
                 "fillOut": "请填写问题和所有选项。",
                 "createFailed": "创建投票失败。",
                 "deleteConfirm": "你确定要删除这个投票吗？",
-                "deleteFailed": "删除投票失败。"
+                "deleteFailed": "删除投票失败。",
+                "fetchFailed": "获取投票失败。",
+                "maxOptions": "最多只能添加 10 个选项。",
+                "minOptions": "至少需要 2 个选项。",
+                "createSuccess": "投票创建成功！",
+                "deleteSuccess": "投票删除成功！"
             }
         },
         "announcementManagement": {
@@ -929,7 +943,10 @@
         "edit_failed": "编辑失败",
         "edited": "已编辑",
         "comments": "评论",
-        "add_comment": "添加评论"
+        "add_comment": "添加评论",
+        "edit_success": "编辑成功！",
+        "delete_success": "删除成功！",
+        "saving": "保存中..."
     },
     "torrentUpload": {
         "title": "上传种子",
@@ -961,6 +978,8 @@
         "error_description_required": "描述不能为空",
         "error_category_required": "请选择分类",
         "error_fetch_generic": "获取媒体信息失败，请检查输入或稍后再试。",
+        "error_fetch_categories": "获取分类失败。",
+        "error_description_max_length": "描述过长。",
         "validating": "验证中...",
         "parsing": "解析种子文件...",
         "cancel": "取消"

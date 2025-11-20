@@ -59,12 +59,12 @@
         "already_have_account": "Vous avez déjà un compte ?",
         "no_account_yet": "Pas encore de compte ?",
         "enter_your_username": "Entrez votre nom d'utilisateur",
-        "username_or_email": "Username or Email",
-        "enter_your_username_or_email": "Enter your username or email",
+        "username_or_email": "Nom d'utilisateur ou e-mail",
+        "enter_your_username_or_email": "Entrez votre nom d'utilisateur ou e-mail",
         "enter_your_password": "Entrez votre mot de passe",
         "email_verification_needed": "Veuillez vérifier votre adresse e-mail avant de vous connecter.",
         "resend_verification_email": "Renvoyer l'e-mail de vérification",
-        "enter_username_or_email_for_verification": "Please enter your username or email to resend the verification link.",
+        "enter_username_or_email_for_verification": "Veuillez entrer votre nom d'utilisateur ou e-mail pour renvoyer le lien de vérification.",
         "verification_sent_success": "Un nouveau lien de vérification a été envoyé à votre adresse e-mail.",
         "verification_sent_failed": "Échec de l'envoi de l'e-mail de vérification. Veuillez réessayer plus tard.",
         "invalid_credentials": "Nom d'utilisateur ou mot de passe invalide.",
@@ -186,14 +186,15 @@
     },
     "login2fa": {
         "title": "Authentification à deux facteurs",
-        "enter_code": "Enter the 6-digit code from your authenticator app.",
+        "enter_code": "Entrez le code à 6 chiffres de votre application d'authentification.",
         "code_placeholder": "Code de vérification",
         "submit_button": "Vérifier et se connecter",
         "no_app_code": "Vous ne pouvez pas obtenir le code de votre application ?",
         "use_email": "Utiliser la vérification par e-mail à la place",
         "email_sent": "Un nouveau code de vérification a été envoyé à votre e-mail.",
         "error_sending_email": "Échec de l'envoi du code par e-mail.",
-        "login_failed": "Échec de la connexion. Le code est peut-être incorrect ou a expiré."
+        "login_failed": "Échec de la connexion. Le code est peut-être incorrect ou a expiré.",
+        "verification_code": "Code de vérification"
     },
     "requestsPage": {
         "title": "Requêtes de torrents",
@@ -245,7 +246,11 @@
         "rejection_reason": "Raison du rejet",
         "reason": "Raison",
         "bounty_help_text": "La création de cette demande coûtera {baseCost} pièces. Vous pouvez ajouter une prime supplémentaire, pour un coût total de {totalCost} pièces.",
-        "detectionType": "Type de Détection"
+        "detectionType": "Type de Détection",
+        "bounty_added_success": "Récompense ajoutée avec succès !",
+        "fill_success": "Requête satisfaite avec succès !",
+        "confirm_success": "Confirmation réussie !",
+        "reject_success": "Rejet réussi !"
     },
     "messagesPage": {
         "title": "Messages",
@@ -304,9 +309,13 @@
         "error_creating_topic": "Erreur lors de la création du sujet.",
         "your_reply": "Votre réponse",
         "error_permission_denied": "Vous n'avez pas la permission de poster dans cette catégorie.",
-        "title_placeholder": "Please enter a title",
-        "content_placeholder": "Please enter the content",
-        "write_reply_placeholder": "Partagez vos pensées, soyez gentil."
+        "title_placeholder": "Veuillez entrer un titre",
+        "content_placeholder": "Veuillez entrer le contenu",
+        "write_reply_placeholder": "Partagez vos pensées, soyez gentil.",
+        "success_creating_topic": "Sujet créé avec succès !",
+        "success_posting_reply": "Réponse publiée avec succès !",
+        "success_deleting_post": "Message supprimé avec succès !",
+        "error_deleting_post": "Échec de la suppression du message."
     },
     "forum_categories": {
         "Announcement": "Annonces",
@@ -452,7 +461,8 @@
         "tableExpiresAt": "Date d'expiration",
         "tableUsedBy": "Utilisé par",
         "noInvites": "Aucune invitation trouvée.",
-        "purchaseInvite": "Acheter des Emplacements d'Invitation"
+        "purchaseInvite": "Acheter des Emplacements d'Invitation",
+        "purchase_success": "Achat réussi !"
     },
     "Admin": {
         "sidebar": {
@@ -470,8 +480,8 @@
             "cheatLogs": "Journaux de Triche"
         },
         "bandwidthSettings": {
-            "title": "带宽设置",
-            "description": "配置上传和下载速度限制"
+            "title": "Paramètres de bande passante",
+            "description": "Configurer les limites de vitesse d'upload et de download"
         },
         "dashboard": {
             "title": "Admin Dashboard",
@@ -551,7 +561,12 @@
                 "fillOut": "Please fill out the question and all options.",
                 "createFailed": "Failed to create poll.",
                 "deleteConfirm": "Are you sure you want to delete this poll?",
-                "deleteFailed": "Failed to delete poll."
+                "deleteFailed": "Échec de la suppression du sondage.",
+                "fetchFailed": "Échec de la récupération du sondage.",
+                "maxOptions": "Vous ne pouvez ajouter que 10 options maximum.",
+                "minOptions": "Au moins 2 options sont nécessaires.",
+                "createSuccess": "Sondage créé avec succès !",
+                "deleteSuccess": "Sondage supprimé avec succès !"
             }
         },
         "announcementManagement": {
@@ -925,10 +940,13 @@
         "edit": "Modifier",
         "editing": "Modification...",
         "save": "Enregistrer",
+        "saving": "Enregistrement...",
         "edit_failed": "Échec de la modification",
         "edited": "Modifié",
         "comments": "Commentaires",
-        "add_comment": "Ajouter un commentaire"
+        "add_comment": "Ajouter un commentaire",
+        "edit_success": "Modification réussie !",
+        "delete_success": "Suppression réussie !"
     },
     "torrentUpload": {
         "title": "Télécharger un Torrent",
@@ -962,6 +980,8 @@
         "error_category_required": "Veuillez sélectionner une catégorie",
         "validating": "Validation en cours...",
         "parsing": "Analyse du fichier torrent...",
+        "error_fetch_categories": "Échec de la récupération des catégories.",
+        "error_description_max_length": "La description est trop longue.",
         "cancel": "Annuler"
     },
     "reactions": {

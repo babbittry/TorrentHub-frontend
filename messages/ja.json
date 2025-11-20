@@ -59,12 +59,12 @@
         "already_have_account": "すでにアカウントをお持ちですか？",
         "no_account_yet": "まだアカウントをお持ちではありませんか？",
         "enter_your_username": "ユーザー名を入力してください",
-        "username_or_email": "Username or Email",
-        "enter_your_username_or_email": "Enter your username or email",
+        "username_or_email": "ユーザー名またはメール",
+        "enter_your_username_or_email": "ユーザー名またはメールを入力してください",
         "enter_your_password": "パスワードを入力してください",
         "email_verification_needed": "ログインする前にメールアドレスを確認してください。",
         "resend_verification_email": "確認メールを再送信",
-        "enter_username_or_email_for_verification": "Please enter your username or email to resend the verification link.",
+        "enter_username_or_email_for_verification": "確認リンクを再送信するにはユーザー名またはメールを入力してください。",
         "verification_sent_success": "新しい確認リンクがメールアドレスに送信されました。",
         "verification_sent_failed": "確認メールの送信に失敗しました。後でもう一度お試しください。",
         "invalid_credentials": "ユーザー名またはパスワードが無効です。",
@@ -186,14 +186,15 @@
     },
     "login2fa": {
         "title": "二要素認証",
-        "enter_code": "Enter the 6-digit code from your authenticator app.",
+        "enter_code": "認証アプリから6桁のコードを入力してください。",
         "code_placeholder": "認証コード",
         "submit_button": "確認してログイン",
         "no_app_code": "アプリからコードを取得できませんか？",
         "use_email": "代わりにメール認証を使用する",
         "email_sent": "新しい認証コードがメールに送信されました。",
         "error_sending_email": "メールコードの送信に失敗しました。",
-        "login_failed": "ログインに失敗しました。コードが間違っているか、期限切れの可能性があります。"
+        "login_failed": "ログインに失敗しました。コードが間違っているか、期限切れの可能性があります。",
+        "verification_code": "認証コード"
     },
     "requestsPage": {
         "title": "トレントリクエスト",
@@ -245,7 +246,11 @@
         "rejection_reason": "拒否の理由",
         "reason": "理由",
         "bounty_help_text": "このリクエストを作成するには{baseCost}コインかかります。追加の懸賞金を追加して、合計{totalCost}コインにすることができます。",
-        "detectionType": "検出タイプ"
+        "detectionType": "検出タイプ",
+        "bounty_added_success": "懸賞金が正常に追加されました！",
+        "fill_success": "リクエストが正常に完了しました！",
+        "confirm_success": "確認が成功しました！",
+        "reject_success": "拒否が成功しました！"
     },
     "messagesPage": {
         "title": "メッセージ",
@@ -304,9 +309,13 @@
         "error_creating_topic": "トピックの作成中にエラーが発生しました。",
         "your_reply": "あなたの返信",
         "error_permission_denied": "このカテゴリに投稿する権限がありません。",
-        "title_placeholder": "Please enter a title",
-        "content_placeholder": "Please enter the content",
-        "write_reply_placeholder": "あなたの考えを共有し、親切に。"
+        "title_placeholder": "タイトルを入力してください",
+        "content_placeholder": "内容を入力してください",
+        "write_reply_placeholder": "あなたの考えを共有し、親切に。",
+        "success_creating_topic": "トピックが正常に作成されました！",
+        "success_posting_reply": "返信が正常に投稿されました！",
+        "success_deleting_post": "投稿が正常に削除されました！",
+        "error_deleting_post": "投稿の削除に失敗しました。"
     },
     "forum_categories": {
         "Announcement": "お知らせ",
@@ -452,7 +461,8 @@
         "tableExpiresAt": "有効期限",
         "tableUsedBy": "使用したユーザー",
         "noInvites": "招待は見つかりませんでした。",
-        "purchaseInvite": "招待枠を購入"
+        "purchaseInvite": "招待枠を購入",
+        "purchase_success": "購入に成功しました！"
     },
     "Admin": {
         "sidebar": {
@@ -551,7 +561,12 @@
                 "fillOut": "質問とすべての選択肢を入力してください。",
                 "createFailed": "投票の作成に失敗しました。",
                 "deleteConfirm": "この投票を削除してもよろしいですか？",
-                "deleteFailed": "投票の削除に失敗しました。"
+                "deleteFailed": "投票の削除に失敗しました。",
+                "fetchFailed": "投票の取得に失敗しました。",
+                "maxOptions": "最大10個のオプションまで追加できます。",
+                "minOptions": "少なくとも2つのオプションが必要です。",
+                "createSuccess": "投票の作成に成功しました！",
+                "deleteSuccess": "投票の削除に成功しました！"
             }
         },
         "announcementManagement": {
@@ -925,10 +940,13 @@
         "edit": "編集",
         "editing": "編集中...",
         "save": "保存",
+        "saving": "保存中...",
         "edit_failed": "編集に失敗しました",
         "edited": "編集済み",
         "comments": "コメント",
-        "add_comment": "コメントを追加"
+        "add_comment": "コメントを追加",
+        "edit_success": "編集が成功しました！",
+        "delete_success": "削除が成功しました！"
     },
     "torrentUpload": {
         "title": "トレントをアップロード",
@@ -962,6 +980,8 @@
         "error_category_required": "カテゴリを選択してください",
         "validating": "検証中...",
         "parsing": "トレントファイルを解析中...",
+        "error_fetch_categories": "カテゴリの取得に失敗しました。",
+        "error_description_max_length": "説明が長すぎます。",
         "cancel": "キャンセル"
     },
     "reactions": {
