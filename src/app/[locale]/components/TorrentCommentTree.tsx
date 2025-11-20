@@ -23,7 +23,6 @@ interface CommentTreeProps {
 	onDelete?: (commentId: number) => void;
 	isDeleting?: boolean;
 	onSubmitReply?: (data: CreateCommentDto) => Promise<void>;
-	// 未来可以添加: onLike?: (commentId: number) => void;
 }
 
 const dateLocales = {

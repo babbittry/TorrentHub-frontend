@@ -12,6 +12,7 @@ import ForumPostTree from '@/app/[locale]/components/ForumPostTree';
 import ReplyEditor from '@/app/[locale]/components/ReplyEditor';
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
+import { normalizeForumCategoryCode } from '@/lib/utils';
 
 const TopicDetailPage = () => {
     const params = useParams();
@@ -27,8 +28,9 @@ const TopicDetailPage = () => {
     const [replyTarget, setReplyTarget] = useState<{ parentId: number; user: CommentDto['user'] } | null>(null);
     const t = useTranslations();
 
-    const getCategoryName = useCallback((code: string) => {
-        return t(`forum_categories.${code}`);
+    const getCategoryName = useCallback((code: string | number | undefined | null) => {
+        const normalizedCode = normalizeForumCategoryCode(code);
+        return t(`forum_categories.${normalizedCode}`);
     }, [t]);
 
     const fetchDetails = useCallback(async () => {

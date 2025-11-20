@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 import RichEditor from '../../components/RichEditor';
 import { toast } from 'sonner';
 import { Label } from '@/components/ui/label';
+import { normalizeForumCategoryCode } from '@/lib/utils';
 
 const NewTopicPage = () => {
     const router = useRouter();
@@ -25,8 +26,9 @@ const NewTopicPage = () => {
     const [isForbidden, setIsForbidden] = useState(false);
     const t = useTranslations();
 
-    const getCategoryName = useCallback((code: string) => {
-        return t(`forum_categories.${code}`);
+    const getCategoryName = useCallback((code: string | number | undefined | null) => {
+        const normalizedCode = normalizeForumCategoryCode(code);
+        return t(`forum_categories.${normalizedCode}`);
     }, [t]);
 
     const categoryIdFromQuery = useMemo(() => searchParams.get('categoryId'), [searchParams]);
@@ -55,7 +57,7 @@ const NewTopicPage = () => {
 
         const selectedCategory = categories.find(c => c.id.toString() === selectedCategoryId);
 
-        if (selectedCategory && selectedCategory.code === 'Announcement') {
+        if (selectedCategory && normalizeForumCategoryCode(selectedCategory.code) === 'Announcement') {
             if (!user || user.role !== UserRole.Administrator) {
                 setIsForbidden(true);
                 toast.error(t('forumPage.error_permission_denied'));

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import UserDisplay from '@/app/[locale]/components/UserDisplay';
+import { normalizeForumCategoryCode } from '@/lib/utils';
 
 const CategoryPage = () => {
     const params = useParams();
@@ -23,12 +24,14 @@ const CategoryPage = () => {
     const [totalPages, setTotalPages] = useState(0);
     const t = useTranslations();
 
-    const getCategoryName = useCallback((code: string) => {
-        return t(`forum_categories.${code}`);
+    const getCategoryName = useCallback((code: string | number | undefined | null) => {
+        const normalizedCode = normalizeForumCategoryCode(code);
+        return t(`forum_categories.${normalizedCode}`);
     }, [t]);
 
-    const getCategoryDescription = useCallback((code: string) => {
-        return t(`forum_categories.${code}_description`);
+    const getCategoryDescription = useCallback((code: string | number | undefined | null) => {
+        const normalizedCode = normalizeForumCategoryCode(code);
+        return t(`forum_categories.${normalizedCode}_description`);
     }, [t]);
 
     const fetchTopics = useCallback(async () => {

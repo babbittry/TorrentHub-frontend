@@ -1386,11 +1386,76 @@ export interface BannedClientDto {
 }
 
 export interface SiteSettingsDto {
-    siteName?: string | null;
-    siteDescription?: string | null;
+    // 1. 基础设置 (General)
+    siteName: string;
+    logoUrl?: string | null;
+    contactEmail?: string | null;
+
+    // 2. 注册设置 (Registration)
     isRegistrationOpen: boolean;
-    isInviteOnly: boolean;
-    maintenanceMode: boolean;
+
+    // 3. 功能开关 (Features)
+    isRequestSystemEnabled: boolean;
+    isForumEnabled: boolean;
+
+    // 4. Tracker设置 (Tracker)
+    trackerUrl: string;
+    announceIntervalSeconds: number;
+    globalFreeleechEnabled: boolean;
+
+    // 5. Announce间隔控制
+    minAnnounceIntervalSeconds: number;
+    enforcedMinAnnounceIntervalSeconds: number;
+
+    // 6. 多地点检测 (Multi-Location Detection)
+    enableMultiLocationDetection: boolean;
+    multiLocationDetectionWindowMinutes: number;
+    logMultiLocationCheating: boolean;
+
+    // 7. IP变更容忍 (IP Change Tolerance)
+    allowIpChange: boolean;
+    minIpChangeIntervalMinutes: number;
+
+    // 8. 速度限制 (Speed Limits)
+    maxUploadSpeed: number;
+    maxDownloadSpeed: number;
+
+    // 9. 速度检查配置
+    minSpeedCheckIntervalSeconds: number;
+    enableDownloadSpeedCheck: boolean;
+
+    // 10. 作弊检测 (Cheat Detection)
+    cheatWarningAnnounceThreshold: number;
+    autoBanAfterCheatWarnings: number;
+
+    // 11. 凭证清理 (Credential Cleanup)
+    credentialCleanupDays: number;
+    enableCredentialAutoCleanup: boolean;
+
+    // 12. 金币系统 (Coins)
+    invitePrice: number;
+    inviteExpirationDays: number;
+    createRequestCost: number;
+    fillRequestBonus: number;
+    commentBonus: number;
+    uploadTorrentBonus: number;
+    maxDailyCommentBonuses: number;
+    tipTaxRate: number;
+    transferTaxRate: number;
+
+    // 13. 种子设置 (Torrents)
+    torrentStoragePath: string;
+    maxTorrentSize: number;
+
+    // 14. 金币生成系统 (Coin Generation)
+    generationIntervalMinutes: number;
+    baseGenerationRate: number;
+    sizeFactorMultiplier: number;
+    mosquitoFactorMultiplier: number;
+    seederFactorMultiplier: number;
+
+    // 15. 内容审核 (Content Moderation)
+    contentEditWindowMinutes: number;
 }
 
 export interface PublicSiteSettingsDto {

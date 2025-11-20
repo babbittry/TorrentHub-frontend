@@ -7,6 +7,7 @@ import { Link } from '@/i18n/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBullhorn, faComments, faVial, faPills, faFaucet, faQuestionCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { normalizeForumCategoryCode } from '@/lib/utils';
 
 const categoryIcons: { [key: string]: IconDefinition } = {
     'Announcement': faBullhorn,
@@ -16,8 +17,9 @@ const categoryIcons: { [key: string]: IconDefinition } = {
     'Watering': faFaucet,
 };
 
-const getCategoryIcon = (categoryCode: string) => {
-    return categoryIcons[categoryCode] || faQuestionCircle;
+const getCategoryIcon = (categoryCode: string | number | undefined | null) => {
+    const normalizedCode = normalizeForumCategoryCode(categoryCode);
+    return categoryIcons[normalizedCode] || faQuestionCircle;
 };
 
 const ForumHomePage = () => {
@@ -42,12 +44,14 @@ const ForumHomePage = () => {
         fetchCategories();
     }, [t]);
 
-    const getCategoryName = (code: string) => {
-        return t(`forum_categories.${code}`);
+    const getCategoryName = (code: string | number | undefined | null) => {
+        const normalizedCode = normalizeForumCategoryCode(code);
+        return t(`forum_categories.${normalizedCode}`);
     };
 
-    const getCategoryDescription = (code: string) => {
-        return t(`forum_categories.${code}_description`);
+    const getCategoryDescription = (code: string | number | undefined | null) => {
+        const normalizedCode = normalizeForumCategoryCode(code);
+        return t(`forum_categories.${normalizedCode}_description`);
     };
 
     return (
