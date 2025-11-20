@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { FormField } from "@/components/ui/form-field";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Grid, List } from "lucide-react";
 
 type ViewMode = 'grid' | 'list';
@@ -112,21 +113,19 @@ export default function TorrentsPage() {
                         <Button onClick={handleSearch} className="w-full md:w-auto">
                             {t('common.search')}
                         </Button>
-                        <div className="flex justify-end items-center lg:col-start-4 gap-2">
-                            <Button
-                                size="icon"
-                                variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                                onClick={() => setViewMode('grid')}
-                            >
-                                <Grid className="h-5 w-5" />
-                            </Button>
-                            <Button
-                                size="icon"
-                                variant={viewMode === 'list' ? 'default' : 'ghost'}
-                                onClick={() => setViewMode('list')}
-                            >
-                                <List className="h-5 w-5" />
-                            </Button>
+                        <div className="flex justify-end items-center lg:col-start-4">
+                            <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as ViewMode)}>
+                                <TabsList>
+                                    <TabsTrigger value="grid" className="gap-2">
+                                        <Grid className="h-4 w-4" />
+                                        <span className="hidden sm:inline">{t('common.grid_view')}</span>
+                                    </TabsTrigger>
+                                    <TabsTrigger value="list" className="gap-2">
+                                        <List className="h-4 w-4" />
+                                        <span className="hidden sm:inline">{t('common.list_view')}</span>
+                                    </TabsTrigger>
+                                </TabsList>
+                            </Tabs>
                         </div>
                     </div>
                 </CardContent>

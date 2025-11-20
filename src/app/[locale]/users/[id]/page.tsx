@@ -12,6 +12,7 @@ import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import TransferModal from '@/app/[locale]/components/TransferModal';
+import { normalizeUserRoleCode } from '@/lib/utils';
 
 
 
@@ -98,7 +99,7 @@ const UserProfilePage = () => {
                             </Avatar>
                             <div className="text-center">
                                 <p className="font-semibold">{profile.userName}</p>
-                                <p className="text-sm text-muted-foreground">{t(`stats.userRoles.${profile.role}`)}</p>
+                                <p className="text-sm text-muted-foreground">{t(`stats.userRoles.${normalizeUserRoleCode(profile.role)}`)}</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 flex-1">

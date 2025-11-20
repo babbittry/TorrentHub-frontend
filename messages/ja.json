@@ -32,7 +32,9 @@
         "cancel": "キャンセル",
         "none": "なし",
         "author": "著者",
-        "version": "バージョン"
+        "version": "バージョン",
+        "grid_view": "グリッド表示",
+        "list_view": "リスト表示"
     },
     "register": {
         "avatar": "アバター",

@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import React from 'react';
+import { normalizeUserRoleCode } from '@/lib/utils';
 
 interface SiteStatsProps {
     mode: 'simple' | 'full';
@@ -52,7 +53,7 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
         const vipUsers = stats.userRoleCounts?.VIP ?? 0;
         const simpleStats = [
             { label: t('stats.totalUsers'), value: stats.totalUsers },
-            { label: t('stats.userRoles.VIP'), value: vipUsers },
+            { label: t(`stats.userRoles.${normalizeUserRoleCode('VIP')}`), value: vipUsers },
             { label: t('stats.totalTorrents'), value: stats.totalTorrents },
             { label: t('stats.totalTorrentsSize'), value: formatBytes(stats.totalTorrentsSize ?? 0) },
             { label: t('stats.totalSeeders'), value: stats.totalSeeders },
@@ -117,7 +118,7 @@ const SiteStats = ({ mode }: SiteStatsProps) => {
                         <StatCard label={t('stats.usersRegisteredToday')} value={stats.usersRegisteredToday} />
                         <StatCard label={t('stats.totalBannedUsers')} value={stats.totalBannedUsers} />
                         {stats.userRoleCounts && Object.entries(stats.userRoleCounts).map(([role, count]) => (
-                            <StatCard key={role} label={t(`stats.userRoles.${role}`)} value={count} />
+                            <StatCard key={role} label={t(`stats.userRoles.${normalizeUserRoleCode(role)}`)} value={count} />
                         ))}
                     </div>
                 </div>

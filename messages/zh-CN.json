@@ -32,7 +32,9 @@
         "cancel": "取消",
         "none": "无",
         "author": "作者",
-        "version": "版本"
+        "version": "版本",
+        "grid_view": "网格视图",
+        "list_view": "列表视图"
     },
     "register": {
         "avatar": "头像",

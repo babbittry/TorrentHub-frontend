@@ -32,7 +32,9 @@
         "cancel": "Cancel",
         "none": "None",
         "author": "Author",
-        "version": "Version"
+        "version": "Version",
+        "grid_view": "Grid View",
+        "list_view": "List View"
     },
     "register": {
         "avatar": "Avatar",
