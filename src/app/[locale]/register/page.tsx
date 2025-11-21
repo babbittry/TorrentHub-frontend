@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import multiavatar from '@multiavatar/multiavatar';
-import { auth, UserForRegistrationDto } from "@/lib/api";
+import { auth, UserForRegistrationDto, settings, AnonymousPublicSettingsDto } from "@/lib/api";
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,23 @@ export default function RegisterPage() {
         language: 'en'
     });
     const [error, setError] = useState<string | null>(null);
+    const [publicSettings, setPublicSettings] = useState<AnonymousPublicSettingsDto | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // 获取公开配置，检查注册是否开放
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const config = await settings.getAnonymousPublicSettings();
+                setPublicSettings(config);
+            } catch (error) {
+                console.error('Failed to fetch settings:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     const handleNextStep = () => setStep(prev => prev + 1);
     const handlePrevStep = () => setStep(prev => prev - 1);
@@ -141,6 +158,52 @@ export default function RegisterPage() {
         </div>
     );
 
+
+    // 加载中状态
+    if (isLoading) {
+        return (
+            <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
+                <Card className="w-full max-w-md p-4">
+                    <CardContent className="flex justify-center items-center py-8">
+                        <p className="text-muted-foreground">{t('common.loading')}</p>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
+    // 注册关闭时的提示
+    if (publicSettings && !publicSettings.isRegistrationOpen) {
+        return (
+            <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">
+                <Card className="w-full max-w-md p-4">
+                    <CardHeader className="text-center">
+                        <CardTitle>{t('header.register')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="text-center">
+                            <p className="text-destructive text-lg font-medium">
+                                {t('register.closed') || '注册功能暂时关闭'}
+                            </p>
+                            <p className="text-muted-foreground mt-2">
+                                {t('register.closed_hint') || '请联系管理员了解更多信息'}
+                            </p>
+                            {publicSettings.contactEmail && (
+                                <p className="text-sm text-muted-foreground mt-4">
+                                    {t('common.contact')}: {publicSettings.contactEmail}
+                                </p>
+                            )}
+                        </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-center">
+                        <Link href="/login">
+                            <Button variant="outline">{t('header.login')}</Button>
+                        </Link>
+                    </CardFooter>
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-160px)]">

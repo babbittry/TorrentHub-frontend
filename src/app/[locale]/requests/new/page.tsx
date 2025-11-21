@@ -26,6 +26,7 @@ const NewRequestPage = () => {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
+                // 使用认证API获取完整配置（包含金币系统配置）
                 const fetchedSettings = await settings.getPublicSettings();
                 setSiteSettings(fetchedSettings);
             } catch (error) {

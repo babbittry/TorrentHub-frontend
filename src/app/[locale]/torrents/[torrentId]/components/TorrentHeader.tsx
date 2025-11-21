@@ -10,7 +10,7 @@ const TorrentHeader = ({ backdropPath, altText }: TorrentHeaderProps) => {
   if (!backdropPath) {
     return (
       <div className="relative w-full h-[50vh] min-h-[400px] max-h-[600px] bg-gray-900">
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent"></div>
         <div className="absolute inset-x-0 bottom-0 z-10 w-full h-16 bg-background"></div>
       </div>
     );

@@ -55,7 +55,7 @@ const ForumHomePage = () => {
     };
 
     return (
-        <div className="container mx-auto p-4 sm:p-6">
+        <div className="container mx-auto py-4 sm:py-6">
             <h1 className="text-4xl font-extrabold text-primary mb-8 text-center drop-shadow-lg">{t('forumPage.title')}</h1>
 
             {isLoading ? (

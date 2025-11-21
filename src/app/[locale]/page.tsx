@@ -74,7 +74,7 @@ export default function Home() {
     };
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto py-4">
             {/* 公告区 */}
             <section className="card mb-12 transform hover:scale-105 transition-transform duration-500 ease-in-out">
                 <h2 className="text-4xl font-extrabold text-(--color-primary) text-center mb-6 drop-shadow-lg">{t_announcements('latest')}</h2>

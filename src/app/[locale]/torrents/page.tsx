@@ -81,7 +81,7 @@ export default function TorrentsPage() {
     const totalPages = Math.ceil(totalCount / pageSize);
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto py-4">
             <h1 className="text-4xl font-extrabold mb-8 text-center">{t('torrentsPage.all_torrents')}</h1>
 
             <Card className="mb-10">

@@ -31,7 +31,7 @@ const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTa
 
   return (
     <div className="relative z-20 -mt-48 w-full">
-      <div className="container mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+      <div className="container mx-auto max-w-7xl">
         <div className="bg-card/80 dark:bg-card/80 backdrop-blur-lg shadow-2xl rounded-lg overflow-hidden">
           <div className="p-6 md:p-8">
             {/* Main Info Section */}

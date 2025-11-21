@@ -1458,14 +1458,33 @@ export interface SiteSettingsDto {
     contentEditWindowMinutes: number;
 }
 
-export interface PublicSiteSettingsDto {
+/**
+ * 匿名用户可访问的公开配置（无需认证）
+ * 用于注册页、登录页、页脚等场景
+ */
+export interface AnonymousPublicSettingsDto {
   siteName: string;
+  logoUrl?: string | null;
+  contactEmail?: string | null;
+  isRegistrationOpen: boolean;
+  isForumEnabled: boolean;
+}
+
+/**
+ * 认证用户可访问的完整公开配置（需要认证）
+ * 继承匿名配置，添加金币系统相关字段
+ */
+export interface PublicSiteSettingsDto extends AnonymousPublicSettingsDto {
+  // 认证用户额外字段
   isRequestSystemEnabled: boolean;
   createRequestCost: number;
   fillRequestBonus: number;
   tipTaxRate: number;
   transferTaxRate: number;
   invitePrice: number;
+  commentBonus: number;
+  uploadTorrentBonus: number;
+  maxDailyCommentBonuses: number;
 }
 
 // Polls API Functions
@@ -1534,9 +1553,33 @@ export const admin = {
 };
 
 export const settings = {
+    /**
+     * 获取匿名公开配置（无需认证）
+     * 用于注册页、登录页、页脚等场景
+     */
+    getAnonymousPublicSettings: async (): Promise<AnonymousPublicSettingsDto> => {
+        try {
+            const response = await api.get('/api/settings/public/anonymous');
+            return response.data;
+        } catch (error) {
+            console.error('Failed to fetch anonymous settings:', error);
+            // 返回默认配置作为降级方案
+            return {
+                siteName: 'TorrentHub',
+                logoUrl: null,
+                contactEmail: null,
+                isRegistrationOpen: false, // 默认关闭注册（安全优先）
+                isForumEnabled: true,
+            };
+        }
+    },
+
+    /**
+     * 获取完整公开配置（需要认证）
+     * 包含金币系统等完整配置信息
+     */
     getPublicSettings: async (): Promise<PublicSiteSettingsDto> => {
-        const response = await api.get('/api/settings/public');
-        return response.data;
+        return callApi(api.get<ApiResponse<PublicSiteSettingsDto>>('/api/settings/public'));
     },
 };
 

@@ -57,7 +57,7 @@ export default function Header() {
 
     return (
         <header className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 p-4 shadow-lg">
-            <nav className="container mx-auto flex justify-between items-center">
+            <nav className="w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] flex justify-between items-center">
                 <Link href="/" className="flex items-center">
                     {!isClient ? (
                         <div style={{ width: 128, height: 32 }} /> // Placeholder with size
