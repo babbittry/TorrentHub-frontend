@@ -46,6 +46,8 @@
         "enter_your_password": "Entrez votre mot de passe",
         "enter_your_invite_code": "Entrez votre code d'invitation",
         "select_language": "Sélectionnez votre langue préférée",
+        "closed": "L'inscription est temporairement fermée",
+        "closed_hint": "Nous n'acceptons pas de nouvelles inscriptions pour le moment. Veuillez contacter l'administrateur pour plus d'informations.",
         "steps": {
             "language": "Langue",
             "account_info": "Informations du compte",
@@ -196,7 +198,26 @@
         "email_sent": "Un nouveau code de vérification a été envoyé à votre e-mail.",
         "error_sending_email": "Échec de l'envoi du code par e-mail.",
         "login_failed": "Échec de la connexion. Le code est peut-être incorrect ou a expiré.",
-        "verification_code": "Code de vérification"
+        "verification_code": "Code de vérification",
+        "tab_authenticator_app": "Application d'authentification",
+        "tab_email_verification": "Vérification par e-mail",
+        "enter_app_code": "Entrez le code à 6 chiffres de votre application d'authentification",
+        "enter_email_code": "Entrez le code à 6 chiffres envoyé à votre e-mail",
+        "email_sent_success": "Le code de vérification a été envoyé à votre e-mail",
+        "email_sent_error": "Échec de l'envoi du code de vérification par e-mail, veuillez réessayer",
+        "resend_email_code": "Renvoyer le code",
+        "resend_email_cooldown": "Renvoyer dans {seconds}s",
+        "app_not_configured_hint": "Vous n'avez pas encore configuré d'application d'authentification. Envisagez de l'activer dans les paramètres pour une meilleure sécurité",
+        "email_sent_to_with_greeting": "Cher(ère) {username}, code de vérification envoyé à {email}, veuillez vérifier"
+    },
+    "feature": {
+        "forum_disabled": "Le forum n'est pas activé",
+        "forum_disabled_desc": "La fonctionnalité du forum n'est actuellement pas disponible.",
+        "requests_disabled": "Le système de requêtes n'est pas activé",
+        "requests_disabled_desc": "Le système de requêtes n'est actuellement pas disponible. Veuillez réessayer plus tard.",
+        "contact_admin": "Si vous avez des questions, veuillez contacter l'administrateur",
+        "back_to_home": "Retour à l'accueil",
+        "disabled": "Cette fonctionnalité est actuellement désactivée"
     },
     "requestsPage": {
         "title": "Requêtes de torrents",

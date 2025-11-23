@@ -46,6 +46,8 @@
         "enter_your_password": "请输入您的密码",
         "enter_your_invite_code": "请输入您的邀请码",
         "select_language": "请选择您的偏好语言",
+        "closed": "注册功能暂时关闭",
+        "closed_hint": "当前不接受新用户注册，请联系管理员了解更多信息。",
         "steps": {
             "language": "选择语言",
             "account_info": "账户信息",
@@ -196,7 +198,17 @@
         "email_sent": "新的验证码已发送至您的邮箱。",
         "error_sending_email": "发送邮件验证码失败。",
         "login_failed": "登录失败。验证码可能不正确或已过期。",
-        "verification_code": "验证码"
+        "verification_code": "验证码",
+        "tab_authenticator_app": "验证器应用",
+        "tab_email_verification": "邮件验证",
+        "enter_app_code": "请输入您的验证器应用中的6位数代码",
+        "enter_email_code": "请输入邮箱收到的6位数验证码",
+        "email_sent_success": "验证码已发送至您的邮箱",
+        "email_sent_error": "发送邮件验证码失败，请重试",
+        "resend_email_code": "重新发送验证码",
+        "resend_email_cooldown": "重新发送 ({seconds}秒)",
+        "app_not_configured_hint": "您尚未配置验证器应用，建议在设置中启用以提高安全性",
+        "email_sent_to_with_greeting": "亲爱的 {username}，验证码已发送至 {email}，请查收"
     },
     "requestsPage": {
         "title": "种子求取",
@@ -1246,5 +1258,14 @@
     "about": {
         "title": "关于",
         "description": "关于本站"
+    },
+    "feature": {
+        "disabled": "此功能当前未启用",
+        "forum_disabled": "论坛功能未启用",
+        "forum_disabled_desc": "论坛功能当前未开放。",
+        "requests_disabled": "求种系统未启用",
+        "requests_disabled_desc": "求种系统当前未开放，请稍后再试。",
+        "contact_admin": "如有疑问，请联系管理员",
+        "back_to_home": "返回首页"
     }
 }

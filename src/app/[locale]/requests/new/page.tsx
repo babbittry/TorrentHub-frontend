@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { requests, CreateRequestDto, settings, PublicSiteSettingsDto } from '@/lib/api';
+import { requests, CreateRequestDto } from '@/lib/api';
+import { usePublicSettings, isAuthenticatedSettings } from '@/context/PublicSettingsContext';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
@@ -15,27 +16,39 @@ const NewRequestPage = () => {
     const params = useParams();
     const locale = params.locale as string;
     const t = useTranslations();
+    const { publicSettings, isLoading: settingsLoading } = usePublicSettings();
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [initialBounty, setInitialBounty] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [siteSettings, setSiteSettings] = useState<PublicSiteSettingsDto | null>(null);
 
-    useEffect(() => {
-        const fetchSettings = async () => {
-            try {
-                // 使用认证API获取完整配置（包含金币系统配置）
-                const fetchedSettings = await settings.getPublicSettings();
-                setSiteSettings(fetchedSettings);
-            } catch (error) {
-                console.error("Failed to fetch site settings:", error);
-            }
-        };
-
-        fetchSettings();
-    }, []);
+    // 检查求种系统是否启用
+    if (!settingsLoading && publicSettings && isAuthenticatedSettings(publicSettings)) {
+        if (!publicSettings.isRequestSystemEnabled) {
+            return (
+                <div className="container mx-auto py-8 max-w-2xl">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-2xl text-center">{t('feature.requests_disabled')}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-center space-y-4">
+                            <p className="text-muted-foreground">{t('feature.requests_disabled_desc')}</p>
+                            {publicSettings.contactEmail && (
+                                <p className="text-sm text-muted-foreground">
+                                    {t('feature.contact_admin')}: {publicSettings.contactEmail}
+                                </p>
+                            )}
+                            <Button asChild>
+                                <Link href="/">{t('feature.back_to_home')}</Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+            );
+        }
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -97,11 +110,11 @@ const NewRequestPage = () => {
                             onChange={(e) => setInitialBounty(e.target.value)}
                             placeholder="e.g., 500"
                         />
-                        {siteSettings && (
+                        {publicSettings && isAuthenticatedSettings(publicSettings) && (
                             <p className="text-sm text-muted-foreground">
                                 {t('requestsPage.bounty_help_text', {
-                                    baseCost: siteSettings.createRequestCost,
-                                    totalCost: siteSettings.createRequestCost + (Number(initialBounty) || 0)
+                                    baseCost: publicSettings.createRequestCost,
+                                    totalCost: publicSettings.createRequestCost + (Number(initialBounty) || 0)
                                 })}
                             </p>
                         )}

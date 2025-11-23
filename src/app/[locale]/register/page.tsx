@@ -183,14 +183,14 @@ export default function RegisterPage() {
                     <CardContent className="space-y-4">
                         <div className="text-center">
                             <p className="text-destructive text-lg font-medium">
-                                {t('register.closed') || '注册功能暂时关闭'}
+                                {t('register.closed')}
                             </p>
                             <p className="text-muted-foreground mt-2">
-                                {t('register.closed_hint') || '请联系管理员了解更多信息'}
+                                {t('register.closed_hint')}
                             </p>
                             {publicSettings.contactEmail && (
                                 <p className="text-sm text-muted-foreground mt-4">
-                                    {t('common.contact')}: {publicSettings.contactEmail}
+                                    {publicSettings.contactEmail}
                                 </p>
                             )}
                         </div>

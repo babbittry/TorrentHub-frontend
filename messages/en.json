@@ -46,6 +46,8 @@
         "enter_your_password": "Enter your password",
         "enter_your_invite_code": "Enter your invite code",
         "select_language": "Select your preferred language",
+        "closed": "Registration is temporarily closed",
+        "closed_hint": "We are not accepting new user registrations at this time. Please contact the administrator for more information.",
         "steps": {
             "language": "Language",
             "account_info": "Account Info",
@@ -196,7 +198,26 @@
         "email_sent": "A new verification code has been sent to your email.",
         "error_sending_email": "Failed to send email code.",
         "login_failed": "Login failed. The code may be incorrect or expired.",
-        "verification_code": "验证码"
+        "verification_code": "Verification Code",
+        "tab_authenticator_app": "Authenticator App",
+        "tab_email_verification": "Email Verification",
+        "enter_app_code": "Enter the 6-digit code from your authenticator app",
+        "enter_email_code": "Enter the 6-digit code sent to your email",
+        "email_sent_success": "Verification code has been sent to your email",
+        "email_sent_error": "Failed to send email verification code, please try again",
+        "resend_email_code": "Resend Code",
+        "resend_email_cooldown": "Resend in {seconds}s",
+        "app_not_configured_hint": "You haven't configured an authenticator app yet. Consider enabling it in settings for better security",
+        "email_sent_to_with_greeting": "Dear {username}, verification code sent to {email}, please check"
+    },
+    "feature": {
+        "forum_disabled": "Forum is not enabled",
+        "forum_disabled_desc": "The forum feature is currently unavailable.",
+        "requests_disabled": "Request system is not enabled",
+        "requests_disabled_desc": "The request system is currently unavailable. Please try again later.",
+        "contact_admin": "If you have any questions, please contact the administrator",
+        "back_to_home": "Back to Home",
+        "disabled": "This feature is currently disabled"
     },
     "requestsPage": {
         "title": "Torrent Requests",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from '@/context/AuthContext';
+import { usePublicSettings, isAuthenticatedSettings } from '@/context/PublicSettingsContext';
 import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
@@ -9,9 +10,11 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import UserMenu from './UserMenu';
 import { users, UserRole } from '@/lib/api';
+import { normalizeUserRoleCode } from '@/lib/utils';
 
 export default function Header() {
     const { isAuthenticated, user } = useAuth();
+    const { publicSettings } = usePublicSettings();
     const { theme, setTheme, resolvedTheme } = useTheme();
     const t = useTranslations();
     const router = useRouter();
@@ -83,16 +86,22 @@ export default function Header() {
                             {t('header.upload_torrent')}
                         </Link>
                     </li>
-                    <li>
-                        <Link href="/forums" className="hover:text-primary-500 transition-colors duration-200">
-                            {t('header.forums')}
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/requests" className="hover:text-primary-500 transition-colors duration-200">
-                            {t('header.requests')}
-                        </Link>
-                    </li>
+                    {publicSettings?.isForumEnabled && (
+                        <li>
+                            <Link href="/forums" className="hover:text-primary-500 transition-colors duration-200">
+                                {t('header.forums')}
+                            </Link>
+                        </li>
+                    )}
+                    {(publicSettings === null ||
+                      !isAuthenticatedSettings(publicSettings) ||
+                      publicSettings.isRequestSystemEnabled) && (
+                        <li>
+                            <Link href="/requests" className="hover:text-primary-500 transition-colors duration-200">
+                                {t('header.requests')}
+                            </Link>
+                        </li>
+                    )}
                     <li>
                         <Link href="/polls" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.polls')}
@@ -113,7 +122,7 @@ export default function Header() {
                             {t('header.about')}
                         </Link>
                     </li>
-                    {user?.role === UserRole.Administrator && (
+                    {user && normalizeUserRoleCode(user.role) === 'Administrator' && (
                         <li>
                             <Link href="/admin/dashboard" target="_blank" rel="noopener noreferrer" className="hover:text-primary-500 transition-colors duration-200">
                                 {t('header.admin_dashboard')}
@@ -178,9 +187,16 @@ export default function Header() {
                             <UserMenu />
                         </>
                     ) : (
-                        <Link href="/login" className="btn-primary">
-                            {t('header.login')}
-                        </Link>
+                        <div className="flex items-center space-x-2">
+                            {publicSettings?.isRegistrationOpen && (
+                                <Link href="/register" className="btn-secondary">
+                                    {t('header.register')}
+                                </Link>
+                            )}
+                            <Link href="/login" className="btn-primary">
+                                {t('header.login')}
+                            </Link>
+                        </div>
                     )}
                 </div>
             </nav>

@@ -101,11 +101,18 @@ export interface UserForLoginDto {
     password: string;
 }
 
+export interface PendingTwoFactorUserDto {
+    userName: string;
+    email: string;
+    twoFactorMethod: string;
+}
+
 export interface LoginResponseDto {
     result?: 'Success' | 'RequiresTwoFactor' | 'InvalidCredentials' | 'EmailNotVerified' | 'Banned';
     message?: string | null;
     accessToken?: string | null;
     user?: UserPrivateProfileDto | null;
+    pending2faUser?: PendingTwoFactorUserDto | null;
 }
 
 export interface UserForLogin2faDto {
@@ -1559,8 +1566,7 @@ export const settings = {
      */
     getAnonymousPublicSettings: async (): Promise<AnonymousPublicSettingsDto> => {
         try {
-            const response = await api.get('/api/settings/public/anonymous');
-            return response.data;
+            return await callApi(api.get<ApiResponse<AnonymousPublicSettingsDto>>('/api/settings/public/anonymous'));
         } catch (error) {
             console.error('Failed to fetch anonymous settings:', error);
             // 返回默认配置作为降级方案

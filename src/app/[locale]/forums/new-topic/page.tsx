@@ -12,7 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 import RichEditor from '../../components/RichEditor';
 import { toast } from 'sonner';
 import { Label } from '@/components/ui/label';
-import { normalizeForumCategoryCode } from '@/lib/utils';
+import { normalizeForumCategoryCode, normalizeUserRoleCode } from '@/lib/utils';
 
 const NewTopicPage = () => {
     const router = useRouter();
@@ -58,7 +58,7 @@ const NewTopicPage = () => {
         const selectedCategory = categories.find(c => c.id.toString() === selectedCategoryId);
 
         if (selectedCategory && normalizeForumCategoryCode(selectedCategory.code) === 'Announcement') {
-            if (!user || user.role !== UserRole.Administrator) {
+            if (!user || normalizeUserRoleCode(user.role) !== 'Administrator') {
                 setIsForbidden(true);
                 toast.error(t('forumPage.error_permission_denied'));
             } else {

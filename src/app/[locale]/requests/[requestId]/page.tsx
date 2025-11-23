@@ -16,6 +16,7 @@ import UserDisplay from '@/app/[locale]/components/UserDisplay';
 import RequestCommentTree from '@/app/[locale]/components/RequestCommentTree';
 import ReplyEditor from '@/app/[locale]/components/ReplyEditor';
 import { toast } from 'sonner';
+import { normalizeUserRoleCode } from '@/lib/utils';
 
 const RequestDetailPage = () => {
     const params = useParams();
@@ -155,7 +156,8 @@ const RequestDetailPage = () => {
     // 检查是否可以编辑/删除评论
     const canEditOrDeleteComment = (comment: CommentDto): boolean => {
         if (!user) return false;
-        if (user.role === UserRole.Administrator || user.role === UserRole.Moderator) {
+        const normalizedRole = normalizeUserRoleCode(user.role);
+        if (normalizedRole === 'Administrator' || normalizedRole === 'Moderator') {
             return true;
         }
         if (comment.user?.id === user.id) {

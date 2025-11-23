@@ -36,7 +36,7 @@ const StoreContent = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {items.map((item) => (
+                    {items.sort((a, b) => a.id - b.id).map((item) => (
                         <TableRow key={item.id}>
                             <TableCell>{item.id}</TableCell>
                             <TableCell>{t(item.nameKey)}</TableCell>

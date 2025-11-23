@@ -46,6 +46,8 @@
         "enter_your_password": "パスワードを入力してください",
         "enter_your_invite_code": "招待コードを入力してください",
         "select_language": "希望の言語を選択してください",
+        "closed": "登録は一時的に閉鎖されています",
+        "closed_hint": "現在、新規ユーザー登録を受け付けておりません。詳細については管理者にお問い合わせください。",
         "steps": {
             "language": "言語",
             "account_info": "アカウント情報",
@@ -196,7 +198,26 @@
         "email_sent": "新しい認証コードがメールに送信されました。",
         "error_sending_email": "メールコードの送信に失敗しました。",
         "login_failed": "ログインに失敗しました。コードが間違っているか、期限切れの可能性があります。",
-        "verification_code": "認証コード"
+        "verification_code": "認証コード",
+        "tab_authenticator_app": "認証アプリ",
+        "tab_email_verification": "メール認証",
+        "enter_app_code": "認証アプリから6桁のコードを入力してください",
+        "enter_email_code": "メールで受信した6桁のコードを入力してください",
+        "email_sent_success": "認証コードがメールに送信されました",
+        "email_sent_error": "メール認証コードの送信に失敗しました。もう一度お試しください",
+        "resend_email_code": "コードを再送信",
+        "resend_email_cooldown": "再送信まで {seconds}秒",
+        "app_not_configured_hint": "認証アプリがまだ設定されていません。セキュリティ向上のため、設定での有効化を推奨します",
+        "email_sent_to_with_greeting": "{username} 様、確認コードが {email} に送信されました。ご確認ください"
+    },
+    "feature": {
+        "forum_disabled": "フォーラムが有効になっていません",
+        "forum_disabled_desc": "フォーラム機能は現在利用できません。",
+        "requests_disabled": "リクエストシステムが有効になっていません",
+        "requests_disabled_desc": "リクエストシステムは現在利用できません。後でもう一度お試しください。",
+        "contact_admin": "ご質問がございましたら、管理者にお問い合わせください",
+        "back_to_home": "ホームに戻る",
+        "disabled": "この機能は現在無効になっています"
     },
     "requestsPage": {
         "title": "トレントリクエスト",

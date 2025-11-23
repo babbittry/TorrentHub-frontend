@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { requests, RequestDto, RequestStatus, API_BASE_URL } from '@/lib/api';
+import { usePublicSettings, isAuthenticatedSettings } from '@/context/PublicSettingsContext';
+import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
@@ -9,11 +11,13 @@ import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import UserDisplay from '@/app/[locale]/components/UserDisplay';
-import { Card, CardFooter } from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { ArrowUpDown } from "lucide-react";
 
 const RequestsPage = () => {
+    const { publicSettings, isLoading: settingsLoading } = usePublicSettings();
+    const { isAuthenticated } = useAuth();
     const [requestsList, setRequestsList] = useState<RequestDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -29,6 +33,17 @@ const RequestsPage = () => {
 
     useEffect(() => {
         const fetchRequests = async () => {
+            // 等待配置加载完成
+            if (settingsLoading) {
+                return;
+            }
+
+            // 如果求种系统被禁用（仅对认证用户检查），不需要加载数据
+            if (isAuthenticated && publicSettings && isAuthenticatedSettings(publicSettings) && !publicSettings.isRequestSystemEnabled) {
+                setIsLoading(false);
+                return;
+            }
+
             try {
                 setIsLoading(true);
                 const status = statusFilter === 'All' ? undefined : statusFilter;
@@ -50,7 +65,7 @@ const RequestsPage = () => {
         };
 
         fetchRequests();
-    }, [t, statusFilter, sortColumn, sortDirection, page, pageSize]);
+    }, [t, statusFilter, sortColumn, sortDirection, page, pageSize, settingsLoading, isAuthenticated, publicSettings]);
 
     const handleSort = (column: string) => {
         if (sortColumn === column) {
@@ -87,6 +102,32 @@ const RequestsPage = () => {
     }, [t]);
 
     const totalPages = Math.ceil(totalCount / pageSize);
+
+    // 检查求种系统是否启用（仅对认证用户检查）
+    if (!settingsLoading && isAuthenticated && publicSettings && isAuthenticatedSettings(publicSettings)) {
+        if (!publicSettings.isRequestSystemEnabled) {
+            return (
+                <div className="container mx-auto py-8 max-w-2xl">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-2xl text-center">{t('feature.requests_disabled')}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-center space-y-4">
+                            <p className="text-muted-foreground">{t('feature.requests_disabled_desc')}</p>
+                            {publicSettings.contactEmail && (
+                                <p className="text-sm text-muted-foreground">
+                                    {t('feature.contact_admin')}: {publicSettings.contactEmail}
+                                </p>
+                            )}
+                            <Button asChild>
+                                <Link href="/">{t('feature.back_to_home')}</Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+            );
+        }
+    }
 
     return (
         <div className="container mx-auto p-4 sm:p-6">

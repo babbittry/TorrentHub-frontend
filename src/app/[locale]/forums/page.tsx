@@ -2,9 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { forum, ForumCategoryDto } from '@/lib/api';
+import { usePublicSettings } from '@/context/PublicSettingsContext';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBullhorn, faComments, faVial, faPills, faFaucet, faQuestionCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { normalizeForumCategoryCode } from '@/lib/utils';
@@ -23,6 +25,7 @@ const getCategoryIcon = (categoryCode: string | number | undefined | null) => {
 };
 
 const ForumHomePage = () => {
+    const { publicSettings, isLoading: settingsLoading } = usePublicSettings();
     const [categories, setCategories] = useState<ForumCategoryDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -30,6 +33,17 @@ const ForumHomePage = () => {
 
     useEffect(() => {
         const fetchCategories = async () => {
+            // 等待配置加载完成
+            if (settingsLoading) {
+                return;
+            }
+
+            // 如果论坛功能被禁用，不需要加载分类数据
+            if (publicSettings && !publicSettings.isForumEnabled) {
+                setIsLoading(false);
+                return;
+            }
+
             try {
                 setIsLoading(true);
                 const data = await forum.getCategories();
@@ -42,7 +56,7 @@ const ForumHomePage = () => {
             }
         };
         fetchCategories();
-    }, [t]);
+    }, [t, settingsLoading, publicSettings]);
 
     const getCategoryName = (code: string | number | undefined | null) => {
         const normalizedCode = normalizeForumCategoryCode(code);
@@ -53,6 +67,30 @@ const ForumHomePage = () => {
         const normalizedCode = normalizeForumCategoryCode(code);
         return t(`forum_categories.${normalizedCode}_description`);
     };
+
+    // 检查论坛功能是否启用
+    if (!settingsLoading && publicSettings && !publicSettings.isForumEnabled) {
+        return (
+            <div className="container mx-auto py-8 max-w-2xl">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-2xl text-center">{t('feature.forum_disabled')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-center space-y-4">
+                        <p className="text-muted-foreground">{t('feature.forum_disabled_desc')}</p>
+                        {publicSettings.contactEmail && (
+                            <p className="text-sm text-muted-foreground">
+                                {t('feature.contact_admin')}: {publicSettings.contactEmail}
+                            </p>
+                        )}
+                        <Button asChild>
+                            <Link href="/">{t('feature.back_to_home')}</Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto py-4 sm:py-6">

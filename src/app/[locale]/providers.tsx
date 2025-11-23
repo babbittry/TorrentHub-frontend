@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { PublicSettingsProvider } from '@/context/PublicSettingsContext';
 import api, { auth as authApi } from '@/lib/api'; // Import authApi
 import { useEffect } from 'react';
 import { Toaster } from "@/components/ui/sonner"
@@ -89,10 +90,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
             disableTransitionOnChange={false}
         >
             <AuthProvider>
-                <AppWithInterceptors>
-                    {children}
-                </AppWithInterceptors>
-                <Toaster />
+                <PublicSettingsProvider>
+                    <AppWithInterceptors>
+                        {children}
+                    </AppWithInterceptors>
+                    <Toaster />
+                </PublicSettingsProvider>
             </AuthProvider>
         </NextThemesProvider>
     )
