@@ -176,12 +176,15 @@ export default function CheatLogsPage() {
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Input
-                            placeholder={t('user_id_placeholder')}
-                            value={userId}
-                            onChange={(e) => setUserId(e.target.value)}
-                            type="number"
-                        />
+                        <div className="space-y-2">
+                            <Label>{t('user_id_label')}</Label>
+                            <Input
+                                placeholder={t('user_id_placeholder')}
+                                value={userId}
+                                onChange={(e) => setUserId(e.target.value)}
+                                type="number"
+                            />
+                        </div>
                         
                         <div className="space-y-2">
                             <Label>{t('detection_type_label')}</Label>

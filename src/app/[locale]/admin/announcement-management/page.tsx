@@ -99,8 +99,15 @@ const AnnouncementManagementPage = () => {
 
     return (
         <div className="container mx-auto p-4 space-y-8">
-            <h1 className="text-3xl font-bold mb-6">{t('announcementManagement.title')}</h1>
-
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h1 className="text-3xl font-bold">{t('announcementManagement.title')}</h1>
+                {!isCreatingNew && !editingAnnouncement && (
+                    <Button onClick={handleCreateNew}>
+                        <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                        {t('announcementManagement.createNew')}
+                    </Button>
+                )}
+            </div>
             {(isCreatingNew || editingAnnouncement) && (
                 <Card>
                     <CardHeader>
@@ -134,16 +141,7 @@ const AnnouncementManagementPage = () => {
             )}
 
             <Card>
-                <CardHeader className="flex justify-between items-center">
-                    <CardTitle>{t('announcementManagement.existingAnnouncements')}</CardTitle>
-                    {!isCreatingNew && !editingAnnouncement && (
-                        <Button onClick={handleCreateNew}>
-                            <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                            {t('announcementManagement.createNew')}
-                        </Button>
-                    )}
-                </CardHeader>
-                <CardContent>
+                <CardContent className="mt-6">
                     {loading ? (
                         <p>{t('announcementManagement.loading')}</p>
                     ) : (

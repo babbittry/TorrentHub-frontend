@@ -108,11 +108,6 @@ export default function Header() {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/user" className="hover:text-primary-500 transition-colors duration-200">
-                            {t('header.user_center')}
-                        </Link>
-                    </li>
-                    <li>
                         <Link href="/store" className="hover:text-primary-500 transition-colors duration-200">
                             {t('header.store')}
                         </Link>

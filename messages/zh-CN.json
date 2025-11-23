@@ -80,7 +80,6 @@
         "torrents": "种子",
         "forums": "论坛",
         "requests": "求种",
-        "user_center": "用户中心",
         "messages": "消息",
         "messages_tooltip": "我的消息",
         "upload_torrent": "发布种子",
@@ -595,7 +594,6 @@
                 "createButton": "创建",
                 "updateButton": "更新"
             },
-            "existingAnnouncements": "现有公告",
             "loading": "加载中...",
             "table": {
                 "title": "标题",

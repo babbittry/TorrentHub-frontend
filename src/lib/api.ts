@@ -873,19 +873,16 @@ export const stats = {
 // Announcements API Functions
 export const announcements = {
     createAnnouncement: async (announcement: CreateAnnouncementRequestDto): Promise<AnnouncementDto> => {
-        const response = await api.post('/api/announcements', announcement);
-        return response.data;
+        return callApi(api.post<ApiResponse<AnnouncementDto>>('/api/announcements', announcement));
     },
     getAnnouncements: async (): Promise<AnnouncementDto[]> => {
-        const response = await api.get('/api/announcements');
-        return response.data;
+        return callApi(api.get<ApiResponse<AnnouncementDto[]>>('/api/announcements'));
     },
     updateAnnouncement: async (id: number, announcement: UpdateAnnouncementDto): Promise<AnnouncementDto> => {
-        const response = await api.put(`/api/announcements/${id}`, announcement);
-        return response.data;
+        return callApi(api.put<ApiResponse<AnnouncementDto>>(`/api/announcements/${id}`, announcement));
     },
     deleteAnnouncement: async (id: number): Promise<void> => {
-        await api.delete(`/api/announcements/${id}`);
+        return callApi(api.delete<ApiResponse<void>>(`/api/announcements/${id}`));
     },
 };
 
@@ -922,12 +919,10 @@ export const comments = {
 // Invites API Functions
 export const invites = {
     getInvites: async (): Promise<InviteDto[]> => {
-        const response = await api.get('/api/invites/me');
-        return response.data;
+        return callApi(api.get<ApiResponse<InviteDto[]>>('/api/invites/me'));
     },
     createInvite: async (): Promise<InviteDto> => {
-        const response = await api.post('/api/invites');
-        return response.data;
+        return callApi(api.post<ApiResponse<InviteDto>>('/api/invites'));
     },
 };
 

@@ -80,7 +80,6 @@
         "torrents": "Torrents",
         "forums": "Forums",
         "requests": "Requests",
-        "user_center": "User Center",
         "messages": "Messages",
         "messages_tooltip": "My Messages",
         "upload_torrent": "Upload Torrent",
@@ -604,7 +603,6 @@
                 "createButton": "Create",
                 "updateButton": "Update"
             },
-            "existingAnnouncements": "Existing Announcements",
             "loading": "Loading...",
             "table": {
                 "title": "TITLE",

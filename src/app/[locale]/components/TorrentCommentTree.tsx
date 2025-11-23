@@ -132,7 +132,7 @@ export default function TorrentCommentTree({
 										<div className="flex items-center gap-1.5 text-sm text-blue-600 dark:text-blue-300">
 											<FontAwesomeIcon icon={faQuoteLeft} className="w-3 h-3" />
 											<span>
-												{t('quote')} #{parentComment.floor} @{comment.replyToUser.username}
+												{t('quote')} #{comment.replyToUser.username}
 											</span>
 										</div>
 										{parentComment.content.length > 150 && (
