@@ -54,15 +54,14 @@ const InvitesPage = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-6">{t('invitesPage.title')}</h1>
-
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h1 className="text-3xl font-bold">{t('invitesPage.title')}</h1>
+                <Button onClick={() => setIsModalOpen(true)}>
+                    {t('invitesPage.createNew')}
+                </Button>
+            </div>
             <Card>
-                <CardHeader>
-                    <Button onClick={() => setIsModalOpen(true)}>
-                        {t('invitesPage.createNew')}
-                    </Button>
-                </CardHeader>
-                <CardContent>
+                <CardContent className='mt-6'>
                     <Table>
                         <TableHeader>
                             <TableRow>
