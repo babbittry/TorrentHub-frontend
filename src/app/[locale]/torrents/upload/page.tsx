@@ -12,8 +12,10 @@ import { FormField } from '@/components/ui/form-field';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { TorrentCategory, TorrentCategoryDto, torrents, media, TMDbMovieDto, ApiError } from '@/lib/api';
+import { processImage, formatFileSize, isImageFile, validateImageSize, type ProcessedImage } from '@/lib/image-processor';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
+import { X, Upload, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 interface TorrentFileInfo {
     name: string;
@@ -34,7 +36,18 @@ interface FormErrors {
     category?: string;
     imdbId?: string;
     fetchMedia?: string;
+    screenshots?: string;
 }
+
+interface ScreenshotState {
+    original: File;
+    processed?: ProcessedImage;
+    preview: string;
+    status: 'pending' | 'processing' | 'success' | 'error';
+    error?: string;
+}
+
+const REQUIRED_SCREENSHOTS = 3;
 
 export default function TorrentUploadPage() {
     const t = useTranslations();
@@ -58,9 +71,14 @@ export default function TorrentUploadPage() {
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const screenshotInputRef = useRef<HTMLInputElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [categories, setCategories] = useState<TorrentCategoryDto[]>([]);
     const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+
+    // Screenshots state
+    const [screenshots, setScreenshots] = useState<ScreenshotState[]>([]);
+    const [isProcessingScreenshots, setIsProcessingScreenshots] = useState(false);
 
     // Fetch categories on component mount
     useEffect(() => {
@@ -94,6 +112,12 @@ export default function TorrentUploadPage() {
 
         if (!formData.category) {
             newErrors.category = t('torrentUpload.error_category_required');
+        }
+
+        // 验证截图数量（必须恰好 3 张且全部处理成功）
+        const successfulScreenshots = screenshots.filter(s => s.status === 'success');
+        if (successfulScreenshots.length !== REQUIRED_SCREENSHOTS) {
+            newErrors.screenshots = `请上传恰好 ${REQUIRED_SCREENSHOTS} 张截图（当前：${successfulScreenshots.length} 张）`;
         }
 
         setErrors(newErrors);
@@ -162,6 +186,100 @@ export default function TorrentUploadPage() {
         }
     };
 
+    // 处理截图选择
+    const handleScreenshotSelect = async (files: FileList | null) => {
+        if (!files || files.length === 0) return;
+
+        const fileArray = Array.from(files);
+        const remainingSlots = REQUIRED_SCREENSHOTS - screenshots.length;
+
+        if (fileArray.length > remainingSlots) {
+            toast.error(`最多只能上传 ${REQUIRED_SCREENSHOTS} 张截图，当前还可以添加 ${remainingSlots} 张`);
+            return;
+        }
+
+        // 验证文件
+        for (const file of fileArray) {
+            if (!isImageFile(file)) {
+                toast.error(`${file.name} 不是有效的图片文件`);
+                return;
+            }
+            if (!validateImageSize(file, 20)) {
+                toast.error(`${file.name} 文件过大（最大 20MB）`);
+                return;
+            }
+        }
+
+        // 创建初始状态
+        const newScreenshots: ScreenshotState[] = fileArray.map(file => ({
+            original: file,
+            preview: URL.createObjectURL(file),
+            status: 'pending' as const,
+        }));
+
+        setScreenshots(prev => [...prev, ...newScreenshots]);
+        setErrors(prev => ({ ...prev, screenshots: undefined }));
+
+        // 依次处理每张图片
+        setIsProcessingScreenshots(true);
+        for (let i = 0; i < newScreenshots.length; i++) {
+            const screenshot = newScreenshots[i];
+            const index = screenshots.length + i;
+
+            try {
+                // 更新状态为 processing
+                setScreenshots(prev => {
+                    const updated = [...prev];
+                    updated[index] = { ...updated[index], status: 'processing' };
+                    return updated;
+                });
+
+                // 处理图片（压缩 + 鉴黄）
+                const processed = await processImage(screenshot.original);
+
+                // 更新为成功状态
+                setScreenshots(prev => {
+                    const updated = [...prev];
+                    updated[index] = {
+                        ...updated[index],
+                        processed,
+                        status: 'success',
+                    };
+                    return updated;
+                });
+
+                toast.success(`${screenshot.original.name} 处理成功！压缩率：${processed.compressionRatio}%`);
+            } catch (error) {
+                const errorMsg = error instanceof Error ? error.message : '处理失败';
+                
+                // 更新为错误状态
+                setScreenshots(prev => {
+                    const updated = [...prev];
+                    updated[index] = {
+                        ...updated[index],
+                        status: 'error',
+                        error: errorMsg,
+                    };
+                    return updated;
+                });
+
+                toast.error(`${screenshot.original.name}: ${errorMsg}`);
+            }
+        }
+        setIsProcessingScreenshots(false);
+    };
+
+    // 删除截图
+    const handleRemoveScreenshot = (index: number) => {
+        setScreenshots(prev => {
+            const updated = [...prev];
+            URL.revokeObjectURL(updated[index].preview); // 释放内存
+            updated.splice(index, 1);
+            return updated;
+        });
+        setErrors(prev => ({ ...prev, screenshots: undefined }));
+    };
+
     const handleUpload = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -178,11 +296,17 @@ export default function TorrentUploadPage() {
         setUploadProgress(0);
 
         try {
+            // 获取处理后的截图文件
+            const processedScreenshots = screenshots
+                .filter(s => s.status === 'success' && s.processed)
+                .map(s => s.processed!.file);
+
             const response = await torrents.uploadTorrent(
                 formData.torrentFile,
                 formData.description,
                 formData.category,
                 formData.imdbId,
+                processedScreenshots,
                 (progressEvent) => {
                     if (progressEvent.total) {
                         const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
@@ -349,6 +473,137 @@ export default function TorrentUploadPage() {
                                 </div>
                             </div>
                         )}
+
+                        {/* Screenshots Upload */}
+                        <div>
+                            <Label className="block text-sm font-medium mb-2">
+                                截图上传 <span className="text-destructive">*</span>
+                                <span className="text-muted-foreground font-normal ml-2">
+                                    （恰好 {REQUIRED_SCREENSHOTS} 张，自动压缩为 WebP 并进行内容安全检测）
+                                </span>
+                            </Label>
+
+                            {/* 上传按钮 */}
+                            <div className="mb-4">
+                                <input
+                                    ref={screenshotInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={(e) => handleScreenshotSelect(e.target.files)}
+                                    disabled={isUploading || isProcessingScreenshots || screenshots.length >= REQUIRED_SCREENSHOTS}
+                                    className="hidden"
+                                />
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => screenshotInputRef.current?.click()}
+                                    disabled={isUploading || isProcessingScreenshots || screenshots.length >= REQUIRED_SCREENSHOTS}
+                                    className="w-full"
+                                >
+                                    <Upload className="w-4 h-4 mr-2" />
+                                    {screenshots.length >= REQUIRED_SCREENSHOTS
+                                        ? '已达到最大数量'
+                                        : `选择截图（还需 ${REQUIRED_SCREENSHOTS - screenshots.length} 张）`}
+                                </Button>
+                            </div>
+
+                            {/* 截图预览网格 */}
+                            {screenshots.length > 0 && (
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {screenshots.map((screenshot, index) => (
+                                        <div
+                                            key={index}
+                                            className={`relative border-2 rounded-lg overflow-hidden ${
+                                                screenshot.status === 'success'
+                                                    ? 'border-green-500'
+                                                    : screenshot.status === 'error'
+                                                    ? 'border-red-500'
+                                                    : screenshot.status === 'processing'
+                                                    ? 'border-blue-500'
+                                                    : 'border-gray-300'
+                                            }`}
+                                        >
+                                            {/* 图片预览 */}
+                                            <div className="aspect-video relative bg-gray-100">
+                                                <img
+                                                    src={screenshot.preview}
+                                                    alt={`Screenshot ${index + 1}`}
+                                                    className="w-full h-full object-cover"
+                                                />
+
+                                                {/* 状态覆盖层 */}
+                                                {screenshot.status === 'processing' && (
+                                                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                                        <Loader2 className="w-8 h-8 text-white animate-spin" />
+                                                    </div>
+                                                )}
+
+                                                {/* 删除按钮 */}
+                                                {!isUploading && screenshot.status !== 'processing' && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRemoveScreenshot(index)}
+                                                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
+                                                        disabled={isProcessingScreenshots}
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            {/* 状态信息 */}
+                                            <div className="p-2 bg-white dark:bg-gray-800">
+                                                {screenshot.status === 'success' && screenshot.processed && (
+                                                    <div className="flex items-center text-xs text-green-600">
+                                                        <CheckCircle className="w-3 h-3 mr-1" />
+                                                        <span>
+                                                            {formatFileSize(screenshot.processed.originalSize)} →{' '}
+                                                            {formatFileSize(screenshot.processed.compressedSize)} (
+                                                            {screenshot.processed.compressionRatio}%)
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                {screenshot.status === 'processing' && (
+                                                    <div className="flex items-center text-xs text-blue-600">
+                                                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                                                        <span>正在处理...</span>
+                                                    </div>
+                                                )}
+                                                {screenshot.status === 'error' && (
+                                                    <div className="flex items-center text-xs text-red-600">
+                                                        <AlertCircle className="w-3 h-3 mr-1" />
+                                                        <span>{screenshot.error}</span>
+                                                    </div>
+                                                )}
+                                                {screenshot.status === 'pending' && (
+                                                    <div className="text-xs text-gray-500">等待处理...</div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* 错误提示 */}
+                            {errors.screenshots && (
+                                <p className="text-destructive text-sm mt-2">{errors.screenshots}</p>
+                            )}
+
+                            {/* 提示信息 */}
+                            <Alert className="mt-4">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertTitle>截图要求</AlertTitle>
+                                <AlertDescription>
+                                    <ul className="list-disc list-inside space-y-1 text-sm">
+                                        <li>必须上传恰好 {REQUIRED_SCREENSHOTS} 张截图</li>
+                                        <li>图片将自动压缩为 WebP 格式（最大宽度 1920px）</li>
+                                        <li>自动进行内容安全检测，违规图片将被拦截</li>
+                                        <li>单张图片最大 20MB</li>
+                                    </ul>
+                                </AlertDescription>
+                            </Alert>
+                        </div>
 
                         {/* Upload Progress */}
                         {isUploading && (

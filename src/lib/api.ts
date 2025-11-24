@@ -173,7 +173,6 @@ export interface UserDisplayDto {
     avatar?: string | null;
     userLevelName?: string | null;
     userLevelColor?: string | null;
-
     equippedBadge?: BadgeDto | null;
     userTitle?: string | null;
     isColorfulUsernameActive: boolean;
@@ -329,7 +328,7 @@ export interface CommentDto {
 export interface CommentListResponse {
     items: CommentDto[];
     hasMore: boolean;
-    totalCount: number;
+    totalItems: number;
     loadedCount: number;
 }
 
@@ -428,6 +427,17 @@ export interface RejectFulfillmentDto {
     reason: string;
 }
 
+// 求种列表专用 DTO（精简版）
+export interface RequestSummaryDto {
+    id: number;
+    title: string;
+    bountyAmount: number;
+    status: RequestStatus;
+    createdAt: string;
+    requestedByUser: UserDisplayDto;
+}
+
+// 求种详情 DTO（完整版）
 export interface RequestDto {
     id: number;
     title: string;
@@ -689,6 +699,7 @@ export interface TorrentDto {
     imdbRating?: number | null;
     technicalSpecs?: TechnicalSpecsDto | null;
     files?: TorrentFileDto[] | null;
+    screenshots?: string[] | null; // 截图URL数组
 }
 
 export interface SetStickyRequestDto {
@@ -757,7 +768,7 @@ export interface ReactionSummaryDto {
 
 // 评论的所有回应
 export interface CommentReactionsDto {
-    totalCount: number;
+    totalItems: number;
     reactions: ReactionSummaryDto[];
 }
 
@@ -986,7 +997,7 @@ export const requests = {
     createRequest: async (request: CreateRequestDto): Promise<RequestDto> => {
         return callApi(api.post<ApiResponse<RequestDto>>('/api/requests', request));
     },
-    getRequests: async (page: number = 1, pageSize: number = 20, status?: string, sortBy?: string, sortOrder?: string): Promise<RequestDto[]> => {
+    getRequests: async (page: number = 1, pageSize: number = 20, status?: string, sortBy?: string, sortOrder?: string): Promise<PaginatedResult<RequestSummaryDto>> => {
         const params = new URLSearchParams({
             page: page.toString(),
             pageSize: pageSize.toString(),
@@ -994,7 +1005,7 @@ export const requests = {
         if (status) params.append('status', status);
         if (sortBy) params.append('sortBy', sortBy);
         if (sortOrder) params.append('sortOrder', sortOrder);
-        return callApi(api.get<ApiResponse<RequestDto[]>>(`/api/requests?${params.toString()}`));
+        return callApi(api.get<ApiResponse<PaginatedResult<RequestSummaryDto>>>(`/api/requests?${params.toString()}`));
     },
     addBounty: async (requestId: number, amount: AddBountyRequestDto): Promise<void> => {
         return callApi(api.patch<ApiResponse<void>>(`/api/requests/${requestId}/bounty`, amount));
@@ -1130,6 +1141,7 @@ export const torrents = {
         description: string,
         category: string,
         imdbId?: string,
+        screenshots?: File[], // 用户上传的截图（恰好 3 张）
         onUploadProgress?: (progressEvent: { loaded: number; total?: number }) => void
     ): Promise<UploadTorrentResponseDto> => {
         const formData = new FormData();
@@ -1138,6 +1150,13 @@ export const torrents = {
         formData.append('Category', category);
         if (imdbId) {
             formData.append('ImdbId', imdbId);
+        }
+        
+        // 添加截图（必须恰好 3 张）
+        if (screenshots && screenshots.length > 0) {
+            screenshots.forEach((screenshot) => {
+                formData.append('Screenshots', screenshot);
+            });
         }
 
         return callApi(api.post<ApiResponse<UploadTorrentResponseDto>>('/api/torrents', formData, {

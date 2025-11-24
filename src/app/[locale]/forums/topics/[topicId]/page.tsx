@@ -37,15 +37,16 @@ const TopicDetailPage = () => {
         if (!topicId) return;
         try {
             setIsLoading(true);
-            const [topicData, categoriesData] = await Promise.all([
-                forum.getTopicById(topicId, 1, 30),
-                forum.getCategories()
+            // Parallel fetch: Get topic info (basic) and categories and posts
+            const [topicData, categoriesData, commentsResponse] = await Promise.all([
+                forum.getTopicById(topicId, 1, 1), // Only get minimal topic info
+                forum.getCategories(),
+                comments.getComments(COMMENT_TYPE.FORUM_TOPIC, topicId, 1, 30) // Get first page of posts
             ]);
             setTopic(topicData);
             setCategories(categoriesData);
             
-            // The posts are now fetched separately using the comments API
-            const commentsResponse = await comments.getComments(COMMENT_TYPE.FORUM_TOPIC, topicId, 1, 30);
+            // Use Comment API response (will work correctly after backend fix)
             setPosts(commentsResponse.items);
             setHasMore(commentsResponse.hasMore);
             setCurrentPage(1);

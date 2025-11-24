@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { requests, RequestDto, RequestStatus, API_BASE_URL } from '@/lib/api';
+import { requests, RequestSummaryDto, RequestStatus, PaginatedResult } from '@/lib/api';
 import { usePublicSettings, isAuthenticatedSettings } from '@/context/PublicSettingsContext';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from 'next-intl';
@@ -18,7 +18,7 @@ import { ArrowUpDown } from "lucide-react";
 const RequestsPage = () => {
     const { publicSettings, isLoading: settingsLoading } = usePublicSettings();
     const { isAuthenticated } = useAuth();
-    const [requestsList, setRequestsList] = useState<RequestDto[]>([]);
+    const [requestsList, setRequestsList] = useState<RequestSummaryDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<string>('All');
@@ -26,7 +26,7 @@ const RequestsPage = () => {
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
     const [page, setPage] = useState(1);
     const [pageSize] = useState(20);
-    const [totalCount, setTotalCount] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
     const t = useTranslations();
     const params = useParams();
     const locale = params.locale as string;
@@ -47,14 +47,9 @@ const RequestsPage = () => {
             try {
                 setIsLoading(true);
                 const status = statusFilter === 'All' ? undefined : statusFilter;
-                const data: any = await requests.getRequests(page, pageSize, status, sortColumn, sortDirection);
-                if (Array.isArray(data)) {
-                    setRequestsList(data);
-                    setTotalCount(data.length);
-                } else {
-                    setRequestsList(data?.items || []);
-                    setTotalCount(data?.totalItems || 0);
-                }
+                const data = await requests.getRequests(page, pageSize, status, sortColumn, sortDirection);
+                setRequestsList(data.items);
+                setTotalItems(data.totalItems);
                 setError(null);
             } catch (err) {
                 setError(t('requestsPage.error_fetching'));
@@ -76,8 +71,8 @@ const RequestsPage = () => {
         }
     };
 
-    const renderCell = useCallback((request: RequestDto, columnKey: string) => {
-        const cellValue = request[columnKey as keyof RequestDto];
+    const renderCell = useCallback((request: RequestSummaryDto, columnKey: string) => {
+        const cellValue = request[columnKey as keyof RequestSummaryDto];
 
         switch (columnKey) {
             case 'title':
@@ -101,7 +96,7 @@ const RequestsPage = () => {
         }
     }, [t]);
 
-    const totalPages = Math.ceil(totalCount / pageSize);
+    const totalPages = Math.ceil(totalItems / pageSize);
 
     // 检查求种系统是否启用（仅对认证用户检查）
     if (!settingsLoading && isAuthenticated && publicSettings && isAuthenticatedSettings(publicSettings)) {

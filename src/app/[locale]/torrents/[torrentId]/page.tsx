@@ -48,7 +48,7 @@ export default function TorrentDetailPage() {
             
             // 只获取评论数量，不加载评论内容
             const commentsResponse = await comments.getComments(COMMENT_TYPE.TORRENT, Number(torrentId), 1, 0);
-            setCommentsCount(commentsResponse.totalCount);
+            setCommentsCount(commentsResponse.totalItems);
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
         } finally {

@@ -32,7 +32,7 @@ export default function TorrentsPage() {
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState<number>(1);
     const [pageSize] = useState<number>(50);
-    const [totalCount, setTotalCount] = useState<number>(0);
+    const [totalItems, setTotalItems] = useState<number>(0);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [category, setCategory] = useState<string>("");
     const [sortBy, setSortBy] = useState<string>("createdAt");
@@ -46,7 +46,7 @@ export default function TorrentsPage() {
         try {
             const response = await torrentListing.getTorrentListing(page, pageSize, category, searchTerm, sortBy, sortOrder);
             setTorrents(response.items || []);
-            setTotalCount(response.totalItems || 0);
+            setTotalItems(response.totalItems || 0);
         } catch (err: unknown) {
             setError((err as Error).message || t('common.error'));
         } finally {
@@ -78,7 +78,7 @@ export default function TorrentsPage() {
 
     const categoryOptions = Object.values(TorrentCategory).filter(v => isNaN(Number(v))).map(cat => ({ key: cat.toString(), value: cat.toString(), label: t("categories." + (cat as string)) }));
 
-    const totalPages = Math.ceil(totalCount / pageSize);
+    const totalPages = Math.ceil(totalItems / pageSize);
 
     return (
         <div className="container mx-auto py-4">

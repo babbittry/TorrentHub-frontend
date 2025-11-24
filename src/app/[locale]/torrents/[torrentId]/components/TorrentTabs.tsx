@@ -120,10 +120,34 @@ const TorrentTabs = ({ torrent, commentsSection, commentsCount, onCommentsTabOpe
         );
       case 'screenshots':
         return (
-            <div className="bg-background/50 p-6 rounded-xl shadow-md mt-6 text-center">
-                <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground" />
-                <h3 className="mt-2 text-sm font-medium text-foreground">{t('screenshots.comingSoonTitle')}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{t('screenshots.comingSoonBody')}</p>
+            <div className="mt-6">
+                {torrent.screenshots && torrent.screenshots.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {torrent.screenshots.map((screenshot, index) => (
+                            <div
+                                key={index}
+                                className="relative group overflow-hidden rounded-lg border border-border bg-secondary/50 hover:border-primary transition-colors cursor-pointer"
+                                onClick={() => window.open(screenshot, '_blank')}
+                            >
+                                <img
+                                    src={screenshot}
+                                    alt={`${torrent.name} - Screenshot ${index + 1}`}
+                                    className="w-full h-auto object-cover aspect-video group-hover:scale-105 transition-transform duration-300"
+                                    loading="lazy"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                    <ImageIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="bg-background/50 p-6 rounded-xl shadow-md text-center">
+                        <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                        <h3 className="mt-2 text-sm font-medium text-foreground">{t('screenshots.noScreenshots')}</h3>
+                        <p className="mt-1 text-sm text-muted-foreground">{t('screenshots.noScreenshotsBody')}</p>
+                    </div>
+                )}
             </div>
         );
       default:

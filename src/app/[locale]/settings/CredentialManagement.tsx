@@ -256,7 +256,7 @@ export default function CredentialManagement() {
     const exportToJSON = (data: CredentialDto[]) => {
         const exportData = {
             exportDate: new Date().toISOString(),
-            totalCount: data.length,
+            totalItems: data.length,
             credentials: data.map(cred => ({
                 torrentId: cred.torrentId,
                 torrentName: cred.torrentName,

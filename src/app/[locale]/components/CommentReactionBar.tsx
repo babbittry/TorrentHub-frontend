@@ -49,7 +49,7 @@ export default function CommentReactionBar({
 
     // 使用简单的 useState 来管理本地状态
     const [reactions, setReactions] = useState<CommentReactionsDto>(
-        initialReactions || { totalCount: 0, reactions: [] }
+        initialReactions || { totalItems: 0, reactions: [] }
     );
 
     // 切换回应（乐观更新）
@@ -103,7 +103,7 @@ export default function CommentReactionBar({
             return {
                 ...currentData,
                 reactions: newReactions.sort((a, b) => b.count - a.count),
-                totalCount: hasReacted ? currentData.totalCount - 1 : currentData.totalCount + 1
+                totalItems: hasReacted ? currentData.totalItems - 1 : currentData.totalItems + 1
             };
         };
 
@@ -134,7 +134,7 @@ export default function CommentReactionBar({
         }
     };
 
-    if (!reactions || reactions.totalCount === 0) {
+    if (!reactions || reactions.totalItems === 0) {
         // 如果没有回应，只显示添加按钮
         return currentUser ? (
             <div className="flex items-center gap-2">

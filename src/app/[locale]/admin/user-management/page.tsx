@@ -19,7 +19,7 @@ const UserManagementPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [page, setPage] = useState(1);
     const [pageSize] = useState(10);
-    const [totalCount, setTotalCount] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
     const [selectedUser, setSelectedUser] = useState<UserAdminProfileDto | null>(null);
     const [editFormData, setEditFormData] = useState<UpdateUserAdminDto>({});
     const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +29,7 @@ const UserManagementPage = () => {
             setLoading(true);
             const data = await admin.getUsers(page, pageSize, searchTerm);
             setUserList(data?.items || []);
-            setTotalCount(data?.totalItems || 0);
+            setTotalItems(data?.totalItems || 0);
         } catch (error) {
             console.error("Failed to fetch users:", error);
         } finally {
@@ -76,7 +76,7 @@ const UserManagementPage = () => {
         }
     };
 
-    const totalPages = Math.ceil(totalCount / pageSize);
+    const totalPages = Math.ceil(totalItems / pageSize);
 
     return (
         <div className="container mx-auto p-4 space-y-8">
