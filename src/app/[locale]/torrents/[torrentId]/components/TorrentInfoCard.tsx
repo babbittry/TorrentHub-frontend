@@ -93,8 +93,8 @@ const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTa
                   ))}
                 </div>
 
-                {torrent.imdbId && (
-                  <div className="mt-3">
+                <div className="mt-3 flex flex-wrap gap-4">
+                  {torrent.imdbId && (
                     <a
                       href={`https://www.imdb.com/title/${torrent.imdbId}`}
                       target="_blank"
@@ -104,11 +104,23 @@ const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTa
                       IMDb: {torrent.imdbId}
                       <ExternalLink className="h-4 w-4" />
                     </a>
-                  </div>
-                )}
+                  )}
+
+                  {torrent.tmDbId && (
+                    <a
+                      href={`https://www.themoviedb.org/movie/${torrent.tmDbId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-primary hover:underline"
+                    >
+                      TMDb: {torrent.tmDbId}
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  )}
+                </div>
 
                 <p className="mt-3 text-foreground/80 leading-relaxed text-base line-clamp-5">
-                  {torrent.description}
+                  {torrent.plot}
                 </p>
 
                 <div className="mt-8 flex flex-wrap gap-4">

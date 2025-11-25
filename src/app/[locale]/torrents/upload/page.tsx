@@ -11,11 +11,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FormField } from '@/components/ui/form-field';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { TorrentCategory, TorrentCategoryDto, torrents, media, TMDbMovieDto, ApiError } from '@/lib/api';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { TorrentCategoryDto, torrents, media, TMDbMovieDto, ApiError, TechnicalSpecsDto } from '@/lib/api';
 import { processImage, formatFileSize, isImageFile, validateImageSize, type ProcessedImage } from '@/lib/image-processor';
+import { parseTorrentName } from '@/lib/torrent-parser';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import { X, Upload, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { X, Upload, AlertCircle, CheckCircle, Loader2, FileUp, FileText, Check } from 'lucide-react';
+import StepIndicator from '@/app/[locale]/components/StepIndicator';
+import RichEditor from '@/app/[locale]/components/RichEditor';
 
 interface TorrentFileInfo {
     name: string;
@@ -25,18 +30,30 @@ interface TorrentFileInfo {
 
 interface FormData {
     torrentFile: File | null;
+    title: string;
+    subtitle: string;
     description: string;
     category: string;
     imdbId: string;
+    tmdbId?: number;
+    isAnonymous: boolean;
+    mediaInfo: string;
+    technicalSpecs: TechnicalSpecsDto;
 }
 
 interface FormErrors {
     torrentFile?: string;
+    title?: string;
     description?: string;
     category?: string;
     imdbId?: string;
     fetchMedia?: string;
     screenshots?: string;
+    mediaInfo?: string;
+    resolution?: string;
+    videoCodec?: string;
+    audioCodec?: string;
+    source?: string;
 }
 
 interface ScreenshotState {
@@ -55,12 +72,32 @@ export default function TorrentUploadPage() {
     const params = useParams();
     const locale = params.locale as string;
 
+    // Steps state
+    const [currentStep, setCurrentStep] = useState(1);
+    const totalSteps = 3;
+    const stepTitles = [
+        t('torrentUpload.step1_file'),
+        t('torrentUpload.step2_details'),
+        t('torrentUpload.step3_confirm')
+    ];
+
     // Form state
     const [formData, setFormData] = useState<FormData>({
         torrentFile: null,
+        title: '',
+        subtitle: '',
         description: '',
         category: '',
         imdbId: '',
+        isAnonymous: false,
+        mediaInfo: '',
+        technicalSpecs: {
+            resolution: '',
+            videoCodec: '',
+            audioCodec: '',
+            source: '',
+            subtitles: ''
+        }
     });
 
     const [mediaInput, setMediaInput] = useState('');
@@ -97,21 +134,45 @@ export default function TorrentUploadPage() {
         fetchCategories();
     }, [t]);
 
-    const validateForm = useCallback((): boolean => {
+    const validateStep1 = useCallback((): boolean => {
         const newErrors: FormErrors = {};
-
         if (!formData.torrentFile) {
             newErrors.torrentFile = t('torrentUpload.error_no_file');
         }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    }, [formData.torrentFile, t]);
 
-        if (!formData.description.trim()) {
-            newErrors.description = t('torrentUpload.error_description_required');
-        } else if (formData.description.length > 4096) {
+    const validateStep2 = useCallback((): boolean => {
+        const newErrors: FormErrors = {};
+
+        if (!formData.title.trim()) {
+            newErrors.title = t('torrentUpload.error_title_required');
+        }
+
+        if (formData.description.length > 4096) {
             newErrors.description = `${t('torrentUpload.error_description_max_length')}`;
         }
 
         if (!formData.category) {
             newErrors.category = t('torrentUpload.error_category_required');
+        }
+
+        if (!formData.mediaInfo.trim()) {
+            newErrors.mediaInfo = '媒体信息不能为空';
+        }
+
+        if (!formData.technicalSpecs.resolution?.trim()) {
+            newErrors.resolution = '分辨率不能为空';
+        }
+        if (!formData.technicalSpecs.videoCodec?.trim()) {
+            newErrors.videoCodec = '视频编码不能为空';
+        }
+        if (!formData.technicalSpecs.audioCodec?.trim()) {
+            newErrors.audioCodec = '音频编码不能为空';
+        }
+        if (!formData.technicalSpecs.source?.trim()) {
+            newErrors.source = '媒介/来源不能为空';
         }
 
         // 验证截图数量（必须恰好 3 张且全部处理成功）
@@ -124,7 +185,29 @@ export default function TorrentUploadPage() {
         return Object.keys(newErrors).length === 0;
     }, [formData, screenshots, t]);
 
+    const handleNextStep = () => {
+        if (currentStep === 1) {
+            if (validateStep1()) {
+                setCurrentStep(2);
+            }
+        } else if (currentStep === 2) {
+            if (validateStep2()) {
+                setCurrentStep(3);
+            }
+        }
+    };
+
+    const handlePrevStep = () => {
+        if (currentStep > 1) {
+            setCurrentStep(currentStep - 1);
+        }
+    };
+
     const handleFileSelect = (file: File) => {
+        // Reset previous state
+        setTorrentInfo(null);
+        setErrors(prev => ({ ...prev, torrentFile: undefined }));
+
         if (!file.name.endsWith('.torrent')) {
             setErrors(prev => ({ ...prev, torrentFile: t('torrentUpload.error_invalid_file') }));
             return;
@@ -135,11 +218,29 @@ export default function TorrentUploadPage() {
             return;
         }
 
-        setFormData({ ...formData, torrentFile: file });
-        setErrors(prev => ({ ...prev, torrentFile: undefined }));
+        // Parse torrent name for auto-fill
+        const parsedInfo = parseTorrentName(file.name.replace('.torrent', ''));
+        
+        setFormData(prev => ({
+            ...prev,
+            torrentFile: file,
+            technicalSpecs: {
+                ...prev.technicalSpecs,
+                resolution: parsedInfo.resolution || prev.technicalSpecs.resolution,
+                videoCodec: parsedInfo.videoCodec || prev.technicalSpecs.videoCodec,
+                audioCodec: parsedInfo.audioCodec || prev.technicalSpecs.audioCodec,
+                source: parsedInfo.source || prev.technicalSpecs.source,
+                subtitles: parsedInfo.subtitles || prev.technicalSpecs.subtitles,
+            }
+        }));
 
         // Basic torrent info parsing
         setTorrentInfo({ name: file.name, size: file.size });
+
+        // Auto advance to next step after a short delay to show success state
+        setTimeout(() => {
+            setCurrentStep(2);
+        }, 1000);
     };
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -174,7 +275,9 @@ export default function TorrentUploadPage() {
             const data = await media.getMetadata(mediaInput, locale);
             setMediaInfo(data);
             if (data.imdb_id) {
-                setFormData((prev) => ({ ...prev, imdbId: data.imdb_id! }));
+                setFormData((prev) => ({ ...prev, imdbId: data.imdb_id!, tmdbId: data.id }));
+            } else if (data.id) {
+                setFormData((prev) => ({ ...prev, tmdbId: data.id }));
             }
         } catch (error) {
             console.error('Failed to fetch media info:', error);
@@ -280,10 +383,9 @@ export default function TorrentUploadPage() {
         setErrors(prev => ({ ...prev, screenshots: undefined }));
     };
 
-    const handleUpload = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!validateForm()) {
+    const handleUpload = async () => {
+        if (!validateStep2()) {
+            setCurrentStep(2);
             return;
         }
 
@@ -303,9 +405,17 @@ export default function TorrentUploadPage() {
 
             const response = await torrents.uploadTorrent(
                 formData.torrentFile,
-                formData.description,
-                formData.category,
-                formData.imdbId,
+                {
+                    title: formData.title,
+                    subtitle: formData.subtitle,
+                    description: formData.description,
+                    category: formData.category,
+                    imdbId: formData.imdbId,
+                    tmdbId: formData.tmdbId,
+                    isAnonymous: formData.isAnonymous,
+                    mediaInfo: formData.mediaInfo,
+                    technicalSpecs: formData.technicalSpecs
+                },
                 processedScreenshots,
                 (progressEvent) => {
                     if (progressEvent.total) {
@@ -338,291 +448,520 @@ export default function TorrentUploadPage() {
         }
     };
 
+    // Render Step 1: File Upload
+    const renderStep1 = () => (
+        <div className="space-y-6">
+            <div>
+                <Label className="block text-sm font-medium mb-2">
+                    {t('torrentUpload.selectFile')} <span className="text-destructive">*</span>
+                </Label>
+                <div
+                    className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all duration-200 
+                        ${isDragging ? 'border-primary bg-primary/10 scale-[1.02]' : 'border-border hover:border-primary hover:bg-secondary/50'} 
+                        ${errors.torrentFile ? 'border-destructive' : ''}`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                >
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".torrent"
+                        onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
+                        disabled={isUploading}
+                        className="hidden"
+                    />
+
+                    {formData.torrentFile ? (
+                        <div className="space-y-2">
+                            <FileUp className="w-12 h-12 mx-auto text-primary" />
+                            <p className="text-lg font-medium text-foreground">{t('torrentUpload.fileSelected')}</p>
+                            <p className="text-muted-foreground">{formData.torrentFile.name}</p>
+                            <p className="text-xs text-muted-foreground bg-secondary inline-block px-2 py-1 rounded">
+                                {(formData.torrentFile.size / 1024).toFixed(2)} KB
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-2">
+                            <Upload className="w-12 h-12 mx-auto text-muted-foreground" />
+                            <p className="text-lg font-medium text-foreground">{t('torrentUpload.dragDropHint')}</p>
+                            <p className="text-sm text-muted-foreground">或点击选择文件</p>
+                        </div>
+                    )}
+                </div>
+                {errors.torrentFile && <p className="text-destructive text-sm mt-2">{errors.torrentFile}</p>}
+            </div>
+
+            {torrentInfo && (
+                <Alert>
+                    <CheckCircle className="h-4 w-4" />
+                    <AlertTitle>文件解析成功</AlertTitle>
+                    <AlertDescription>
+                        已自动解析文件名中的元数据，将在下一步中自动填充。
+                    </AlertDescription>
+                </Alert>
+            )}
+        </div>
+    );
+
+    // Render Step 2: Details
+    const renderStep2 = () => (
+        <div className="space-y-8">
+            {/* Basic Info */}
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">基本信息</h3>
+                
+                <div className="space-y-2">
+                    <Label htmlFor="title">标题 <span className="text-destructive">*</span></Label>
+                    <Input
+                        id="title"
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        placeholder="请输入种子标题"
+                        className={errors.title ? 'border-destructive' : ''}
+                    />
+                    {errors.title && <p className="text-destructive text-sm">{errors.title}</p>}
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="subtitle">副标题</Label>
+                    <Input
+                        id="subtitle"
+                        value={formData.subtitle}
+                        onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+                        placeholder="请输入副标题"
+                    />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label>分类 <span className="text-destructive">*</span></Label>
+                        <Select
+                            value={formData.category}
+                            onValueChange={(value) => {
+                                setFormData({ ...formData, category: value });
+                                if (errors.category) setErrors({ ...errors, category: undefined });
+                            }}
+                            disabled={isLoadingCategories}
+                        >
+                            <SelectTrigger className={errors.category ? 'border-destructive' : ''}>
+                                <SelectValue placeholder={t('torrentUpload.category_placeholder')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((cat) => (
+                                    <SelectItem key={cat.key} value={cat.key}>{t(`categories.${cat.name}`)}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        {errors.category && <p className="text-destructive text-sm">{errors.category}</p>}
+                    </div>
+                    <div className="flex items-center space-x-2 pt-8">
+                        <Checkbox
+                            id="anonymous"
+                            checked={formData.isAnonymous}
+                            onCheckedChange={(checked) => setFormData({ ...formData, isAnonymous: checked as boolean })}
+                        />
+                        <Label htmlFor="anonymous" className="cursor-pointer">匿名发布</Label>
+                    </div>
+                </div>
+            </div>
+
+            {/* External Info */}
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">外部信息 (IMDb/TMDB)</h3>
+                <div className="space-y-4">
+                    <div className="flex items-end space-x-2">
+                        <FormField
+                            label={t('torrentUpload.media_label')}
+                            placeholder={t('torrentUpload.media_placeholder')}
+                            value={mediaInput}
+                            onChange={(e) => setMediaInput(e.target.value)}
+                            error={errors.fetchMedia}
+                            containerClassName="grow"
+                        />
+                        <Button type="button" onClick={handleFetchMediaInfo} disabled={isFetchingMediaInfo}>
+                            {isFetchingMediaInfo ? t('common.loading') : t('torrentUpload.fetchInfo')}
+                        </Button>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{t('torrentUpload.media_hint')}</p>
+
+                    {mediaInfo && (
+                        <div className="p-4 bg-secondary rounded-lg flex space-x-4 animate-in fade-in slide-in-from-top-2">
+                            {mediaInfo.poster_path && (
+                                <div className="shrink-0 w-24">
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w200${mediaInfo.poster_path}`}
+                                        alt={mediaInfo.title || 'Movie Poster'}
+                                        className="rounded-md shadow-sm"
+                                    />
+                                </div>
+                            )}
+                            <div>
+                                <h3 className="font-bold text-lg">{mediaInfo.title}</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    {mediaInfo.release_date ? new Date(mediaInfo.release_date).getFullYear() : 'N/A'}
+                                </p>
+                                <p className="text-sm mt-2 text-foreground line-clamp-3">{mediaInfo.overview}</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Technical Specs */}
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">文件信息</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                        <Label>分辨率 <span className="text-destructive">*</span></Label>
+                        <Input
+                            value={formData.technicalSpecs.resolution || ''}
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    technicalSpecs: { ...formData.technicalSpecs, resolution: e.target.value }
+                                });
+                                if (errors.resolution) setErrors({ ...errors, resolution: undefined });
+                            }}
+                            placeholder="e.g. 1080p"
+                            className={errors.resolution ? 'border-destructive' : ''}
+                        />
+                        {errors.resolution && <p className="text-destructive text-sm">{errors.resolution}</p>}
+                    </div>
+                    <div className="space-y-2">
+                        <Label>视频编码 <span className="text-destructive">*</span></Label>
+                        <Input
+                            value={formData.technicalSpecs.videoCodec || ''}
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    technicalSpecs: { ...formData.technicalSpecs, videoCodec: e.target.value }
+                                });
+                                if (errors.videoCodec) setErrors({ ...errors, videoCodec: undefined });
+                            }}
+                            placeholder="e.g. x265"
+                            className={errors.videoCodec ? 'border-destructive' : ''}
+                        />
+                        {errors.videoCodec && <p className="text-destructive text-sm">{errors.videoCodec}</p>}
+                    </div>
+                    <div className="space-y-2">
+                        <Label>音频编码 <span className="text-destructive">*</span></Label>
+                        <Input
+                            value={formData.technicalSpecs.audioCodec || ''}
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    technicalSpecs: { ...formData.technicalSpecs, audioCodec: e.target.value }
+                                });
+                                if (errors.audioCodec) setErrors({ ...errors, audioCodec: undefined });
+                            }}
+                            placeholder="e.g. AAC"
+                            className={errors.audioCodec ? 'border-destructive' : ''}
+                        />
+                        {errors.audioCodec && <p className="text-destructive text-sm">{errors.audioCodec}</p>}
+                    </div>
+                    <div className="space-y-2">
+                        <Label>媒介/来源 <span className="text-destructive">*</span></Label>
+                        <Input
+                            value={formData.technicalSpecs.source || ''}
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    technicalSpecs: { ...formData.technicalSpecs, source: e.target.value }
+                                });
+                                if (errors.source) setErrors({ ...errors, source: undefined });
+                            }}
+                            placeholder="e.g. BluRay"
+                            className={errors.source ? 'border-destructive' : ''}
+                        />
+                        {errors.source && <p className="text-destructive text-sm">{errors.source}</p>}
+                    </div>
+                    <div className="space-y-2">
+                        <Label>字幕</Label>
+                        <Input
+                            value={formData.technicalSpecs.subtitles || ''}
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    technicalSpecs: { ...formData.technicalSpecs, subtitles: e.target.value }
+                                });
+                            }}
+                            placeholder="e.g. Chs, Eng"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Media Info */}
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                    媒体信息 (MediaInfo) <span className="text-destructive">*</span>
+                </h3>
+                <Textarea
+                    placeholder="请在此处粘贴 MediaInfo 文本..."
+                    value={formData.mediaInfo}
+                    onChange={(e) => {
+                        setFormData({ ...formData, mediaInfo: e.target.value });
+                        if (errors.mediaInfo) setErrors({ ...errors, mediaInfo: undefined });
+                    }}
+                    className={`font-mono text-xs min-h-[150px] ${errors.mediaInfo ? 'border-destructive' : ''}`}
+                />
+                {errors.mediaInfo && <p className="text-destructive text-sm">{errors.mediaInfo}</p>}
+            </div>
+
+            {/* Screenshots */}
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                    截图上传 <span className="text-destructive">*</span>
+                </h3>
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">
+                            恰好 {REQUIRED_SCREENSHOTS} 张，自动压缩为 WebP 并进行内容安全检测
+                        </p>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => screenshotInputRef.current?.click()}
+                            disabled={isUploading || isProcessingScreenshots || screenshots.length >= REQUIRED_SCREENSHOTS}
+                        >
+                            <Upload className="w-4 h-4 mr-2" />
+                            选择截图
+                        </Button>
+                        <input
+                            ref={screenshotInputRef}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => handleScreenshotSelect(e.target.files)}
+                            disabled={isUploading || isProcessingScreenshots || screenshots.length >= REQUIRED_SCREENSHOTS}
+                            className="hidden"
+                        />
+                    </div>
+
+                    {screenshots.length > 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {screenshots.map((screenshot, index) => (
+                                <div
+                                    key={index}
+                                    className={`relative border-2 rounded-lg overflow-hidden ${
+                                        screenshot.status === 'success'
+                                            ? 'border-green-500'
+                                            : screenshot.status === 'error'
+                                            ? 'border-destructive'
+                                            : screenshot.status === 'processing'
+                                            ? 'border-primary'
+                                            : 'border-border'
+                                    }`}
+                                >
+                                    <div className="aspect-video relative bg-secondary">
+                                        <img
+                                            src={screenshot.preview}
+                                            alt={`Screenshot ${index + 1}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        {screenshot.status === 'processing' && (
+                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                                <Loader2 className="w-8 h-8 text-white animate-spin" />
+                                            </div>
+                                        )}
+                                        {!isUploading && screenshot.status !== 'processing' && (
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveScreenshot(index)}
+                                                className="absolute top-2 right-2 bg-destructive hover:bg-destructive/90 text-white rounded-full p-1 transition-colors"
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className="p-2 bg-background text-xs">
+                                        {screenshot.status === 'success' && screenshot.processed && (
+                                            <div className="flex items-center text-green-600">
+                                                <CheckCircle className="w-3 h-3 mr-1" />
+                                                <span>{formatFileSize(screenshot.processed.compressedSize)} ({screenshot.processed.compressionRatio}%)</span>
+                                            </div>
+                                        )}
+                                        {screenshot.status === 'error' && (
+                                            <div className="flex items-center text-destructive">
+                                                <AlertCircle className="w-3 h-3 mr-1" />
+                                                <span className="truncate">{screenshot.error}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {errors.screenshots && <p className="text-destructive text-sm">{errors.screenshots}</p>}
+                </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                    简介描述
+                </h3>
+                <div className="space-y-2">
+                    <RichEditor
+                        value={formData.description}
+                        onChange={(val) => {
+                            setFormData({ ...formData, description: val });
+                            if (errors.description) setErrors({ ...errors, description: undefined });
+                        }}
+                        placeholder={t('torrentUpload.description_placeholder')}
+                        height={400}
+                        maxLength={4096}
+                    />
+                    {errors.description && <p className="text-destructive text-sm">{errors.description}</p>}
+                </div>
+            </div>
+        </div>
+    );
+
+    // Render Step 3: Confirm
+    const renderStep3 = () => (
+        <div className="space-y-6">
+            <Alert>
+                <CheckCircle className="h-4 w-4" />
+                <AlertTitle>准备发布</AlertTitle>
+                <AlertDescription>
+                    请仔细核对以下信息，确认无误后点击“确认发布”。
+                </AlertDescription>
+            </Alert>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-base">基本信息</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">标题:</span>
+                            <span className="font-medium text-right">{formData.title}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">副标题:</span>
+                            <span className="font-medium text-right">{formData.subtitle || '-'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">分类:</span>
+                            <span className="font-medium text-right">
+                                {categories.find(c => c.key === formData.category)?.name || formData.category}
+                            </span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">匿名发布:</span>
+                            <span className="font-medium text-right">{formData.isAnonymous ? '是' : '否'}</span>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-base">文件规格</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">文件名:</span>
+                            <span className="font-medium text-right truncate max-w-[200px]" title={formData.torrentFile?.name}>
+                                {formData.torrentFile?.name}
+                            </span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">大小:</span>
+                            <span className="font-medium text-right">
+                                {formData.torrentFile ? formatFileSize(formData.torrentFile.size) : '-'}
+                            </span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">分辨率:</span>
+                            <span className="font-medium text-right">{formData.technicalSpecs.resolution || '-'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">编码:</span>
+                            <span className="font-medium text-right">
+                                {formData.technicalSpecs.videoCodec} / {formData.technicalSpecs.audioCodec}
+                            </span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">字幕:</span>
+                            <span className="font-medium text-right">
+                                {formData.technicalSpecs.subtitles || '-'}
+                            </span>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <div className="space-y-2">
+                <h4 className="font-medium text-sm text-muted-foreground">简介预览</h4>
+                <div className="p-4 border rounded-lg bg-secondary/20 max-h-[200px] overflow-y-auto text-sm">
+                    {formData.description.slice(0, 500)}...
+                </div>
+            </div>
+
+            {isUploading && (
+                <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                        <span>上传中...</span>
+                        <span>{uploadProgress}%</span>
+                    </div>
+                    <Progress value={uploadProgress} />
+                </div>
+            )}
+        </div>
+    );
+
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-            <Card>
+            <Card className="min-h-[600px] flex flex-col">
                 <CardHeader>
-                    <CardTitle className="text-2xl">{t('torrentUpload.title')}</CardTitle>
-                    <p className="text-muted-foreground pt-2">{t('torrentUpload.description')}</p>
+                    <CardTitle className="text-2xl text-center mb-6">{t('torrentUpload.title')}</CardTitle>
+                    <StepIndicator
+                        currentStep={currentStep}
+                        totalSteps={totalSteps}
+                        stepTitles={stepTitles}
+                    />
                 </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleUpload} className="space-y-8">
-                        {/* File Upload Area */}
-                        <div>
-                            <Label className="block text-sm font-medium mb-2">
-                                {t('torrentUpload.selectFile')} <span className="text-destructive">*</span>
-                            </Label>
-                            <div
-                                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition ${isDragging ? 'border-primary bg-primary/10' : 'border-border hover:border-primary'} ${errors.torrentFile ? 'border-destructive' : ''}`}
-                                onDragOver={handleDragOver}
-                                onDragLeave={handleDragLeave}
-                                onDrop={handleDrop}
-                                onClick={() => fileInputRef.current?.click()}
-                            >
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept=".torrent"
-                                    onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
-                                    disabled={isUploading}
-                                    className="hidden"
-                                />
+                <CardContent className="flex-grow flex flex-col">
+                    <div className="flex-grow">
+                        {currentStep === 1 && renderStep1()}
+                        {currentStep === 2 && renderStep2()}
+                        {currentStep === 3 && renderStep3()}
+                    </div>
 
-                                {formData.torrentFile ? (
-                                    <div>
-                                        <p className="text-green-600 font-medium">{t('torrentUpload.fileSelected')}</p>
-                                        <p className="text-muted-foreground text-sm mt-2">{formData.torrentFile.name}</p>
-                                        <p className="text-muted-foreground text-xs">{(formData.torrentFile.size / 1024).toFixed(2)} KB</p>
-                                    </div>
+                    <div className="flex justify-between pt-8 mt-8 border-t">
+                        <Button
+                            variant="outline"
+                            onClick={currentStep === 1 ? () => router.back() : handlePrevStep}
+                            disabled={isUploading}
+                        >
+                            {currentStep === 1 ? t('common.cancel') : '上一步'}
+                        </Button>
+
+                        {currentStep < 3 ? (
+                            <Button onClick={handleNextStep} disabled={isUploading}>
+                                下一步
+                            </Button>
+                        ) : (
+                            <Button onClick={handleUpload} disabled={isUploading}>
+                                {isUploading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        发布中...
+                                    </>
                                 ) : (
-                                    <p className="text-foreground font-medium">{t('torrentUpload.dragDropHint')}</p>
+                                    <>
+                                        <Check className="mr-2 h-4 w-4" />
+                                        确认发布
+                                    </>
                                 )}
-                            </div>
-                            {errors.torrentFile && <p className="text-destructive text-sm mt-2">{errors.torrentFile}</p>}
-                        </div>
-
-                        {/* Torrent Info Preview */}
-                        {torrentInfo && (
-                            <div className="p-4 bg-secondary rounded-lg">
-                                <h3 className="font-medium mb-2">{t('torrentUpload.torrentInfo')}</h3>
-                                <p className="text-sm text-muted-foreground">
-                                    <span className="font-medium">{t('torrentUpload.fileName')}:</span> {torrentInfo.name}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    <span className="font-medium">{t('torrentUpload.fileSize')}:</span> {(torrentInfo.size / 1024 / 1024).toFixed(2)} MB
-                                </p>
-                            </div>
-                        )}
-
-                        {/* Description Field */}
-                        <div className="space-y-2">
-                            <Label htmlFor="description">{t('torrentUpload.description_label')}</Label>
-                            <Textarea
-                                id="description"
-                                placeholder={t('torrentUpload.description_placeholder')}
-                                value={formData.description}
-                                onChange={(e) => {
-                                    setFormData({ ...formData, description: e.target.value });
-                                    if (errors.description) setErrors({ ...errors, description: undefined });
-                                }}
-                                maxLength={4096}
-                                className={`min-h-[100px] ${errors.description ? 'border-destructive' : ''}`}
-                            />
-                            {errors.description && <p className="text-destructive text-sm">{errors.description}</p>}
-                        </div>
-
-                        {/* Category Dropdown */}
-                        <div className="space-y-2">
-                            <Label>{t('torrentUpload.category_label')}</Label>
-                            <Select
-                                value={formData.category}
-                                onValueChange={(value) => {
-                                    setFormData({ ...formData, category: value });
-                                    if (errors.category) setErrors({ ...errors, category: undefined });
-                                }}
-                                disabled={isLoadingCategories}
-                            >
-                                <SelectTrigger className={errors.category ? 'border-destructive' : ''}>
-                                    <SelectValue placeholder={t('torrentUpload.category_placeholder')} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((cat) => (
-                                        <SelectItem key={cat.key} value={cat.key}>{t(`categories.${cat.name}`)}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {errors.category && <p className="text-destructive text-sm">{errors.category}</p>}
-                        </div>
-
-                        {/* Media Info Fetcher */}
-                        <div>
-                            <div className="flex items-end space-x-2">
-                                <FormField
-                                    label={t('torrentUpload.media_label')}
-                                    placeholder={t('torrentUpload.media_placeholder')}
-                                    value={mediaInput}
-                                    onChange={(e) => setMediaInput(e.target.value)}
-                                    error={errors.fetchMedia}
-                                    containerClassName="grow"
-                                />
-                                <Button type="button" onClick={handleFetchMediaInfo} disabled={isFetchingMediaInfo}>
-                                    {isFetchingMediaInfo ? t('common.loading') : t('torrentUpload.fetchInfo')}
-                                </Button>
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">{t('torrentUpload.media_hint')}</p>
-                        </div>
-
-                        {/* Media Info Preview */}
-                        {mediaInfo && (
-                            <div className="p-4 bg-secondary rounded-lg flex space-x-4">
-                                {mediaInfo.poster_path && (
-                                    <div className="shrink-0 w-24">
-                                        <img
-                                            src={`https://image.tmdb.org/t/p/w200${mediaInfo.poster_path}`}
-                                            alt={mediaInfo.title || 'Movie Poster'}
-                                            className="rounded-md"
-                                        />
-                                    </div>
-                                )}
-                                <div>
-                                    <h3 className="font-bold text-lg">{mediaInfo.title}</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        {mediaInfo.release_date ? new Date(mediaInfo.release_date).getFullYear() : 'N/A'}
-                                    </p>
-                                    <p className="text-sm mt-2 text-foreground line-clamp-3">{mediaInfo.overview}</p>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Screenshots Upload */}
-                        <div>
-                            <Label className="block text-sm font-medium mb-2">
-                                截图上传 <span className="text-destructive">*</span>
-                                <span className="text-muted-foreground font-normal ml-2">
-                                    （恰好 {REQUIRED_SCREENSHOTS} 张，自动压缩为 WebP 并进行内容安全检测）
-                                </span>
-                            </Label>
-
-                            {/* 上传按钮 */}
-                            <div className="mb-4">
-                                <input
-                                    ref={screenshotInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    onChange={(e) => handleScreenshotSelect(e.target.files)}
-                                    disabled={isUploading || isProcessingScreenshots || screenshots.length >= REQUIRED_SCREENSHOTS}
-                                    className="hidden"
-                                />
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => screenshotInputRef.current?.click()}
-                                    disabled={isUploading || isProcessingScreenshots || screenshots.length >= REQUIRED_SCREENSHOTS}
-                                    className="w-full"
-                                >
-                                    <Upload className="w-4 h-4 mr-2" />
-                                    {screenshots.length >= REQUIRED_SCREENSHOTS
-                                        ? '已达到最大数量'
-                                        : `选择截图（还需 ${REQUIRED_SCREENSHOTS - screenshots.length} 张）`}
-                                </Button>
-                            </div>
-
-                            {/* 截图预览网格 */}
-                            {screenshots.length > 0 && (
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    {screenshots.map((screenshot, index) => (
-                                        <div
-                                            key={index}
-                                            className={`relative border-2 rounded-lg overflow-hidden ${
-                                                screenshot.status === 'success'
-                                                    ? 'border-green-500'
-                                                    : screenshot.status === 'error'
-                                                    ? 'border-red-500'
-                                                    : screenshot.status === 'processing'
-                                                    ? 'border-blue-500'
-                                                    : 'border-gray-300'
-                                            }`}
-                                        >
-                                            {/* 图片预览 */}
-                                            <div className="aspect-video relative bg-gray-100">
-                                                <img
-                                                    src={screenshot.preview}
-                                                    alt={`Screenshot ${index + 1}`}
-                                                    className="w-full h-full object-cover"
-                                                />
-
-                                                {/* 状态覆盖层 */}
-                                                {screenshot.status === 'processing' && (
-                                                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                                        <Loader2 className="w-8 h-8 text-white animate-spin" />
-                                                    </div>
-                                                )}
-
-                                                {/* 删除按钮 */}
-                                                {!isUploading && screenshot.status !== 'processing' && (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleRemoveScreenshot(index)}
-                                                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
-                                                        disabled={isProcessingScreenshots}
-                                                    >
-                                                        <X className="w-4 h-4" />
-                                                    </button>
-                                                )}
-                                            </div>
-
-                                            {/* 状态信息 */}
-                                            <div className="p-2 bg-white dark:bg-gray-800">
-                                                {screenshot.status === 'success' && screenshot.processed && (
-                                                    <div className="flex items-center text-xs text-green-600">
-                                                        <CheckCircle className="w-3 h-3 mr-1" />
-                                                        <span>
-                                                            {formatFileSize(screenshot.processed.originalSize)} →{' '}
-                                                            {formatFileSize(screenshot.processed.compressedSize)} (
-                                                            {screenshot.processed.compressionRatio}%)
-                                                        </span>
-                                                    </div>
-                                                )}
-                                                {screenshot.status === 'processing' && (
-                                                    <div className="flex items-center text-xs text-blue-600">
-                                                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                                                        <span>正在处理...</span>
-                                                    </div>
-                                                )}
-                                                {screenshot.status === 'error' && (
-                                                    <div className="flex items-center text-xs text-red-600">
-                                                        <AlertCircle className="w-3 h-3 mr-1" />
-                                                        <span>{screenshot.error}</span>
-                                                    </div>
-                                                )}
-                                                {screenshot.status === 'pending' && (
-                                                    <div className="text-xs text-gray-500">等待处理...</div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* 错误提示 */}
-                            {errors.screenshots && (
-                                <p className="text-destructive text-sm mt-2">{errors.screenshots}</p>
-                            )}
-
-                            {/* 提示信息 */}
-                            <Alert className="mt-4">
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertTitle>截图要求</AlertTitle>
-                                <AlertDescription>
-                                    <ul className="list-disc list-inside space-y-1 text-sm">
-                                        <li>必须上传恰好 {REQUIRED_SCREENSHOTS} 张截图</li>
-                                        <li>图片将自动压缩为 WebP 格式（最大宽度 1920px）</li>
-                                        <li>自动进行内容安全检测，违规图片将被拦截</li>
-                                        <li>单张图片最大 20MB</li>
-                                    </ul>
-                                </AlertDescription>
-                            </Alert>
-                        </div>
-
-                        {/* Upload Progress */}
-                        {isUploading && (
-                            <div className="space-y-2">
-                                <Label>{`${t('torrentUpload.uploadingProgress')}: ${uploadProgress}%`}</Label>
-                                <Progress value={uploadProgress} />
-                            </div>
-                        )}
-
-                        {/* Submit Buttons */}
-                        <div className="flex gap-2 pt-4">
-                            <Button type="submit" disabled={isUploading || !formData.torrentFile}>
-                                {isUploading ? t('common.loading') : t('torrentUpload.uploadButton')}
                             </Button>
-                            <Button variant="outline" type="button" onClick={() => router.back()} disabled={isUploading}>
-                                {t('common.cancel')}
-                            </Button>
-                        </div>
-                    </form>
+                        )}
+                    </div>
                 </CardContent>
             </Card>
         </div>

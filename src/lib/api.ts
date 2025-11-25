@@ -629,6 +629,14 @@ export enum TorrentCategory {
     Other = 9
 }
 
+export enum TorrentDeleteReason {
+    Duplicate = 0,
+    LowQuality = 1,
+    Dead = 2,
+    RulesViolation = 3,
+    Other = 4
+}
+
 export interface TorrentCategoryDto {
     id: number;
     name: string;
@@ -674,6 +682,10 @@ export interface TorrentDto {
     id: number;
     name: string;
     description?: string | null;
+    plot?: string | null;
+    subtitle?: string | null;
+    isAnonymous: boolean;
+    mediaInfo?: string | null;
     size: number;
     uploader?: UserDisplayDto;
     createdAt: string; // date-time
@@ -681,6 +693,8 @@ export interface TorrentDto {
     isFree: boolean;
     freeUntil?: string | null; // date-time
     stickyStatus: TorrentStickyStatus;
+    isDeleted: boolean;
+    deleteReason?: TorrentDeleteReason | null;
     seeders: number;
     leechers: number;
     snatched: number;
@@ -691,7 +705,6 @@ export interface TorrentDto {
     posterPath?: string | null;
     backdropPath?: string | null;
     runtime?: number | null;
-    country?: string | null;
     genres?: string[] | null;
     directors?: string | null;
     cast?: CastMemberDto[] | null;
@@ -699,6 +712,7 @@ export interface TorrentDto {
     imdbRating?: number | null;
     technicalSpecs?: TechnicalSpecsDto | null;
     files?: TorrentFileDto[] | null;
+    country?: string | null;
     screenshots?: string[] | null; // 截图URL数组
 }
 
@@ -1138,18 +1152,39 @@ export const torrents = {
     },
     uploadTorrent: async (
         torrentFile: File,
-        description: string,
-        category: string,
-        imdbId?: string,
+        metadata: {
+            title?: string;
+            subtitle?: string;
+            description: string;
+            category: string;
+            imdbId?: string;
+            tmdbId?: number;
+            isAnonymous?: boolean;
+            mediaInfo?: string;
+            technicalSpecs?: TechnicalSpecsDto;
+        },
         screenshots?: File[], // 用户上传的截图（恰好 3 张）
         onUploadProgress?: (progressEvent: { loaded: number; total?: number }) => void
     ): Promise<UploadTorrentResponseDto> => {
         const formData = new FormData();
         formData.append('File', torrentFile);
-        formData.append('Description', description);
-        formData.append('Category', category);
-        if (imdbId) {
-            formData.append('ImdbId', imdbId);
+        formData.append('Description', metadata.description);
+        formData.append('Category', metadata.category);
+        
+        if (metadata.title) formData.append('Title', metadata.title);
+        if (metadata.subtitle) formData.append('Subtitle', metadata.subtitle);
+        if (metadata.imdbId) formData.append('ImdbId', metadata.imdbId);
+        if (metadata.tmdbId) formData.append('TMDbId', metadata.tmdbId.toString());
+        if (metadata.isAnonymous) formData.append('IsAnonymous', metadata.isAnonymous.toString());
+        if (metadata.mediaInfo) formData.append('MediaInfo', metadata.mediaInfo);
+        
+        if (metadata.technicalSpecs) {
+            if (metadata.technicalSpecs.resolution) formData.append('TechnicalSpecs.Resolution', metadata.technicalSpecs.resolution);
+            if (metadata.technicalSpecs.videoCodec) formData.append('TechnicalSpecs.VideoCodec', metadata.technicalSpecs.videoCodec);
+            if (metadata.technicalSpecs.audioCodec) formData.append('TechnicalSpecs.AudioCodec', metadata.technicalSpecs.audioCodec);
+            if (metadata.technicalSpecs.source) formData.append('TechnicalSpecs.Source', metadata.technicalSpecs.source);
+            // Subtitles might be handled differently if it's a list, but assuming string for now based on DTO
+            if (metadata.technicalSpecs.subtitles) formData.append('TechnicalSpecs.Subtitles', metadata.technicalSpecs.subtitles);
         }
         
         // 添加截图（必须恰好 3 张）

@@ -6,6 +6,7 @@ import React from "react";
 import { useTranslations } from 'next-intl';
 import { TorrentDto } from "@/lib/api";
 import UserDisplay from "@/app/[locale]/components/UserDisplay";
+import MarkdownRenderer from "@/app/[locale]/components/MarkdownRenderer";
 
 interface TorrentTabsProps {
   torrent: TorrentDto;
@@ -26,6 +27,7 @@ const formatBytes = (bytes: number | undefined | null): string => {
 const TorrentTabs = ({ torrent, commentsSection, commentsCount, onCommentsTabOpen, commentsLoading }: TorrentTabsProps) => {
   const t = useTranslations('torrentDetail');
   const [activeTab, setActiveTab] = useState('details');
+  const [isMediaInfoExpanded, setIsMediaInfoExpanded] = useState(false);
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
@@ -46,6 +48,26 @@ const TorrentTabs = ({ torrent, commentsSection, commentsCount, onCommentsTabOpe
         return (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
             <div className="lg:col-span-2 bg-background/50 p-6 rounded-xl shadow-md">
+              <div className="mb-8">
+                <h2 className="text-xl font-bold text-foreground mb-2">{t('title')}</h2>
+                <p className="text-lg text-foreground break-all">{torrent.name}</p>
+                {torrent.subtitle && (
+                  <>
+                    <h2 className="text-xl font-bold text-foreground mt-8 mb-2">{t('subtitle')}</h2>
+                    <p className="text-base text-foreground/90 break-all">{torrent.subtitle}</p>
+                  </>
+                )}
+              </div>
+
+              {torrent.description && (
+                <div className="mb-8">
+                  <h2 className="text-xl font-bold text-foreground mb-2">{t('description')}</h2>
+                  <div className="bg-secondary/20 rounded-md">
+                    <MarkdownRenderer content={torrent.description} />
+                  </div>
+                </div>
+              )}
+
               <h2 className="text-xl font-bold text-foreground mb-4">{t('techSpecs.title')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-muted-foreground">
                 <div className="flex flex-col"><span className="text-sm">{t('techSpecs.fileSize')}</span><span className="font-semibold text-foreground">{formatBytes(torrent.size)}</span></div>
@@ -55,6 +77,7 @@ const TorrentTabs = ({ torrent, commentsSection, commentsCount, onCommentsTabOpe
                 <div className="flex flex-col"><span className="text-sm">{t('techSpecs.subtitles')}</span><span className="font-semibold text-foreground">{torrent.technicalSpecs?.subtitles || 'N/A'}</span></div>
                 <div className="flex flex-col"><span className="text-sm">{t('techSpecs.source')}</span><span className="font-semibold text-foreground">{torrent.technicalSpecs?.source || 'N/A'}</span></div>
               </div>
+
               <h2 className="text-xl font-bold text-foreground mt-8 mb-4">{t('fileList.title')}</h2>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {torrent.files && torrent.files.length > 0 ? (
@@ -69,6 +92,25 @@ const TorrentTabs = ({ torrent, commentsSection, commentsCount, onCommentsTabOpe
                   <p>{t('fileList.noFiles')}</p>
                 )}
               </ul>
+              {torrent.mediaInfo && (
+                <div className="mt-8">
+                  <button
+                    onClick={() => setIsMediaInfoExpanded(!isMediaInfoExpanded)}
+                    className="flex items-center gap-2 text-xl font-bold text-foreground mb-4 hover:text-primary transition-colors"
+                  >
+                    MediaInfo
+                    {isMediaInfoExpanded ? <ArrowUp className="h-5 w-5" /> : <ArrowDown className="h-5 w-5" />}
+                  </button>
+                  
+                  {isMediaInfoExpanded && (
+                    <div className="bg-secondary/30 p-4 rounded-md overflow-x-auto animate-in fade-in slide-in-from-top-2">
+                      <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap break-all">
+                        {torrent.mediaInfo}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className="bg-background/50 p-6 rounded-xl shadow-md h-fit">
                 <h2 className="text-xl font-bold text-foreground mb-4">{t('status.title')}</h2>
