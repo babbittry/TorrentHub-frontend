@@ -122,7 +122,7 @@ export default function TorrentUploadPage() {
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-    }, [formData, t]);
+    }, [formData, screenshots, t]);
 
     const handleFileSelect = (file: File) => {
         if (!file.name.endsWith('.torrent')) {

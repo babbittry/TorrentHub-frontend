@@ -1145,7 +1145,7 @@ export const torrents = {
         onUploadProgress?: (progressEvent: { loaded: number; total?: number }) => void
     ): Promise<UploadTorrentResponseDto> => {
         const formData = new FormData();
-        formData.append('torrentFile', torrentFile);
+        formData.append('File', torrentFile);
         formData.append('Description', description);
         formData.append('Category', category);
         if (imdbId) {
