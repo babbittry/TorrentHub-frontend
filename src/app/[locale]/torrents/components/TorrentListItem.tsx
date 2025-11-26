@@ -62,7 +62,7 @@ export default function TorrentListItem({ torrent }: TorrentListItemProps) {
                         {torrent.snatched}
                     </div>
                     <div className="col-span-2 text-center text-sm text-muted-foreground">
-                        <UserDisplay user={torrent.uploader} />
+                        <UserDisplay user={torrent.uploader} isAnonymous={torrent.isAnonymous} />
                     </div>
                 </div>
             </div>

@@ -5,15 +5,30 @@ import { UserDisplayDto } from '@/lib/api';
 import { API_BASE_URL } from '@/lib/api';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
+import { HatGlasses  } from 'lucide-react';
 
 interface UserDisplayProps {
     user: UserDisplayDto | null | undefined;
     showAvatar?: boolean;
     avatarSize?: 'sm' | 'md' | 'lg';
     showUsername?: boolean;
+    isAnonymous?: boolean;
 }
 
-const UserDisplay: React.FC<UserDisplayProps> = ({ user, showAvatar = false, avatarSize = 'md', showUsername = true }) => {
+const UserDisplay: React.FC<UserDisplayProps> = ({ user, showAvatar = false, avatarSize = 'md', showUsername = true, isAnonymous = false }) => {
+    const t = useTranslations('common');
+    
+    // 优先级: isAnonymous > user
+    if (isAnonymous) {
+        return (
+            <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                <HatGlasses  className="h-4 w-4" />
+                <span>{t('anonymous_user')}</span>
+            </span>
+        );
+    }
+    
     if (!user) {
         return <span>Unknown User</span>;
     }

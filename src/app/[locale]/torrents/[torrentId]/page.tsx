@@ -5,6 +5,7 @@ import { torrents, comments, TorrentDto, CommentDto, CreateCommentDto, COMMENT_T
 import { useParams } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import { useAuth } from "@/context/AuthContext";
+import useSWR from 'swr';
 import { Button } from "@/components/ui/button";
 import UserDisplay from "@/app/[locale]/components/UserDisplay";
 import TipModal from "@/app/[locale]/components/TipModal";
@@ -18,11 +19,8 @@ import TorrentTabs from "./components/TorrentTabs";
 
 export default function TorrentDetailPage() {
     const { torrentId } = useParams();
-    const [torrent, setTorrent] = useState<TorrentDto | null>(null);
     const [torrentComments, setComments] = useState<CommentDto[]>([]);
     const [commentsCount, setCommentsCount] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const [lastFloor, setLastFloor] = useState<number>(0);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -39,28 +37,25 @@ export default function TorrentDetailPage() {
         setIsTipModalOpen(true);
     };
 
-    const fetchTorrentDetails = useCallback(async () => {
-        setLoading(true);
-        setError(null);
+    // 使用 SWR 获取种子详情（自动缓存）
+    const { data: torrent, error, isLoading: loading } = useSWR<TorrentDto>(
+        torrentId ? `/api/torrents/${torrentId}` : null,
+        () => torrents.getTorrentById(Number(torrentId))
+    );
+
+    const fetchCommentsCount = useCallback(async () => {
         try {
-            const data: TorrentDto = await torrents.getTorrentById(Number(torrentId));
-            setTorrent(data);
-            
-            // 只获取评论数量，不加载评论内容
             const commentsResponse = await comments.getComments(COMMENT_TYPE.TORRENT, Number(torrentId), 1, 0);
             setCommentsCount(commentsResponse.totalItems);
         } catch (err: unknown) {
-            setError((err as Error).message || t('common.error'));
-        } finally {
-            setLoading(false);
+            console.error('Failed to fetch comments count:', err);
         }
-    }, [torrentId, t]);
+    }, [torrentId]);
 
     const fetchComments = useCallback(async () => {
         if (commentsLoaded) return;
         
         setLoadingMore(true);
-        setError(null);
         try {
             const response = await comments.getComments(COMMENT_TYPE.TORRENT, Number(torrentId), 1, 30);
             setComments(response.items);
@@ -68,17 +63,17 @@ export default function TorrentDetailPage() {
             setLastFloor(response.items[response.items.length - 1]?.floor || 0);
             setCommentsLoaded(true);
         } catch (err: unknown) {
-            setError((err as Error).message || t('common.error'));
+            console.error('Failed to fetch comments:', err);
         } finally {
             setLoadingMore(false);
         }
     }, [torrentId, t, commentsLoaded]);
 
     useEffect(() => {
-        if (torrentId) {
-            fetchTorrentDetails();
+        if (torrentId && torrent) {
+            fetchCommentsCount();
         }
-    }, [torrentId, fetchTorrentDetails]);
+    }, [torrentId, torrent, fetchCommentsCount]);
 
     const handleLoadMore = async () => {
         if (loadingMore || !hasMore) return;
@@ -93,7 +88,7 @@ export default function TorrentDetailPage() {
             setHasMore(response.hasMore);
             setLastFloor(response.items[response.items.length - 1]?.floor || lastFloor);
         } catch (err: unknown) {
-            setError((err as Error).message || t('common.error'));
+            console.error('Failed to load more comments:', err);
         } finally {
             setLoadingMore(false);
         }
@@ -132,7 +127,7 @@ export default function TorrentDetailPage() {
             await comments.deleteComment(commentId);
             setComments(prev => prev.filter(c => c.id !== commentId));
         } catch (err: unknown) {
-            setError((err as Error).message || t('common.error'));
+            console.error('Failed to delete comment:', err);
         }
     };
 
@@ -141,7 +136,7 @@ export default function TorrentDetailPage() {
     };
 
     if (loading) return <div className="h-screen w-full flex items-center justify-center"><p>{t('common.loading')}</p></div>;
-    if (error) return <div className="h-screen w-full flex items-center justify-center"><p className="text-destructive">{t('common.error')}: {error}</p></div>;
+    if (error) return <div className="h-screen w-full flex items-center justify-center"><p className="text-destructive">{t('common.error')}: {error.message || error}</p></div>;
     if (!torrent) return <div className="h-screen w-full flex items-center justify-center"><p>{t('torrentsPage.no_torrents_found')}</p></div>;
 
     const commentsSection = (

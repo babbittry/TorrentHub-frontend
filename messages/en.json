@@ -16,6 +16,7 @@
         "category": "Category",
         "size": "Size",
         "uploader": "Uploader",
+        "anonymous_user": "Anonymous User",
         "release_time": "Release Time",
         "free": "Free",
         "description": "Description",

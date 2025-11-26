@@ -117,10 +117,11 @@ const TorrentTabs = ({ torrent, commentsSection, commentsCount, onCommentsTabOpe
                 <div className="space-y-4 text-muted-foreground">
                     <div className="flex justify-between items-center">
                         <span>{t('status.uploader')}</span>
-                        {torrent.uploader ? (
+                        {torrent.uploader || torrent.isAnonymous ? (
                             <UserDisplay
                                 user={torrent.uploader}
                                 showAvatar={false}
+                                isAnonymous={torrent.isAnonymous}
                                 showUsername={true}
                             />
                         ) : (

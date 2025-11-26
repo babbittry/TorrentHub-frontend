@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { mutate } from 'swr';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -424,6 +425,9 @@ export default function TorrentUploadPage() {
                     }
                 }
             );
+
+            // 预填充详情页缓存（跳转时零请求）
+            mutate(`/api/torrents/${response.id}`, response, false);
 
             toast.success(t('torrentUpload.uploadSuccess'));
 

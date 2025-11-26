@@ -16,6 +16,7 @@
         "category": "Catégorie",
         "size": "Taille",
         "uploader": "Uploader",
+        "anonymous_user": "Utilisateur anonyme",
         "release_time": "Date de sortie",
         "free": "Gratuit",
         "description": "Description",

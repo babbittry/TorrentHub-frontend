@@ -643,22 +643,6 @@ export interface TorrentCategoryDto {
     key: string;
 }
 
-export interface UploadTorrentResponseDto {
-    id: number;
-    name: string;
-    description?: string | null;
-    size: number;
-    uploader?: UserDisplayDto;
-    createdAt: string;
-    category: TorrentCategory;
-    isFree: boolean;
-    stickyStatus: TorrentStickyStatus;
-    seeders: number;
-    leechers: number;
-    snatched: number;
-    imdbId?: string | null;
-}
-
 export interface TechnicalSpecsDto {
     resolution?: string | null;
     videoCodec?: string | null;
@@ -1165,7 +1149,7 @@ export const torrents = {
         },
         screenshots?: File[], // 用户上传的截图（恰好 3 张）
         onUploadProgress?: (progressEvent: { loaded: number; total?: number }) => void
-    ): Promise<UploadTorrentResponseDto> => {
+    ): Promise<TorrentDto> => {
         const formData = new FormData();
         formData.append('File', torrentFile);
         formData.append('Description', metadata.description);
@@ -1194,7 +1178,7 @@ export const torrents = {
             });
         }
 
-        return callApi(api.post<ApiResponse<UploadTorrentResponseDto>>('/api/torrents', formData, {
+        return callApi(api.post<ApiResponse<TorrentDto>>('/api/torrents', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },

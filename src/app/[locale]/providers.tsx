@@ -6,6 +6,7 @@ import api, { auth as authApi } from '@/lib/api'; // Import authApi
 import { useEffect } from 'react';
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { SWRConfig } from 'swr';
 
 let isRefreshing = false;
 // The queue now holds callbacks that expect an error or a token
@@ -89,14 +90,34 @@ export function Providers({ children }: { children: React.ReactNode }) {
             storageKey="torrenthub-theme"
             disableTransitionOnChange={false}
         >
-            <AuthProvider>
-                <PublicSettingsProvider>
-                    <AppWithInterceptors>
-                        {children}
-                    </AppWithInterceptors>
-                    <Toaster />
-                </PublicSettingsProvider>
-            </AuthProvider>
+            <SWRConfig
+                value={{
+                    // 核心配置：只在浏览器刷新时更新数据
+                    revalidateOnFocus: false,       // 切换标签不刷新
+                    revalidateOnReconnect: false,   // 网络重连不刷新
+                    revalidateOnMount: true,        // 组件挂载时请求（浏览器F5刷新会触发）
+                    revalidateIfStale: false,       // 数据过期不刷新
+                    refreshInterval: 0,             // 不自动定时刷新
+                    
+                    // 缓存策略
+                    dedupingInterval: 2000,         // 2秒内相同请求去重
+                    
+                    // 错误处理
+                    shouldRetryOnError: false,      // 错误时不重试
+                    
+                    // 使用内存缓存
+                    provider: () => new Map(),
+                }}
+            >
+                <AuthProvider>
+                    <PublicSettingsProvider>
+                        <AppWithInterceptors>
+                            {children}
+                        </AppWithInterceptors>
+                        <Toaster />
+                    </PublicSettingsProvider>
+                </AuthProvider>
+            </SWRConfig>
         </NextThemesProvider>
     )
 }
