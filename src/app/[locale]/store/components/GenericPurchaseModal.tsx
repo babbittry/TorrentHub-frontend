@@ -8,6 +8,7 @@ import { store, StoreItemDto, StoreActionType } from "@/lib/api";
 import { useState, useEffect } from "react";
 import { useAuth } from '@/context/AuthContext';
 import { FormField } from "@/components/ui/form-field";
+import { toast } from "sonner";
 
 interface GenericPurchaseModalProps {
     isOpen: boolean;
@@ -51,9 +52,42 @@ export const GenericPurchaseModal = ({ isOpen, onOpenChange, item }: GenericPurc
                     break;
             }
             await refreshUser();
+            toast.success(t("purchase_success"));
             onOpenChange();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Purchase failed", error);
+            
+            // 映射后端错误消息到翻译键
+            let errorKey = "error_unknown";
+            // callApi 包装器会将错误消息放在 error.message 中
+            const apiMessage = error?.message || "";
+            
+            // 根据后端返回的11种错误消息映射到对应的翻译键
+            if (apiMessage.includes("Item not found or is unavailable")) {
+                errorKey = "error_item_not_found";
+            } else if (apiMessage.includes("Insufficient Coins")) {
+                errorKey = "error_insufficient_coins";
+            } else if (apiMessage.includes("Badges can only be purchased one at a time")) {
+                errorKey = "error_badge_single_purchase";
+            } else if (apiMessage.includes("Invalid badge item configuration")) {
+                errorKey = "error_invalid_badge_config";
+            } else if (apiMessage.includes("You already own this badge")) {
+                errorKey = "error_badge_already_owned";
+            } else if (apiMessage.includes("New username must be provided")) {
+                errorKey = "error_username_required";
+            } else if (apiMessage.includes("This username is already taken")) {
+                errorKey = "error_username_taken";
+            } else if (apiMessage.includes("New title must be provided")) {
+                errorKey = "error_title_required";
+            } else if (apiMessage.includes("Title is too long")) {
+                errorKey = "error_title_too_long";
+            } else if (apiMessage.includes("unexpected error") || apiMessage.includes("rolled back")) {
+                errorKey = "error_transaction_failed";
+            }
+            
+            toast.error(t("purchase_failed"), {
+                description: t(errorKey)
+            });
         } finally {
             setIsLoading(false);
         }

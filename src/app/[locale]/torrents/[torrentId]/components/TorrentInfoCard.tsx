@@ -13,9 +13,11 @@ interface TorrentInfoCardProps {
   commentsCount: number;
   onCommentsTabOpen: () => void;
   commentsLoading: boolean;
+  onDownload: () => void;
+  onTip: () => void;
 }
 
-const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTabOpen, commentsLoading }: TorrentInfoCardProps) => {
+const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTabOpen, commentsLoading, onDownload, onTip }: TorrentInfoCardProps) => {
   const t = useTranslations('torrentDetail');
   const [showAllActors, setShowAllActors] = useState(false);
   const posterUrl = torrent.posterPath
@@ -124,11 +126,11 @@ const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTa
                 </p>
 
                 <div className="mt-8 flex flex-wrap gap-4">
-                  <Button size="lg">
+                  <Button size="lg" onClick={onDownload}>
                     <Download className="mr-2 h-5 w-5" />
                     {t('downloadNow')}
                   </Button>
-                  <Button size="lg" variant="secondary">
+                  <Button size="lg" variant="secondary" onClick={onTip}>
                     <Plus className="mr-2 h-5 w-5" />
                     {t('tip')}
                   </Button>

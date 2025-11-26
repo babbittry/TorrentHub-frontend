@@ -796,6 +796,19 @@
         "confirm": "Confirmer",
         "enterQuantity": "Entrez la quantité",
         "purchasing": "Achat en cours...",
+        "purchase_success": "Achat réussi !",
+        "purchase_failed": "Échec de l'achat",
+        "error_item_not_found": "Article introuvable ou indisponible",
+        "error_insufficient_coins": "Pièces insuffisantes",
+        "error_badge_single_purchase": "Les badges ne peuvent être achetés qu'un à la fois",
+        "error_invalid_badge_config": "Configuration de badge invalide",
+        "error_badge_already_owned": "Vous possédez déjà ce badge",
+        "error_username_required": "Un nouveau nom d'utilisateur doit être fourni",
+        "error_username_taken": "Ce nom d'utilisateur est déjà pris",
+        "error_title_required": "Un nouveau titre doit être fourni",
+        "error_title_too_long": "Le titre est trop long (max 30 caractères)",
+        "error_transaction_failed": "Erreur système, la transaction a été annulée",
+        "error_unknown": "Erreur inconnue, veuillez réessayer plus tard",
         "store": {
             "items": {
                 "uploadcredit10gb": {

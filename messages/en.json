@@ -796,6 +796,19 @@
         "confirm": "Confirm",
         "enterQuantity": "Enter quantity",
         "purchasing": "Purchasing...",
+        "purchase_success": "Purchase successful!",
+        "purchase_failed": "Purchase failed",
+        "error_item_not_found": "Item not found or is unavailable",
+        "error_insufficient_coins": "Insufficient Coins",
+        "error_badge_single_purchase": "Badges can only be purchased one at a time",
+        "error_invalid_badge_config": "Invalid badge item configuration",
+        "error_badge_already_owned": "You already own this badge",
+        "error_username_required": "New username must be provided",
+        "error_username_taken": "This username is already taken",
+        "error_title_required": "New title must be provided",
+        "error_title_too_long": "Title is too long (max 30 characters)",
+        "error_transaction_failed": "System error, transaction has been rolled back",
+        "error_unknown": "Unknown error, please try again later",
         "store": {
             "items": {
                 "uploadcredit10gb": {

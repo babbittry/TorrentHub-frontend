@@ -796,6 +796,19 @@
         "confirm": "確認",
         "enterQuantity": "数量を入力してください",
         "purchasing": "購入中...",
+        "purchase_success": "購入に成功しました！",
+        "purchase_failed": "購入に失敗しました",
+        "error_item_not_found": "商品が見つからないか利用できません",
+        "error_insufficient_coins": "コインが不足しています",
+        "error_badge_single_purchase": "バッジは一度に1つしか購入できません",
+        "error_invalid_badge_config": "バッジ設定が無効です",
+        "error_badge_already_owned": "このバッジは既に所有しています",
+        "error_username_required": "新しいユーザー名を入力してください",
+        "error_username_taken": "このユーザー名は既に使用されています",
+        "error_title_required": "新しいタイトルを入力してください",
+        "error_title_too_long": "タイトルが長すぎます（最大30文字）",
+        "error_transaction_failed": "システムエラー、トランザクションがロールバックされました",
+        "error_unknown": "不明なエラー、後でもう一度お試しください",
         "store": {
             "items": {
                 "uploadcredit10gb": {

@@ -960,7 +960,7 @@ export const messages = {
 // Reports API Functions
 export const reports = {
     submitReport: async (report: SubmitReportRequestDto): Promise<void> => {
-        await api.post('/api/reports', report);
+        return callApi(api.post<ApiResponse<void>>('/api/reports', report));
     },
     getPendingReports: async (): Promise<ReportDto[]> => {
         const response = await api.get('/api/reports/pending');
@@ -971,7 +971,7 @@ export const reports = {
         return response.data;
     },
     processReport: async (reportId: number, processData: ProcessReportRequestDto): Promise<void> => {
-        await api.patch(`/api/reports/${reportId}/process`, processData);
+        return callApi(api.patch<ApiResponse<void>>(`/api/reports/${reportId}/process`, processData));
     },
     getReportById: async (reportId: number): Promise<ReportDto> => {
         // This endpoint doesn't exist in the spec, so we'll filter the pending reports
@@ -1068,13 +1068,13 @@ export const forum = {
 // Coins API Functions
 export const coins = {
     updateCoins: async (userId: number, data: UpdateCoinsRequestDto): Promise<void> => {
-        await api.patch(`/api/coins/${userId}`, data);
+        return callApi(api.patch<ApiResponse<void>>(`/api/coins/${userId}`, data));
     },
     transfer: async (data: TransferCoinsRequestDto): Promise<void> => {
-        await api.post('/api/coins/transfer', data);
+        return callApi(api.post<ApiResponse<void>>('/api/coins/transfer', data));
     },
     tip: async (data: TipCoinsRequestDto): Promise<void> => {
-        await api.post('/api/coins/tip', data);
+        return callApi(api.post<ApiResponse<void>>('/api/coins/tip', data));
     },
 };
 
@@ -1103,7 +1103,7 @@ export const topPlayers = {
     },
 
     refreshCache: async (): Promise<void> => {
-        await api.post('/api/top-players/refresh-cache');
+        return callApi(api.post<ApiResponse<void>>('/api/top-players/refresh-cache'));
     },
 };
 
@@ -1562,7 +1562,7 @@ export const admin = {
         return callApi(api.get<ApiResponse<PaginatedResult<UserAdminProfileDto>>>(`/api/Admin/users?${params.toString()}`));
     },
     updateRegistrationSettings: async (settings: UpdateRegistrationSettingsDto): Promise<void> => {
-        await api.put('/api/Admin/settings/registration', settings);
+        return callApi(api.put<ApiResponse<void>>('/api/Admin/settings/registration', settings));
     },
     getSiteSettings: async (): Promise<SiteSettingsDto> => {
         return callApi(api.get<ApiResponse<SiteSettingsDto>>('/api/Admin/settings/site'));

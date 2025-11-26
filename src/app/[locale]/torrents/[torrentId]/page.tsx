@@ -32,6 +32,26 @@ export default function TorrentDetailPage() {
     const t = useTranslations();
     const { user: currentUser } = useAuth();
 
+    const handleDownload = async () => {
+        try {
+            const blob = await torrents.downloadTorrent(Number(torrentId));
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${torrent?.name || 'torrent'}.torrent`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (err: unknown) {
+            console.error('Failed to download torrent:', err);
+        }
+    };
+
+    const handleTip = () => {
+        setIsTorrentTipModalOpen(true);
+    };
+
     const handleOpenTipModal = (comment: CommentDto) => {
         setSelectedCommentForTip(comment);
         setIsTipModalOpen(true);
@@ -180,6 +200,8 @@ export default function TorrentDetailPage() {
                 commentsCount={commentsCount}
                 onCommentsTabOpen={fetchComments}
                 commentsLoading={loadingMore && !commentsLoaded}
+                onDownload={handleDownload}
+                onTip={handleTip}
             />
 
             {selectedCommentForTip && selectedCommentForTip.user && (
