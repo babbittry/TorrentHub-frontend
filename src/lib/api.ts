@@ -693,7 +693,6 @@ export interface TorrentDto {
     directors?: string | null;
     cast?: CastMemberDto[] | null;
     rating?: number | null;
-    imdbRating?: number | null;
     technicalSpecs?: TechnicalSpecsDto | null;
     files?: TorrentFileDto[] | null;
     country?: string | null;
@@ -1114,7 +1113,7 @@ export const store = {
         return response.data;
     },
     purchaseItem: async (itemId: number, payload?: object): Promise<void> => {
-        await api.post(`/api/store/purchase`, { storeItemId: itemId, ...payload });
+        return callApi(api.post(`/api/store/purchase`, { storeItemId: itemId, ...payload }));
     },
 };
 

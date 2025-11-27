@@ -52,24 +52,26 @@ const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTa
 
               {/* Details */}
               <div className="w-full md:w-2/3 lg:w-3/4">
-                <div className="flex flex-col sm:flex-row justify-between sm:items-start">
-                  <div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-foreground">{torrent.name}</h1>
-                    <p className="text-lg text-muted-foreground mt-2">{torrent.originalTitle} ({torrent.year})</p>
-                  </div>
-                  {torrent.imdbRating && (
-                    <div className="shrink-0 mt-4 sm:mt-0 sm:ml-6">
-                      <div className="flex items-center space-x-2 bg-yellow-400/20 dark:bg-yellow-500/20 px-3 py-1.5 rounded-md">
-                        <span className="font-bold text-yellow-500 text-lg">IMDb</span>
-                        <div className="text-left">
-                          <span className="block font-bold text-xl text-foreground">
-                            {torrent.imdbRating.toFixed(1)}
-                            <span className="text-sm font-normal">/10</span>
-                          </span>
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div className="min-w-0 flex-1 pr-4">
+                      <h1 className="text-4xl md:text-5xl font-bold text-foreground wrap-anywhere">{torrent.name}</h1>
+                      <p className="text-lg text-muted-foreground mt-2 wrap-anywhere">{torrent.originalTitle} ({torrent.year})</p>
+                    </div>
+                    {torrent.rating && (
+                      <div className="shrink-0 mt-4 sm:mt-0 sm:ml-6">
+                        <div className="flex items-center space-x-2 bg-yellow-400/20 dark:bg-yellow-500/20 px-3 py-1.5 rounded-md">
+                          <span className="font-bold text-yellow-500 text-lg">IMDb</span>
+                          <div className="text-left">
+                            <span className="block font-bold text-xl text-foreground">
+                              {torrent.rating.toFixed(1)}
+                              <span className="text-sm font-normal">/10</span>
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mt-4 text-muted-foreground">
@@ -121,7 +123,7 @@ const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTa
                   )}
                 </div>
 
-                <p className="mt-3 text-foreground/80 leading-relaxed text-base line-clamp-5">
+                <p className="mt-3 text-foreground/80 leading-relaxed text-base line-clamp-5 warp-break-word">
                   {torrent.plot}
                 </p>
 
@@ -177,7 +179,7 @@ const TorrentInfoCard = ({ torrent, commentsSection, commentsCount, onCommentsTa
               </div>
             )}
           </div>
-          
+
           <TorrentTabs
             torrent={torrent}
             commentsSection={commentsSection}
