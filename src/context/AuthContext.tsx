@@ -1,5 +1,6 @@
 "use client";
 
+import axios from 'axios';
 import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo, useCallback, useRef } from 'react';
 import api, { UserPrivateProfileDto, UserForLoginDto, auth, users, LoginResponseDto } from '@/lib/api';
 
@@ -97,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
             } catch (error) {
                 // This is an expected failure when no session exists, so we just clear the client state.
-                if (process.env.NODE_ENV === 'development') {
+                if (process.env.NODE_ENV === 'development' && (!axios.isAxiosError(error) || error.response?.status !== 401)) {
                     console.error('[AuthContext] restoreSession failed:', error);
                 }
                 setUser(null);

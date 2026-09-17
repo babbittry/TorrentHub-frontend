@@ -17,17 +17,21 @@ export interface ApiResponse<T> {
  */
 export class ApiError extends Error {
     public readonly errors?: Record<string, string[]>;
+    public readonly status?: number;
 
-    constructor(message: string, errors?: Record<string, string[]>) {
+    constructor(message: string, errors?: Record<string, string[]>, status?: number) {
         super(message);
         this.name = 'ApiError';
         this.errors = errors;
+        this.status = status;
     }
 }
 
+const configuredApiBaseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || '';
+
 // Base Axios instance
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5014",
+    baseURL: configuredApiBaseUrl,
     withCredentials: true,
 });
 
@@ -53,7 +57,7 @@ async function callApi<T>(requestPromise: Promise<AxiosResponse<ApiResponse<T>>>
             const axiosError = error as AxiosError<ApiResponse<unknown>>;
             if (axiosError.response && axiosError.response.data) {
                 const errorData = axiosError.response.data;
-                throw new ApiError(errorData.message || axiosError.message, errorData.errors);
+                throw new ApiError(errorData.message || axiosError.message, errorData.errors, axiosError.response.status);
             } else {
                 throw new ApiError(axiosError.message);
             }
@@ -782,7 +786,7 @@ export interface GetReactionsBatchRequestDto {
 // For file uploads
 export type IFormFile = File;
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5014";
+export const API_BASE_URL = configuredApiBaseUrl;
 
 // Auth API Functions
 export const auth = {
@@ -1618,6 +1622,17 @@ export const settings = {
      */
     getPublicSettings: async (): Promise<PublicSiteSettingsDto> => {
         return callApi(api.get<ApiResponse<PublicSiteSettingsDto>>('/api/settings/public'));
+    },
+
+    getPublicSettingsOrAnonymous: async (): Promise<AnonymousPublicSettingsDto | PublicSiteSettingsDto> => {
+        try {
+            return await settings.getPublicSettings();
+        } catch (error) {
+            if (error instanceof ApiError && error.status === 401) {
+                return settings.getAnonymousPublicSettings();
+            }
+            throw error;
+        }
     },
 };
 

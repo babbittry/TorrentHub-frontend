@@ -110,12 +110,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 }}
             >
                 <AuthProvider>
-                    <PublicSettingsProvider>
-                        <AppWithInterceptors>
+                    <AppWithInterceptors>
+                        <PublicSettingsProvider>
                             {children}
-                        </AppWithInterceptors>
+                        </PublicSettingsProvider>
                         <Toaster />
-                    </PublicSettingsProvider>
+                    </AppWithInterceptors>
                 </AuthProvider>
             </SWRConfig>
         </NextThemesProvider>

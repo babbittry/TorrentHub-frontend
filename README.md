@@ -32,6 +32,8 @@ npm run dev
 
 服务器默认将在 `http://localhost:3000` 上启动。项目已启用 Turbopack 以提供更快的开发体验。
 
+默认情况下，前端会通过 Next.js 同源代理把 `/api/*`、`/avatars/*` 和 `/badges/*` 转发到 `http://localhost:5014`，避免浏览器端跨域/CORS 问题。若后端不在默认地址，可设置 `API_URL` 指向后端服务；只有需要浏览器直连后端时才设置 `NEXT_PUBLIC_API_URL`。
+
 ## ⚙️ 可用命令
 
 本项目在 `package.json` 中定义了以下脚本：

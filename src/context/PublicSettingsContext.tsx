@@ -26,7 +26,7 @@ export function PublicSettingsProvider({ children }: { children: React.ReactNode
       
       if (isAuthenticated) {
         // 认证用户：获取完整配置
-        const config = await settings.getPublicSettings();
+        const config = await settings.getPublicSettingsOrAnonymous();
         setPublicSettings(config);
       } else {
         // 匿名用户：仅获取基础配置
